@@ -1,7 +1,13 @@
 # Processor
 
-Python FastAPI document-processing service.
+Python document-processing service for OCR/parse/extract (Phase 4+).
 
-Phase 1: folder and package metadata only. Do not add Docling, openpyxl, FastAPI runtime, or parser adapters until Phase 4.
+This folder is an empty package until Phase 4. Do not add FastAPI, Docling, openpyxl, or model clients yet.
 
-See `docs/BUILD_PLAN.md`.
+```text
+services/processor/
+  pyproject.toml
+  src/
+  tests/
+  README.md
+```

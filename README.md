@@ -6,15 +6,15 @@ Historical procurement files become staged, source-backed facts. Humans verify t
 
 ## Current phase
 
-**Phase 1 — Framework foundation in this git repo.**  
-Official Next.js + Supabase starter lives in `apps/web`. Nav shell is placeholders only. No intake, parsers, or Workflow yet.
+**Phase 2 — Provenance schema + real Supabase project.**  
+Web app is in `apps/web`. Copy env from `apps/web/.env.example` into `apps/web/.env.local`. Apply the Phase 2 migration to project `lhmurblikkcomdxcrymx`.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Requires Node 24+. Copy `apps/web/.env.example` to `apps/web/.env.local` when you have a real Supabase project (Phase 2). The app typechecks without secrets.
+Requires Node 24+. `apps/web/.env.local` is already set on this machine (never commit it). Apply the Phase 2 SQL on the live project before Settings can create orgs.
 
 ## Read these first
 
@@ -31,13 +31,14 @@ Requires Node 24+. Copy `apps/web/.env.example` to `apps/web/.env.local` when yo
 
 Repo: [https://github.com/AshtonMedina22/Contract-Intelligence-Platform](https://github.com/AshtonMedina22/Contract-Intelligence-Platform)
 
-## How to run (later)
-
-After Phase 1 exists:
+## How to run
 
 ```text
-apps/web          Next.js (npm or pnpm)
-services/processor   Python (own venv)
+apps/web          Next.js (npm workspaces)
+services/processor   Python (own venv; empty src/tests until Phase 4)
+packages/shared      TS (empty)
+packages/schemas     TS (empty)
+supabase/migrations  Phase 2 SQL — apply to project lhmurblikkcomdxcrymx
 ```
 
 Until Phase 2, `npm run dev` works without Supabase env vars (auth proxy is skipped).

@@ -3,7 +3,7 @@
 Operational checklist for the Contract Intelligence Platform.  
 Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
-**Current phase: Phase 1 foundation in the repo.** Next executable work is Phase 2 (real Supabase schema) after Phase 1 acceptance (build green).
+**Current phase: Phase 2 schema.** Real Supabase project is `lhmurblikkcomdxcrymx`. Apply `supabase/migrations/20260819100000_phase2_tenancy_provenance.sql` on that project (CLI login required for `supabase db push`, or run the SQL in the dashboard).
 
 Do not skip phases to get a pretty proposal editor. Verification of historical documents is the first usable product.
 
@@ -106,20 +106,23 @@ Phase 1 build green. A real Supabase project. `supabase/` CLI linked or dashboar
 
 **Migrations in `supabase/migrations/`**
 
-- `organizations`, `memberships` (`role`: admin | importer | verifier | bidder | executive)
-- `document_batches`, `documents`, `document_versions`
-- `extraction_runs`, `extracted_facts`, `source_evidence`, `verification_events`, `validation_exceptions`
-- `clients`, `opportunities`
-- `organization_id` on every business table; RLS policies; indexes on org, status, checksum
-- Storage buckets `intake` and `evidence` **policies only** (path convention documented; upload UI is Phase 3):  
+- [x] `organizations`, `memberships` (`role`: admin | importer | verifier | bidder | executive)
+- [x] `document_batches`, `documents`, `document_versions`
+- [x] `extraction_runs`, `extracted_facts`, `source_evidence`, `verification_events`, `validation_exceptions`
+- [x] `clients`, `opportunities`
+- [x] `organization_id` on every business table; RLS policies; indexes on org, status, checksum
+- [x] Storage buckets `intake` and `evidence` **policies only** (path convention documented; upload UI is Phase 3):
   `org_id/document_id/version_id/sha256/original.ext`
-- Deny UPDATE/DELETE on evidence objects for `authenticated` except a documented privileged role
-- Generated TypeScript types into `apps/web` (Supabase gen)
+- [x] Deny UPDATE/DELETE on evidence objects for `authenticated` (no update/delete policies)
+- [x] TypeScript types in `apps/web/lib/supabase/database.types.ts` (regenerate with CLI after `db push`)
+- [ ] **You:** apply `supabase/migrations/20260819100000_phase2_tenancy_provenance.sql` on project `lhmurblikkcomdxcrymx` (SQL Editor, or `npx supabase login` then `npx supabase link --project-ref lhmurblikkcomdxcrymx` and `npx supabase db push`)
+- [ ] **You:** prove org A cannot read org B (two signed-in users)
 
 **App**
 
-- Auth: org membership required after login (minimal settings: org name)
-- No document upload yet
+- [x] Auth: org membership required after login (minimal settings: org name) — `/system/settings`
+- [x] No document upload yet
+- [x] `.env.local` on this machine (gitignored). Do not commit secrets.
 
 ### Acceptance — you can use it when
 
