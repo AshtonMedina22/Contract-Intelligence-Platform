@@ -115,7 +115,7 @@ Phase 1 build green. A real Supabase project. `supabase/` CLI linked or dashboar
   `org_id/document_id/version_id/sha256/original.ext`
 - [x] Deny UPDATE/DELETE on evidence objects for `authenticated` (no update/delete policies)
 - [x] TypeScript types in `apps/web/lib/supabase/database.types.ts` (regenerate with CLI after `db push`)
-- [ ] **You:** apply `supabase/migrations/20260819100000_phase2_tenancy_provenance.sql` on project `lhmurblikkcomdxcrymx` (SQL Editor, or `npx supabase login` then `npx supabase link --project-ref lhmurblikkcomdxcrymx` and `npx supabase db push`)
+- [x] **Applied** `supabase/migrations/20260819100000_phase2_tenancy_provenance.sql` on project `lhmurblikkcomdxcrymx` (`supabase db push` via session pooler)
 - [ ] **You:** prove org A cannot read org B (two signed-in users)
 
 **App**
