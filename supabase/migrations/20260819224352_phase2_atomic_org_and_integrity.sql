@@ -1,0 +1,3 @@
+-- Placeholder matching a remote schema_migrations row created by a duplicate
+-- `supabase migration new` invocation. No schema changes. The Phase 2
+-- follow-up lives in 20260819224603_phase2_atomic_org_and_integrity.sql.

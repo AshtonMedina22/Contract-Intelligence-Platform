@@ -43,9 +43,12 @@ Google Drive remains the original external source/import location for existing L
 - `memberships`
 - `organization_id` on every business table
 - RLS on Postgres and on `storage.objects`
-- Roles beyond membership: admin, importer, verifier, bidder, executive (Phase 2)
+- Roles beyond membership: admin, importer, verifier, bidder, executive (stored in Phase 2)
+- **Role enforcement decision (Phase 2):** Option A. Roles are stored now. Organization/member administration is admin-only. Business-table RLS currently uses `is_org_member` for tenant isolation. Domain permission matrices (importer vs verifier vs bidder) start with the first later phase that exposes those mutations. Do not assume the enum already enforces workflow permissions.
 
 L&P is the first tenant. Stripe comes later.
+
+Same-organization foreign keys: child rows that point at another table must include `organization_id` in the relationship (composite unique + composite FK). Tenant integrity does not rely on UUID secrecy.
 
 ## Phase 2 schema only
 

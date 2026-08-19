@@ -8,7 +8,9 @@ Use this when you clone on a new computer. **Secrets are not in git.** Copy them
 - Branch: `main`
 - Product spec: `docs/MASTER_PRODUCT_CONTEXT.md`
 - Build order: `docs/BUILD_PLAN.md`
-- Current phase: **Phase 2** (schema is on the live Supabase project). Do not start intake / OCR / Workflow / AI until org isolation is proven in the app.
+- Current phase: **Phase 2 complete** (see [PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md)). Do not start intake / OCR / Workflow / AI until Phase 3 is explicitly approved.
+
+Requires **Node 24+** (`.nvmrc` / `.node-version`). npm workspaces (not pnpm).
 
 ## Accounts / dashboards
 
@@ -18,7 +20,9 @@ Use this when you clone on a new computer. **Secrets are not in git.** Copy them
   - Region: `us-west-2` (Oregon)
   - Dashboard: https://supabase.com/dashboard/project/lhmurblikkcomdxcrymx
   - API URL: `https://lhmurblikkcomdxcrymx.supabase.co`
-- Vercel: Hobby team **Ashton Medina's projects**. Project name at import was `contract-intelligence-platform-web`. Deploy **only** the Next.js `web` service (`vercel.json` at repo root). Do not deploy `services/processor`.
+- Vercel: Hobby team **Ashton Medina's projects**. Project name: `contract-intelligence-platform-web`.
+  - Production: https://contract-intelligence-platform-web.vercel.app
+  - Deploy **only** the Next.js `web` service (`vercel.json` at repo root). Do not deploy `services/processor`.
 - Do **not** use Prisma or Drizzle.
 
 ## New machine commands
@@ -86,6 +90,6 @@ On a new Cursor window: clone repo, authenticate the Supabase MCP if tools are m
 
 **Done:** Phase 0 docs, Phase 1 `apps/web` scaffold, Phase 2 SQL + RLS + storage bucket policies, Settings org-create UI, processor empty `src/` + `tests/`, Vercel web-only `vercel.json`.
 
-**Not done:** Vercel env confirmation / live URL, two-user RLS proof in the UI, intake, Workflow, parsers, OCR, AI.
+**Not done:** rotate chat-exposed privileged credentials, Phase 3 intake, Workflow, parsers, OCR, AI.
 
 **Do not:** clone Prisma/Drizzle, deploy the empty Python folder, add FastAPI/Docling yet, put secrets in git.

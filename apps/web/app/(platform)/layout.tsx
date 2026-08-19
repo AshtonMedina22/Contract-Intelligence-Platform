@@ -19,7 +19,7 @@ export default function PlatformLayout({
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-4" />
           <span className="text-sm text-muted-foreground">
-            Phase 1 shell — features not built
+            Phase 2 — tenancy and provenance
           </span>
         </header>
         <div className="flex-1 p-4">{children}</div>

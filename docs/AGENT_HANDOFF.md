@@ -2,7 +2,7 @@
 
 **Repo:** https://github.com/AshtonMedina22/Contract-Intelligence-Platform  
 **Branch:** `main` (as of `4505b12` plus later commits on this file)  
-**Do not redesign the architecture. Do not re-run Phase 0 or Phase 1. Do not start Phase 3 until Phase 2 acceptance is done.**
+**Do not redesign the architecture. Do not re-run Phase 0, Phase 1, or Phase 2. Do not start Phase 3 until explicitly approved.**
 
 Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Ask the human for `apps/web/.env.local` values. Never commit `.env.local`.
 
@@ -32,7 +32,7 @@ It is **not** intake, OCR, Workflow, Docling, or a proposal editor.
 4. Storage buckets `intake` and `evidence` exist and are private. Evidence is insert+select only for `authenticated` (no update/delete policies). Path convention: `org_id/document_id/version_id/sha256/original.ext`. **No upload UI.**
 5. A signed-in user can create an organization and become admin (`/system/settings`).
 
-**Phase 2 is implemented and applied to the live DB.** The only open acceptance item is **proving isolation with two real users in the app** (not schema design).
+**Phase 2 is complete.** Isolation is proven (`npm run test:phase2-rls`, 48/48). Org bootstrap is `create_organization_with_admin`. Evidence storage is tenant-scoped and append-only by policy. Same-organization composite FKs are in place. See [PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md).
 
 ---
 
@@ -42,7 +42,7 @@ It is **not** intake, OCR, Workflow, Docling, or a proposal editor.
 | --- | --- | --- |
 | 0 | Canonical docs in git | **Done** |
 | 1 | Next.js foundation in `apps/web` | **Done** |
-| 2 | Postgres tenancy + provenance + RLS | **Schema live.** Remaining: two-user RLS proof in UI; Vercel env/URL confirmation |
+| 2 | Postgres tenancy + provenance + RLS | **Complete.** 48/48 isolation tests. Rotate secrets before importing real L&P data |
 | 3 | Intake + Workflow start | **Not started** |
 | 4 | Python processor + parsers | **Not started** (empty `src/` / `tests/` only) |
 | 5 | Human verification workbench | Not started |
@@ -92,6 +92,8 @@ Commits of note:
 
 **Layout:** `apps/web`, `services/processor`, `packages/shared`, `packages/schemas`, `supabase/migrations`.
 
+**Production web:** https://contract-intelligence-platform-web.vercel.app (source `main`).
+
 **Clients:** keep `@/` → `lib/supabase`. Env names: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, server-only `SUPABASE_SECRET_KEY`. Pooler URLs: `DATABASE_URL` (6543, pgbouncer), `DIRECT_URL` (5432, migrations). Password: encode `$` as `%24`; **do not** encode `!`. Use session pooler, not IPv6 `db.*.supabase.co`.
 
 **Supabase project:** `lhmurblikkcomdxcrymx`, region `us-west-2`, dashboard https://supabase.com/dashboard/project/lhmurblikkcomdxcrymx
@@ -104,17 +106,16 @@ Tables/enums (summary): `organizations`, `memberships` (roles: admin, importer, 
 
 **Skills in repo:** `.cursor/skills/supabase`, `.cursor/skills/supabase-postgres-best-practices`, `.agents/skills/...`. `.mcp.json` points at this Supabase project (OAuth; no password).
 
-**Verified locally:** `npm run typecheck` passed after settings form fix. Production build succeeded in Phase 1. Live REST: `organizations` and `extracted_facts` return `200 []` with secret key (tables exist, empty).
+**Verified locally:** `npm run typecheck` passed. `npm run test:phase2-rls` 48/48. `npx supabase db advisors` reported no issues. Production: https://contract-intelligence-platform-web.vercel.app.
 
 ---
 
 ## What you should do next (in order)
 
-1. Clone `main`, create `apps/web/.env.local` from `.env.example` + human-provided secrets (`docs/DEVICE_SETUP.md`).
-2. `npm install`, `npm run typecheck`, `npm run dev`.
-3. **Finish Phase 2 acceptance:** two Auth users, two orgs; prove user B cannot `select` org A rows (Settings list, and a direct PostgREST/SQL check if useful). Do not weaken RLS to make the demo pass.
-4. Confirm Vercel project env (`NEXT_PUBLIC_SUPABASE_*` + `SUPABASE_SECRET_KEY`, never `NEXT_PUBLIC_` on the secret). Root Directory = **repo root** so `vercel.json` is used. If the human’s deploy URL exists, note it in README — do not invent it.
-5. **Stop.** Do not implement Phase 3 (upload, Workflow, Drive, checksum pipeline) unless the human explicitly starts Phase 3 after RLS proof.
+1. Use Node 24+ (`nvm use` / `.nvmrc`). Create `apps/web/.env.local` from `.env.example` if missing.
+2. `npm install`, `npm run env:check`, `npm run typecheck`, `npm run test:phase2-rls`.
+3. **Stop.** Do not implement Phase 3 (upload, Workflow, Drive, checksum pipeline) unless the human explicitly starts Phase 3.
+4. Rotate Supabase secret and database password only before importing real L&P data or calling the environment production-ready.
 
 ---
 

@@ -1,6 +1,9 @@
 {
   "name": "contract-intelligence-platform",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -9,6 +12,8 @@
     "dev": "npm run dev -w web",
     "build": "npm run build -w web",
     "lint": "npm run lint -w web",
-    "typecheck": "npm run typecheck -w web"
+    "typecheck": "npm run typecheck -w web",
+    "env:check": "node --env-file=apps/web/.env.local scripts/env-check.mjs",
+    "test:phase2-rls": "node --env-file=apps/web/.env.local scripts/phase2-rls-acceptance.mjs"
   }
 }

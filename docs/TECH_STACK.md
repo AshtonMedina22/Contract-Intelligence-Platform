@@ -11,7 +11,7 @@ Prices below are a planning snapshot (August 2026). Recheck before bulk migratio
 | Layer | Choice | Rule |
 | --- | --- | --- |
 | Web app | Next.js App Router, React, TypeScript | Official `with-supabase` starter is the only cloned base |
-| Host | Vercel, Fluid Compute, Node 24 | No Edge runtime. Streaming stays on Node. `vercel.ts` is optional. Repo-root `vercel.json` deploys **only** the Next.js `web` service. Do not add `services/processor` as a Vercel Service until it has a real HTTP runtime (Phase 4+). Bulk jobs stay Cloud Run later |
+| Host | Vercel, Fluid Compute, Node 24 | No Edge runtime. Repo declares `engines.node >= 24` plus `.nvmrc` / `.node-version`. `vercel.ts` is optional. Repo-root `vercel.json` deploys **only** the Next.js `web` service. Do not add `services/processor` as a Vercel Service until it has a real HTTP runtime (Phase 4+). Bulk jobs stay Cloud Run later |
 | UI | Tailwind CSS, shadcn/ui, Lucide, dashboard sidebar | One design system. Dense, desktop-first, audit-oriented |
 | Lists | TanStack Table + TanStack Query | Opportunities, documents, queues, contracts, intelligence |
 | Spreadsheets | Glide Data Grid | Dep only in Phase 1. Glide 6 peers React 18; this repo uses React 19 + `legacy-peer-deps` until Glide supports 19. No pricing grid UI until Phase 12 |

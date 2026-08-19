@@ -24,4 +24,6 @@ Do not reorder phases to create impressive screens earlier.
 
 ## Current status
 
-Phase 0 in progress in this repo. Phase 1 scaffolding is **not** started as the priority. A leftover `with-supabase` download may exist under the local TEMP folder; it is not the product and must not be expanded into features.
+**Phase 2 complete** — tenancy, provenance, RLS isolation proven ([PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md)). Phase 0 and Phase 1 are complete on `main`. Phase 3 is not started.
+
+Execute using [BUILD_PLAN.md](BUILD_PLAN.md). Setup on a new machine: [DEVICE_SETUP.md](DEVICE_SETUP.md).

@@ -3,7 +3,7 @@
 Operational checklist for the Contract Intelligence Platform.  
 Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
-**Current phase: Phase 2.** Schema is applied on project `lhmurblikkcomdxcrymx`. New machines: [DEVICE_SETUP.md](DEVICE_SETUP.md). Next: two signed-in users proving org A cannot read org B.
+**Current phase: Phase 2 complete.** Isolation proven (48/48). Production: [https://contract-intelligence-platform-web.vercel.app](https://contract-intelligence-platform-web.vercel.app). Setup-only credentials remain in use until real L&P data is imported. Do not start Phase 3 until explicitly approved.
 
 Do not skip phases to get a pretty proposal editor. Verification of historical documents is the first usable product.
 
@@ -116,7 +116,10 @@ Phase 1 build green. A real Supabase project. `supabase/` CLI linked or dashboar
 - [x] Deny UPDATE/DELETE on evidence objects for `authenticated` (no update/delete policies)
 - [x] TypeScript types in `apps/web/lib/supabase/database.types.ts` (regenerate with CLI after `db push`)
 - [x] **Applied** `supabase/migrations/20260819100000_phase2_tenancy_provenance.sql` on project `lhmurblikkcomdxcrymx` (`supabase db push` via session pooler)
-- [ ] **You:** prove org A cannot read org B (two signed-in users)
+- [x] Atomic `create_organization_with_admin(org_name)` RPC (single transaction; Settings uses this RPC)
+- [x] Same-organization composite foreign keys on Phase 2 relationships
+- [x] Repeatable two-user RLS/storage/integrity test: `npm run test:phase2-rls`
+- [x] Acceptance evidence: [PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md) (48/48 on 2026-08-19). **Still rotate** chat-exposed privileged credentials before treating this project as the long-term baseline.
 
 **App**
 

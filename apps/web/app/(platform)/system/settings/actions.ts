@@ -24,24 +24,12 @@ export async function createOrganization(formData: FormData) {
     fail("You must be signed in.");
   }
 
-  const { data: org, error: orgError } = await supabase
-    .from("organizations")
-    .insert({ name })
-    .select("id")
-    .single();
-
-  if (orgError || !org) {
-    fail(orgError?.message ?? "Could not create organization.");
-  }
-
-  const { error: memberError } = await supabase.from("memberships").insert({
-    organization_id: org.id,
-    user_id: user.id,
-    role: "admin",
+  const { error } = await supabase.rpc("create_organization_with_admin", {
+    org_name: name,
   });
 
-  if (memberError) {
-    fail(memberError.message);
+  if (error) {
+    fail(error.message);
   }
 
   revalidatePath("/system/settings");

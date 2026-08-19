@@ -1,0 +1,3 @@
+-- Placeholder matching a remote schema_migrations row from a duplicate
+-- CLI `migration new`. No schema changes. The DEFINER bootstrap lives in
+-- 20260819232015_phase2_org_bootstrap_definer.sql.

@@ -437,6 +437,14 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      create_organization_with_admin: {
+        Args: { org_name: string };
+        Returns: string;
+      };
+      storage_path_org_id: {
+        Args: { object_name: string };
+        Returns: string | null;
+      };
       is_org_member: {
         Args: { org_id: string };
         Returns: boolean;
