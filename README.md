@@ -14,7 +14,7 @@ npm install
 npm run dev
 ```
 
-Requires Node 24+. `apps/web/.env.local` is already set on this machine (never commit it). Apply the Phase 2 SQL on the live project before Settings can create orgs.
+Requires Node 24+. New machines: [docs/DEVICE_SETUP.md](docs/DEVICE_SETUP.md). Phase 2 SQL is already applied on project `lhmurblikkcomdxcrymx`.
 
 ## Read these first
 
@@ -27,7 +27,7 @@ Requires Node 24+. `apps/web/.env.local` is already set on this machine (never c
 | [docs/DATA_ARCHITECTURE.md](docs/DATA_ARCHITECTURE.md) | Vault paths, tenancy, schema order |
 | [docs/DOCUMENT_TAXONOMY.md](docs/DOCUMENT_TAXONOMY.md) | Document types and parser defaults |
 | [docs/SOURCE_PRECEDENCE.md](docs/SOURCE_PRECEDENCE.md) | Four truths and conflict rules |
-| [docs/IMPLEMENTATION_ROADMAP.md](docs/IMPLEMENTATION_ROADMAP.md) | Phase index (points at BUILD_PLAN) |
+| [docs/AGENT_HANDOFF.md](docs/AGENT_HANDOFF.md) | Status snapshot for another agent (Codex/Cursor) to continue |
 
 Repo: [https://github.com/AshtonMedina22/Contract-Intelligence-Platform](https://github.com/AshtonMedina22/Contract-Intelligence-Platform)
 
