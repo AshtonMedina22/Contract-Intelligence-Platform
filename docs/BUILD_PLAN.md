@@ -3,7 +3,7 @@
 Operational checklist for the Contract Intelligence Platform.  
 Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
-**Current phase: Phase 2 schema.** Real Supabase project is `lhmurblikkcomdxcrymx`. Apply `supabase/migrations/20260819100000_phase2_tenancy_provenance.sql` on that project (CLI login required for `supabase db push`, or run the SQL in the dashboard).
+**Current phase: Phase 2.** Schema is applied on project `lhmurblikkcomdxcrymx`. New machines: [DEVICE_SETUP.md](DEVICE_SETUP.md). Next: two signed-in users proving org A cannot read org B.
 
 Do not skip phases to get a pretty proposal editor. Verification of historical documents is the first usable product.
 

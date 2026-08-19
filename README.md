@@ -6,8 +6,8 @@ Historical procurement files become staged, source-backed facts. Humans verify t
 
 ## Current phase
 
-**Phase 2 — Provenance schema + real Supabase project.**  
-Web app is in `apps/web`. Copy env from `apps/web/.env.example` into `apps/web/.env.local`. Apply the Phase 2 migration to project `lhmurblikkcomdxcrymx`. Vercel deploys only `web` (`vercel.json`); the Python processor is not a service yet.
+**Phase 2 — Provenance schema is on the live Supabase project.**  
+On a **new computer**, follow [docs/DEVICE_SETUP.md](docs/DEVICE_SETUP.md). Copy `apps/web/.env.example` → `apps/web/.env.local` and paste secrets from your password manager (never commit `.env.local`).
 
 ```bash
 npm install
