@@ -14,7 +14,7 @@ Prices below are a planning snapshot (August 2026). Recheck before bulk migratio
 | Host | Vercel, Fluid Compute, Node 24 | No Edge runtime. Streaming stays on Node. `vercel.ts` is optional — add it only when configuration-as-code is actually needed |
 | UI | Tailwind CSS, shadcn/ui, Lucide, dashboard sidebar | One design system. Dense, desktop-first, audit-oriented |
 | Lists | TanStack Table + TanStack Query | Opportunities, documents, queues, contracts, intelligence |
-| Spreadsheets | Glide Data Grid | Only where cell editing is real |
+| Spreadsheets | Glide Data Grid | Dep only in Phase 1. Glide 6 peers React 18; this repo uses React 19 + `legacy-peer-deps` until Glide supports 19. No pricing grid UI until Phase 12 |
 | Forms | React Hook Form + Zod | Frontend validation mirrors processor schemas |
 | Proposal editor | Tiptap OSS; Novel UX patterns | Phase 13. Novel is not a database |
 | PDF viewer | PDF.js / react-pdf + source-page overlay | Required for verification |
@@ -39,7 +39,7 @@ Prices below are a planning snapshot (August 2026). Recheck before bulk migratio
 ## Repo layout
 
 ```text
-apps/web                 Next.js (pnpm workspace)
+apps/web                 Next.js (npm workspaces)
 services/processor       Python FastAPI (own pyproject.toml / venv)
 packages/shared          Cross-cutting TS utilities
 packages/schemas         Shared JSON Schema / OpenAPI contracts

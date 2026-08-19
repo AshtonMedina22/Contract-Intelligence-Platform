@@ -1,0 +1,10 @@
+[project]
+name = "lp-processor"
+version = "0.0.1"
+description = "L&P document processing service (Phase 4+)"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"

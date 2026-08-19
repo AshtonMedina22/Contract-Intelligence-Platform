@@ -6,10 +6,15 @@ Historical procurement files become staged, source-backed facts. Humans verify t
 
 ## Current phase
 
-**Phase 0 — Canonical documentation in this git repo.**  
-The long-form spec is here so it is available on any computer after clone/push. Application scaffolding is **not** the current deliverable.
+**Phase 1 — Framework foundation in this git repo.**  
+Official Next.js + Supabase starter lives in `apps/web`. Nav shell is placeholders only. No intake, parsers, or Workflow yet.
 
-When Phase 1 is explicitly approved, follow [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md).
+```bash
+npm install
+npm run dev
+```
+
+Requires Node 24+. Copy `apps/web/.env.example` to `apps/web/.env.local` when you have a real Supabase project (Phase 2). The app typechecks without secrets.
 
 ## Read these first
 
@@ -35,7 +40,7 @@ apps/web          Next.js (npm or pnpm)
 services/processor   Python (own venv)
 ```
 
-Until then there is no `npm run dev` in this repository by design.
+Until Phase 2, `npm run dev` works without Supabase env vars (auth proxy is skipped).
 
 ## Locked architecture (one screen)
 

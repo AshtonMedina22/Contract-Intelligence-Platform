@@ -3,7 +3,7 @@
 Operational checklist for the Contract Intelligence Platform.  
 Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
-**Current phase: documentation in git.** Do not start Phase 1 scaffolding until this file is the agreed checklist and someone explicitly says to execute Phase 1.
+**Current phase: Phase 1 foundation in the repo.** Next executable work is Phase 2 (real Supabase schema) after Phase 1 acceptance (build green).
 
 Do not skip phases to get a pretty proposal editor. Verification of historical documents is the first usable product.
 
@@ -59,16 +59,14 @@ Phase 0 docs accepted. Node 24+ (Vercel default for new projects). Git remote al
 
 ### Tasks
 
-**Layout**
-
-- Create `apps/web` from the official Next.js `with-supabase` example only (`create-next-app --example with-supabase` or equivalent copy). `--disable-git` so this repo stays the only git.
-- Create empty:
-  - `services/processor/` with `README.md` and a minimal `pyproject.toml` (no Docling, no openpyxl, no FastAPI runtime yet — name and Python 3.12+ only)
-  - `packages/shared/package.json` + `src/index.ts` exporting nothing or a placeholder type
-  - `packages/schemas/package.json` + `src/index.ts` placeholder
-  - `supabase/migrations/.gitkeep`
-- Root workspace (`pnpm-workspace.yaml` if pnpm is available; otherwise npm workspaces). JS workspaces: `apps/*`, `packages/*`. Do **not** put `services/processor` in the JS workspace.
-- Do **not** create `vercel.ts` unless we already have config that needs it (we do not).
+- [x] Create `apps/web` from official Next.js `with-supabase` (in this git repo, not temp)
+- [x] Empty `services/processor`, `packages/shared`, `packages/schemas`, `supabase/migrations`
+- [x] npm workspaces (`apps/*`, `packages/*`); no `vercel.ts`
+- [x] TanStack Table/Query, RHF, Zod, Glide dep, `ai`
+- [x] shadcn application shell with placeholder nav
+- [x] QueryClientProvider
+- [x] `.vscode/extensions.json` recommendations
+- [x] Confirm `npm run typecheck`, `lint`, and `build` on this machine
 
 **Web packages (in `apps/web` only)**
 
