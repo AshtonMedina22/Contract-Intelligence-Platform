@@ -3,8 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Suspense } from "react";
 
-export default async function SettingsPage({
+async function SettingsContent({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
@@ -78,5 +79,17 @@ export default async function SettingsPage({
         </>
       )}
     </div>
+  );
+}
+
+export default function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  return (
+    <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
+      <SettingsContent searchParams={searchParams} />
+    </Suspense>
   );
 }
