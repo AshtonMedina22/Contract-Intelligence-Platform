@@ -5,7 +5,7 @@
 | Field | Value |
 | --- | --- |
 | **Last updated** | 2026-08-19 (session: commit + push Pass 3+4) |
-| **Git HEAD on origin/main** | Pass 3+4 on `main` after this push — run `git log -1` |
+| **Git HEAD on origin/main** | `547e16c` — Pass 3+4 ops workspace |
 | **Local uncommitted** | **No** (product/docs in this commit; local agent/IronBee files stay untracked) |
 | **Product truth gate** | Canonical Phase 2 Historical Pilot — **0 / 20 L&P packages** |
 
@@ -162,6 +162,6 @@ Verified 2026-08-19 from public sources (company site, Texas DPS TOPS, TxSmartBu
 | 2026-08-19 | Pass 3 P1 implementation | Staffing, eval, comparables, rebid, brief | Apply `310000` |
 | 2026-08-19 | This work trail created | Living scoreboard | |
 | 2026-08-19 | Pass 4 packet + economics | Rail/kind/missing list/fulfillment math | Apply `320000` |
-| 2026-08-19 | Commit + push Pass 3+4 | On `main`; Vercel will deploy | Apply all three opportunity migrations; confirm env |
+| 2026-08-19 | Commit + push Pass 3+4 | `547e16c` on origin/main | Apply all three opportunity migrations; confirm env |
 
 Older engineering history: `git log`. Capability freeze list: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).

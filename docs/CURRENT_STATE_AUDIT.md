@@ -1,7 +1,7 @@
 # Current state audit
 
 **Date:** 2026-08-19  
-**HEAD (origin/main):** Pass 3+4 (staffing, packet, economics) — run `git log -1`  
+**HEAD (origin/main):** `547e16c` — Pass 3+4 (staffing, packet, economics)  
 **Local product tree:** committed with this push  
 **Living trail (session-by-session):** [WORK_TRAIL.md](WORK_TRAIL.md) — **update that file every session**  
 **Purpose:** Canonical record of what exists today vs what the product must become. Read before implementing.

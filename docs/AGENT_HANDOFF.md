@@ -39,7 +39,7 @@ Historical files → staging → human verification → canonical Postgres. Four
 | Check | Result |
 | --- | --- |
 | `npm run lint` / `typecheck` / `build` | Build PASS locally after Pass 4 (2026-08-19) |
-| origin/main | Pass 3+4 on `main` after this push — run `git log -1` |
+| origin/main | `547e16c` Pass 3+4 |
 | Vercel | Deploy follows push; tenant/env not confirmed; **apply migrations** |
 | Legacy phases 3–11 | Code exists; **KEEP + FREEZE** Intelligence UX |
 
