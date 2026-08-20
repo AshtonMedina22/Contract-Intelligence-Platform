@@ -39,7 +39,16 @@ That split-brain poisons the next agent. This file is the reconciled product tru
 
 **Mitigation landed in this follow-up:** migration `20260821090000_trust_require_verified_canonical_sources.sql` (chunks + contracts require HUMAN_VERIFIED `source_fact_id`; revoke private automation EXECUTE from public/anon/authenticated) and `createContractFromWin` refuses without a verified pursuit fact.
 
-**Still open (medium):** `document_versions` still `FOR ALL`; ops staffing/eval without mandatory source; authenticated `run_intelligence_automation` privilege model.
+**Still open (medium / from [Scan remaining product gaps](28bc0544-e478-4044-adba-182cd98c6533)):**
+
+- `document_versions` still `FOR ALL` (row delete possible; Storage blobs OK)
+- Ops staffing/eval without mandatory `source_fact_id`
+- `pricing_lines` / awards / requirements still member-writable without verified-fact triggers (promote is intended, not DB-enforced for all tables)
+- Reports can load `research_facts` without filtering to verified (`apps/web/lib/reports/generate.ts`)
+- `createContractFromWin` accepts *any* verified pursuit fact, not necessarily award/contract-shaped
+- Live apply of `20260821090000` on Supabase project still unconfirmed
+- Pilot corpus ~7 A/B vs ~20–30; processor host + `ASK_MODEL` / OCR keys deferred
+- Drive import is **real but token-gated** (`GOOGLE_DRIVE_ACCESS_TOKEN`); Cloud Run correctly **not** deployed; Workflow owns lifecycle (Queues embed fan-out still inline)
 
 ## Product maturity (honest)
 
@@ -70,7 +79,7 @@ Legacy migration filenames (`phase9_contracts`, `phase11_hybrid_rag`) are **engi
 4. Only then treat Intelligence / Ask / Pricing / Response as validated product.  
 5. Do not expand “complete” claims, invent metrics, or weaken `HUMAN_VERIFIED` gates.  
 6. Apply `20260821090000_trust_require_verified_canonical_sources.sql` on the live project if not already pushed.  
-7. Later: tighten `document_versions` / ops-entered tables that still lack mandatory provenance.
+7. Later: tighten `document_versions` / ops staffing-eval mandatory source / `pricing_lines`+awards verified-fact triggers; filter reports to verified `research_facts` only.
 
 ## Rollback
 

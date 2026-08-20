@@ -5,7 +5,6 @@
     "bradlc.vscode-tailwindcss",
     "ms-python.python",
     "ms-python.vscode-pylance",
-    "usernamehw.errorlens",
-    "supabase.supabase"
+    "usernamehw.errorlens"
   ]
 }
