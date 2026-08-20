@@ -30,7 +30,7 @@ Historical files → staging → human verification → canonical Postgres. Four
 
 **Wrong:** “Phase 2 complete because RLS 48/48.” RLS = **Original Phase 1**, not Historical Pilot.
 
-**Next task:** Apply opportunity SQL + Vercel env, then **Historical Pilot** (20–30 real L&P packages). Do not expand Ask/Market/Reports. Do not debate architecture — blueprint is locked.
+**Next task:** Apply opportunity SQL + Vercel env. **Historical Pilot is public-first** — [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md). Do not wait for internal Drive. Do not promote news dollars. Do not expand Ask/Market/Reports.
 
 ---
 

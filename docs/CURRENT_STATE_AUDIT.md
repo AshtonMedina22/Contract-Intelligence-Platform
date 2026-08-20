@@ -40,7 +40,7 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 | **8 — Pricing intelligence** | Four-truth + planning cost model + comparables **panel** (not Glide) |
 | **9 — Proposal builder** | Pursuit **workspace tabs** + competitor brief template (not section drafting) |
 
-**Next correct product work:** apply opportunity migrations + Vercel env; then Canonical Phase 2 — 20–30 complete L&P packages through intake → parse → stage → verify. Ops workspace UI is **early and empty** without that corpus.
+**Next correct product work:** apply opportunity migrations + Vercel env; **ingest public L&P packages** ([HISTORICAL_PILOT.md](HISTORICAL_PILOT.md)) — do not wait for internal files. Ops workspace UI is empty until those packages are verified.
 
 ---
 
@@ -117,7 +117,7 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 | Capability | Required end state | Code | Data/schema | UX | Docs (pre-audit) | Canonical phase | Gap / conflict | Required action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Six engines** | Named engines in PRODUCT_SPEC | Partial routes per engine | Partial tables | Mixed real/placeholder | Missing as model | 1–9 | Docs did not name engines | **Done:** PRODUCT_SPEC + MASTER |
-| **Historical pilot** | 20–30 complete packages verified | Harness + routing fixtures | Staging ready | Intake + verify exist | Phase 6 = fixtures | **2** | **0 L&P packages** | Run pilot after green build |
+| **Historical pilot** | 20–30 complete packages verified | Harness + routing fixtures | Staging ready | Intake + verify exist | Phase 6 = fixtures | **2** | **0 scored;** public queue opened | Ingest Grade A/B public docs |
 | **Ingestion pipeline** | Upload → Storage → Workflow → stage | Implemented | Registry + staging | Intake, processing | Claimed done | 3 | Unproven on L&P | Validate in pilot |
 | **Four truths** | requested ≠ proposed ≠ awarded ≠ current | `promote_verified_fact` | `pricing_lines` 4 columns | Opportunity package view | Present | 3 | Future tables missing | Pilot proves mappings |
 | **Source precedence** | No silent overwrite; conflicts logged | RPC logic | `validation_exceptions` | Exceptions placeholder | SOURCE_PRECEDENCE.md | 3 | No addenda table | Add when pilot proves |

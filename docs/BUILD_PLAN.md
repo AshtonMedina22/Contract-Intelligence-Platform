@@ -23,7 +23,7 @@ Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [T
 
 **Canonical Phase 1 — Foundation:** mostly implemented. Local lint/typecheck/build pass. **Vercel production build green** after login Partial Prerender fix. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
-**Canonical Phase 2 — Historical Pilot:** **NOT STARTED.** Pilot kickoff: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
+**Canonical Phase 2 — Historical Pilot:** **0 scored.** Public-first queue: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md). Do not wait for internal Drive.
 
 **Next product work:** apply opportunity SQL on Supabase + confirm Vercel env; then run 20–30 complete L&P packages through intake → parse → stage → verify. Do **not** expand Intelligence UX (Ask/Market/Reports). An early **opportunity workspace** (tabs, planning cost model, Pass 3 staffing/eval/comparables/rebid) exists as ops UI — it is **unvalidated** until the pilot. Session log: [WORK_TRAIL.md](WORK_TRAIL.md).
 

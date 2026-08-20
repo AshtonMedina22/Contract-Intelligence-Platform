@@ -4,8 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-19 (session: docs-only MASTER_BLUEPRINT product lock) |
-| **Git HEAD on origin/main** | After this docs commit — run `git log -1` (feature Pass 3+4 = `547e16c`) |
+| **Last updated** | 2026-08-19 (session: public-records Historical Pilot queue) |
+| **Git HEAD on origin/main** | After this docs commit — run `git log -1` |
+| **Product truth gate** | Canonical Phase 2 — **0 scored**; public package queue opened (not ingested) |
 | **Local uncommitted** | **No** (product/docs in this commit; local agent/IronBee files stay untracked) |
 | **Product truth gate** | Canonical Phase 2 Historical Pilot — **0 / 20 L&P packages** |
 
@@ -31,7 +32,7 @@ Never claim:
 | --- | --- | --- |
 | **What L&P can actually use** | App shell, login, intake/verify **code**, empty corpus, early proposal **workspace UI** | Verified historical packages answering new RFPs with citations |
 | **Canonical Phase 1 Foundation** | Mostly built; local `npm run build` **PASS** (2026-08-19 after Pass 3) | Green **production** with real Supabase env + applied migrations |
-| **Canonical Phase 2 Pilot** | **NOT STARTED** | 20–30 complete L&P packages human-verified |
+| **Canonical Phase 2 Pilot** | **NOT STARTED as scored corpus.** Public queue: Terrell A, HHSC/TXMAS/GSA B, several ISD C | 20–30 packages **human-verified** |
 | **Ops coordinator workflow** | Tabbed workspace + packet completeness + planning margin rollup **local** | Same workflow **backed by verified facts** + live renewals |
 | **Intelligence (Ask/Market/Reports)** | KEEP + FREEZE surfaces; FTS only; 0 verified chunks in prod | Grounded Q&A + reports from HUMAN_VERIFIED evidence |
 | **Pricing intelligence (Phase 8)** | Four-truth table + planning cost model + comparables **panel** | Glide grid, wage/labor model, human final price with evidence |
@@ -103,8 +104,8 @@ From [PRODUCT_SPEC.md](PRODUCT_SPEC.md) — **verified evidence only**, never gu
    - `supabase/migrations/20260820310000_ops_p1_staffing_eval_rebid.sql`
    - `supabase/migrations/20260820320000_ops_p4_procurement_rail.sql`
 2. **Vercel env:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (and server secrets per DEVICE_SETUP). Production last checked: “No organization” / sign-in — not a working ops tenant.
-3. **Code is on GitHub `main`** after this push — still apply SQL and env before claiming live.
-4. **Human supplies real L&P packages** (Drive or files). Agents cannot invent the corpus.
+3. **Code is on GitHub `main`.**
+4. **Historical Pilot:** ingest **public** packages from [docs/pilot/PUBLIC_PACKAGE_QUEUE.md](pilot/PUBLIC_PACKAGE_QUEUE.md); add internal Drive files when available. Do not wait on internal files to start.
 
 ---
 
@@ -112,8 +113,8 @@ From [PRODUCT_SPEC.md](PRODUCT_SPEC.md) — **verified evidence only**, never gu
 
 1. Keep this trail + [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) current (this file).
 2. Apply migrations + confirm Vercel env (ops / human).
-3. **Canonical Phase 2 — Historical Pilot** on 5 then 20–30 complete L&P packages ([HISTORICAL_PILOT.md](HISTORICAL_PILOT.md)).
-4. Do **not** add LLM competitor reports or Ask synthesis until verified chunks exist (KEEP + FREEZE). Glide and section drafting wait on the same gate.
+3. **Historical Pilot — public first:** download P01 Terrell contract, then HHSC/TXMAS/GSA listings; hunt ISD packets. Do not ingest press dollars. See [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
+4. Do **not** add LLM competitor reports or Ask synthesis until verified chunks exist.
 
 Pass 3 ops UI was built **early** because L&P coordination needed a pursuit workspace. That does **not** complete Phase 8/9 and does **not** thaw KEEP + FREEZE Intelligence expansion (no new Ask/Market/Reports product features until corpus).
 
@@ -164,5 +165,6 @@ Verified 2026-08-19 from public sources (company site, Texas DPS TOPS, TxSmartBu
 | 2026-08-19 | Pass 4 packet + economics | Rail/kind/missing list/fulfillment math | Apply `320000` |
 | 2026-08-19 | Commit + push Pass 3+4 | `547e16c` on origin/main | Apply all three opportunity migrations; confirm env |
 | 2026-08-19 | Docs-only product lock | `MASTER_BLUEPRINT.md` is business authority; no app/schema change | Historical Pilot still not started |
+| 2026-08-19 | Public-first pilot queue | Terrell Grade A; HHSC/TXMAS/GSA Grade B; Lancaster/TxDMV PO not confirmed | Download P01; do not promote press $ |
 
 Older engineering history: `git log`. Capability freeze list: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).

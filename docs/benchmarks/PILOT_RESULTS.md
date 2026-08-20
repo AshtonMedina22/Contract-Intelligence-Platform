@@ -21,7 +21,7 @@ These scores are the locked fixture baseline. They do not replace a 20-30 packag
 
 ## Still missing before the routing table can claim a full L&P pilot
 
-- wins / losses as complete packages
+- still missing complete L&P packages **in the app** (public queue is documented, not ingested)
 - RFP / RFQ / IFB originals (L&P)
 - proposals + pricing workbooks from the same opportunity
 - scorecards

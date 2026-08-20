@@ -9,7 +9,7 @@ Historical procurement files become staged, source-backed facts. Humans verify t
 | Status | Detail |
 | --- | --- |
 | **Canonical Phase 1 — Foundation** | Mostly implemented. **Vercel production build green** after login fix. Tenant/env/SQL still required for live data. |
-| **Canonical Phase 2 — Historical Pilot** | **NOT STARTED** — 0 real L&P packages ingested and scored. |
+| **Canonical Phase 2 — Historical Pilot** | **0 scored.** Start from **public** L&P records ([docs/HISTORICAL_PILOT.md](docs/HISTORICAL_PILOT.md)); internal files later. |
 | **Later Intelligence UX** | Ask, Market, Reports, etc. exist early — **KEEP + FREEZE** pending corpus validation. |
 | **Ops workspace** | Opportunity tabs exist; **empty** until pilot. Living trail: [docs/WORK_TRAIL.md](docs/WORK_TRAIL.md). |
 

@@ -287,8 +287,8 @@ Original blueprint phases 1–8 map here via [PHASE_RECONCILIATION.md](PHASE_REC
 ### CURRENT POSITION
 
 - **Canonical Phase 1 — Foundation:** mostly built. Login Partial Prerender fix is on `main`. Local `npm run build` is green. Vercel production **build** has been green since that fix (`8d083a5` / `213f951` and later). Live **data** still needs Supabase env + applied migrations + a signed-in org.
-- **Canonical Phase 2 — Historical Pilot: NOT STARTED.**
-- **0 real complete L&P procurement packages validated.**
+- **Canonical Phase 2 — Historical Pilot: NOT STARTED as a scored corpus (0 verified packages).** Begin with **public** L&P records ([HISTORICAL_PILOT.md](HISTORICAL_PILOT.md)); supplement internal files later.
+- **0 real complete L&P procurement packages validated in-app.**
 - Later-phase UX/code exists early (Ask, Market, Reports, opportunity workspace tabs, planning cost model). **KEEP + FREEZE** Intelligence expansion until the pilot validates the corpus. Early ops UI does **not** complete Phases 8–9.
 
 Snapshot: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Trail: [WORK_TRAIL.md](WORK_TRAIL.md).
