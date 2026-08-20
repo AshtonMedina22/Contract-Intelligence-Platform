@@ -7,7 +7,8 @@ This file lives in git so it is available on any computer after clone/push. It s
 - Source merged: L&P Master Product Context — Final Updated 2026-08-19 (Downloads).
 - Earlier draft filenames LP SETUP DRAFT.md and LP_MASTER_PRODUCT_CONTEXT_FINAL_UPDATED_2026-08-19.md were not present in Downloads at merge time.
 - Locked architecture (Workflow, Storage-by-policy, Cron split, Excel/PDF, repo layout, pricing wording) is applied below. If an older paragraph still says Drive is the permanent vault or Queues are the lifecycle coordinator, the **Locked architecture** section wins.
-- Operational checklist: [BUILD_PLAN.md](BUILD_PLAN.md). Short stack: [TECH_STACK.md](TECH_STACK.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+- Operational detail: [BUILD_PLAN.md](BUILD_PLAN.md). Short stack: [TECH_STACK.md](TECH_STACK.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+- **Single authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Phase naming: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
 
 For implementation: read [PRODUCT_SPEC.md](PRODUCT_SPEC.md) and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before adding features. Canonical product phases 1–9 govern maturity; legacy engineering IDs 0–14 remain on migrations only.
 
@@ -1420,6 +1421,8 @@ Then it helps create the compliant proposal.
 The result of that opportunity becomes new verified intelligence for the next one.
 
 ## 29. Finished UX / UI, features, and functional outcome
+
+> **Navigation note (2026-08-19):** This section’s sitemap is a **reference layout**. The **six product engines** in [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) and [PRODUCT_SPEC.md](PRODUCT_SPEC.md) govern product architecture. Current app IA follows workflow groups (Ingestion → Procurement → Contracts → Intelligence → Proposals) — see [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Do not treat every nav item as a separate product “module.”
 
 This section defines what the mature L\&P platform should actually look like and what a user should be able to do inside it. The earlier sections define the architecture and business rules; this section consolidates the final user-facing product experience.
 

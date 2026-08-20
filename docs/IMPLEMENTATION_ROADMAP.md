@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Index of phases. **Execute using [BUILD_PLAN.md](BUILD_PLAN.md)** (tasks, files, acceptance, out of scope). Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+Index of phases. **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Execute tasks in [BUILD_PLAN.md](BUILD_PLAN.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
 Do not reorder phases to create impressive screens earlier. **Legacy engineering phase numbers on migrations and acceptance files are not product maturity.**
 
@@ -8,9 +8,9 @@ Do not reorder phases to create impressive screens earlier. **Legacy engineering
 
 ## Current product position
 
-**Foundation (canonical Phase 1):** mostly built — app, Auth/RLS, intake, processor, verification workbench, early schema. Lint fails locally; Vercel deploy not verified green.
+**Foundation (canonical Phase 1 / Original Phase 1):** mostly built — app, Auth/RLS, intake, processor, verification workbench, early schema. Build green locally; verify Vercel.
 
-**Historical Pilot (canonical Phase 2):** **NOT STARTED** — 0 real L&P packages scored.
+**Historical Pilot (canonical Phase 2 / Original Phase 2):** **NOT STARTED** — 0 real L&P packages scored.
 
 **Next incomplete product phase:** Historical Pilot. Do not treat legacy engineering phases 7–11 as product-complete.
 

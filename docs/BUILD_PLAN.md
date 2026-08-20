@@ -1,7 +1,23 @@
 # Build plan
 
 Operational checklist for the Contract Intelligence Platform.  
+**Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). **Phase 1 audit:** [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md).  
 Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+
+## Original blueprint phase map (product truth)
+
+| Original | Name | Repo status |
+| --- | --- | --- |
+| 1 | Foundation | Mostly complete — [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md) |
+| 2 | **Historical pilot** | **NOT STARTED** — [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md) |
+| 3 | Historical ingestion | NOT STARTED |
+| 4 | Contract/compliance | Early code; unvalidated |
+| 5 | Analytics dashboards | Early UX; FREEZE |
+| 6 | Search/AI | Early UX; FREEZE |
+| 7 | Pricing intelligence | Not started |
+| 8 | Proposal builder | Not started |
+
+**RLS 48/48 = Original Phase 1, NOT Phase 2.** See [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
 
 ## Current product position (canonical)
 
@@ -23,7 +39,7 @@ Use **canonical product phases** for product maturity. Keep **legacy engineering
 
 | Canonical product phase | Meaning | Legacy engineering IDs | Honest status |
 | --- | --- | --- | --- |
-| **1 — Foundation** | App shell, Auth/RLS, document registry/versions, staging/verification structure, Storage, Workflow skeleton, processor interfaces, verification workbench | 0–5 | Mostly built; production prerender not green |
+| **1 — Foundation** | App shell, Auth/RLS, document registry/versions, staging/verification structure, Storage, Workflow skeleton, processor interfaces, verification workbench | 0–5 | Mostly built; build green locally — verify Vercel |
 | **2 — Historical Pilot** | 20–30 complete L&P packages; routing lock from real evidence | 6 | **Not started** (0 packages) |
 | **3 — Historical ingestion / processing** | Production ingest loop validated on real files | 3–5 + 7 promotion | Code exists; unproven on L&P corpus |
 | **4 — Broader historical migration** | Controlled corpus batches | 8 | UI/RPC exists; no corpus |

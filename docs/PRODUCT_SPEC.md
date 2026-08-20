@@ -115,7 +115,7 @@ Explicitly distinct and never conflated by AI:
 
 ## New RFP workflow (finished product)
 
-NEW RFP → parse solicitation → extract requirements/pricing format → verify → research buyer → prior L&P history → win/loss/competitor analysis → bid strategy → compliance → pricing evidence → **human pricing decision** → retrieve approved content → grounded drafts → human edit → requirement coverage → approvals → final proposal → submit → capture outcome → update intelligence.
+NEW RFP → parse solicitation → extract requirements/pricing format → verify → research buyer → prior L&P history → win/loss/competitor analysis → **bid strategy** → compliance → pricing evidence → **human pricing decision** → retrieve approved content → grounded drafts → human edit → requirement coverage → approvals → final proposal → submit → capture outcome → update intelligence.
 
 When evidence is missing: **L&P INPUT REQUIRED** — no fabricated business claims.
 

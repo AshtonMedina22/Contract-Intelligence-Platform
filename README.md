@@ -8,7 +8,7 @@ Historical procurement files become staged, source-backed facts. Humans verify t
 
 | Status | Detail |
 | --- | --- |
-| **Canonical Phase 1 — Foundation** | Mostly implemented (app, RLS, intake, processor, verification workbench). **Not fully green:** lint fails; Vercel deploy not verified. |
+| **Canonical Phase 1 — Foundation** | Mostly implemented (app, RLS, intake, processor, verification workbench). Build green locally; verify Vercel after push. |
 | **Canonical Phase 2 — Historical Pilot** | **NOT STARTED** — 0 real L&P packages ingested and scored. |
 | **Later Intelligence UX** | Ask, Market, Reports, etc. exist early — **KEEP + FREEZE** pending corpus validation. |
 
@@ -27,6 +27,10 @@ SQL migrations through legacy Phase 11 exist in `supabase/migrations/` — that 
 
 | Doc | What it is |
 | --- | --- |
+| [docs/MASTER_BLUEPRINT.md](docs/MASTER_BLUEPRINT.md) | **Single authoritative product blueprint** |
+| [docs/PHASE_RECONCILIATION.md](docs/PHASE_RECONCILIATION.md) | Original vs legacy vs canonical phase names |
+| [docs/PHASE1_FOUNDATION_AUDIT.md](docs/PHASE1_FOUNDATION_AUDIT.md) | Original Phase 1 checklist |
+| [docs/HISTORICAL_PILOT.md](docs/HISTORICAL_PILOT.md) | Original Phase 2 — 20–30 packages |
 | [docs/PRODUCT_SPEC.md](docs/PRODUCT_SPEC.md) | Product definition + six engines |
 | [docs/CURRENT_STATE_AUDIT.md](docs/CURRENT_STATE_AUDIT.md) | What exists today vs gaps |
 | [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md) | Canonical phases + legacy engineering checklist |

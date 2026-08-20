@@ -1,14 +1,29 @@
 # Current state audit
 
 **Date:** 2026-08-19  
-**HEAD:** `02d8879` — *Ship the L&P intelligence shell and fix Tailwind v4 CSS that broke the build.*  
+**HEAD:** `213f951` — data model UI + nav IA + login fix (see git log)  
 **Purpose:** Canonical record of what exists today vs what the product must become. Read before implementing.
+
+**Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). **Phase 1 audit:** [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md).
 
 Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN.md](BUILD_PLAN.md).
 
 ---
 
-## Canonical product position
+## Phase status (original blueprint meanings)
+
+| Original phase | Name | Status |
+| --- | --- | --- |
+| **1** | Foundation | **Mostly complete** — [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md) |
+| **2** | Historical pilot (20–30 packages) | **NOT STARTED** — 0 L&P packages |
+| **3** | Historical ingestion (scale) | **NOT STARTED** |
+| **4–8** | Contracts → Analytics → Search → Pricing → Proposal | Partial code only; **unvalidated** |
+
+**Wrong:** “Phase 2 complete because RLS 48/48 passed.” RLS = Foundation (Original Phase 1), not Historical Pilot.
+
+---
+
+## Canonical product position (repo naming)
 
 | Canonical phase | Status |
 | --- | --- |
@@ -52,6 +67,7 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 
 ### Early / future-facing UX (KEEP + FREEZE)
 
+- `/system/data-model` — table map + RFQ data flow (transparency; not a product engine)
 - `/intelligence/ask`, `/intelligence/content` — verified FTS retrieval; not a chatbot
 - `/intelligence/market` — document/entity counts; not canonical market facts
 - `/intelligence/reports` — catalog cards; no PDF/export generator
@@ -112,7 +128,7 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 | **Past performance** | Corp ≠ mgmt ≠ key personnel ≠ sub | None | No table | N/A | MASTER §11 | 3+ | Safeguard docs-only | Add schema when needed |
 | **Contracts/compliance** | Portfolio + 180…expired alerts | Implemented | Phase 9 tables | Portfolio UI | Overclaimed complete | 5 | Unvalidated | Pilot verifies |
 | **CRM / client portal** | Must NOT exist | None | `clients` = buyer only | No portal | Correct intent | N/A | Naming "client" | Document buyer/agency |
-| **Build / deploy** | Green production build | Fails prerender | N/A | Login route | Claimed URL | 1 | `/auth/login` + Cache Components | Fix after docs (separate task) |
+| **Build / deploy** | Green production build | Login Suspense fix; nav + data model pushed | N/A | Deployed routes | Claimed URL | 1 | Verify Vercel after `213f951` | **Mostly fixed** |
 
 ---
 
