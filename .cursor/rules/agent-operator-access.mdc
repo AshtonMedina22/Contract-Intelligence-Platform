@@ -1,0 +1,37 @@
+---
+description: How agents sign into the L&P platform (operator credentials)
+alwaysApply: true
+---
+
+# Agent operator access
+
+There is one lasting operator for this product: **global admin** of the L&P org.
+
+## Credentials location (never commit)
+
+Read from `apps/web/.env.local` (gitignored):
+
+- `LP_OPERATOR_EMAIL`
+- `LP_OPERATOR_PASSWORD`
+- optional `LP_OPERATOR_ORG_NAME` (default `L&P Global Security`)
+
+Do **not** invent alternate test users for UI verification. Do **not** put the password in docs, chat summaries committed to git, or rules files.
+
+## Bootstrap / repair
+
+```bash
+node scripts/write-operator-env.mjs   # needs SET_EMAIL + SET_PASSWORD in the shell env
+node --env-file=apps/web/.env.local scripts/ensure-operator.mjs
+```
+
+`ensure-operator.mjs` creates or updates the user, sets `app_metadata.platform_role = global_admin`, confirms email, and ensures an **admin** membership on the org.
+
+## How agents log in
+
+1. **Local `npm run dev`:** middleware auto-signs in with `LP_OPERATOR_*` when unset session (dev only). Open any app URL — you should land authenticated.
+2. **Prod / manual UI:** sign in with `LP_OPERATOR_EMAIL` / `LP_OPERATOR_PASSWORD` from `.env.local`.
+3. **Scripts / API:** `node --env-file=apps/web/.env.local …` and use the same credentials (or service role for admin ops).
+
+## Pilot / ingest
+
+`scripts/phase2-pilot-run.mjs` uses the lasting operator org when `LP_OPERATOR_*` is set and **does not delete** that org. Ephemeral pilot users only apply when operator env is missing.

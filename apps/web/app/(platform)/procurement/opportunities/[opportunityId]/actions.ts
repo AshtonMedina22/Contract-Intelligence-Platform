@@ -654,19 +654,26 @@ export async function createContractFromWin(opportunityId: string, formData: For
     );
   }
 
-  const { data: verifiedFact } = await supabase
+  const { data: verifiedFacts } = await supabase
     .from("extracted_facts")
-    .select("id, document_id")
+    .select("id, document_id, field, entity")
     .eq("organization_id", organizationId)
     .eq("verification_status", "HUMAN_VERIFIED")
     .in("document_id", docIds)
     .order("verified_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(40);
+
+  const awardish = (verifiedFacts ?? []).filter((f) => {
+    const blob = `${f.field ?? ""} ${f.entity ?? ""}`.toLowerCase();
+    return /award|contract|po\b|purchase.?order|nte|not.?to.?exceed|instrument|agreement|vehicle|txmas|mas/.test(
+      blob,
+    );
+  });
+  const verifiedFact = awardish[0] ?? null;
 
   if (!verifiedFact?.id) {
     throw new Error(
-      "Cannot create a contract without a HUMAN_VERIFIED fact on this pursuit. Verify an award/contract fact first.",
+      "Cannot create a contract without a HUMAN_VERIFIED award/contract-shaped fact on this pursuit. Verify an award, PO, NTE, or contract instrument fact first.",
     );
   }
 

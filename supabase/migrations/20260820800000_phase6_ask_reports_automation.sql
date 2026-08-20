@@ -1,17 +1,22 @@
 -- Canonical Phase 6 — purpose-aware retrieval + bounded automation events.
 -- Evidence: MASTER_BLUEPRINT Ask/Reports/Automation; Prompt 6.
 
-create type public.retrieval_purpose as enum (
-  'GENERAL_QA',
-  'LOCATE',
-  'LOSS_ANALYSIS',
-  'COMPETITOR_ANALYSIS',
-  'PRICING_ANALYSIS',
-  'BID_STRATEGY',
-  'PROPOSAL_DRAFTING',
-  'COMPLIANCE_REVIEW',
-  'REPORT_GENERATION'
-);
+do $$
+begin
+  create type public.retrieval_purpose as enum (
+    'GENERAL_QA',
+    'LOCATE',
+    'LOSS_ANALYSIS',
+    'COMPETITOR_ANALYSIS',
+    'PRICING_ANALYSIS',
+    'BID_STRATEGY',
+    'PROPOSAL_DRAFTING',
+    'COMPLIANCE_REVIEW',
+    'REPORT_GENERATION'
+  );
+exception
+  when duplicate_object then null;
+end $$;
 
 comment on type public.retrieval_purpose is
   'Retrieval purpose gates reuse/version filters. PROPOSAL_DRAFTING never includes DO_NOT_USE.';

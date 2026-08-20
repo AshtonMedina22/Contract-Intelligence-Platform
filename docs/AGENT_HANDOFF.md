@@ -7,7 +7,9 @@
 **Canonical pack:** [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md)  
 **Do not redesign the architecture.**
 
-Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Ask the human for `apps/web/.env.local` values. Never commit `.env.local`.
+Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Never commit `.env.local`.
+
+**Operator login for agents:** `LP_OPERATOR_EMAIL` / `LP_OPERATOR_PASSWORD` in `apps/web/.env.local`. Run `node --env-file=apps/web/.env.local scripts/ensure-operator.mjs` if auth/org is broken. Local `npm run dev` auto-signs in with those vars. Do not create throwaway UI users.
 
 **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Long-form domains/tables/Python:** [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Phases: [BUILD_PLAN.md](BUILD_PLAN.md). UX: [UX_UI.md](UX_UI.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 

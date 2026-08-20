@@ -21,6 +21,10 @@ __pycache__
 next-env.d.ts
 apps/web/app/.well-known
 
+# Pilot binary acquisitions (large public PDFs — keep README only)
+docs/pilot/acquired/**
+!docs/pilot/acquired/README.md
+
 # IronBee runtime artifacts
 .ironbee/sessions/
 .ironbee/otel/

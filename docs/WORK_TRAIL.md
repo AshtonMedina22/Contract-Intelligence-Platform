@@ -4,8 +4,8 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (reconciled with [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md)) |
-| **Git HEAD on origin/main** | run `git log -1` (was `f1f16ea` at audit) |
+| **Last updated** | 2026-08-20 (P0/P1 execution: live migrations + Vercel env fix + RLS proof) |
+| **Git HEAD on origin/main** | local uncommitted P0/P1 work on top of `aae9ff1` — commit when asked |
 | **Product truth gate** | VERIFY9 = engineering/trust harness READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 product exit. Corpus ~7 A/B; exit ~20–30 unmet. |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
@@ -49,10 +49,22 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 ## Next ordered work
 
-1. Restore Downloads USABLE PDFs → re-run pilot into L&P org (closes corpus limitation).  
-2. `vercel login` + confirm production processor.  
-3. Set `ASK_MODEL` / AI Gateway.  
-4. Push VERIFY9 fix-pass when asked.  
+**P0 — Production truth**  
+1. ~~Apply pending migrations on live~~ **DONE** through `20260821120000` (includes `20260821090000` trust triggers).  
+2. ~~Confirm Vercel Supabase env~~ **DONE** — keys existed but were **empty**; filled from local + redeployed. Prod shows sign-in (not “env not configured”). Still missing: `PROCESSOR_*`, `ASK_MODEL`.  
+3. ~~Prove two-user RLS~~ **DONE** — `npm run test:phase2-rls` **51/51 PASS** on live.  
+4. **Grow pilot corpus** toward ~20–30. **This machine A/B re-run (2026-08-20):** processor up; `PILOT_CLASSES=A,B` → **7 available A/B ingested + harness-stamped** into lasting org `f9f6632f-…` (Williamson, Allen×2, TxDMV, Arlington×2, Lottery). **Not operator eyeball-verify** — `phase2-pilot-run.mjs` stamped `HUMAN_VERIFIED` / promoted without the Verification workbench. Real human verify = Data Ops → Verification (PDF/xlsx + page/excerpt) then promote. SRC-08 Jefferson still missing. Still grow toward ~20–30 packages.  
+
+**P1 — Trust parity**  
+5–8. ~~append-only `document_versions`; awards/requirements sourced; pricing awarded/current gated; ops labeled planning-only; reports verified-only; `createContractFromWin` award-shaped~~ **DONE** (live migration + app changes on latest prod deploy).  
+
+**P2 — Operator capability (when needed)**  
+9. Set `ASK_MODEL` / AI Gateway on Vercel.  
+10. Hosted/reachable processor (`PROCESSOR_URL` + secret).  
+11. OCR / Drive tokens only when those paths are in use.  
+
+**P3 — Hygiene**  
+12. Keep foundation audit honest; no CRM / no free-form chatbot expansion.  
 
 ---
 
@@ -60,6 +72,12 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-20 | Lasting operator + agent login | `LP_OPERATOR_*` in `.env.local`; ensure-operator → global_admin; local auto-login verified; pilot keeps operator org `f9f6632f-…` (no delete) | Agents use LP_OPERATOR; grow corpus |
+| 2026-08-20 | Honesty: harness ≠ human VERIFY | Prior “HUMAN_VERIFIED / pipeline-complete” language overstated — script stamped status; workbench (source PDF + page/excerpt) is the real human gate | Reset stamp / walk real Verification UI if operator wants |
+| 2026-08-20 | Processor + A/B ingest→verify→promote | Local processor healthy; 7 A/B **harness**-stamped/promoted (not workbench-eyeballed); rates e.g. Williamson $31.45 proposed, Allen $32.28 awarded | Real human VERIFY in UI; grow packages; ASK_MODEL later |
+| 2026-08-20 | Re-acquire public pilot PDFs on this PC | Manifest checksum MATCH for SRC-01/02/03/04/06/07/09/13; Tarrant extras; Arlington via browser (CDN 403 to curl) | Ingest A/B; keep hunting Jefferson/Dallas/TFC/Harris/VA |
+| 2026-08-20 | Execute P0→P1 | Live migrations through trust+append-only; RLS 51/51; Vercel empty env filled + redeploy; prod sign-in OK | Grow corpus; commit when asked; processor/ASK_MODEL later |
+| 2026-08-20 | Re-audit main vs original goal (no new remote commits past `aae9ff1`) | Architecture still locked; corpus/ops/trust residual gaps unchanged; Vercel CLI linked on this machine | Execute P0→P1 ordered work |
 | 2026-08-20 | Schema/RLS audit follow-up | Trust migration + gate `createContractFromWin`; docs updated | Apply migration on live Supabase |
 | 2026-08-19 | Pass 3+4 ops UI | `547e16c` | Migrations |
 | 2026-08-19–20 | Pack sync + pack (1) accuracy | Phases 1–8; multi-tenant-ready | — |

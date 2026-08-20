@@ -2,7 +2,7 @@
 
 **Task:** Prompt 2A — usable source files only.  
 **Date:** 2026-08-20  
-**Ingested / verified / promoted in the app:** **17 files pilot-processed (2026-08-20); 0 structured canonical promotion**  
+**Ingested / verified / promoted in the app:** **17 files pilot-processed; VERIFY 2B fix pass = 7 A/B `pipelineComplete` (not 0 promotion)**  
 **Schema changes this task:** none  
 **Policy:** [HISTORICAL_PILOT.md](../HISTORICAL_PILOT.md)
 

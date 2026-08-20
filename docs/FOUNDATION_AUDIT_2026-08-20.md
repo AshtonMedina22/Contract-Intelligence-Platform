@@ -3,8 +3,8 @@
 **Auditor machine:** Cursor session that owned original Phase 0–2 foundation.  
 **Baseline branch (do not delete):** `cursor-phase2-foundation` @ `8d2d031`  
 **Remote tag:** `phase-2-baseline` @ `7e02e9a` (RLS freeze)  
-**Audited HEAD:** `f1f16ea` on `main`  
-**Detailed explores:** [Audit agent phase claims](e3dff353-d9dc-42b5-971c-03b711346f38), [Audit schema and RLS](d6557ffe-135e-45d5-a44e-7ef80b436030)
+**Audited HEAD:** `aae9ff1` on `main` (re-checked 2026-08-20 — **no newer commits on origin/main**)  
+**Detailed explores:** [Audit agent phase claims](e3dff353-d9dc-42b5-971c-03b711346f38), [Audit schema and RLS](d6557ffe-135e-45d5-a44e-7ef80b436030), [Re-audit residual gaps](8b42757f-172d-4842-b8a0-24b3aa413a37)
 
 ## Why this file exists
 
@@ -73,13 +73,13 @@ Legacy migration filenames (`phase9_contracts`, `phase11_hybrid_rag`) are **engi
 
 ## Next work (ordered)
 
-1. Keep this file + [WORK_TRAIL.md](WORK_TRAIL.md) aligned when status changes.  
-2. Confirm Vercel env + apply any pending migrations on `lhmurblikkcomdxcrymx`.  
-3. Grow real public L&P packages through intake → verify → promote toward ~20–30.  
-4. Only then treat Intelligence / Ask / Pricing / Response as validated product.  
-5. Do not expand “complete” claims, invent metrics, or weaken `HUMAN_VERIFIED` gates.  
-6. Apply `20260821090000_trust_require_verified_canonical_sources.sql` on the live project if not already pushed.  
-7. Later: tighten `document_versions` / ops staffing-eval mandatory source / `pricing_lines`+awards verified-fact triggers; filter reports to verified `research_facts` only.
+See [WORK_TRAIL.md](WORK_TRAIL.md). As of 2026-08-20 P0/P1 execution:
+
+1. **Live DB:** migrations through `20260821120000` applied (trust triggers + append-only versions + sourced awards/requirements + pricing awarded/current gates).  
+2. **Vercel:** Supabase env keys were empty placeholders — filled from local + redeployed; prod asks for sign-in. Still no processor/`ASK_MODEL`.  
+3. **RLS:** two-user suite **51/51 PASS** on live.  
+4. **Corpus:** still ~7 A/B vs ~20–30 — next product bottleneck.  
+5. Do not expand “complete” claims or weaken `HUMAN_VERIFIED` gates.
 
 ## Rollback
 

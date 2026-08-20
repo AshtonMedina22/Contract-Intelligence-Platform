@@ -115,7 +115,7 @@ export async function generateIntelligenceReport(
       .select("id, labor_category, proposed_rate, awarded_rate, current_rate, opportunity_id")
       .limit(50),
     supabase.from("contract_alerts").select("id, bucket, days_until, verified_end_on").limit(50),
-    supabase.from("research_facts").select("id, title, source_url, verification_status").limit(50),
+    supabase.from("research_facts").select("id, title, source_url, verification_status").eq("verification_status", "HUMAN_VERIFIED").limit(50),
     supabase.from("evaluation_scores").select("id, respondent_name, points, max_points, rank, notes").limit(50),
     supabase
       .from("automation_events")

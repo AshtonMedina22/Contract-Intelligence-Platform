@@ -1,7 +1,19 @@
 -- Canonical Phase 5 - Intelligence honesty: reuse enum label + win/loss lessons.
 -- Evidence: MASTER_BLUEPRINT reuse states; Prompt 5 Win/Loss lessons field.
 
-alter type public.reuse_status rename value 'REVIEW' to 'REVIEW_REQUIRED';
+-- Idempotent: some environments already have REVIEW_REQUIRED (never had REVIEW).
+do $$
+begin
+  if exists (
+    select 1
+    from pg_enum e
+    join pg_type t on t.oid = e.enumtypid
+    where t.typname = 'reuse_status'
+      and e.enumlabel = 'REVIEW'
+  ) then
+    alter type public.reuse_status rename value 'REVIEW' to 'REVIEW_REQUIRED';
+  end if;
+end $$;
 
 alter table public.win_loss_reviews
   add column if not exists lessons_learned text;

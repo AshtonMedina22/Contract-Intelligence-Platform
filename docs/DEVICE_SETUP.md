@@ -29,9 +29,24 @@ cd Contract-Intelligence-Platform
 git checkout main && git pull
 npm install
 cp apps/web/.env.example apps/web/.env.local
-# paste real values
+# paste real Supabase/Vercel values
+# set LP_OPERATOR_EMAIL + LP_OPERATOR_PASSWORD (lasting global admin for agents + you)
+node --env-file=apps/web/.env.local scripts/ensure-operator.mjs
 npm run dev
 ```
+
+Local middleware auto-signs in with `LP_OPERATOR_*` in development. Agents must use that account — not ephemeral pilot users.
+
+**Cross-device secrets (not in git):** after `vercel link`, pull env into the web app:
+
+```bash
+cd apps/web
+npx vercel env pull .env.local --yes --environment=development
+# or: production — includes Supabase + LP_OPERATOR_* when synced from this machine
+node --env-file=.env.local ../../scripts/ensure-operator.mjs
+```
+
+From repo root you can re-push local secrets to Vercel with `python scripts/sync-vercel-env-from-local.py` (never prints values).
 
 Checks: `npm run typecheck`, `npm run lint`, `npm run build`. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) for last recorded results.
 
