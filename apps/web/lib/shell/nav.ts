@@ -40,6 +40,7 @@ const PAGE_TITLES: { prefix: string; label: string }[] = [
   { prefix: "/intelligence/analytics", label: "Reports" },
   { prefix: "/intelligence", label: "Intelligence" },
   { prefix: "/proposals", label: "Workspaces" },
+  { prefix: "/system/data-model", label: "Data model" },
   { prefix: "/system/data-quality", label: "Data quality" },
   { prefix: "/system/settings", label: "Settings" },
 ];

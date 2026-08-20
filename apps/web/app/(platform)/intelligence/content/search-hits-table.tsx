@@ -30,12 +30,16 @@ const features = tableFeatures({});
 const helper = createColumnHelper<typeof features, SearchHitRow>();
 const columns = helper.columns([
   helper.accessor("field", {
-    header: "Field",
+    header: "field",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("content", {
-    header: "Verified text",
+    header: "document_chunks.content",
     cell: (ctx) => <span className="line-clamp-3 whitespace-pre-wrap">{ctx.getValue()}</span>,
+  }),
+  helper.accessor("chunk_id", {
+    header: "document_chunks.id",
+    cell: (ctx) => <span className="font-mono text-xs">{ctx.getValue().slice(0, 8)}…</span>,
   }),
   helper.accessor("storage_path", {
     header: "Storage original",
@@ -51,11 +55,18 @@ const columns = helper.columns([
     header: "Match",
     cell: (ctx) => <Badge variant="outline">{ctx.getValue()}</Badge>,
   }),
+  helper.accessor("source_fact_id", {
+    header: "source_fact_id",
+    cell: (ctx) => {
+      const v = ctx.getValue();
+      return v ? <span className="font-mono text-xs">{String(v).slice(0, 8)}…</span> : "—";
+    },
+  }),
   helper.accessor("document_id", {
-    header: "Source",
+    header: "documents.id",
     cell: (ctx) => (
       <Link className="underline" href={`/ingestion/verification/${ctx.getValue()}`}>
-        Open document
+        Verify doc
       </Link>
     ),
   }),

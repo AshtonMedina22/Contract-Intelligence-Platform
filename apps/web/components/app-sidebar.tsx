@@ -6,6 +6,7 @@ import { useEffect, useState, type ComponentType } from "react";
 import {
   Briefcase,
   ChevronDown,
+  Database,
   FolderOpen,
   LayoutDashboard,
   LineChart,
@@ -243,6 +244,19 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              size="sm"
+              isActive={pathname.startsWith("/system/data-model")}
+              tooltip="Table map and RFQ data flow"
+            >
+              <Link href="/system/data-model">
+                <Database />
+                <span>Data model</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IntelligenceNav } from "@/components/section-tabs";
+import { DataRegistryCallout } from "@/components/data-registry-callout";
+import { registryEntry } from "@/lib/data-model/registry";
 import { SearchHitsTable, type SearchHitRow } from "../content/search-hits-table";
 
 const EXAMPLE_QUERIES = [
@@ -60,10 +62,14 @@ async function AskIntelligence({
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Ask Intelligence</h1>
         <p className="text-sm text-muted-foreground">
-          Query verified historical records only. Answers are retrieved passages with citations — not a generic
-          chatbot and not invented rates, win rates, or summaries.
+          Reads <code className="text-xs">document_chunks</code> via{" "}
+          <code className="text-xs">search_verified_knowledge</code> — only HUMAN_VERIFIED facts promoted from{" "}
+          <code className="text-xs">extracted_facts</code>.
         </p>
       </div>
+      {registryEntry("document_chunks") ? (
+        <DataRegistryCallout entry={registryEntry("document_chunks")!} />
+      ) : null}
 
       <form className="flex max-w-2xl flex-wrap items-end gap-3" method="get">
         <div className="min-w-72 flex-1 space-y-1">

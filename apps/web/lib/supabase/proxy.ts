@@ -66,7 +66,7 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  if (isDev && user && onAuthPage && !request.nextUrl.pathname.startsWith("/auth/error")) {
+  if (user && onAuthPage && !request.nextUrl.pathname.startsWith("/auth/error")) {
     const url = request.nextUrl.clone();
     url.pathname = "/overview";
     url.search = "";

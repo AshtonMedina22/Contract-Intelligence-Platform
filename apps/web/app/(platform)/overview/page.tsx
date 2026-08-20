@@ -2,9 +2,21 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { hasEnvVars } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 async function HomeContent() {
+  if (!hasEnvVars) {
+    return (
+      <div className="max-w-xl space-y-2">
+        <h1 className="text-lg font-semibold tracking-tight">Home</h1>
+        <p className="text-sm text-muted-foreground">
+          Supabase environment variables are not configured on this deployment.
+        </p>
+      </div>
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -191,6 +203,22 @@ async function HomeContent() {
             <Link href="/intelligence/reports">Reports catalog</Link>
           </Button>
         </div>
+      </section>
+
+      <section className="space-y-3 border p-4">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            How data becomes RFQ output
+          </p>
+          <h2 className="text-base font-semibold">Table map & lineage</h2>
+          <p className="text-sm text-muted-foreground">
+            See which Postgres tables store what, which columns matter, and how verified rows feed Ask Intelligence
+            and the opportunity package when you prepare a new RFQ.
+          </p>
+        </div>
+        <Button asChild size="sm" variant="outline">
+          <Link href="/system/data-model">Open data model</Link>
+        </Button>
       </section>
 
       <section className="space-y-2">
