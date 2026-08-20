@@ -1,9 +1,10 @@
 # Current state audit
 
 **Date:** 2026-08-19  
-**HEAD (origin/main):** `547e16c` — Pass 3+4 (staffing, packet, economics)  
-**Local product tree:** committed with this push  
-**Living trail (session-by-session):** [WORK_TRAIL.md](WORK_TRAIL.md) — **update that file every session**  
+**HEAD (origin/main):** `ded2bee` (trail SHA stamp; feature Pass 3+4 is `547e16c`)  
+**Vercel production build:** **green** on `main` after the login Partial Prerender fix (`8d083a5`); later commits including `213f951` and Pass 3+4 also targeted a successful web build. Live **tenant data** still requires env + applied SQL + sign-in.  
+**Local product tree:** on origin  
+**Living trail:** [WORK_TRAIL.md](WORK_TRAIL.md)  
 **Purpose:** Canonical record of what exists today vs what the product must become. Read before implementing.
 
 **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). **Phase 1 audit:** [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md).
@@ -29,13 +30,13 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 
 | Canonical phase | Status |
 | --- | --- |
-| **1 — Foundation** | Mostly implemented; local **build PASS** (2026-08-19); Vercel needs env + applied migrations |
+| **1 — Foundation** | Mostly implemented; **Vercel production build green** after login fix; local build PASS |
 | **2 — Historical Pilot** | **NOT STARTED** — 0 real L&P packages scored |
 | **3 — Ingestion / processing** | Code exists; unproven on L&P |
 | **4 — Broader migration** | RPC/UI exists; no corpus |
 | **5 — Contracts / compliance** | Schema/UI early; unvalidated; rebid clone on main (needs corpus) |
 | **6 — Market / buyer / competitor** | Thin UX; **KEEP + FREEZE** (empty-corpus banners only) |
-| **7 — Search / Ask Intelligence** | FTS + Ask; optional `p_opportunity_id` **local**; **KEEP + FREEZE** |
+| **7 — Search / Ask Intelligence** | FTS + Ask + optional `p_opportunity_id`; **KEEP + FREEZE**; corpus empty |
 | **8 — Pricing intelligence** | Four-truth + planning cost model + comparables **panel** (not Glide) |
 | **9 — Proposal builder** | Pursuit **workspace tabs** + competitor brief template (not section drafting) |
 
@@ -191,7 +192,7 @@ Recorded 2026-08-19 after foundation fixes:
 | `npm run lint` | **PASS** |
 | `npm run typecheck` | **PASS** |
 | `npm run build` | **PASS** locally — `/auth/login` uses Suspense around cookie read (Partial Prerender) |
-| Vercel production | App **loads**; last check: sign-in / “No organization”. Pass 3+4 code on `main` after this push — apply SQL before workspace tabs work against live DB. |
+| Vercel production | **Build green** on `main` after login Suspense/`8d083a5`. Last functional check: sign-in / “No organization” without env. Apply opportunity SQL before Pass 3+4 tables exist in hosted DB. |
 
 ---
 

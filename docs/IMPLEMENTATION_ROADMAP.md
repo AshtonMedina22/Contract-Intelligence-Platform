@@ -8,7 +8,7 @@ Do not reorder phases to create impressive screens earlier. **Legacy engineering
 
 ## Current product position
 
-**Foundation (canonical Phase 1 / Original Phase 1):** mostly built — app, Auth/RLS, intake, processor, verification workbench, early schema. Build green locally; verify Vercel.
+**Foundation (canonical Phase 1 / Original Phase 1):** mostly built. Local lint/typecheck/build green. **Vercel production build green** after login Partial Prerender fix (`8d083a5` / `213f951`+). Env + migrations still required for a working tenant.
 
 **Historical Pilot (canonical Phase 2 / Original Phase 2):** **NOT STARTED** — 0 real L&P packages scored.
 

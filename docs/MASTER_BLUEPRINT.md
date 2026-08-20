@@ -1,231 +1,310 @@
-# Master blueprint — L&P Proposal & Contract Intelligence Platform
+# Master blueprint — L&P Proposal, Contract & Procurement Intelligence
 
-**Single authoritative product blueprint.** Supersedes earlier overlapping drafts.  
-Operational detail: [BUILD_PLAN.md](BUILD_PLAN.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Phase naming: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
+**This is the authoritative BUSINESS PRODUCT blueprint.** It does not redefine the locked tech stack.
 
----
-
-## 1. What you are building
-
-One internal application for the full lifecycle:
-
-**Opportunity → RFP/RFQ → Requirements → Research → Pricing → Proposal → Submission → Win/Loss → Contract → Renewal**
-
-Uses L&P historical data to make future bids better.
-
-It must answer (from verified evidence only):
-
-- What is this customer asking for?
-- Have we bid them before? Did we win or lose? Why?
-- What did we charge? What did competitors charge/win at?
-- What proposal sections performed well? What should not be reused?
-- What certifications/contracts are expiring?
-- What pricing range is supported by evidence?
-- Where did every recommendation come from?
-
-**Not:** CRM, document dump, spreadsheet replacement, generic RFP tracker, chatbot, autonomous proposal writer, invented pricing.
-
----
-
-## 2. Technology (five pieces)
-
-| Technology | Job |
+| Concern | Document |
 | --- | --- |
-| **Google Drive** | Original PDFs, RFPs, proposals, contracts, awards, certifications — import source + human workspace |
-| **Python** | Bulk reads/processes thousands of historical documents |
-| **Parsers + AI** | Extract text, tables, requirements, pricing, metadata → **staging only** |
-| **Supabase / PostgreSQL** | Authoritative structured database + search/vector intelligence |
-| **Next.js on Vercel** | Interface L&P users work in |
+| **Business / product truth** | **This file** |
+| Technical architecture | [TECH_STACK.md](TECH_STACK.md) |
+| Current reality vs required | [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) |
+| Living session trail | [WORK_TRAIL.md](WORK_TRAIL.md) |
+| Execution order | [BUILD_PLAN.md](BUILD_PLAN.md) |
+| Phase naming | [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md) |
+| Long-form merged spec | [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md) |
+
+Do not treat a route, table, or early Intelligence screen as phase completion.
+
+---
+
+## 1. Product purpose
+
+One **internal** Proposal, Contract & Procurement Intelligence Platform. It uses **L&P historical procurement data** to improve **future bids**.
+
+### Full lifecycle
 
 ```text
-Google Drive (import / workspace)
-        ↓
-Python document-processing pipeline
-        ↓
-OCR / parsing / AI extraction
-        ↓
-Staging + validation
-        ↓
-Human verification
-        ↓
-Supabase / PostgreSQL (canonical)
-        ↓
-Custom Next.js application
+Historical Procurement Records
+→ Opportunity
+→ RFP / RFQ / IFB / quote / task order
+→ Requirements
+→ Research
+→ Pricing
+→ Proposal
+→ Submission
+→ Win/Loss
+→ Contract
+→ Amendments
+→ Options / Renewal / Rebid
+→ result feeds future intelligence
 ```
 
-**Google Sheets** — export, bulk QA, analysis later. **Not** a second independently editable source of truth.
+### This is NOT
 
-### Approved architecture deviation (documented)
+- CRM
+- client portal / customer self-service
+- generic document repository
+- simple RFP tracker
+- generic chatbot
+- autonomous pricing engine
+- autonomous proposal writer
 
-Original text emphasized Drive as the document store. **Locked implementation:** Supabase Storage is the **immutable-by-policy evidence vault**; Drive retains `source_drive_file_id` + checksum; Drive files are not deleted on import. See [TECH_STACK.md](TECH_STACK.md) and [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md).
+`clients` = buyer / agency procurement intelligence, never a sales account.
 
-**Additional locked upgrade:** Vercel Workflow orchestrates document lifecycle (not in original one-pager). Queues = optional fan-out only.
+---
+
+## 2. Central product loop
+
+```text
+Historical documents
+→ extraction (staging only)
+→ reconciliation / validation
+→ human verification
+→ canonical intelligence
+→ new-bid intelligence
+→ outcome capture
+→ historical intelligence grows
+```
+
+AI never auto-promotes extraction to canonical truth.
 
 ---
 
 ## 3. Six product engines
 
-Navigation and roadmap must preserve these **functional engines**, not “one nav item per table.”
+Navigation must map **to** these engines. Ingestion is the feed, not a seventh product module.
 
-| # | Engine | Think |
-| --- | --- | --- |
-| 1 | **Opportunity / Solicitation** | What are we trying to win? RFPs, RFQs, IFBs, deadlines, values, services, go/no-go, assignments, source documents |
-| 2 | **Contract & Compliance** | What have we won, what is it worth, what needs action before expiry? |
-| 3 | **Pricing Intelligence** | What pricing does **evidence** support? (Not a generic calculator.) |
-| 4 | **Client / Competitor Intelligence** | Who are we bidding to/against; what does history say? **First-class module.** |
-| 5 | **Proposal Intelligence** | What verified content supports the response? Section-level reuse controls. |
-| 6 | **Executive Analytics** | Pipeline, wins, contracts, compliance risk, pricing/competition — **verified data only** |
+### A. Opportunity / Solicitation
 
-All engines sit on top of:
+**Purpose:** Run the current pursuit: what the buyer asked, when it is due, whether L&P will bid, and what packet is required.
 
-```text
-VERIFIED HISTORICAL PROCUREMENT DATABASE
-(staging → human verify → canonical promotion)
-```
+**Capabilities:** RFP/RFQ/IFB/quote/task order/rebid; deadlines; submission method; estimated value when evidenced; services; staffing; evaluation criteria; go/no-go; assignments; source documents; missing-packet list.
+
+**Historical intelligence:** prior packages with this buyer, similar service, and outcome.
+
+### B. Contract & Compliance
+
+**Purpose:** What L&P won, what it is worth now, and what expires.
+
+**Capabilities:** executed terms, amendments, options, renewals, rebids, certifications, insurance, SAM/GSA/TXMAS, 180→expired alerts.
+
+**Historical intelligence:** prior POP, amendments, and rebid lineage.
+
+### C. Pricing Intelligence
+
+**Purpose:** What pricing **evidence** supports. Not a calculator that invents a bid.
+
+**Capabilities:** customer-required format; internal cost model; submitted vs awarded vs current; comparables with include/exclude; ranges; Glide workbench (canonical Phase 8). **Final price = human.**
+
+**Historical intelligence:** verified four-truth lines, wage/cost facts, competitor awards.
+
+### D. Buyer / Market / Competitor Intelligence
+
+**Purpose:** Who we bid to and against, with sources. No unsupported causation.
+
+**Capabilities:** buyer history, incumbents, bid tabs, budgets, board/council records, competitor bids/scores/rank/geo/service, market patterns, upcoming rebids.
+
+**Historical intelligence:** only HUMAN_VERIFIED promotion and sourced research facts.
+
+### E. Proposal Intelligence
+
+**Purpose:** Section-level reuse of verified content. RAG is infrastructure, not this engine.
+
+**Capabilities:** taxonomy (Staffing, Transition, Training, Recruiting, Management, Technology, QC, Emergency Response, Past Performance, …); source page; outcome; evaluator score; verification; reuse state; approvals; grounded drafting; Google Docs handoff (canonical Phase 9).
+
+**Historical intelligence:** approved vs `DO_NOT_USE` vs superseded sections.
+
+### F. Executive / Business Intelligence
+
+**Purpose:** Pipeline, contracts, compliance risk, win/loss, pricing/competition — **verified data only**. Never fake KPIs.
+
+**Historical intelligence:** same canonical store; empty corpus ⇒ empty dashboards.
 
 ---
 
-## 4. Pricing intelligence (non-negotiable separation)
+## 4. Four commercial truths
 
-Every solicitation can require a **different pricing structure**. Capture separately:
-
-1. **Client-requested format** — hourly, labor schedule, base+fringe+OH+profit, per site/shift, monthly/annual, base+options, OT, equipment, NTE, etc.
-2. **L&P internal cost** — labor, fringe, burden, WC, insurance, supervision, equipment, vehicle, overhead, wage determination, target margin
-3. **L&P submitted price**
-4. **Customer awarded / current contract price**
-
-```text
-CLIENT REQUESTED FORMAT  ≠  L&P INTERNAL COST  ≠  L&P SUBMITTED  ≠  AWARDED/CURRENT
-```
-
-**Recommendations:** evidence-based review range only — never “AI recommends $38/hr.” Show included/excluded comparables. **Final price = human decision.**
-
----
-
-## 5. Four commercial truths (historical + live)
-
-For every opportunity, store four separate realities:
+Never collapse or overwrite:
 
 | Truth | Typical sources |
 | --- | --- |
-| Customer requested | RFP, RFQ, addenda, Q&A |
-| L&P proposed | Final submitted proposal, pricing sheet |
-| Customer awarded | Award notice, PO, executed contract |
-| Current contract | Amendments, modifications, renewals, options |
+| **CUSTOMER REQUESTED** | RFP, RFQ, addenda, Q&A |
+| **L&P PROPOSED** | Final submitted proposal / pricing sheet |
+| **CUSTOMER AWARDED** | Award notice, PO, executed contract |
+| **CURRENT / AMENDED** | Amendments, modifications, renewals, options |
 
-Example: proposed $35.00 → awarded $34.50 → amended $36.25 → current $36.25. **Not one field called “rate.”**
-
-**Implemented today:** `pricing_lines.requested_rate`, `proposed_rate`, `awarded_rate`, `current_rate` + `documents.commercial_truth` + promotion RPC conflict detection.
+Example: proposed $35.00 → awarded $34.50 → amended $36.25. Not one field named “rate.”
 
 ---
 
-## 6. Client / competitor intelligence (first-class)
-
-**Competitors:** name, opportunity, customer, date, service, geography, submitted/awarded price, hourly rates, technical/price scores, rank, award result, certifications, **source record**.
-
-**Client intelligence:** prior L&P bids, wins/losses, incumbent, awards, historical prices, solicitations, scoring criteria, evaluator comments, board/council docs, procurement records, budgets, expirations, priorities. **Every public fact has a source.**
-
-**Buyer/agency is procurement intelligence — not CRM** (no lead nurture, contact cadence, customer portal).
-
----
-
-## 7. Proposal intelligence
-
-Historical proposals decomposed into sections (Staffing, Transition, Training, Past Performance, etc.). Each section stores: source proposal, client, opportunity, won/lost, evaluator score, source page, text, **reuse status**, human approval, embedding.
-
-- Won ≠ automatically reusable  
-- Lost ≠ worthless (loss analysis)  
-- `DO_NOT_USE` never enters **drafting** retrieval  
-
----
-
-## 8. Historical migration (before intelligent drafting)
+## 5. Complete new-RFP workflow (finished product)
 
 ```text
-Drive files → inventory → dedupe/versions → classify → group by opportunity
-→ extract → AI structure → STAGING → cross-validate → HUMAN VERIFY → CANONICAL → chunks/embeddings
+New RFP
+→ extraction
+→ human verification
+→ buyer research
+→ prior L&P history
+→ prior win analysis
+→ prior loss analysis
+→ competitor / prior award analysis
+→ BID STRATEGY
+→ compliance readiness
+→ pricing evidence
+→ HUMAN PRICING DECISION
+→ approved content retrieval
+→ grounded drafting
+→ human editing
+→ requirements validation
+→ operations / content approval
+→ pricing approval
+→ compliance approval
+→ executive approval
+→ final proposal
+→ submission
+→ outcome capture
+→ scorecard / evaluator feedback
+→ intelligence update
 ```
 
-**AI extraction does not automatically become trusted data.**
+**Bid Strategy** is an explicit product output, not a side effect of search.
+
+Ingestion that exists today (intake → extract → stage → verify → some promotion) is the **engine room**, not this operating workflow.
 
 ---
 
-## 9. New RFP workflow (finished product)
+## 6. Pricing intelligence principles
 
 ```text
-NEW RFP → read solicitation → extract requirements + pricing format → human verify
-→ research buyer → L&P history → prior wins → prior losses → competitors/awards
-→ BUILD BID STRATEGY → compliance check → pricing evidence → HUMAN FINAL PRICING
-→ retrieve approved content → generate drafts → human edit → requirement validation
-→ executive approval → final proposal → submit → capture award/loss → feed intelligence
+customer-required pricing format
+≠ internal L&P cost
+≠ submitted pricing
+≠ awarded pricing
+≠ current amended pricing
 ```
 
-**Bid Strategy** is an explicit product output/workspace — not an implicit side effect of search.
+Formats are dynamic (hourly, labor schedule, site/shift, monthly, base+options, OT, equipment, NTE, SCA WD, etc.).
+
+**Evidence:** comparable wins, losses, same buyer, similar buyer, competitor awards, wage/cost, geography, staffing, contract size, recency.
+
+**Output:** included/excluded records, reasoning, statistics/range, confidence, sources.
+
+**Final pricing: HUMAN DECISION REQUIRED.** Never “AI recommends $X/hr.”
 
 ---
 
-## 10. Proposal drafting screen (Phase 9 target)
+## 7. Buyer / market / competitor intelligence
 
-Split view: client requirement ↔ draft response; scoring ↔ sources; prior history ↔ actions (edit, regenerate, approve, show evidence).
+**Buyer / agency:** prior solicitations, L&P bid history, awards, incumbents, pricing, evaluator behavior, bid tabs, budgets, board/council records, procurement plans, expiration/options/rebids.
 
----
+**Competitor:** bids, awards, pricing, technical/price scores, rank, services, geography, source evidence.
 
-## 11. Final proposal output
+**Market:** pricing trends, competitor presence, win/loss patterns, evaluator patterns, upcoming rebids.
 
-```text
-In-app intelligence / drafting → Google Docs working proposal → final procurement output
-```
-
-Outputs: Google Doc, PDF, DOCX, portal fields, pricing workbook, copy/paste. **Google Docs is the collaborative handoff** — Tiptap/Novel patterns are in-app UX only, not a replacement for Docs collaboration.
+No unsupported causation. Counts of documents are not market facts.
 
 ---
 
-## 12. Executive dashboards (five areas)
+## 8. Ask Intelligence
 
-1. **Pipeline** — active opportunities, due dates, pipeline $, submitted $, waiting on pricing/approval  
-2. **Contracts** — active value, expiring 30/60/90/180, renewal value at risk, options, rebids  
-3. **Compliance** — expired/expiring licenses, insurance, certifications, SAM/GSA/TXMAS, missing docs  
-4. **Win/Loss** — win rates (evidence-backed), by customer/service/geo/size/type, loss reasons, evaluator weaknesses  
-5. **Pricing/Competition** — winning/losing rate trends, competitor pricing, margin scenarios, price bands vs outcomes  
+Ask is a **product surface**, not the application architecture.
 
-**Never fabricate KPIs to fill empty UI.**
-
----
-
-## 13. Build order (original — do not reorder for demos)
-
-| Original phase | Name | Product milestone |
-| --- | --- | --- |
-| **1** | Foundation | Supabase, schema, auth, Drive refs, document registry, staging/verification |
-| **2** | **Historical pilot** | **20–30 real L&P packages validate the data model** |
-| **3** | Historical ingestion | Automated pipeline + migrate remaining history |
-| **4** | Contract/compliance | Contracts, renewals, expiration alerts, certifications |
-| **5** | Analytics | Win/loss, pricing, competitor, contract dashboards |
-| **6** | Search/AI | Embeddings, semantic search, historical retrieval |
-| **7** | Pricing intelligence | Dynamic client pricing + internal cost + comparables (Glide) |
-| **8** | Proposal builder | Evidence-backed generation + Google Docs path |
-
-**Do not start with the proposal generator.**
-
-Map to repo engineering IDs: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
-
----
-
-## 14. Current honest status (original phase meanings)
-
-| Original phase | Status |
+| Mode | Meaning |
 | --- | --- |
-| **1 — Foundation** | **Mostly complete** — see [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md) |
-| **2 — Historical pilot** | **NOT STARTED** (0 L&P packages) |
-| **3 — Historical ingestion** | **NOT STARTED** (no production corpus migration) |
-| **4–8** | Engineering artifacts exist early for some areas — **unvalidated**; see [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) |
+| **LOCATE** | Records, documents, contracts, proposals via structured + full-text retrieval. No LLM required. |
+| **ASK / ANALYZE** | Grounded analysis using structured + semantic retrieval, with citations. |
 
-**Wrong statement to avoid:** “Phase 2 complete because RLS passed.” Tenant isolation is **Foundation**, not Historical Pilot.
+Purpose-aware retrieval:
+
+- **Loss analysis** may see losing / `DO_NOT_USE` material.
+- **Drafting** must **not** use `DO_NOT_USE` material.
 
 ---
 
-## 15. Questions the platform must answer for a new RFP
+## 9. AI report outputs (evidence-backed only)
 
-From verified evidence only: requirements, deadlines, submission method, pricing structure, evaluation criteria, staffing/services, certifications/insurance, wage determination, prior bids with this buyer, win/loss, proposed vs awarded vs current terms, competitor evidence, evaluator comments, approved vs blocked reuse, compliance expirations, comparable pricing with include/exclude reasons, missing information, and **source for each answer**.
+- Bid Strategy Report
+- Buyer Intelligence Brief
+- Market Intelligence Report
+- Competitor Intelligence Report
+- Pricing Intelligence Report
+- Win/Loss Analysis
+- Proposal Improvement / Evaluator Analysis
+- Executive Intelligence Brief
 
-See [PRODUCT_SPEC.md](PRODUCT_SPEC.md).
+Withhold or show empty when evidence is missing. Do not invent.
+
+---
+
+## 10. Proposal intelligence (section-level)
+
+Examples: Staffing, Transition, Training, Recruiting, Management, Technology, Quality Control, Emergency Response, Past Performance.
+
+Track: source proposal, source page, outcome, evaluator score, verification, reuse status, approval.
+
+Reuse states:
+
+- `APPROVED`
+- `REVIEW_REQUIRED`
+- `DO_NOT_USE`
+- `SUPERSEDED`
+
+**WON does not automatically mean approved. LOST does not automatically mean unusable.**
+
+Verified chunk search + embeddings + Ask ≠ this engine. That requires a `proposal_sections` (or equivalent) business model.
+
+---
+
+## 11. Proposal output
+
+```text
+In-app intelligence / drafting
+→ Google Docs collaborative working proposal where appropriate
+→ required procurement output
+```
+
+Outputs may include: Google Doc, PDF, DOCX, portal response, pricing workbook, copy/paste.
+
+---
+
+## 12. Historical-pilot-first build order
+
+| Canonical phase | Name |
+| --- | --- |
+| **1** | Foundation |
+| **2** | **Historical Pilot** (20–30 complete L&P packages) |
+| **3** | Historical ingestion / processing |
+| **4** | Broader migration |
+| **5** | Contracts / compliance |
+| **6** | Analytics / market / buyer / competitor |
+| **7** | Search / RAG / Ask |
+| **8** | Pricing Intelligence |
+| **9** | Proposal Builder |
+
+Do not start with the proposal generator. Do not reorder for demos.
+
+Original blueprint phases 1–8 map here via [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Legacy engineering IDs 0–14 stay on migrations only.
+
+### CURRENT POSITION
+
+- **Canonical Phase 1 — Foundation:** mostly built. Login Partial Prerender fix is on `main`. Local `npm run build` is green. Vercel production **build** has been green since that fix (`8d083a5` / `213f951` and later). Live **data** still needs Supabase env + applied migrations + a signed-in org.
+- **Canonical Phase 2 — Historical Pilot: NOT STARTED.**
+- **0 real complete L&P procurement packages validated.**
+- Later-phase UX/code exists early (Ask, Market, Reports, opportunity workspace tabs, planning cost model). **KEEP + FREEZE** Intelligence expansion until the pilot validates the corpus. Early ops UI does **not** complete Phases 8–9.
+
+Snapshot: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Trail: [WORK_TRAIL.md](WORK_TRAIL.md).
+
+---
+
+## 13. Questions the finished product must answer (new RFP)
+
+From **verified evidence only**: requirements, deadlines, submission method/forms, required pricing structure, evaluation criteria, staffing/services, certifications/insurance, wage determination, prior bids with this buyer, win/loss, proposed vs awarded vs current terms, competitor evidence, evaluator comments, approved vs blocked reuse, compliance expirations, comparable pricing with include/exclude reasons, missing information, and **the source that supports each answer**.
+
+---
+
+## 14. Locked technical architecture (pointer only)
+
+Do not redefine here. [TECH_STACK.md](TECH_STACK.md) and [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md) own:
+
+Supabase Storage vault (immutable-by-policy), Vercel Workflow lifecycle, JobPort, Supabase Cron for expirations, PDF.js, openpyxl, AI Gateway abstraction, pgvector in Postgres.
+
+Approved deviation from older Drive-as-vault wording: Drive remains import + human workspace; Storage is the ingested original.

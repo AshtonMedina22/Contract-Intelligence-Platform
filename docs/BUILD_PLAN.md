@@ -21,7 +21,7 @@ Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [T
 
 ## Current product position (canonical)
 
-**Canonical Phase 1 — Foundation:** mostly implemented. **Lint, typecheck, and build pass locally** (2026-08-19). Confirm Vercel deploy after push. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+**Canonical Phase 1 — Foundation:** mostly implemented. Local lint/typecheck/build pass. **Vercel production build green** after login Partial Prerender fix. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
 **Canonical Phase 2 — Historical Pilot:** **NOT STARTED.** Pilot kickoff: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
 
@@ -473,7 +473,7 @@ Prove with [PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md).
 
 ## Phase 12 — Pricing intelligence
 
-> **Legacy engineering Phase 12 → Canonical product Phase 8.** **Not started** (placeholder page only). Do not start until Historical Pilot completes and build is green.
+> **Legacy engineering Phase 12 → Canonical product Phase 8.** Glide grid **not started**. Four-truth table + planning cost model + comparables **panel** exist early (unvalidated). Do not treat that as Phase 8 complete. Do not expand until Historical Pilot.
 
 ### Goal
 

@@ -1,16 +1,24 @@
 # Master product context
 
-**Canonical long-form spec for the L&P Proposal, Contract & Procurement Intelligence Platform.**
+**Canonical long-form spec** (merged historical draft). It is **not** the short product authority.
 
-This file lives in git so it is available on any computer after clone/push. It supersedes Downloads-only drafts.
+| Concern | Document |
+| --- | --- |
+| **Business / product truth** | [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) |
+| **Technical architecture truth** | [TECH_STACK.md](TECH_STACK.md) |
+| **Current reality** | [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) |
+| **Execution order** | [BUILD_PLAN.md](BUILD_PLAN.md) |
+
+If this file disagrees with MASTER_BLUEPRINT on product, or TECH_STACK on architecture, those files win. Do not use the long sitemap below as the intended UX.
+
+This file lives in git so it is available on any computer after clone/push.
 
 - Source merged: L&P Master Product Context — Final Updated 2026-08-19 (Downloads).
 - Earlier draft filenames LP SETUP DRAFT.md and LP_MASTER_PRODUCT_CONTEXT_FINAL_UPDATED_2026-08-19.md were not present in Downloads at merge time.
 - Locked architecture (Workflow, Storage-by-policy, Cron split, Excel/PDF, repo layout, pricing wording) is applied below. If an older paragraph still says Drive is the permanent vault or Queues are the lifecycle coordinator, the **Locked architecture** section wins.
-- Operational detail: [BUILD_PLAN.md](BUILD_PLAN.md). Short stack: [TECH_STACK.md](TECH_STACK.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
-- **Single authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Phase naming: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
+- Phase naming: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Living trail: [WORK_TRAIL.md](WORK_TRAIL.md).
 
-For implementation: read [PRODUCT_SPEC.md](PRODUCT_SPEC.md) and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before adding features. Canonical product phases 1–9 govern maturity; legacy engineering IDs 0–14 remain on migrations only.
+For implementation: read [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before adding features. Canonical product phases 1–9 govern maturity; legacy engineering IDs 0–14 remain on migrations only.
 
 ## Locked architecture (wins over any older wording in this file)
 
@@ -1422,73 +1430,16 @@ The result of that opportunity becomes new verified intelligence for the next on
 
 ## 29. Finished UX / UI, features, and functional outcome
 
-> **Navigation note (2026-08-19):** This section’s sitemap is a **reference layout**. The **six product engines** in [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) and [PRODUCT_SPEC.md](PRODUCT_SPEC.md) govern product architecture. Current app IA follows workflow groups (Ingestion → Procurement → Contracts → Intelligence → Proposals) — see [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Do not treat every nav item as a separate product “module.”
+**Intended product architecture = the six engines in [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md).**  
+**Intended app IA = workflow groups** (Home, Ingestion, Procurement/pursuits, Contracts, Intelligence, Proposals) that **map to those engines**. Ingestion feeds engines; it is not a seventh product.
 
-This section defines what the mature L\&P platform should actually look like and what a user should be able to do inside it. The earlier sections define the architecture and business rules; this section consolidates the final user-facing product experience.
+The numbered workspaces below are a **mature capability inventory**. They are **not** a CRM-style table-per-nav sitemap and **not** an instruction to add a sidebar item per table.
 
-Application shell and navigation
+Application shell: shadcn dashboard; information-dense; desktop-first; source-aware; audit-oriented.
 
-Use the shadcn dashboard application shell as the base. The product should feel like enterprise procurement/contract operations software: information-dense, desktop-first, source-aware, audit-oriented, and fast for users working with large volumes of records.
+Current sidebar groups → engines: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Early Intelligence screens are KEEP + FREEZE until Historical Pilot.
 
-Primary navigation:
-
-OVERVIEW
-
-\- Dashboard
-
-INGESTION
-
-\- Document Intake
-
-\- Processing Queue
-
-\- Verification Queue
-
-\- Exceptions
-
-PROCUREMENT
-
-\- Clients
-
-\- Opportunities
-
-\- Requirements
-
-\- Documents
-
-CONTRACTS
-
-\- Contracts
-
-\- Renewals
-
-\- Compliance
-
-INTELLIGENCE
-
-\- Win/Loss
-
-\- Pricing Intelligence
-
-\- Client Intelligence
-
-\- Competitors
-
-\- Content Library
-
-\- Analytics
-
-PROPOSALS
-
-\- Proposal Workspaces
-
-SYSTEM
-
-\- Data Quality
-
-\- Settings / Administration
-
-Final pages / workspaces
+Final pages / workspaces (capability inventory, not IA)
 
 1\. Executive / Operations Dashboard
 

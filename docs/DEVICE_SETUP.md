@@ -6,9 +6,10 @@ Use this when you clone on a new computer. **Secrets are not in git.** Copy them
 
 - Repo: https://github.com/AshtonMedina22/Contract-Intelligence-Platform
 - Branch: `main`
-- Product spec: [PRODUCT_SPEC.md](PRODUCT_SPEC.md)
+- Product spec: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md)
 - Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md)
 - Build order: [BUILD_PLAN.md](BUILD_PLAN.md)
+- Stack: [TECH_STACK.md](TECH_STACK.md)
 
 **Current product position:** Foundation mostly built. **Historical Pilot (canonical Phase 2) NOT STARTED** — 0 L&P packages. Later Intelligence UX exists early and is frozen pending corpus validation.
 

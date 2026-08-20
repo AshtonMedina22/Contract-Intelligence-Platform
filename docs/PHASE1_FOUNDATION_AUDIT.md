@@ -3,7 +3,7 @@
 **Original Phase 1 — Foundation:** Supabase/Postgres, database schema, authentication/security, Google Drive references, document registry, staging/verification structure.
 
 **Audit date:** 2026-08-19  
-**Repo HEAD:** see git log (post `213f951` nav + data-model UX)  
+**Repo HEAD:** `ded2bee` on `main` (see `git log -1`). Foundation login/build issue closed as of `8d083a5` / `213f951`.  
 **Verdict:** **Mostly complete** — sufficient to **begin Original Phase 2 (Historical Pilot)** after any open ⚠️ items are accepted or closed.
 
 Cross-check: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) §13–14, [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
@@ -42,7 +42,7 @@ These belong to **Original Phase 2+** but exist as early engineering:
 | Item | Original phase | Today |
 | --- | --- | --- |
 | 20–30 package pilot corpus | **Phase 2** | **0 packages** |
-| Full opportunity fields (deadlines, go/no-go, $) | 2 validates schema | `opportunities.title` only |
+| Full opportunity fields (deadlines, go/no-go, $) | 2 validates schema | Ops metadata + rail/packet exist on main; **unvalidated**; still not a complete engine |
 | Contracts portfolio operational | Phase 4 | Schema + UI early |
 | Win/loss / competitor dashboards | Phase 5 | List views only |
 | Embeddings + Ask Intelligence | Phase 6 | RPC + UI; empty corpus |

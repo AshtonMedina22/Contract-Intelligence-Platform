@@ -63,7 +63,7 @@ The **48/48 RLS tests** prove tenant isolation. They do **not** prove the histor
 | 9 | Contracts + cron | 4 | Early, unvalidated |
 | 10 | Win/loss + competitor tables | 5 / engine 4 | Early UX — FREEZE |
 | 11 | Hybrid RAG | 6 / engine 5 | Early UX — FREEZE |
-| 12 | Glide pricing | 7 | Not started |
+| 12 | Glide pricing | 8 | Not started (planning panel ≠ Glide) |
 | 13 | Proposal builder | 8 | Not started |
 | 14 | Commercial PaaS | Later | Not started |
 

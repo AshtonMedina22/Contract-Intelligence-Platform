@@ -30,7 +30,7 @@ Historical files → staging → human verification → canonical Postgres. Four
 
 **Wrong:** “Phase 2 complete because RLS 48/48.” RLS = **Original Phase 1**, not Historical Pilot.
 
-**Next task:** (1) Apply opportunity migrations `300000` / `310000` / `320000` on Supabase. (2) Confirm Vercel env. (3) **Historical Pilot**. Do **not** add LLM Ask/competitor reports.
+**Next task:** Apply opportunity SQL + Vercel env, then **Historical Pilot** (20–30 real L&P packages). Do not expand Ask/Market/Reports. Do not debate architecture — blueprint is locked.
 
 ---
 

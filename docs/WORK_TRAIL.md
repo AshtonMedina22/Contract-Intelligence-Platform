@@ -4,12 +4,12 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-19 (session: commit + push Pass 3+4) |
-| **Git HEAD on origin/main** | `547e16c` — Pass 3+4 ops workspace |
+| **Last updated** | 2026-08-19 (session: docs-only MASTER_BLUEPRINT product lock) |
+| **Git HEAD on origin/main** | After this docs commit — run `git log -1` (feature Pass 3+4 = `547e16c`) |
 | **Local uncommitted** | **No** (product/docs in this commit; local agent/IronBee files stay untracked) |
 | **Product truth gate** | Canonical Phase 2 Historical Pilot — **0 / 20 L&P packages** |
 
-Companion snapshot (capability matrix, freeze list): [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Required end-state: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Pilot: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
+Companion snapshot (capability matrix, freeze list): [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Required end-state: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Pilot: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
 
 ---
 
@@ -163,5 +163,6 @@ Verified 2026-08-19 from public sources (company site, Texas DPS TOPS, TxSmartBu
 | 2026-08-19 | This work trail created | Living scoreboard | |
 | 2026-08-19 | Pass 4 packet + economics | Rail/kind/missing list/fulfillment math | Apply `320000` |
 | 2026-08-19 | Commit + push Pass 3+4 | `547e16c` on origin/main | Apply all three opportunity migrations; confirm env |
+| 2026-08-19 | Docs-only product lock | `MASTER_BLUEPRINT.md` is business authority; no app/schema change | Historical Pilot still not started |
 
 Older engineering history: `git log`. Capability freeze list: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).

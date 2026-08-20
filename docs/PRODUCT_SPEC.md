@@ -1,4 +1,4 @@
-Short definition. Full spec: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). How to build: [BUILD_PLAN.md](BUILD_PLAN.md). What exists today: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+Short definition. **Business authority:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). How to build: [BUILD_PLAN.md](BUILD_PLAN.md). What exists today: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
 ## What this is
 
