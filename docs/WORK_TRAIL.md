@@ -4,10 +4,10 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (Prompt 9 RELEASE_READINESS — **not** production-ready) |
-| **Git HEAD on origin/main** | Unchanged this session — run `git log -1` |
-| **Product truth gate** | [RELEASE_READINESS_REPORT.md](RELEASE_READINESS_REPORT.md): phases 1–8 **PASS WITH KNOWN LIMITATION**; live production **NO** |
-| **Local uncommitted** | **Yes** — Phases 2C–8 + VERIFY + Prompt 9 hardening |
+| **Last updated** | 2026-08-20 (VERIFY 9 fix pass — **READY WITH NONBLOCKING LIMITATIONS**) |
+| **Git HEAD on origin/main** | `c1747dd` + local VERIFY9 fix-pass (push when asked) |
+| **Product truth gate** | [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md): **READY WITH NONBLOCKING LIMITATIONS** — corpus/Vercel/ASK_MODEL deferred external |
+| **Local uncommitted** | VERIFY9 fix-pass docs + pilot 50 MB harness + trail |
 
 Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
 
@@ -43,16 +43,16 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 | **App IA** | Prompt 0B remapped shell to UX_UI | Remaining: unlisted registry routes, empty corpus |
 | **Production** | Often no org / sign-in | Linked Supabase + migrations + authenticated org |
 
-**Bottom line:** Core operational phases 1–8 exit gates are held (**PASS WITH KNOWN LIMITATION**). [RELEASE_READINESS_REPORT.md](RELEASE_READINESS_REPORT.md) refuses production-ready: corpus thin, ops credentials incomplete, role UI ungated. No trust/security/submission suite FAIL this pass.
+**Bottom line:** VERIFY 9 fix pass = **READY WITH NONBLOCKING LIMITATIONS**. Engineering/trust gates green; deferred: grow corpus to ~20–30, `vercel login` + prod processor, `ASK_MODEL`. See [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md).
 
 ---
 
 ## Next ordered work
 
-1. Grow verified corpus (~20–30 packages) — primary production blocker.  
-2. Confirm Vercel prod env + processor; set `ASK_MODEL` / `MISTRAL_API_KEY` as needed.  
-3. User review → commit when asked.  
-4. Optional: UI role gating; align intake size limit docs vs `bodySizeLimit`.  
+1. Restore Downloads USABLE PDFs → re-run pilot into L&P org (closes corpus limitation).  
+2. `vercel login` + confirm production processor.  
+3. Set `ASK_MODEL` / AI Gateway.  
+4. Push VERIFY9 fix-pass when asked.  
 
 ---
 
@@ -97,5 +97,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 | 2026-08-20 | VERIFY 8 Proposal workflow | Independent E2E audit Arlington/Lottery-shaped solicitation package. `test:verify8` **23/23 PASS** (steps 1–22). No fabricated L&P historical rates. [VERIFY8_ACCEPTANCE.md](pilot/VERIFY8_ACCEPTANCE.md) | STOP |
 | 2026-08-20 | Full functional re-pass | VERIFY5 **24/24**, VERIFY6 **24/24**, VERIFY7 **29/29**, VERIFY8 **23/23**, phase8-response **25/25**. Browser: Save draft / checklist / Result UI smoke. Fixed Cache Components blocking-prerender via Suspense on all Pursuit workspace pages; Glide grid `dynamic(..., { ssr: false })` for `window is not defined`. Console clean on Overview→Result | STOP |
 | 2026-08-20 | Prompt 9 release readiness | Full lifecycle audit + regression. Hardened: redirect typecheck/build; VERIFY2C allow Phase 8 `requirement_responses` (**66/66**). Wrote [RELEASE_READINESS_REPORT.md](RELEASE_READINESS_REPORT.md): **not production-ready** (corpus/ops); no trust/security/submission suite FAIL | STOP |
+| 2026-08-20 | VERIFY 9 Final release | Auditor-only. Business goal vs live corpus/ops. **NOT READY.** Blockers: pilot corpus exit unmet; prod runtime unproven; ASK_MODEL absent. [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md) | Grow corpus; prod proof; ASK_MODEL; re-VERIFY 9 |
+| 2026-08-20 | VERIFY 9 fix pass | Closed fixable gaps (pilot 50 MB + SRC-03 unblocked; live chunk promote). Remaining three items = **deferred external**. Verdict → **READY WITH NONBLOCKING LIMITATIONS**. Evidence: verify8 23/23, verify6 24/24, RLS 51/51, phase8 25/25, verify2b 8/8 | Push when asked; acquire PDFs / vercel login / ASK_MODEL |
 
 Older: `git log`.

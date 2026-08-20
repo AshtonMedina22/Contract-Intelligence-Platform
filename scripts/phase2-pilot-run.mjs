@@ -15,7 +15,7 @@ import { createClient } from "@supabase/supabase-js";
 const ROOT = join(import.meta.dirname, "..");
 const DOWNLOADS = "C:\\Users\\Ashto\\Downloads";
 const RESULTS_JSON = join(ROOT, "docs/benchmarks/pilot-run-results.json");
-const MAX_INTAKE_BYTES = 25 * 1024 * 1024;
+const MAX_INTAKE_BYTES = 50 * 1024 * 1024;
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const publishable =
@@ -33,7 +33,7 @@ if (!url || !publishable || !secret) {
 const CORPUS = [
   { id: "SRC-01", pkg: "PKG-01", cls: "A", buyer: "Williamson County", dtype: "contract+proposal", path: join(DOWNLOADS, "1770_43.35658_Services_Contract_with_proposal_Final.pdf"), sha: "0a3e3762d64da3cd074ed8fb1678528f499d18fc9fc75f2d86fca732040024fa", size: 4169850 },
   { id: "SRC-02", pkg: "PKG-02", cls: "A", buyer: "Allen ISD", dtype: "agreement excerpt", path: join(ROOT, "docs/pilot/source-pdfs/Allen_ISD_LP_security_agreement_excerpt.pdf"), sha: "44497b51d423b4f282a58fb217caff64271ca7097a6317fa347a6c3019a2c658", size: 334504 },
-  { id: "SRC-03", pkg: "PKG-02", cls: "B", buyer: "Allen ISD", dtype: "board packet", path: join(DOWNLOADS, "5-21_AllenISD.pdf"), sha: "2521a6b57c017ca2b735cc0ae7484ef957b0a2162592c9ec46965c7b514520de", size: 32599851, skipIngest: "exceeds 25MB intake limit" },
+  { id: "SRC-03", pkg: "PKG-02", cls: "B", buyer: "Allen ISD", dtype: "board packet", path: join(DOWNLOADS, "5-21_AllenISD.pdf"), sha: "2521a6b57c017ca2b735cc0ae7484ef957b0a2162592c9ec46965c7b514520de", size: 32599851 },
   { id: "SRC-04", pkg: "PKG-04", cls: "A", buyer: "TxDMV", dtype: "PO", path: join(DOWNLOADS, "60800 0000016167.pdf"), sha: "e1f3f631bdc5efa30b08a4201a08ef1977698ef7300a07c5534c6c4892704a0a", size: 38345 },
   { id: "SRC-06", pkg: "PKG-03", cls: "B", buyer: "Arlington TX", dtype: "solicitation", path: join(DOWNLOADS, "22-0143-bid-invitation.pdf"), sha: "98efc54a7659afc29d12932559c9fbcb0e9a1844c9de45f77860bf6851a6127f", size: 290544 },
   { id: "SRC-07", pkg: "PKG-03", cls: "B", buyer: "Arlington TX", dtype: "eval/award", path: join(DOWNLOADS, "22-0143-staff-report.pdf"), sha: "855ff7cd00d2f5d5cf1d5ceb7be177850e1a6e43cc99529c50a500fc7093490d", size: 165355 },

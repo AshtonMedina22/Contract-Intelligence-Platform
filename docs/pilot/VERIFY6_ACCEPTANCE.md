@@ -38,9 +38,9 @@ Independent acceptance of LOCATE (no LLM), ASK (verified + cites + refuse), purp
 | ask | Answer UI cites Sources / Evidence and View Source | **PASS** | contract headings always present | components/ask/answer-panel.tsx |
 | reports | Reports disclose data scope and withhold fabrication | **PASS** | generateIntelligenceReport honesty | lib/reports/generate.ts |
 | automation | Automation never auto-approves pricing/proposal/submission (documented + no approve RPCs) | **PASS** | migration comment + no approve/submit RPC | phase6 + verify6 approval migrations |
-| locate | LOCATE finds records directly | **PASS** | ["V6 Locate Target mt1fl6p8"] | opportunities.ilike |
-| ask | ASK answers from verified sources | **PASS** | {"n":1,"reuse":"APPROVED","path":"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe"} | search_verified_knowledge |
-| ask | ASK cites evidence (storage path + fact linkage) | **PASS** | {"storage_path":"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10/v/478514d543b7c226ef2a5e09c3c963f0bf27bf55c7d83351ab915d38cbeeb85a/original.pdf","source_fact_id":"8e93a382-8819-4303-978c-ca67d4 | search_verified_knowledge |
+| locate | LOCATE finds records directly | **PASS** | ["V6 Locate Target mt1iaxbp"] | opportunities.ilike |
+| ask | ASK answers from verified sources | **PASS** | {"n":1,"reuse":"APPROVED","path":"85561a94-575c-4221-af06-6115f7b22219/3e039169-5c"} | search_verified_knowledge |
+| ask | ASK cites evidence (storage path + fact linkage) | **PASS** | {"storage_path":"85561a94-575c-4221-af06-6115f7b22219/3e039169-5c13-42f2-a2c3-418fbba1cce7/v/d8185ea98fb87ba1730c3d9c496cda90824c945bf825b16041c4417fc2bc67c2/original.pdf","source_fact_id":"ebf0081e-9cb7-45eb-aa92-296be8 | search_verified_knowledge |
 | ask | ASK refuses unsupported answer when no verified hits | **PASS** | {"emptyHits":0,"canonicalCopy":true} | search + synthesize.ts |
 | purpose | DO_NOT_USE cannot enter drafting retrieval | **PASS** | [] | PROPOSAL_DRAFTING |
 | purpose | DO_NOT_USE appears in loss analysis where relevant | **PASS** | ["DO_NOT_USE"] | LOSS_ANALYSIS |
@@ -49,12 +49,12 @@ Independent acceptance of LOCATE (no LLM), ASK (verified + cites + refuse), purp
 | reports | Empty/insufficient corpus does not produce fabricated conclusions | **PASS** | {"awards":0,"reviews":0,"bids":0,"pricing":0} | org B + generate.ts |
 | reports | Report source scope disclosed | **PASS** | dataScope string built in generateIntelligenceReport | lib/reports/generate.ts |
 | reports | Unsupported statistics withheld | **PASS** | honesty copy present; no fabricated share UI | reports/page.tsx + generate.ts |
-| automation | Submission deadline reminder fires correctly | **PASS** | {"run":{"ok":true,"note":"No human gates bypassed","compliance":0,"contract_alerts":1,"pursuit_deadlines":2,"approval_reminders":2,"verification_backlog":2},"events":[{"kind":"pursuit_deadline","due_on":"2026-08-22","tit | pursuit_deadline on response_due_on |
+| automation | Submission deadline reminder fires correctly | **PASS** | {"run":{"ok":true,"note":"No human gates bypassed","compliance":0,"contract_alerts":1,"pursuit_deadlines":2,"approval_reminders":2,"verification_backlog":1},"events":[{"kind":"pursuit_deadline","due_on":"2026-08-22","tit | pursuit_deadline on response_due_on |
 | automation | Approval reminder respects state | **PASS** | {"refresher":true,"pendingOpen":1,"openAfterGo":0} | approval_reminder + go_no_go |
-| automation | Duplicate execution is idempotent | **PASS** | {"before":["165e569e-46a1-48da-a7d0-747aec7dee0c"],"after":["165e569e-46a1-48da-a7d0-747aec7dee0c"]} | ensure_automation_event |
+| automation | Duplicate execution is idempotent | **PASS** | {"before":["bd813de2-b798-4f78-9240-5b30b7872e3b"],"after":["bd813de2-b798-4f78-9240-5b30b7872e3b"]} | ensure_automation_event |
 | automation | Renewal/compliance checks use verified dates | **PASS** | {"alerts":[{"bucket":"30","verified_end_on":"2026-09-09","days_until":20}],"err":null} | contracts.verified_end_on → contract_alerts |
-| automation | Compliance expiration automation uses expires_on | **PASS** | [{"kind":"compliance_expiration","due_on":"2026-08-30","entity_id":"0a9e774b-2abe-405b-abdd-c64db0d37c97"}] | compliance_expiration |
-| automation | Processing failure is visible/retriable | **PASS** | {"failed":{"id":"9b537695-49cc-4376-ba44-f9509384c2e7","processing_status":"FAILED","lifecycle_error":"parser boom"},"retried":{"processing_status":"QUEUED"}} | documents FAILED → QUEUED + processing UI |
+| automation | Compliance expiration automation uses expires_on | **PASS** | [{"kind":"compliance_expiration","due_on":"2026-08-30","entity_id":"95cc50dc-e76b-4a88-88da-612c87faabcd"}] | compliance_expiration |
+| automation | Processing failure is visible/retriable | **PASS** | {"failed":{"id":"4b065e25-9b0a-477d-ac57-654e7850e8a8","processing_status":"FAILED","lifecycle_error":"parser boom"},"retried":{"processing_status":"QUEUED"}} | documents FAILED → QUEUED + processing UI |
 | automation | Pursuit deadline respects closed stage (no new open alert) | **PASS** | [] | refresh_pursuit_deadline_alerts stage filter |
 
 ---

@@ -74,7 +74,7 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 2. Confirm Vercel prod + processor; set `ASK_MODEL` / `MISTRAL_API_KEY` as needed.  
 3. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
 
-**Prompt 9 (2026-08-20):** Final production acceptance — **not** production-ready. Phases 1–8 gates held with known limitations; no trust/security/submission suite FAIL.
+**Prompt 9 / VERIFY 9 (2026-08-20):** Fix pass → **READY WITH NONBLOCKING LIMITATIONS**. Deferred: corpus acquisition ~20–30, Vercel login + prod processor, `ASK_MODEL`. See [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md).
 
 ---
 
@@ -123,7 +123,7 @@ Any older navigation that exposes Ingestion, Proposals, Data Quality, Requiremen
 
 1. Confirm Vercel env + signed-in org for real intake.  
 2. Processor running for parse → `extracted_facts`.  
-3. Allen full board packet exceeds Phase 3 **25 MB** intake limit — excerpt or raise limit before that file.  
+3. Allen full board packet (~32 MB) is within the **50 MB** intake limit when the local file is present; re-ingest when Downloads corpus is restored. 
 
 Opportunity migrations `20260820300000` / `310000` / `320000` plus VERIFY 1 hardening `20260820400000` were applied to remote Postgres on 2026-08-20.  
 

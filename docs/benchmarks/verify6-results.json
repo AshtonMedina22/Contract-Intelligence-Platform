@@ -1,7 +1,7 @@
 {
   "audit": "VERIFY6",
   "phase": "Canonical Phase 6 — Ask / Reports / Automation",
-  "stamp": "mt1fl6p8",
+  "stamp": "mt1iaxbp",
   "verdict": "PASS",
   "total": 24,
   "passed": 24,
@@ -53,21 +53,21 @@
       "domain": "locate",
       "name": "LOCATE finds records directly",
       "ok": true,
-      "detail": "[\"V6 Locate Target mt1fl6p8\"]",
+      "detail": "[\"V6 Locate Target mt1iaxbp\"]",
       "source": "opportunities.ilike"
     },
     {
       "domain": "ask",
       "name": "ASK answers from verified sources",
       "ok": true,
-      "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe\"}",
+      "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"85561a94-575c-4221-af06-6115f7b22219/3e039169-5c\"}",
       "source": "search_verified_knowledge"
     },
     {
       "domain": "ask",
       "name": "ASK cites evidence (storage path + fact linkage)",
       "ok": true,
-      "detail": "{\"storage_path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10/v/478514d543b7c226ef2a5e09c3c963f0bf27bf55c7d83351ab915d38cbeeb85a/original.pdf\",\"source_fact_id\":\"8e93a382-8819-4303-978c-ca67d41102ba\",\"document_id\":\"765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10\"}",
+      "detail": "{\"storage_path\":\"85561a94-575c-4221-af06-6115f7b22219/3e039169-5c13-42f2-a2c3-418fbba1cce7/v/d8185ea98fb87ba1730c3d9c496cda90824c945bf825b16041c4417fc2bc67c2/original.pdf\",\"source_fact_id\":\"ebf0081e-9cb7-45eb-aa92-296be81ffd1a\",\"document_id\":\"3e039169-5c13-42f2-a2c3-418fbba1cce7\"}",
       "source": "search_verified_knowledge"
     },
     {
@@ -130,7 +130,7 @@
       "domain": "automation",
       "name": "Submission deadline reminder fires correctly",
       "ok": true,
-      "detail": "{\"run\":{\"ok\":true,\"note\":\"No human gates bypassed\",\"compliance\":0,\"contract_alerts\":1,\"pursuit_deadlines\":2,\"approval_reminders\":2,\"verification_backlog\":2},\"events\":[{\"kind\":\"pursuit_deadline\",\"due_on\":\"2026-08-22\",\"title\":\"Pursuit response due 2026-08-22 (3)\"},{\"kind\":\"verification_backlog\",\"due_on\":\"2026-08-20\",\"title\":\"Verification backlog: 1 document(s)\"},{\"kind\":\"approval_reminder\",\"due_on\":\"2026-08-22\",\"title\":\"Internal approval pending before response due 2026-08-22\"}]}",
+      "detail": "{\"run\":{\"ok\":true,\"note\":\"No human gates bypassed\",\"compliance\":0,\"contract_alerts\":1,\"pursuit_deadlines\":2,\"approval_reminders\":2,\"verification_backlog\":1},\"events\":[{\"kind\":\"pursuit_deadline\",\"due_on\":\"2026-08-22\",\"title\":\"Pursuit response due 2026-08-22 (3)\"},{\"kind\":\"verification_backlog\",\"due_on\":\"2026-08-20\",\"title\":\"Verification backlog: 1 document(s)\"},{\"kind\":\"approval_reminder\",\"due_on\":\"2026-08-22\",\"title\":\"Internal approval pending before response due 2026-08-22\"}]}",
       "source": "pursuit_deadline on response_due_on"
     },
     {
@@ -144,7 +144,7 @@
       "domain": "automation",
       "name": "Duplicate execution is idempotent",
       "ok": true,
-      "detail": "{\"before\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"],\"after\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"]}",
+      "detail": "{\"before\":[\"bd813de2-b798-4f78-9240-5b30b7872e3b\"],\"after\":[\"bd813de2-b798-4f78-9240-5b30b7872e3b\"]}",
       "source": "ensure_automation_event"
     },
     {
@@ -158,14 +158,14 @@
       "domain": "automation",
       "name": "Compliance expiration automation uses expires_on",
       "ok": true,
-      "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-30\",\"entity_id\":\"0a9e774b-2abe-405b-abdd-c64db0d37c97\"}]",
+      "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-30\",\"entity_id\":\"95cc50dc-e76b-4a88-88da-612c87faabcd\"}]",
       "source": "compliance_expiration"
     },
     {
       "domain": "automation",
       "name": "Processing failure is visible/retriable",
       "ok": true,
-      "detail": "{\"failed\":{\"id\":\"9b537695-49cc-4376-ba44-f9509384c2e7\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
+      "detail": "{\"failed\":{\"id\":\"4b065e25-9b0a-477d-ac57-654e7850e8a8\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
       "source": "documents FAILED → QUEUED + processing UI"
     },
     {
@@ -199,7 +199,7 @@
           "domain": "locate",
           "name": "LOCATE finds records directly",
           "ok": true,
-          "detail": "[\"V6 Locate Target mt1fl6p8\"]",
+          "detail": "[\"V6 Locate Target mt1iaxbp\"]",
           "source": "opportunities.ilike"
         }
       ]
@@ -226,14 +226,14 @@
           "domain": "ask",
           "name": "ASK answers from verified sources",
           "ok": true,
-          "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe\"}",
+          "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"85561a94-575c-4221-af06-6115f7b22219/3e039169-5c\"}",
           "source": "search_verified_knowledge"
         },
         {
           "domain": "ask",
           "name": "ASK cites evidence (storage path + fact linkage)",
           "ok": true,
-          "detail": "{\"storage_path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10/v/478514d543b7c226ef2a5e09c3c963f0bf27bf55c7d83351ab915d38cbeeb85a/original.pdf\",\"source_fact_id\":\"8e93a382-8819-4303-978c-ca67d41102ba\",\"document_id\":\"765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10\"}",
+          "detail": "{\"storage_path\":\"85561a94-575c-4221-af06-6115f7b22219/3e039169-5c13-42f2-a2c3-418fbba1cce7/v/d8185ea98fb87ba1730c3d9c496cda90824c945bf825b16041c4417fc2bc67c2/original.pdf\",\"source_fact_id\":\"ebf0081e-9cb7-45eb-aa92-296be81ffd1a\",\"document_id\":\"3e039169-5c13-42f2-a2c3-418fbba1cce7\"}",
           "source": "search_verified_knowledge"
         },
         {
@@ -294,7 +294,7 @@
           "domain": "automation",
           "name": "Submission deadline reminder fires correctly",
           "ok": true,
-          "detail": "{\"run\":{\"ok\":true,\"note\":\"No human gates bypassed\",\"compliance\":0,\"contract_alerts\":1,\"pursuit_deadlines\":2,\"approval_reminders\":2,\"verification_backlog\":2},\"events\":[{\"kind\":\"pursuit_deadline\",\"due_on\":\"2026-08-22\",\"title\":\"Pursuit response due 2026-08-22 (3)\"},{\"kind\":\"verification_backlog\",\"due_on\":\"2026-08-20\",\"title\":\"Verification backlog: 1 document(s)\"},{\"kind\":\"approval_reminder\",\"due_on\":\"2026-08-22\",\"title\":\"Internal approval pending before response due 2026-08-22\"}]}",
+          "detail": "{\"run\":{\"ok\":true,\"note\":\"No human gates bypassed\",\"compliance\":0,\"contract_alerts\":1,\"pursuit_deadlines\":2,\"approval_reminders\":2,\"verification_backlog\":1},\"events\":[{\"kind\":\"pursuit_deadline\",\"due_on\":\"2026-08-22\",\"title\":\"Pursuit response due 2026-08-22 (3)\"},{\"kind\":\"verification_backlog\",\"due_on\":\"2026-08-20\",\"title\":\"Verification backlog: 1 document(s)\"},{\"kind\":\"approval_reminder\",\"due_on\":\"2026-08-22\",\"title\":\"Internal approval pending before response due 2026-08-22\"}]}",
           "source": "pursuit_deadline on response_due_on"
         },
         {
@@ -308,7 +308,7 @@
           "domain": "automation",
           "name": "Duplicate execution is idempotent",
           "ok": true,
-          "detail": "{\"before\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"],\"after\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"]}",
+          "detail": "{\"before\":[\"bd813de2-b798-4f78-9240-5b30b7872e3b\"],\"after\":[\"bd813de2-b798-4f78-9240-5b30b7872e3b\"]}",
           "source": "ensure_automation_event"
         },
         {
@@ -322,14 +322,14 @@
           "domain": "automation",
           "name": "Compliance expiration automation uses expires_on",
           "ok": true,
-          "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-30\",\"entity_id\":\"0a9e774b-2abe-405b-abdd-c64db0d37c97\"}]",
+          "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-30\",\"entity_id\":\"95cc50dc-e76b-4a88-88da-612c87faabcd\"}]",
           "source": "compliance_expiration"
         },
         {
           "domain": "automation",
           "name": "Processing failure is visible/retriable",
           "ok": true,
-          "detail": "{\"failed\":{\"id\":\"9b537695-49cc-4376-ba44-f9509384c2e7\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
+          "detail": "{\"failed\":{\"id\":\"4b065e25-9b0a-477d-ac57-654e7850e8a8\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
           "source": "documents FAILED → QUEUED + processing UI"
         },
         {

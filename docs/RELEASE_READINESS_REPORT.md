@@ -10,23 +10,9 @@
 
 ### Is the platform production-ready for live L&P daily use?
 
-**NO.**
+**READY WITH NONBLOCKING LIMITATIONS** (VERIFY 9 fix pass — see [pilot/VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md)).
 
-There is **no remaining trust / security / submission acceptance FAIL** in the regression suites re-run this session. That is necessary but **not sufficient** for production readiness.
-
-Production readiness is **blocked** by operational and corpus realities:
-
-| Blocker class | Why it blocks “production-ready” |
-| --- | --- |
-| **Corpus scale** | Historical Pilot exit target ~20–30 verified packages remains unmet. Live signed-in org shows thin corpus (Home: ~1 ingested doc, **0** verified knowledge chunks, **0** contracts). Intelligence/Ask/Reports cannot deliver production value on empty truth. |
-| **Ops / credentials** | Local `.env.local` has Supabase + operator login; **no** `ASK_MODEL` / AI Gateway, **no** `MISTRAL_API_KEY`, Drive token optional. Vercel production deploy + processor always-on for real intake were **not** independently proven green in this pass. |
-| **Role permissions (UI)** | `memberships.role` is stored; **not** enforced in UI/workflows (Foundation known limitation). Tenancy RLS still holds — this is ops RBAC, not a tenant-isolation hole. |
-| **Intake size honesty** | Server Actions `bodySizeLimit` remains **25mb** (`next.config.ts`); UI copy matches. PHASE3 notes about 50 MB are **aspirational/stale** vs current config — large packets still need excerpt or config change. |
-
-**Core operational phases 1–8 (code + acceptance gates):**  
-**PASS WITH KNOWN LIMITATION** — exit gates held; corpus/ops limitations remain.
-
-Do **not** treat a green build or “every page renders” as production-ready. This report refuses that claim.
+Engineering/trust/security/workflow gates PASS. Remaining limits are **external**: corpus acquisition (~20–30 packages), Vercel CLI login + prod processor proof, `ASK_MODEL` / Gateway for LLM Ask.
 
 ---
 

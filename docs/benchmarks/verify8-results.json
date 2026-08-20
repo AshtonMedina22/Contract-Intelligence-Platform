@@ -1,12 +1,12 @@
 {
   "audit": "VERIFY8",
   "phase": "Canonical Phase 8 — Response / Submission / Result",
-  "stamp": "mt1flnqa",
+  "stamp": "mt1ial1g",
   "package": {
     "key": "V8-ARLINGTON-LOTTERY-SHAPE",
     "buyer": "City of Arlington (VERIFY8 fixture — buyer solicitation shape)",
-    "solicitationNumber": "RFP-22-0143-V8-mt1flnqa",
-    "title": "Armed Security Services — VERIFY8 mt1flnqa",
+    "solicitationNumber": "RFP-22-0143-V8-mt1ial1g",
+    "title": "Armed Security Services — VERIFY8 mt1ial1g",
     "requirement": "Offeror shall provide armed security coverage by building with a verified staffing plan and required forms.",
     "formName": "HUB / References / Cost Sheet (Lottery IFB-style)"
   },
@@ -26,21 +26,21 @@
       "step": 1,
       "name": "solicitation becomes a Pursuit",
       "ok": true,
-      "detail": "{\"opportunityId\":\"aa4ca602-b2db-4a0f-8635-770aca5c4272\",\"solicitation\":\"RFP-22-0143-V8-mt1flnqa\",\"stage\":\"ANALYSIS\"}",
+      "detail": "{\"opportunityId\":\"fa4d29fd-9371-44f6-aa9e-b2d0569db559\",\"solicitation\":\"RFP-22-0143-V8-mt1ial1g\",\"stage\":\"ANALYSIS\"}",
       "source": "V8-ARLINGTON-LOTTERY-SHAPE"
     },
     {
       "step": 2,
       "name": "deadlines are visible",
       "ok": true,
-      "detail": "{\"response_due_on\":\"2026-09-03\",\"due_at\":\"2026-09-03T11:22:49.755+00:00\",\"question_deadline_at\":\"2026-08-27T11:22:49.755+00:00\"}",
+      "detail": "{\"response_due_on\":\"2026-09-03\",\"due_at\":\"2026-09-03T12:38:12.353+00:00\",\"question_deadline_at\":\"2026-08-27T12:38:12.354+00:00\"}",
       "source": "opportunities + submission_packets"
     },
     {
       "step": 3,
       "name": "Requirements matrix is source-backed",
       "ok": true,
-      "detail": "{\"factId\":\"fe599410-5f99-48c3-bca1-977e6c002ffe\",\"section\":\"3.2\",\"page\":12}",
+      "detail": "{\"factId\":\"bc3b80b3-fdf7-47a8-a004-c1989cbf767b\",\"section\":\"3.2\",\"page\":12}",
       "source": "requirements.source_fact_id"
     },
     {
@@ -54,21 +54,21 @@
       "step": 5,
       "name": "Pricing uses verified evidence",
       "ok": true,
-      "detail": "{\"id\":\"dc1bfce0-2e07-478d-8c76-c7814df69d90\",\"requested_rate\":28.5,\"requested_source_fact_id\":\"f0511044-3a02-4510-a36f-92ad48da5302\",\"proposed_rate\":null}",
+      "detail": "{\"id\":\"cd8f8247-fad2-4c55-958f-b1f0bb089b16\",\"requested_rate\":28.5,\"requested_source_fact_id\":\"8b22bc17-b15c-4b76-b0b6-96acb4515d4d\",\"proposed_rate\":null}",
       "source": "pricing_lines.requested_source_fact_id"
     },
     {
       "step": 6,
       "name": "final pricing requires a human",
       "ok": true,
-      "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"decided_by\":\"b0a0db04-718f-4878-86f7-ec63383de064\"}",
+      "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"decided_by\":\"0f6f786e-caff-4d71-bc52-880827b5eb9f\"}",
       "source": "pricing_decisions_require_human"
     },
     {
       "step": 7,
       "name": "Response uses requirement-level drafting",
       "ok": true,
-      "detail": "{\"id\":\"9a7ce205-c329-4b25-a960-34be52fdd1c7\",\"requirement_id\":\"f487a40b-7bde-4189-a07a-dae20f82be94\",\"draft_status\":\"DRAFT\"}",
+      "detail": "{\"id\":\"f504b861-1f44-4b45-9732-e14f2c2bf373\",\"requirement_id\":\"0b6757f4-dae9-43ee-81ee-89b6dac76f7b\",\"draft_status\":\"DRAFT\"}",
       "source": "requirement_responses"
     },
     {
@@ -96,7 +96,7 @@
       "step": 11,
       "name": "generated response shows sources",
       "ok": true,
-      "detail": "{\"n\":1,\"first\":{\"excerpt\":\"staffing_approach\\nVerified prior response narrative mt1flnqa: describe post coverage by building using only confirmed ro\",\"chunk_id\":\"1dfc1609-7609-4ae3-ad60-0a4505a04db0\",\"reuse_status\":\"APPROVED\",\"source_fact_id\":\"b9753912-944b-4baf-8775-3a04a2c3e694\"}}",
+      "detail": "{\"n\":1,\"first\":{\"excerpt\":\"staffing_approach\\nVerified prior response narrative mt1ial1g: describe post coverage by building using only confirmed ro\",\"chunk_id\":\"17107120-f346-4666-ab0b-787ab376db7b\",\"reuse_status\":\"APPROVED\",\"source_fact_id\":\"e83e888e-15ab-483e-84ac-1aec84b3eade\"}}",
       "source": "requirement_responses.sources_used"
     },
     {
@@ -110,7 +110,7 @@
       "step": 13,
       "name": "internal approvals are auditable",
       "ok": true,
-      "detail": "{\"id\":\"dc61130f-199a-4d48-808f-6080e39f3139\",\"layer_key\":\"content\",\"status\":\"requested\",\"enabled\":true,\"created_at\":\"2026-08-20T11:22:58.274877+00:00\"}",
+      "detail": "{\"id\":\"cf63bf25-b173-4fc5-829c-38fa4797bad4\",\"layer_key\":\"content\",\"status\":\"requested\",\"enabled\":true,\"created_at\":\"2026-08-20T12:38:21.443299+00:00\"}",
       "source": "pursuit_approval_layers"
     },
     {
@@ -131,21 +131,21 @@
       "step": 16,
       "name": "submitted date/time is captured",
       "ok": true,
-      "detail": "{\"submitted_at\":\"2026-08-20T11:22:58.783+00:00\"}",
+      "detail": "{\"submitted_at\":\"2026-08-20T12:38:21.925+00:00\"}",
       "source": "submission_packets.submitted_at"
     },
     {
       "step": 17,
       "name": "submission confirmation is captured",
       "ok": true,
-      "detail": "{\"confirmation_reference\":\"PORTAL-CONF-mt1flnqa\"}",
+      "detail": "{\"confirmation_reference\":\"PORTAL-CONF-mt1ial1g\"}",
       "source": "submission_packets.confirmation_reference"
     },
     {
       "step": 18,
       "name": "Result can remain Pending",
       "ok": true,
-      "detail": "{\"id\":\"3e06de4c-0c56-4bb0-960b-cf171e5b2552\",\"outcome\":\"PENDING\"}",
+      "detail": "{\"id\":\"4d366def-2af4-4951-946c-23d8bb978b0a\",\"outcome\":\"PENDING\"}",
       "source": "win_loss_reviews.outcome"
     },
     {
@@ -159,21 +159,21 @@
       "step": 20,
       "name": "evaluator/competitor result data stays sourced",
       "ok": true,
-      "detail": "{\"scoreFact\":\"a37b07b7-4257-45fb-91a5-8780a15bcd98\",\"bidFact\":\"b7c0655c-9d34-4a1d-934d-9c061febbbb9\"}",
+      "detail": "{\"scoreFact\":\"9260c3fa-ec95-4583-a095-8d287691c89f\",\"bidFact\":\"dba9b8e4-a452-4ee2-9e9e-29c7bbd892db\"}",
       "source": "evaluation_scores + competitor_bids source_fact_id"
     },
     {
       "step": 21,
       "name": "a win creates/links the Contract",
       "ok": true,
-      "detail": "{\"id\":\"e7a3f6f1-bd8f-4a76-870e-56bfe2bb5d70\",\"opportunity_id\":\"aa4ca602-b2db-4a0f-8635-770aca5c4272\",\"title\":\"Awarded — Armed Security Services — VERIFY8 mt1flnqa\"}",
+      "detail": "{\"id\":\"20124eb2-2bed-482b-b24e-862b56edd294\",\"opportunity_id\":\"fa4d29fd-9371-44f6-aa9e-b2d0569db559\",\"title\":\"Awarded — Armed Security Services — VERIFY8 mt1ial1g\"}",
       "source": "contracts.opportunity_id"
     },
     {
       "step": 22,
       "name": "outcome feeds the intelligence corpus",
       "ok": true,
-      "detail": "{\"outcome\":\"WON\",\"contract\":\"e7a3f6f1-bd8f-4a76-870e-56bfe2bb5d70\",\"competitorBids\":1,\"pricingLines\":1,\"revalidateWired\":true}",
+      "detail": "{\"outcome\":\"WON\",\"contract\":\"20124eb2-2bed-482b-b24e-862b56edd294\",\"competitorBids\":1,\"pricingLines\":1,\"revalidateWired\":true}",
       "source": "win_loss_reviews + contracts + intel routes"
     }
   ]
