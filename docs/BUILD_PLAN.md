@@ -3,7 +3,7 @@
 Operational checklist for the Contract Intelligence Platform.  
 Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
-**Current phase: Phase 2 complete.** Isolation proven (48/48). Production: [https://contract-intelligence-platform-web.vercel.app](https://contract-intelligence-platform-web.vercel.app). Setup-only credentials remain in use until real L&P data is imported. Do not start Phase 3 until explicitly approved.
+**Current phase: Phase 11 implemented.** Prove with [PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md). Next is Phase 12 (Glide pricing) — not Tiptap.
 
 Do not skip phases to get a pretty proposal editor. Verification of historical documents is the first usable product.
 
@@ -144,6 +144,10 @@ Upload pipeline, parsers, Workflow, Cron jobs, domain tables for contracts/prici
 
 A user can upload or import files, get a registry row, checksum, duplicate detection, and a Workflow run that **stops before parse if you have not finished Phase 4** — or starts parse once Phase 4 exists. Prefer: intake writes Storage + registry + status `UPLOADED`/`QUEUED`, then starts Workflow with a stub parse step until Phase 4.
 
+### Status
+
+Implemented in app. Prove with [PHASE3_ACCEPTANCE.md](PHASE3_ACCEPTANCE.md) (`npm run test:phase3-intake` plus a real PDF/XLSX upload). Do not start Phase 4 until that is green.
+
 ### Prerequisites
 
 Phase 2 RLS. JobPort interface in `packages/shared` (methods: `startDocumentLifecycle`, later `fanOut`). Vercel Workflow implementation behind that interface.
@@ -189,6 +193,10 @@ Real Docling/OCR, verification workbench, promotion to contracts, PDF.js (can wa
 
 `services/processor` can parse a document into a normalized representation and write **staging** facts. Routing is abstracted. Default XLSX path is openpyxl, not OCR.
 
+### Status
+
+Implemented. Prove with [PHASE4_ACCEPTANCE.md](PHASE4_ACCEPTANCE.md) (`pytest` in `services/processor`). Do not start Phase 5 until staging facts exist from a real XLSX.
+
 ### Prerequisites
 
 Phase 3 registry. JSON Schema in `packages/schemas` for normalized document + extracted fact; Pydantic + Zod generated or hand-kept in sync.
@@ -220,6 +228,10 @@ Locking Mistral vs Gemini vs Document AI. Cloud Run. Human UI.
 
 Operators can verify/edit/reject facts against the source page. Workflow resumes and promotion writes only verified facts to the small canonical set (client/opportunity fields that Phase 2 allows — not full contract schema yet).
 
+### Status
+
+Implemented. Prove with [PHASE5_ACCEPTANCE.md](PHASE5_ACCEPTANCE.md). Do not start Phase 6 until a real L&P package has been reviewed in the workbench.
+
 ### Prerequisites
 
 Phase 4 staging data. PDF.js (`pdfjs-dist` / `react-pdf`) in web.
@@ -245,6 +257,10 @@ Proposal editor, pricing intelligence workbench, public research agents.
 ---
 
 ## Phase 6 — Pilot benchmark (locks routing)
+
+### Status
+
+Implemented as a **fixture baseline** plus checked-in policy. See [PHASE6_ACCEPTANCE.md](PHASE6_ACCEPTANCE.md). Real L&P package scores are still 0 — do not start Phase 7 until those packages exist and are verified.
 
 ### Goal
 
@@ -273,6 +289,10 @@ Full corpus migration. Cloud Run unless the pilot **proved** local/Vercel limits
 
 ## Phase 7 — Expand canonical schema
 
+### Status
+
+Implemented. Prove with [PHASE7_ACCEPTANCE.md](PHASE7_ACCEPTANCE.md). Do not add contract Cron or the rest of MASTER’s table list.
+
 ### Goal
 
 Only tables the pilot proved necessary: solicitations, requirements, four-truth rate fields, awards, etc.
@@ -295,6 +315,10 @@ Blindly creating every table in MASTER’s long-term list.
 
 ## Phase 8 — Bulk historical migration
 
+### Status
+
+Implemented. Prove with [PHASE8_ACCEPTANCE.md](PHASE8_ACCEPTANCE.md). Cloud Run remains off per Phase 6 evidence.
+
 ### Goal
 
 Controlled batches of the larger corpus.
@@ -314,6 +338,10 @@ Controlled batches of the larger corpus.
 ---
 
 ## Phase 9 — Contracts, renewals, compliance
+
+### Status
+
+Implemented. Prove with [PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md).
 
 ### Goal
 
@@ -349,6 +377,10 @@ Evidence-backed win/loss, client, and competitor records.
 
 Generic chatbot. Invented competitor prices.
 
+### Acceptance — you can use it when
+
+Prove with [PHASE10_ACCEPTANCE.md](PHASE10_ACCEPTANCE.md). Documented reason stays distinct from internal analysis. Unsourced competitor bids are rejected.
+
 ---
 
 ## Phase 11 — Hybrid RAG
@@ -367,6 +399,8 @@ Search verified knowledge: SQL + FTS + pgvector.
 ### Acceptance — you can use it when
 
 - A query returns citations to Storage originals and verified facts, never unverified staging as truth.
+
+Prove with [PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md).
 
 ---
 

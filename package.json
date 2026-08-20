@@ -14,6 +14,14 @@
     "lint": "npm run lint -w web",
     "typecheck": "npm run typecheck -w web",
     "env:check": "node --env-file=apps/web/.env.local scripts/env-check.mjs",
-    "test:phase2-rls": "node --env-file=apps/web/.env.local scripts/phase2-rls-acceptance.mjs"
+    "test:phase2-rls": "node --env-file=apps/web/.env.local scripts/phase2-rls-acceptance.mjs",
+    "test:phase3-intake": "node --env-file=apps/web/.env.local scripts/phase3-intake-acceptance.mjs",
+    "test:phase5-verification": "node scripts/phase5-verification-acceptance.mjs",
+    "test:phase6-benchmark": "node scripts/phase6-benchmark.mjs",
+    "test:phase7-four-truth": "node --env-file=apps/web/.env.local scripts/phase7-four-truth-acceptance.mjs",
+    "test:phase8-bulk": "node --env-file=apps/web/.env.local scripts/phase8-bulk-migration-acceptance.mjs",
+    "test:phase9-contracts": "node --env-file=apps/web/.env.local scripts/phase9-contracts-acceptance.mjs",
+    "test:phase10-win-loss": "node --env-file=apps/web/.env.local scripts/phase10-win-loss-acceptance.mjs",
+    "test:phase11-hybrid-rag": "node --env-file=apps/web/.env.local scripts/phase11-hybrid-rag-acceptance.mjs"
   }
 }

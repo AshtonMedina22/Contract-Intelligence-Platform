@@ -1,0 +1,190 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import {
+  EVIDENCE_BUCKET,
+  evidenceFileExtension,
+  evidenceStoragePath,
+  sha256Hex,
+  type StartDocumentLifecycleResult,
+} from "@lp/shared";
+import type { Database } from "@/lib/supabase/database.types";
+import { getJobPort } from "@/lib/jobs/get-job-port";
+import { assertAllowedIntakeFile, inferMimeType, MAX_INTAKE_BYTES } from "@/lib/intake/allowed-files";
+
+type Client = SupabaseClient<Database>;
+
+export type IngestResult = {
+  duplicate: boolean;
+  documentId: string;
+  documentVersionId: string;
+  storagePath: string;
+  sha256: string;
+  batchId: string | null;
+  filename: string;
+  workflow?: StartDocumentLifecycleResult;
+};
+
+type RegisterRow = {
+  duplicate: boolean;
+  document_id: string;
+  document_version_id: string;
+  storage_path: string;
+  batch_id: string | null;
+};
+
+function parseRegisterRow(value: unknown): RegisterRow {
+  if (!value || typeof value !== "object") {
+    throw new Error("Intake register returned an invalid payload.");
+  }
+  const row = value as Record<string, unknown>;
+  if (typeof row.duplicate !== "boolean" || typeof row.document_id !== "string") {
+    throw new Error("Intake register returned an invalid payload.");
+  }
+  return {
+    duplicate: row.duplicate,
+    document_id: row.document_id,
+    document_version_id: String(row.document_version_id),
+    storage_path: String(row.storage_path),
+    batch_id: typeof row.batch_id === "string" ? row.batch_id : null,
+  };
+}
+
+export async function ingestSourceBytes(
+  supabase: Client,
+  input: {
+    organizationId: string;
+    bytes: Uint8Array;
+    filename: string;
+    mimeType?: string;
+    clientId?: string | null;
+    opportunityId?: string | null;
+    batchId?: string | null;
+    batchLabel?: string | null;
+    sourceDriveFileId?: string | null;
+    deferLifecycle?: boolean;
+  },
+): Promise<IngestResult> {
+  if (input.bytes.byteLength === 0) {
+    throw new Error(`File ${input.filename} is empty.`);
+  }
+  if (input.bytes.byteLength > MAX_INTAKE_BYTES) {
+    throw new Error(`File ${input.filename} exceeds the 25 MB Phase 3 limit.`);
+  }
+
+  const mimeType = inferMimeType(input.filename, input.mimeType);
+  assertAllowedIntakeFile(input.filename, mimeType);
+
+  const sha256 = sha256Hex(input.bytes);
+
+  const { data: existing, error: existingError } = await supabase
+    .from("document_versions")
+    .select("id, document_id, storage_path")
+    .eq("organization_id", input.organizationId)
+    .eq("sha256", sha256)
+    .maybeSingle();
+
+  if (existingError) {
+    throw new Error(existingError.message);
+  }
+
+  if (existing) {
+    return {
+      duplicate: true,
+      documentId: existing.document_id,
+      documentVersionId: existing.id,
+      storagePath: existing.storage_path,
+      sha256,
+      batchId: input.batchId ?? null,
+      filename: input.filename,
+    };
+  }
+
+  const documentId = crypto.randomUUID();
+  const versionId = crypto.randomUUID();
+  const extension = evidenceFileExtension(input.filename, mimeType);
+  const storagePath = evidenceStoragePath({
+    organizationId: input.organizationId,
+    documentId,
+    versionId,
+    sha256,
+    extension,
+  });
+
+  const copy = new ArrayBuffer(input.bytes.byteLength);
+  new Uint8Array(copy).set(input.bytes);
+  const body = new Blob([copy], { type: mimeType });
+  const upload = await supabase.storage.from(EVIDENCE_BUCKET).upload(storagePath, body, {
+    contentType: mimeType,
+    upsert: false,
+    cacheControl: "3600",
+  });
+
+  if (upload.error) {
+    throw new Error(upload.error.message);
+  }
+
+  const { data: registered, error: registerError } = await supabase.rpc(
+    "register_ingested_document",
+    {
+      p_organization_id: input.organizationId,
+      p_document_id: documentId,
+      p_version_id: versionId,
+      p_batch_id: input.batchId ?? null,
+      p_batch_label: input.batchLabel ?? null,
+      p_client_id: input.clientId ?? null,
+      p_opportunity_id: input.opportunityId ?? null,
+      p_original_filename: input.filename,
+      p_mime_type: mimeType,
+      p_sha256: sha256,
+      p_storage_path: storagePath,
+      p_byte_size: input.bytes.byteLength,
+      p_source_drive_file_id: input.sourceDriveFileId ?? null,
+    },
+  );
+
+  if (registerError) {
+    throw new Error(registerError.message);
+  }
+
+  const row = parseRegisterRow(registered);
+  if (row.duplicate) {
+    return {
+      duplicate: true,
+      documentId: row.document_id,
+      documentVersionId: row.document_version_id,
+      storagePath: row.storage_path,
+      sha256,
+      batchId: row.batch_id,
+      filename: input.filename,
+    };
+  }
+
+  if (input.deferLifecycle) {
+    return {
+      duplicate: false,
+      documentId: row.document_id,
+      documentVersionId: row.document_version_id,
+      storagePath: row.storage_path,
+      sha256,
+      batchId: row.batch_id,
+      filename: input.filename,
+    };
+  }
+
+  const workflow = await getJobPort().startDocumentLifecycle({
+    organizationId: input.organizationId,
+    documentId: row.document_id,
+    documentVersionId: row.document_version_id,
+    sha256,
+  });
+
+  return {
+    duplicate: false,
+    documentId: row.document_id,
+    documentVersionId: row.document_version_id,
+    storagePath: row.storage_path,
+    sha256,
+    batchId: row.batch_id,
+    filename: input.filename,
+    workflow,
+  };
+}

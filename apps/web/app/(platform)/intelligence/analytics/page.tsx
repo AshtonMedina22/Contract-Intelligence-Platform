@@ -1,5 +1,5 @@
-import { PlaceholderPage } from "@/components/placeholder-page";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <PlaceholderPage title="Analytics" phase="Phase 10" />;
+  redirect("/intelligence/reports");
 }

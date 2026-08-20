@@ -36,7 +36,7 @@ async function SettingsContent({
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground">
-          Phase 2: organization membership. Document intake is not built yet.
+          Organization membership. Document intake is under Ingestion.
         </p>
       </div>
 

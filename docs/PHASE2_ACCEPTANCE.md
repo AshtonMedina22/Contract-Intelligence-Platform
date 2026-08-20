@@ -43,4 +43,4 @@ This environment is setup-only: no production/customer data, no historical corpu
 
 Before any real L&P data is imported, or before calling the platform production-ready: rotate the Supabase secret key and database password, update Vercel Production/Preview, redeploy, and confirm secrets were never committed.
 
-Do not start Phase 3 (intake, Workflow, Drive, checksum pipeline) without explicit approval.
+Do not start Phase 4 (processor, OCR, verification workbench) without explicit approval.

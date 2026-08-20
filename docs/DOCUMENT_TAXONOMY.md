@@ -1,6 +1,6 @@
 # Document taxonomy
 
-See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Parser defaults until the Phase 6 benchmark.
+See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Production routing is locked in [ROUTING_POLICY.md](ROUTING_POLICY.md) (Phase 6). Fixture scores: [benchmarks/PILOT_RESULTS.md](benchmarks/PILOT_RESULTS.md).
 
 Every file is a document record linked to an organization, optional batch, optional client/opportunity/solicitation/contract, and a version chain. Original files are never replaced by extracted text.
 
@@ -12,13 +12,15 @@ organization, batch, internal document number, original filename, storage provid
 
 RFP, RFQ, IFB, solicitation, addendum, Q&A, proposal draft, final proposal, quote, pricing workbook, award notice, bid tab, evaluator scorecard, PO, contract, amendment, modification, option exercise, renewal, license, insurance, certification, resume, reference, past-performance evidence, other.
 
-## Parser routing by type (until benchmark locks policy)
+## Parser routing by type
+
+Locked in [ROUTING_POLICY.md](ROUTING_POLICY.md). Summary:
 
 | Input | Default path | Do not |
 | --- | --- | --- |
 | XLSX / XLSM pricing workbooks | `XlsxParser` via openpyxl (sheets, merged cells, number formats, formulas as stored values + formula text) | Send the whole workbook through OCR or an LLM first |
 | DOCX | Native/Docling text+structure path | Treat as a scanned PDF |
-| Clean digital PDF | Docling or native parse, then structured extraction | Pay enterprise Document AI rates by default |
+| Clean digital PDF | `pdf-native` (pypdf) | Pay Document AI / Mistral OCR by default |
 | Scanned PDF / forms / nested tables | Escalate to managed OCR / Document AI / stronger multimodal model | Assume one parser wins every document |
 | Low confidence / conflict | Alternate provider or human review | Silently pick a value |
 

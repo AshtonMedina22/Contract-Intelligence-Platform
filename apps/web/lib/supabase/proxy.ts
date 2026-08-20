@@ -3,19 +3,23 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/supabase/database.types";
 import { hasEnvVars } from "../utils";
 
+function redirectWithCookies(url: URL, source: NextResponse) {
+  const response = NextResponse.redirect(url);
+  source.cookies.getAll().forEach((cookie) => {
+    response.cookies.set(cookie);
+  });
+  return response;
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
-  // If the env vars are not set, skip proxy check. You can remove this
-  // once you setup the project.
   if (!hasEnvVars) {
     return supabaseResponse;
   }
 
-  // With Fluid compute, don't put this client in a global environment
-  // variable. Always create a new one on each request.
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -39,39 +43,35 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getClaims(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
-  // IMPORTANT: If you remove getClaims() and you use server-side rendering
-  // with the Supabase client, your users may be randomly logged out.
   const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
+  let user = data?.claims;
 
-  if (
-    request.nextUrl.pathname !== "/" &&
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
-    return NextResponse.redirect(url);
+  const isDev = process.env.NODE_ENV === "development";
+  const operatorEmail = process.env.LP_OPERATOR_EMAIL?.trim();
+  const operatorPassword = process.env.LP_OPERATOR_PASSWORD;
+  const onAuthPage = request.nextUrl.pathname.startsWith("/auth");
+
+  if (isDev && !user && operatorEmail && operatorPassword) {
+    const { data: signedIn, error } = await supabase.auth.signInWithPassword({
+      email: operatorEmail,
+      password: operatorPassword,
+    });
+    if (!error && signedIn.session) {
+      const url = request.nextUrl.clone();
+      if (onAuthPage) {
+        url.pathname = "/overview";
+        url.search = "";
+      }
+      return redirectWithCookies(url, supabaseResponse);
+    }
   }
 
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+  if (isDev && user && onAuthPage && !request.nextUrl.pathname.startsWith("/auth/error")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/overview";
+    url.search = "";
+    return redirectWithCookies(url, supabaseResponse);
+  }
 
   return supabaseResponse;
 }

@@ -8,7 +8,7 @@ Use this when you clone on a new computer. **Secrets are not in git.** Copy them
 - Branch: `main`
 - Product spec: `docs/MASTER_PRODUCT_CONTEXT.md`
 - Build order: `docs/BUILD_PLAN.md`
-- Current phase: **Phase 2 complete** (see [PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md)). Do not start intake / OCR / Workflow / AI until Phase 3 is explicitly approved.
+- Current phase: **Phase 11 implemented** (see [PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md)). Hybrid search over verified chunks.
 
 Requires **Node 24+** (`.nvmrc` / `.node-version`). npm workspaces (not pnpm).
 
@@ -68,7 +68,7 @@ Apply a new migration:
 npx supabase db push --yes --db-url "$DIRECT_URL"
 ```
 
-Phase 2 migration `20260819100000_phase2_tenancy_provenance.sql` is **already applied** on this project.
+Phase 2–9 SQL is **already applied** on this project (through `20260820220000_phase9_contracts_cron`).
 
 ## Vercel env (Production + Preview)
 
@@ -88,8 +88,8 @@ On a new Cursor window: clone repo, authenticate the Supabase MCP if tools are m
 
 ## What is done vs not
 
-**Done:** Phase 0 docs, Phase 1 `apps/web` scaffold, Phase 2 SQL + RLS + storage bucket policies, Settings org-create UI, processor empty `src/` + `tests/`, Vercel web-only `vercel.json`.
+**Done:** Phase 0–9 (through contracts, renewals Cron, compliance). Vercel web-only `vercel.json`.
 
-**Not done:** rotate chat-exposed privileged credentials, Phase 3 intake, Workflow, parsers, OCR, AI.
+**Not done:** rotate chat-exposed privileged credentials, full L&P corpus scoring, OCR vendor lock, win/loss (Phase 10), Glide, proposals.
 
-**Do not:** clone Prisma/Drizzle, deploy the empty Python folder, add FastAPI/Docling yet, put secrets in git.
+**Do not:** clone Prisma/Drizzle, deploy the Python processor on Vercel, put secrets in git.

@@ -14,8 +14,8 @@ Do not reorder phases to create impressive screens earlier.
 | 5 | Verification workbench | PDF.js + human verify/promote |
 | 6 | Pilot benchmark | Routing policy from L&P documents |
 | 7 | Expand canonical schema | Four-truth mappings the pilot proved |
-| 8 | Bulk migration | Batched corpus; Cloud Run only if needed |
-| 9 | Contracts / Cron | Portfolio + Supabase Cron alerts |
+| 8 | Bulk migration | **Implemented.** [PHASE8_ACCEPTANCE.md](PHASE8_ACCEPTANCE.md) |
+| 9 | Contracts / Cron | **Implemented.** [PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md) |
 | 10 | Intelligence | Win/loss, client, competitor evidence |
 | 11 | Hybrid RAG | SQL + FTS + pgvector on verified content |
 | 12 | Pricing intelligence | Glide workbench; human final price |
@@ -24,6 +24,6 @@ Do not reorder phases to create impressive screens earlier.
 
 ## Current status
 
-**Phase 2 complete** — tenancy, provenance, RLS isolation proven ([PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md)). Phase 0 and Phase 1 are complete on `main`. Phase 3 is not started.
+**Phase 9 implemented** — contracts, renewals center, compliance, pg_cron buckets ([PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md)). Next: Phase 10 win/loss.
 
 Execute using [BUILD_PLAN.md](BUILD_PLAN.md). Setup on a new machine: [DEVICE_SETUP.md](DEVICE_SETUP.md).

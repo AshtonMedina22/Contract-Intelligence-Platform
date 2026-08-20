@@ -26,7 +26,7 @@ org_id/
         original.<ext>
 ```
 
-Rules (implement in Phase 3, not Phase 1):
+Rules (implemented in Phase 3):
 
 - Never overwrite an existing source object.
 - A new source file is a new `document_version` and a new object.
@@ -85,7 +85,7 @@ Statuses: `AI_EXTRACTED`, `NEEDS_REVIEW`, `HUMAN_VERIFIED`, `REJECTED`, `CONFLIC
 
 **Compliance / knowledge:** certifications, licenses, insurance_policies, company_documents, personnel_qualifications, past_performance, content_library
 
-**Research:** public_sources, client_intelligence, research_facts
+**Research:** public_sources, client_intelligence, research_facts (Phase 10: `research_facts` is live; URL + verification required)
 
 ## Four-truth fields
 
@@ -93,7 +93,7 @@ Never overwrite `requested_rate`, `proposed_rate`, `awarded_rate`, and `current_
 
 ## Search / RAG (Phase 11)
 
-Hybrid retrieval = structured Postgres filters + full-text search + pgvector. Retrieval must enforce organization, permissions, verification state, outcome, reuse status, and current vs superseded version.
+Hybrid retrieval = structured Postgres filters + full-text search + pgvector on `document_chunks` (Phase 11). Retrieval must enforce organization, permissions, verification state, reuse status, and current vs superseded version.
 
 Text-to-SQL (later) is read-only, over approved views, with a semantic layer, RLS, timeouts, and no destructive SQL.
 

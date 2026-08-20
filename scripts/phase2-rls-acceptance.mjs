@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -58,7 +59,7 @@ function empty(data) {
 }
 
 async function seedOrgGraph(client, orgId, userId, tag) {
-  const sha = `${tag}`.padEnd(64, "0").slice(0, 64);
+  const sha = createHash("sha256").update(`phase2-${tag}`).digest("hex");
 
   const { data: clientRow, error: clientError } = await client
     .from("clients")
@@ -440,7 +441,7 @@ async function main() {
         organization_id: orgA,
         document_id: graphB.documentId,
         version_number: 99,
-        sha256: `x${stamp}`.padEnd(64, "1").slice(0, 64),
+        sha256: createHash("sha256").update(`cross-version-${stamp}`).digest("hex"),
         storage_bucket: "evidence",
         storage_path: "x",
       })

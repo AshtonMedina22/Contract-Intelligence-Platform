@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "locked_at": "2026-08-19",
+  "evidence": "Fixture corpus + Phase 4 parser tests. Real L&P package scores are not in this file yet.",
+  "cloud_run_required": false,
+  "rules": [
+    {
+      "match": "xlsx_xlsm_xls",
+      "parser_id": "xlsx-openpyxl",
+      "wired": true,
+      "escalate": false,
+      "do_not": "Send the workbook through OCR or an LLM first."
+    },
+    {
+      "match": "digital_pdf",
+      "parser_id": "pdf-native",
+      "wired": true,
+      "escalate": false,
+      "do_not": "Pay Document AI or Mistral OCR by default for extractable text."
+    },
+    {
+      "match": "scanned_or_empty_pdf",
+      "parser_id": "ocr-mistral",
+      "wired": false,
+      "escalate": true,
+      "fallback_parser_id": "ocr-document-ai",
+      "do_not": "Treat an image-only PDF as a successful native parse."
+    },
+    {
+      "match": "docx",
+      "parser_id": "docx-native",
+      "wired": false,
+      "escalate": true,
+      "do_not": "Treat DOCX as a scanned PDF."
+    },
+    {
+      "match": "raster_image",
+      "parser_id": "ocr-document-ai",
+      "wired": false,
+      "escalate": true,
+      "do_not": "Guess a parser."
+    }
+  ],
+  "low_confidence": "Leave facts AI_EXTRACTED / NEEDS_REVIEW. Never auto-promote. Human verification is the gate.",
+  "scan_min_chars_per_page": 40
+}
