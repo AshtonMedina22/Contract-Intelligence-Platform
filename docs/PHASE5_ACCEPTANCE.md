@@ -1,5 +1,7 @@
 # Phase 5 acceptance
 
+> **Legacy engineering Phase 5 → Canonical product Phase 1 / 3 (Foundation / verification).** Passing this file does **not** mean a real L&P package has been verified in production use.
+
 Human verification against source. AI-extracted values are not canonical. There is still no `pricing_lines` table — unverified rates cannot appear as canonical rates.
 
 ## What landed

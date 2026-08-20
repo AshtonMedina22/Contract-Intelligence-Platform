@@ -1,0 +1,38 @@
+---
+description: Canonical product phases, historical-pilot-first, not-a-CRM, freeze early Intelligence UX
+alwaysApply: true
+---
+
+# Contract Intelligence Platform — agent rules
+
+Read [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md) and [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md) before implementing features.
+
+## Product phases
+
+- **Canonical product phases 1–9** govern product maturity ([BUILD_PLAN.md](../docs/BUILD_PLAN.md)).
+- **Legacy engineering IDs 0–14** stay on migrations and `PHASE*_ACCEPTANCE.md` — do not rename.
+- **Legacy Phase 2 (RLS/tenancy) is Foundation (canonical Phase 1), not the Historical Pilot.**
+- **Canonical Phase 2 = Historical Pilot** (20–30 complete L&P packages). It has **not started** (0 packages).
+- Passing a legacy acceptance script does **not** mean the corresponding product phase is complete.
+
+## What not to build
+
+- Not a CRM: no leads, contact cadence, sales activities, client-facing auth, client portal, or customer self-service.
+- `clients` = buyer/agency procurement intelligence, not CRM accounts.
+- Do not fabricate procurement intelligence, analytics, or reports without verified evidence.
+- Do not claim a feature is complete because a route or table exists.
+
+## Early UX — KEEP + FREEZE
+
+Intelligence screens (Ask, Market, Reports, Win/Loss, Content) exist ahead of the verified corpus. **Do not expand** until Historical Pilot validates the model. Do not delete them.
+
+## Architecture lock
+
+Preserve: Supabase Storage vault, Vercel Workflow lifecycle, JobPort, Supabase Cron, PDF.js, openpyxl, AI Gateway abstraction, pgvector in Postgres. Do not revert to Drive-only vault, Queues-as-lifecycle, Pinecone, or LangGraph-for-ingest.
+
+## Next work order
+
+1. Docs aligned (this reconciliation)
+2. Foundation build/lint green (when explicitly requested)
+3. Historical Pilot on real L&P packages
+4. Then expand later phases per BUILD_PLAN

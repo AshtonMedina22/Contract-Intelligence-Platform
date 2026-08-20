@@ -1,5 +1,7 @@
 # Phase 2 acceptance evidence
 
+> **Legacy engineering Phase 2 → Canonical product Phase 1 (Foundation).** This proves RLS/tenancy isolation (48/48), **not** the Historical Pilot. Passing this file does **not** mean canonical product Phase 2 is complete.
+
 Date: 2026-08-19  
 Supabase project ref: `lhmurblikkcomdxcrymx`  
 Vercel production: https://contract-intelligence-platform-web.vercel.app  
@@ -41,6 +43,4 @@ Option A: roles are stored (`admin`, `importer`, `verifier`, `bidder`, `executiv
 
 This environment is setup-only: no production/customer data, no historical corpus, no live users. Chat-exposed credentials are acceptable for setup/testing only.
 
-Before any real L&P data is imported, or before calling the platform production-ready: rotate the Supabase secret key and database password, update Vercel Production/Preview, redeploy, and confirm secrets were never committed.
-
-Do not start Phase 4 (processor, OCR, verification workbench) without explicit approval.
+Before any real L&P data is imported, or before calling the platform production-ready: rotate the Supabase secret key and database password, update Vercel Production/Preview, redeploy, and confirm secrets were never committed. **Vercel deploy is not verified green** as of last audit — see [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).

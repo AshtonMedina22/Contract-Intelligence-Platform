@@ -1,5 +1,7 @@
 # Phase 11 acceptance
 
+> **Legacy engineering Phase 11 → Canonical product Phase 7 (partial).** FTS RPC + Ask/Content UI; **KEEP + FREEZE.** Not purpose-aware; not product-complete Search/Ask.
+
 Hybrid retrieval over **verified** knowledge: SQL filters + Postgres FTS + optional pgvector. No Pinecone/Qdrant. No chatbot.
 
 ## What landed

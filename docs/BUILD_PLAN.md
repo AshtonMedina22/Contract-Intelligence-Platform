@@ -1,20 +1,49 @@
 # Build plan
 
 Operational checklist for the Contract Intelligence Platform.  
-Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
+Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [TECH_STACK.md](TECH_STACK.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
-**Current phase: Phase 11 implemented.** Prove with [PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md). Next is Phase 12 (Glide pricing) — not Tiptap.
+## Current product position (canonical)
+
+**Canonical Phase 1 — Foundation:** mostly implemented. **Lint, typecheck, and build pass locally** (2026-08-19). Confirm Vercel deploy after push. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+
+**Canonical Phase 2 — Historical Pilot:** **NOT STARTED.** Pilot kickoff: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
+
+**Next product work after docs reconciliation and a green build:** run 20–30 complete L&P packages through intake → parse → stage → verify. Do **not** expand Intelligence UX, pricing workbench, or proposal builder until the pilot validates the model.
+
+Later **legacy engineering** work (schema phases 7–11, Intelligence shell) exists in the repo but is **early / unvalidated**. Passing a `PHASE*_ACCEPTANCE.md` script does **not** mean the corresponding canonical product phase is complete.
 
 Do not skip phases to get a pretty proposal editor. Verification of historical documents is the first usable product.
 
 ---
 
+## Canonical product phases vs legacy engineering IDs
+
+Use **canonical product phases** for product maturity. Keep **legacy engineering IDs** on migrations, scripts, and `PHASE*_ACCEPTANCE.md` filenames — do not rename them.
+
+| Canonical product phase | Meaning | Legacy engineering IDs | Honest status |
+| --- | --- | --- | --- |
+| **1 — Foundation** | App shell, Auth/RLS, document registry/versions, staging/verification structure, Storage, Workflow skeleton, processor interfaces, verification workbench | 0–5 | Mostly built; production prerender not green |
+| **2 — Historical Pilot** | 20–30 complete L&P packages; routing lock from real evidence | 6 | **Not started** (0 packages) |
+| **3 — Historical ingestion / processing** | Production ingest loop validated on real files | 3–5 + 7 promotion | Code exists; unproven on L&P corpus |
+| **4 — Broader historical migration** | Controlled corpus batches | 8 | UI/RPC exists; no corpus |
+| **5 — Contracts / compliance / renewals** | Operational contract portfolio from verified data | 9 | Schema/UI early; unvalidated |
+| **6 — Market / buyer / competitor intelligence** | Evidence-backed win/loss, competitor, research | 10 | Thin UX + tables; not operational intelligence |
+| **7 — Search / RAG / Ask Intelligence** | LOCATE vs ASK; purpose-aware retrieval | 11 | FTS RPC + Ask surface; partial |
+| **8 — Pricing intelligence** | Glide workbench; human final price | 12 | Placeholder page |
+| **9 — Proposal builder** | Grounded drafting; Google Docs collab; procurement outputs | 13 | Placeholder |
+| **Later — Commercial PaaS** | Stripe, tenant admin | 14 | Future |
+
+**Legacy engineering Phase 2 (tenancy/RLS) is Foundation work, not the Historical Pilot.** The 48/48 `test:phase2-rls` result proves tenant isolation only.
+
+---
+
 ## How to use this file
 
-1. Finish the current phase’s **acceptance** list before starting the next.
-2. Do not implement anything listed under **out of scope** for that phase.
-3. If a task is not on the list, it is not this phase.
-4. After each phase, update the README “Current phase” line.
+1. Use **canonical product phases** above to decide what the product has actually proven.
+2. Legacy sections below (Phase 0–14) are the **engineering checklist** — keep them for tasks and acceptance scripts.
+3. Do not implement anything listed under **out of scope** for that legacy phase.
+4. After meaningful progress, update README and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
 ---
 
@@ -93,6 +122,8 @@ Everything listed in the user “DO NOT implement yet” list: Workflow, Queues,
 ---
 
 ## Phase 2 — Database, tenancy, provenance schema
+
+> **Legacy engineering Phase 2 → Canonical product Phase 1 (Foundation).** RLS/tenancy is not the Historical Pilot. Passing [PHASE2_ACCEPTANCE.md](PHASE2_ACCEPTANCE.md) (48/48) does not mean product Phase 2 is complete.
 
 ### Goal
 
@@ -258,9 +289,11 @@ Proposal editor, pricing intelligence workbench, public research agents.
 
 ## Phase 6 — Pilot benchmark (locks routing)
 
+> **Legacy engineering Phase 6 → Canonical product Phase 2 (Historical Pilot).** This is the first incomplete **product** phase that blocks trust in everything after it.
+
 ### Status
 
-Implemented as a **fixture baseline** plus checked-in policy. See [PHASE6_ACCEPTANCE.md](PHASE6_ACCEPTANCE.md). Real L&P package scores are still 0 — do not start Phase 7 until those packages exist and are verified.
+**Fixture baseline only** — checked-in routing policy and harness exist. See [PHASE6_ACCEPTANCE.md](PHASE6_ACCEPTANCE.md). **Real L&P package scores: 0.** Canonical Phase 2 is **NOT STARTED.** Do not treat legacy phases 7–11 as product-complete until 20–30 complete packages are ingested and verified here.
 
 ### Goal
 
@@ -289,9 +322,11 @@ Full corpus migration. Cloud Run unless the pilot **proved** local/Vercel limits
 
 ## Phase 7 — Expand canonical schema
 
+> **Legacy engineering Phase 7 → Canonical product Phase 3 (partial).** Acceptance scripts pass; **not validated** without a real L&P pilot corpus.
+
 ### Status
 
-Implemented. Prove with [PHASE7_ACCEPTANCE.md](PHASE7_ACCEPTANCE.md). Do not add contract Cron or the rest of MASTER’s table list.
+Engineering implemented ([PHASE7_ACCEPTANCE.md](PHASE7_ACCEPTANCE.md)). Product maturity: **unvalidated** until Historical Pilot completes. Do not add contract Cron or the rest of MASTER’s table list beyond what the pilot proves.
 
 ### Goal
 
@@ -315,9 +350,11 @@ Blindly creating every table in MASTER’s long-term list.
 
 ## Phase 8 — Bulk historical migration
 
+> **Legacy engineering Phase 8 → Canonical product Phase 4 (partial).** RPC/UI exist; no corpus to migrate.
+
 ### Status
 
-Implemented. Prove with [PHASE8_ACCEPTANCE.md](PHASE8_ACCEPTANCE.md). Cloud Run remains off per Phase 6 evidence.
+Engineering implemented ([PHASE8_ACCEPTANCE.md](PHASE8_ACCEPTANCE.md)). **No L&P corpus migrated.** Cloud Run remains off per Phase 6 fixture evidence.
 
 ### Goal
 
@@ -339,9 +376,11 @@ Controlled batches of the larger corpus.
 
 ## Phase 9 — Contracts, renewals, compliance
 
+> **Legacy engineering Phase 9 → Canonical product Phase 5 (partial).** Schema/UI early; not validated on verified L&P contracts.
+
 ### Status
 
-Implemented. Prove with [PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md).
+Engineering implemented ([PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md)). Product maturity: **unvalidated** without verified contract corpus.
 
 ### Goal
 
@@ -356,11 +395,17 @@ Operational contract portfolio from verified data.
 
 ### Acceptance — you can use it when
 
-- A contract expiring in 32 days shows in the 30-day bucket from verified dates, with source.
+- A contract expiring in **32 days** shows in the **60-day** bucket; **20 days** in the **30-day** bucket — per [PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md) and `scripts/phase9-contracts-acceptance.mjs` (not the 30-day bucket for 32 days).
 
 ---
 
 ## Phase 10 — Win/loss and intelligence
+
+> **Legacy engineering Phase 10 → Canonical product Phase 6 (partial).** Tables + thin UX exist; **KEEP + FREEZE** until verified corpus. Not operational market intelligence.
+
+### Status
+
+Engineering implemented ([PHASE10_ACCEPTANCE.md](PHASE10_ACCEPTANCE.md)). Market counts are document/entity tallies, not canonical verified market facts.
 
 ### Goal
 
@@ -385,6 +430,12 @@ Prove with [PHASE10_ACCEPTANCE.md](PHASE10_ACCEPTANCE.md). Documented reason sta
 
 ## Phase 11 — Hybrid RAG
 
+> **Legacy engineering Phase 11 → Canonical product Phase 7 (partial).** FTS RPC + Ask/Content UI exist; **KEEP + FREEZE.** Not purpose-aware; header search is Ask-only (no LOCATE).
+
+### Status
+
+Engineering implemented ([PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md)). UI uses FTS only (no query embeddings). Missing: LOCATE vs ASK, retrieval purpose (`LOSS_ANALYSIS` vs `PROPOSAL_DRAFTING`), grounded report synthesis.
+
 ### Goal
 
 Search verified knowledge: SQL + FTS + pgvector.
@@ -406,6 +457,8 @@ Prove with [PHASE11_ACCEPTANCE.md](PHASE11_ACCEPTANCE.md).
 
 ## Phase 12 — Pricing intelligence
 
+> **Legacy engineering Phase 12 → Canonical product Phase 8.** **Not started** (placeholder page only). Do not start until Historical Pilot completes and build is green.
+
 ### Goal
 
 Spreadsheet-like pricing with evidence; human final price.
@@ -420,6 +473,8 @@ Spreadsheet-like pricing with evidence; human final price.
 ---
 
 ## Phase 13 — Proposal builder
+
+> **Legacy engineering Phase 13 → Canonical product Phase 9.** **Not started** (placeholder). Includes in-app drafting → Google Docs working proposal → final procurement output (PDF/DOCX/portal/workbook).
 
 ### Goal
 

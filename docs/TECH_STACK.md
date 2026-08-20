@@ -1,8 +1,8 @@
 # Tech stack
 
-Companion to [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Execute work from [BUILD_PLAN.md](BUILD_PLAN.md).
+Companion to [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Execute work from [BUILD_PLAN.md](BUILD_PLAN.md). Product phases: canonical 1–9 in BUILD_PLAN (legacy engineering 0–14 on migrations).
 
-Locked at the platform/framework layer. Parser, OCR, and model IDs stay abstracted until the L&P document benchmark.
+Locked at the platform/framework layer. Parser, OCR, and model IDs stay abstracted until the **Historical Pilot** (canonical Phase 2) on real L&P documents.
 
 Prices below are a planning snapshot (August 2026). Recheck before bulk migration.
 
@@ -11,17 +11,19 @@ Prices below are a planning snapshot (August 2026). Recheck before bulk migratio
 | Layer | Choice | Rule |
 | --- | --- | --- |
 | Web app | Next.js App Router, React, TypeScript | Official `with-supabase` starter is the only cloned base |
-| Host | Vercel, Fluid Compute, Node 24 | No Edge runtime. Repo declares `engines.node >= 24` plus `.nvmrc` / `.node-version`. `vercel.ts` is optional. Repo-root `vercel.json` deploys **only** the Next.js `web` service. Do not add `services/processor` as a Vercel Service until it has a real HTTP runtime (Phase 4+). Bulk jobs stay Cloud Run later |
+| Host | Vercel, Fluid Compute, Node 24 | No Edge runtime. `vercel.json` deploys **only** `apps/web`. Processor stays off Vercel until needed. Bulk jobs: Cloud Run **only if Historical Pilot proves need** |
 | UI | Tailwind CSS, shadcn/ui, Lucide, dashboard sidebar | One design system. Dense, desktop-first, audit-oriented |
 | Lists | TanStack Table + TanStack Query | Opportunities, documents, queues, contracts, intelligence |
-| Spreadsheets | Glide Data Grid | Dep only in Phase 1. Glide 6 peers React 18; this repo uses React 19 + `legacy-peer-deps` until Glide supports 19. No pricing grid UI until Phase 12 |
+| Spreadsheets | Glide Data Grid | Dep in Foundation. No pricing grid UI until **canonical Phase 8** (legacy Phase 12) |
 | Forms | React Hook Form + Zod | Frontend validation mirrors processor schemas |
-| Proposal editor | Tiptap OSS; Novel UX patterns | Phase 13. Novel is not a database |
+| Proposal editor | Tiptap OSS; Novel UX patterns | **Canonical Phase 9** (legacy Phase 13). Novel is not a database |
 | PDF viewer | PDF.js / react-pdf + source-page overlay | Required for verification |
 | Database | Supabase-hosted PostgreSQL | Only structured system of record |
 | Auth / tenancy | Supabase Auth + Postgres RLS + org roles | Do not add Clerk |
 | Canonical file vault | Supabase Storage | Canonical **immutable-by-policy** ingested evidence vault. Not WORM by default — append-only via path layout, overwrite bans, RLS, and audit |
-| Drive | Import/source integration + human workspace | Copy into Storage. Retain Drive file ID + checksum. Do not delete Drive files |
+| Drive | Import/source integration + human workspace | Copy into Storage. Retain Drive file ID + checksum. Do not delete Drive files. **Not** the permanent canonical vault |
+| Google Docs | Working proposal collaboration + export | Human workspace alongside in-app drafting. **Not** a competing canonical database |
+| Google Sheets | Controlled export/import/QA | **Not** bidirectionally editable with Supabase as a second DB |
 | Search | SQL filters + tsvector + pgvector | No Pinecone, Qdrant, or Azure AI Search |
 | Live status | Supabase Realtime | Queue/processing badges only, not co-editing |
 | Document lifecycle | Vercel Workflow | intake → parse → extract → validate → wait for human → promote |
@@ -74,14 +76,14 @@ StructuredExtractor
 └── provider Batch API when cheaper
 ```
 
-The first representative benchmark (20–30 complete packages, 30–50 documents) selects the production routing policy. Candidates may include Gemini 3.6 Flash, Gemini 3.5 Flash-Lite, current OpenAI/Anthropic frontier models, and Mistral OCR/models. None is “the engine” until measured.
+The **Historical Pilot** (canonical Phase 2; legacy Phase 6) — 20–30 complete L&P packages — selects the production routing policy. None is “the engine” until measured on real L&P files.
 
 ## Cost notes that must stay visible
 
 - Commercial floor is still roughly Vercel Pro + Supabase Pro before variable OCR/model/compute.
 - **Workflow is not free.** Hobby currently includes 50,000 workflow events/month. Pro Workflow events are usage-based (currently about $20 per 1M events), plus workflow data written/retained. Pro is $20/month and includes **$20 of general infrastructure usage credit**, which can absorb some usage before additional charges. Recheck [Vercel Workflow pricing](https://vercel.com/docs/workflows/pricing) before bulk runs.
 - Vercel documents that Workflow uses Queues internally. **Do not claim separately billed Queue API operations are automatically incurred by every Workflow action** unless Vercel billing docs confirm that. Functions invoked by Workflow still bill as compute.
-- **Do not add `vercel.ts` in Phase 1.** Next.js on Vercel needs no explicit config by default. Add `vercel.ts` later only when we have project configuration that benefits from configuration-as-code.
+- **Do not add `vercel.ts` unless needed.** Add only when configuration-as-code has concrete benefit.
 - Supabase Storage is the vault because of RLS and tenancy plus **append-only policy**, not because the product is magically WORM. Pro currently includes 100 GB with cheap overage; recheck [Supabase pricing](https://supabase.com/pricing) before the historical corpus.
 - Deduplicate by SHA-256 before OCR, extraction, or embeddings. Do not reprocess an unchanged version.
 - Escalate to managed OCR / stronger models only on difficult or low-confidence pages.

@@ -1,5 +1,7 @@
 # Phase 4 acceptance
 
+> **Legacy engineering Phase 4 → Canonical product Phase 1 / 3 (Foundation / ingestion).** Passing this file does **not** mean production parsing is validated on L&P files.
+
 Processor parses into a normalized document and writes **staging** facts. No canonical `contracts` / `pricing_lines`. Status after extract is `NEEDS_REVIEW`, never `VERIFIED`.
 
 ## What landed

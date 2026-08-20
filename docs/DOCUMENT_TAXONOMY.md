@@ -1,45 +1,88 @@
 # Document taxonomy
 
-See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Production routing is locked in [ROUTING_POLICY.md](ROUTING_POLICY.md) (Phase 6). Fixture scores: [benchmarks/PILOT_RESULTS.md](benchmarks/PILOT_RESULTS.md).
+See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md), [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md). Production routing: [ROUTING_POLICY.md](ROUTING_POLICY.md) (legacy Phase 6 fixtures). Scores: [benchmarks/PILOT_RESULTS.md](benchmarks/PILOT_RESULTS.md).
 
-Every file is a document record linked to an organization, optional batch, optional client/opportunity/solicitation/contract, and a version chain. Original files are never replaced by extracted text.
+## Procurement package structure
 
-## Registry fields (minimum)
+Historical procurement documents are **not** unrelated files. Associate complete packages:
 
-organization, batch, internal document number, original filename, storage provider, storage path, Google Drive ID (when imported), checksum, MIME type, page/sheet count, document type/subtype, client, opportunity, solicitation, contract, date, version, current-version flag, processing status, extraction status, verification status, creator/importer, timestamps.
+```text
+BUYER / AGENCY (clients)
+  └── PROCUREMENT OPPORTUNITY (opportunities)
+       ├── Solicitation (RFP / RFQ / IFB)
+       ├── Addenda
+       ├── Q&A / clarifications
+       ├── Proposal drafts
+       ├── Final submitted proposal
+       ├── Pricing workbook / schedule
+       ├── Award notice
+       ├── Bid tabulation
+       ├── Evaluator scorecard
+       ├── Purchase order
+       ├── Executed contract
+       ├── Amendments
+       ├── Modifications
+       ├── Option exercises
+       ├── Renewals
+       └── Compliance / past-performance evidence
+```
 
-## Types
+Package association is required for validation, reconciliation, and intelligence — not optional filing.
 
-RFP, RFQ, IFB, solicitation, addendum, Q&A, proposal draft, final proposal, quote, pricing workbook, award notice, bid tab, evaluator scorecard, PO, contract, amendment, modification, option exercise, renewal, license, insurance, certification, resume, reference, past-performance evidence, other.
+## Document registry fields
 
-## Parser routing by type
+Each `documents` row tracks at minimum: organization, batch, opportunity (when known), document type, filename, processing status, commercial truth (when inferable), checksum linkage via versions.
 
-Locked in [ROUTING_POLICY.md](ROUTING_POLICY.md). Summary:
+Processing statuses: `UPLOADED`, `QUEUED`, `PARSING`, `EXTRACTING`, `VALIDATING`, `NEEDS_REVIEW`, `VERIFIED`, `FAILED`.
 
-| Input | Default path | Do not |
-| --- | --- | --- |
-| XLSX / XLSM pricing workbooks | `XlsxParser` via openpyxl (sheets, merged cells, number formats, formulas as stored values + formula text) | Send the whole workbook through OCR or an LLM first |
-| DOCX | Native/Docling text+structure path | Treat as a scanned PDF |
-| Clean digital PDF | `pdf-native` (pypdf) | Pay Document AI / Mistral OCR by default |
-| Scanned PDF / forms / nested tables | Escalate to managed OCR / Document AI / stronger multimodal model | Assume one parser wins every document |
-| Low confidence / conflict | Alternate provider or human review | Silently pick a value |
+AI completion ≠ `VERIFIED`. Only human verification completes the verification gate.
 
-## Processing statuses
+## Document types (extensible strings)
 
-`UPLOADED`, `QUEUED`, `PARSING`, `EXTRACTING`, `VALIDATING`, `NEEDS_REVIEW`, `VERIFIED`, `FAILED`
+Examples — not a closed enum hardcoded to one NAICS or service line:
 
-AI completion is never `VERIFIED`.
+RFP, RFQ, IFB, solicitation, addendum, Q&A, proposal draft, final proposal, quote, pricing workbook, award notice, bid tab, evaluator scorecard, PO, contract, amendment, modification, option exercise, renewal, license, insurance, certification, resume, reference, past-performance evidence, public research capture, other.
 
-## Package grouping
+`infer_commercial_truth(doc_type, filename)` maps types to commercial truths for promotion. Extend as the pilot discovers L&P naming patterns.
 
-The core unit is the opportunity/package, not a random PDF:
+## Version rules
 
-Client → Opportunity → original RFP, addenda, Q&A, proposal draft, final proposal, pricing, award, bid tab, PO, contract, amendment, renewal
+- Every new source file → new `document_version` + new Storage object (never overwrite original).
+- `is_current` marks the active version for business logic; superseded versions remain readable.
+- Checksum match → same bytes; may skip reprocessing but still record provenance.
+- Chunks inherit `is_current_version` for retrieval filtering.
 
-Each file keeps its own identity and version while linking to the same lifecycle.
+## Current-version selection
 
-## Content reuse statuses (later)
+Authoritative "current" for retrieval and promotion:
 
-`APPROVED`, `REVIEW_REQUIRED`, `DO_NOT_USE`, `SUPERSEDED`
+- Solicitation side: latest verified addendum/Q&A chain for **requested** facts
+- Proposal side: **final submitted** for **proposed** facts
+- Contract side: latest verified amendment/modification/option for **current** facts
 
-Won content is not automatically approved. Lost content is not automatically discarded.
+Conflicts between versions → `validation_exceptions`, not silent replacement.
+
+## Source document relationships
+
+Documents link to opportunities and buyers. Facts link to `source_evidence` (page, section, excerpt, bbox). Promotion maps verified facts to canonical entities (`requirements`, `pricing_lines`, `awards`, `contracts`, etc.) per [SOURCE_PRECEDENCE.md](SOURCE_PRECEDENCE.md).
+
+## Reuse status (proposal content)
+
+When proposal sections become searchable chunks:
+
+- `APPROVED` — may enter drafting retrieval
+- `REVIEW` — human review required before drafting use
+- `DO_NOT_USE` — never enter drafting retrieval; may appear in loss/evaluator analysis when purpose-aware retrieval exists
+- `SUPERSEDED` — replaced by newer approved content
+
+Won ≠ automatically reusable. Lost ≠ automatically unusable.
+
+## Service taxonomy and NAICS
+
+Do **not** hardcode one NAICS code or a fixed handful of service types into the architecture. Service taxonomy (armed, unarmed, PPO, off-duty police, patrol, supervisor, etc.) and NAICS/PSC/GSA fields belong in **relational, extensible** tables added when the pilot proves need — not as application constants.
+
+## Parser routing
+
+See [ROUTING_POLICY.md](ROUTING_POLICY.md). XLSX → openpyxl first. Digital PDF → native parse. Scans → escalate (OCR not production-wired). DOCX → not production-wired until pilot justifies.
+
+Legacy Phase 6 routing is locked from **fixtures only** — 0 real L&P packages scored.

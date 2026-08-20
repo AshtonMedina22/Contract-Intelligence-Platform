@@ -1,29 +1,62 @@
 # Implementation roadmap
 
-Index of phases. **Execute using [BUILD_PLAN.md](BUILD_PLAN.md)** (tasks, files, acceptance, out of scope). Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md).
+Index of phases. **Execute using [BUILD_PLAN.md](BUILD_PLAN.md)** (tasks, files, acceptance, out of scope). Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
-Do not reorder phases to create impressive screens earlier.
+Do not reorder phases to create impressive screens earlier. **Legacy engineering phase numbers on migrations and acceptance files are not product maturity.**
 
-| Phase | Name | Usable outcome |
+---
+
+## Current product position
+
+**Foundation (canonical Phase 1):** mostly built — app, Auth/RLS, intake, processor, verification workbench, early schema. Lint fails locally; Vercel deploy not verified green.
+
+**Historical Pilot (canonical Phase 2):** **NOT STARTED** — 0 real L&P packages scored.
+
+**Next incomplete product phase:** Historical Pilot. Do not treat legacy engineering phases 7–11 as product-complete.
+
+Later Intelligence UX (Ask, Market, Reports) is **KEEP + FREEZE** until the pilot validates the corpus.
+
+---
+
+## Canonical product phases
+
+| Canonical phase | Name | Usable product outcome |
 | --- | --- | --- |
-| 0 | Docs in git | Spec + plan cloneable from GitHub |
-| 1 | Framework foundation | Next.js app builds; empty processor/packages/supabase folders |
-| 2 | Schema / provenance | RLS org isolation; staging tables |
-| 3 | Intake + Workflow start | Upload/import, checksum, registry, lifecycle run |
-| 4 | Processor interfaces | Parse/extract to staging; XLSX via openpyxl |
-| 5 | Verification workbench | PDF.js + human verify/promote |
-| 6 | Pilot benchmark | Routing policy from L&P documents |
-| 7 | Expand canonical schema | Four-truth mappings the pilot proved |
-| 8 | Bulk migration | **Implemented.** [PHASE8_ACCEPTANCE.md](PHASE8_ACCEPTANCE.md) |
-| 9 | Contracts / Cron | **Implemented.** [PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md) |
-| 10 | Intelligence | Win/loss, client, competitor evidence |
-| 11 | Hybrid RAG | SQL + FTS + pgvector on verified content |
-| 12 | Pricing intelligence | Glide workbench; human final price |
-| 13 | Proposal builder | Tiptap; grounded drafts |
-| 14 | Commercial | Stripe / tenant admin |
+| 1 | Foundation | App builds; org isolation; registry; staging; verification structure; Storage; Workflow skeleton |
+| 2 | Historical Pilot | 20–30 complete L&P packages verified; routing locked from real evidence |
+| 3 | Historical ingestion / processing | Production ingest → verify → promote loop proven on L&P |
+| 4 | Broader historical migration | Controlled corpus batches with failure isolation |
+| 5 | Contracts / compliance / renewals | Portfolio, renewals, compliance from verified data |
+| 6 | Market / buyer / competitor intelligence | Evidence-backed win/loss, competitor, research |
+| 7 | Search / RAG / Ask Intelligence | LOCATE vs ASK; purpose-aware verified retrieval |
+| 8 | Pricing intelligence | Glide workbench; human final price |
+| 9 | Proposal builder | Grounded drafts; Google Docs collab; procurement outputs |
+| Later | Commercial PaaS | Stripe / tenant admin (legacy Phase 14) |
 
-## Current status
+---
 
-**Phase 9 implemented** — contracts, renewals center, compliance, pg_cron buckets ([PHASE9_ACCEPTANCE.md](PHASE9_ACCEPTANCE.md)). Next: Phase 10 win/loss.
+## Legacy engineering ID map
 
-Execute using [BUILD_PLAN.md](BUILD_PLAN.md). Setup on a new machine: [DEVICE_SETUP.md](DEVICE_SETUP.md).
+Keep these IDs on SQL migrations, npm scripts, and `PHASE*_ACCEPTANCE.md` filenames.
+
+| Legacy ID | Name | Maps to canonical | Engineering status | Product maturity |
+| --- | --- | --- | --- | --- |
+| 0 | Docs in git | 1 | Done | — |
+| 1 | Framework foundation | 1 | Done | Foundation partial |
+| 2 | Schema / provenance / RLS | **1** (not pilot) | Done (48/48 RLS) | Foundation partial |
+| 3 | Intake + Workflow | 1 / 3 | Implemented | Unvalidated |
+| 4 | Processor interfaces | 1 / 3 | Implemented | Unvalidated |
+| 5 | Verification workbench | 1 / 3 | Implemented | Unvalidated |
+| 6 | Pilot benchmark | **2** | Fixtures only | **Not started** |
+| 7 | Expand canonical schema | 3 | Implemented | Unvalidated |
+| 8 | Bulk migration | 4 | Implemented | No corpus |
+| 9 | Contracts / Cron | 5 | Implemented | Unvalidated |
+| 10 | Win/loss intelligence | 6 | Implemented | Early UX; FREEZE |
+| 11 | Hybrid RAG | 7 | Implemented | Early UX; FREEZE |
+| 12 | Pricing intelligence | 8 | Not started | — |
+| 13 | Proposal builder | 9 | Not started | — |
+| 14 | Commercial | Later | Not started | — |
+
+Passing a legacy acceptance script does **not** mean the corresponding canonical product phase is complete.
+
+Execute using [BUILD_PLAN.md](BUILD_PLAN.md). Setup: [DEVICE_SETUP.md](DEVICE_SETUP.md).

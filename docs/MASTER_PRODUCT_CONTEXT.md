@@ -7,9 +7,9 @@ This file lives in git so it is available on any computer after clone/push. It s
 - Source merged: L&P Master Product Context — Final Updated 2026-08-19 (Downloads).
 - Earlier draft filenames LP SETUP DRAFT.md and LP_MASTER_PRODUCT_CONTEXT_FINAL_UPDATED_2026-08-19.md were not present in Downloads at merge time.
 - Locked architecture (Workflow, Storage-by-policy, Cron split, Excel/PDF, repo layout, pricing wording) is applied below. If an older paragraph still says Drive is the permanent vault or Queues are the lifecycle coordinator, the **Locked architecture** section wins.
-- Operational checklist: [BUILD_PLAN.md](BUILD_PLAN.md). Short stack: [TECH_STACK.md](TECH_STACK.md).
+- Operational checklist: [BUILD_PLAN.md](BUILD_PLAN.md). Short stack: [TECH_STACK.md](TECH_STACK.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
-**Do not start coding from this file until [BUILD_PLAN.md](BUILD_PLAN.md) Phase 1 is explicitly approved.** Understanding the product still comes first.
+For implementation: read [PRODUCT_SPEC.md](PRODUCT_SPEC.md) and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before adding features. Canonical product phases 1–9 govern maturity; legacy engineering IDs 0–14 remain on migrations only.
 
 ## Locked architecture (wins over any older wording in this file)
 
@@ -18,6 +18,31 @@ This file lives in git so it is available on any computer after clone/push. It s
 Verified procurement operating system. Historical files become staged, source-backed facts. Humans verify. Only then: contracts, four commercial truths, pricing evidence, grounded drafts. AI never auto-promotes to canonical.
 
 Four truths, never collapsed: customer requested / L&P proposed / customer awarded / current contract.
+
+### Six product engines
+
+All product and roadmap docs must preserve these engines explicitly:
+
+1. **Opportunity / Solicitation** — current pursuits (RFP, RFQ, IFB, quote, deadlines, requirements, go/no-go). Buyer/agency is procurement data, not CRM.
+2. **Contract & Compliance** — won work, terms, amendments, renewals, certifications, expirations.
+3. **Pricing Intelligence** — requested structure ≠ cost model ≠ submitted ≠ awarded ≠ current; evidence-backed; human final price.
+4. **Buyer / Market / Competitor Intelligence** — sourced history, bid tabs, competitors, public research; no unsupported causation.
+5. **Proposal Intelligence** — section-level reuse with approval states; `DO_NOT_USE` never in drafting retrieval.
+6. **Executive / Business Intelligence** — pipeline, win rates, trends from verified data only.
+
+### Proposal output workflow
+
+```text
+IN-APP INTELLIGENCE / DRAFTING
+        → GOOGLE DOCS WORKING PROPOSAL (collaboration)
+        → FINAL PROCUREMENT OUTPUT (PDF / DOCX / portal / workbook)
+```
+
+Google Docs and Sheets are workspace/export — not competing canonical databases. See [PRODUCT_SPEC.md](PRODUCT_SPEC.md).
+
+### Early UX rule
+
+Later-phase functionality implemented early (Intelligence shell, Ask, Market, Reports) does **not** make that canonical product phase complete. **KEEP + FREEZE** until the Historical Pilot validates the corpus. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
 ### Document lifecycle
 
@@ -82,31 +107,17 @@ pnpm (or npm workspaces if pnpm is unavailable) for JS. Python owns pyproject.to
 
 ## **Before implementing anything**
 
-Understand the complete product described below.  
-**Do not start coding yet.**  
-Your first responsibility is to understand:
+Read [PRODUCT_SPEC.md](PRODUCT_SPEC.md), [BUILD_PLAN.md](BUILD_PLAN.md), and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) first.
 
-> * what the finished product is;  
-> * the business problem it solves;  
-> * the full feature set;  
-> * the data architecture;  
-> * the technology/framework stack;  
-> * ingestion and verification rules;  
-> * AI/RAG architecture;  
-> * pricing rules;  
-> * contract lifecycle;  
-> * proposal-generation rules;  
-> * multi-tenancy;  
-> * implementation sequence.
+**Current product position:** Foundation mostly built; **Historical Pilot (canonical Phase 2) NOT STARTED** (0 L&P packages). Do not expand Intelligence UX until the pilot completes.
 
-After reading this specification:
+Your responsibility when continuing implementation:
 
-> 1. inspect the existing repository;  
-> 2. identify what foundation already exists;  
-> 3. create/update the canonical project documentation;  
-> 4. identify conflicts or missing architectural decisions;  
-> 5. recommend the minimum next implementation phase;  
-> 6. **STOP before implementing.**
+> 1. inspect the existing repository against CURRENT_STATE_AUDIT;  
+> 2. respect canonical product phase order;  
+> 3. do not treat legacy engineering acceptance scripts as product maturity;  
+> 4. do not build CRM, client portal, or fake analytics;  
+> 5. recommend the minimum next phase — currently Historical Pilot after docs + green build.
 
 # ---
 
@@ -1308,220 +1319,68 @@ Do **not** blindly create all tables before testing real packages.
 
 # ---
 
-**27\. FINAL Correct Build Order**
+**27\. FINAL Correct Build Order (canonical product phases)**
 
-This is the build sequence to follow.
+Use **canonical product phases 1–9** for product maturity. **Legacy engineering IDs 0–14** remain on migrations, npm scripts, and `PHASE*_ACCEPTANCE.md` filenames — do not rename them. Full mapping: [BUILD_PLAN.md](BUILD_PLAN.md), [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md).
 
-### **Phase 1 — Repository / Framework Foundation**
+| Canonical phase | Name | Legacy engineering IDs |
+| --- | --- | --- |
+| 1 | Foundation | 0–5 |
+| 2 | Historical Pilot | 6 |
+| 3 | Historical ingestion / processing | 3–5, 7 |
+| 4 | Broader historical migration | 8 |
+| 5 | Contracts / compliance / renewals | 9 |
+| 6 | Market / buyer / competitor intelligence | 10 |
+| 7 | Search / RAG / Ask Intelligence | 11 |
+| 8 | Pricing intelligence | 12 |
+| 9 | Proposal builder / grounded drafting | 13 |
+| Later | Commercial PaaS | 14 |
 
-Establish:
+**Current position (2026-08-19):** Foundation mostly built; **Historical Pilot NOT STARTED** (0 L&P packages). Later Intelligence UX exists early — **KEEP + FREEZE**. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
-> * Vercel Supabase Starter;  
-> * Next.js App Router;  
-> * React/TypeScript;  
-> * Tailwind/shadcn/Lucide;  
-> * TanStack Table;  
-> * Glide Data Grid dependency/foundation;  
-> * TanStack Query;  
-> * React Hook Form/Zod;  
-> * Supabase client/server/auth structure;  
-> * web \+ processing service repo structure;  
-> * lint/test/build foundation.
+### Phase 1 — Foundation
 
-### **Phase 2 — Core Database / Staging / Provenance**
+Repo, Next.js app, Supabase/Postgres, Auth/RLS, tenant foundation, document registry/versions, extraction/staging, provenance/evidence, verification/audit structure, Storage foundation, Workflow skeleton, application shell, processor interfaces, verification workbench (PDF.js).
 
-Create only the safe ingestion foundation:
+**Legacy Phase 2 (RLS/tenancy) is Foundation work — not the Historical Pilot.**
 
-> * organizations;  
-> * memberships;  
-> * document batches;  
-> * documents;  
-> * document versions;  
-> * extraction runs;  
-> * extracted facts;  
-> * source evidence;  
-> * verification events;  
-> * validation exceptions;  
-> * clients;  
-> * opportunities;  
-> * tenant ownership/RLS;  
-> * audit timestamps/indexes.
+### Phase 2 — Historical Pilot
 
-### **Phase 3 — Document Intake \+ Queue**
+~20–30 materially different **complete** L&P procurement packages. Wins, losses, RFP/RFQ/IFB, proposals, pricing, scorecards, contracts, amendments, renewals, DOCX, XLSX, clean PDFs, scans. Locks production routing **from evidence**, not fixtures alone.
 
-Implement:
+### Phase 3 — Historical ingestion / processing
 
-> * batch creation;  
-> * Supabase Storage intake;  
-> * SHA-256 checksum;  
-> * duplicate/version foundation;  
-> * document registry;  
-> * processing statuses;  
-> * Vercel Queue publishing through JobQueue.
+Intake, classification, parsing/OCR, extraction, staging, validation, reconciliation, human verification, canonical promotion — **proven on L&P files**.
 
-### **Phase 4 — Python Processing Service \+ Provider Interfaces**
+### Phase 4 — Broader historical migration
 
-Implement:
+Controlled batches of the larger corpus. Cloud Run only if the pilot proves need.
 
-> * FastAPI/Pydantic processing service;  
-> * Workflow/JobPort worker calls (not Queues as the lifecycle);  
-> * DocumentParser interface including XlsxParser (openpyxl);  
-> * Docling adapter;  
-> * managed OCR adapters behind interfaces;  
-> * native multimodal-PDF adapter;  
-> * StructuredExtractor model/provider interface;  
-> * normalized document representation;  
-> * staging writes;  
-> * validation interface;  
-> * idempotency.
+### Phase 5 — Contracts / compliance / renewals
 
-Do not call one parser/model the production winner yet.
+Operational contract portfolio, renewals center, compliance, Supabase Cron alerts on verified dates.
 
-### **Phase 5 — Human Verification Workbench**
+### Phase 6 — Analytics / market / buyer / competitor intelligence
 
-Build:
+Win/loss, buyer history, competitor bids, public research, evidence-backed strategy — **not document count dashboards pretending to be market facts**.
 
-> * verification queue;  
-> * source/evidence viewer;  
-> * extracted-fact editing;  
-> * verify/edit/reject;  
-> * group verification;  
-> * conflict resolution;  
-> * verification audit events;  
-> * canonical promotion boundary.
+### Phase 7 — Search / RAG / Ask Intelligence
 
-### **Phase 6 — Representative Procurement Pilot \+ Accuracy/Cost Benchmark**
+LOCATE vs ASK; verified retrieval; purpose-aware filters; hybrid FTS + pgvector; grounded synthesis with citations.
 
-Use approximately **20–30 materially different complete procurement packages** and at least **30–50 representative individual documents**.  
-Include:
+### Phase 8 — Pricing intelligence
 
-> * wins;  
-> * losses;  
-> * RFP/RFQ/IFB;  
-> * proposals;  
-> * pricing sheets/workbooks;  
-> * scorecards;  
-> * contracts;  
-> * amendments;  
-> * renewals;  
-> * clean digital PDFs;  
-> * ugly scans;  
-> * multi-page/nested tables;  
-> * forms/checkboxes;  
-> * DOCX;  
-> * XLSX;  
-> * government/ISD/commercial.
+Glide workbench, comparables, wage/cost inputs, human final price.
 
-Compare parser/model pipelines on:
+### Phase 9 — Proposal builder
 
-> * table-cell accuracy;  
-> * requirement recall;  
-> * dates/entities;  
-> * page/section provenance;  
-> * checkbox/forms;  
-> * scan quality;  
-> * cross-document reconciliation;  
-> * time;  
-> * API cost;  
-> * compute cost.
+Tiptap in-app drafting → Google Docs working proposal → final procurement output. Requirement coverage, approval gates, `L&P INPUT REQUIRED`.
 
-This phase locks the production routing policy **from evidence**, not assumption.
+Do not reorder phases for demo screens. **Operational checklist:** [BUILD_PLAN.md](BUILD_PLAN.md).
 
-### **Phase 7 — Expand Canonical Procurement / Contract / Pricing Schema**
+### Legacy engineering detail (reference only)
 
-Apply the domain tables/relationships that the pilot proves are required.  
-Lock:
-
-> * document routing rules;  
-> * parser/model escalation rules;  
-> * source precedence;  
-> * four-truth mappings;  
-> * canonical promotion mappings.
-
-### **Phase 8 — Bulk Historical Migration**
-
-Run the larger historical corpus in controlled batches.  
-Use:
-
-> * checksums/dedupe;  
-> * Cloud Run Jobs for heavy workloads;  
-> * local/self-hosted Docling where economical;  
-> * managed OCR only where justified;  
-> * Batch model inference where appropriate;  
-> * staging;  
-> * validation;  
-> * verification queues.
-
-### **Phase 9 — Contracts / Renewals / Compliance**
-
-Operationalize verified:
-
-> * contracts;  
-> * amendments;  
-> * modifications;  
-> * options;  
-> * renewals;  
-> * compliance;  
-> * Supabase Cron alert logic.
-
-### **Phase 10 — Win/Loss \+ Client/Competitor Intelligence**
-
-Build:
-
-> * evaluator intelligence;  
-> * client history;  
-> * competitor bids/awards;  
-> * public-source research;  
-> * source-backed strategy analysis;  
-> * analytics foundation.
-
-### **Phase 11 — Full-Text \+ pgvector Hybrid RAG**
-
-Add:
-
-> * approved chunks;  
-> * full-text indexes;  
-> * embeddings;  
-> * pgvector;  
-> * hybrid retrieval;  
-> * tenant/verification/reuse filters.
-
-### **Phase 12 — Pricing Intelligence**
-
-Build:
-
-> * dynamic client-required pricing structures;  
-> * Glide spreadsheet-style pricing workbench;  
-> * internal cost models;  
-> * comparable selection;  
-> * included/excluded evidence;  
-> * ranges/statistics;  
-> * human price decision.
-
-### **Phase 13 — Proposal Builder**
-
-Build:
-
-> * Tiptap rich proposal editor;  
-> * requirement-by-requirement drafting;  
-> * evidence/source panel;  
-> * approved/review/do-not-use retrieval controls;  
-> * L\&P INPUT REQUIRED;  
-> * grounded AI drafting;  
-> * approval flow.
-
-### **Phase 14 — Commercial Multi-Tenant Product**
-
-Only when appropriate:
-
-> * subscription/billing;  
-> * tenant administration;  
-> * usage controls;  
-> * optional realtime collaboration.
-
-Do not reorder the phases simply to create visually impressive screens earlier.
-
-**Operational checklist with files, packages, exit criteria, and out-of-scope lists:** [BUILD_PLAN.md](BUILD_PLAN.md). Section 27 here is the sequence; BUILD_PLAN is what to actually execute.
+The subsections below in older copies of this file listed 14 engineering phases (Phase 1 Repository Foundation through Phase 14 Commercial). That detail now lives in [BUILD_PLAN.md](BUILD_PLAN.md) under legacy IDs. Do not treat "legacy Phase 11 implemented" as product Phase 7 complete.
 
 # ---
 

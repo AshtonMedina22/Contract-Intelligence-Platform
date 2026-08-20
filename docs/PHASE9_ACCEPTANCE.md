@@ -1,5 +1,7 @@
 # Phase 9 acceptance
 
+> **Legacy engineering Phase 9 → Canonical product Phase 5 (partial).** Schema/UI exist; **not validated** on verified L&P contract corpus. Expiration buckets: 32 days → **60-day**; 20 days → **30-day**.
+
 Operational contract portfolio from **verified** dates. Alerts are SQL (Supabase Cron / pg_cron), not Vercel Cron.
 
 ## What landed

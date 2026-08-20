@@ -1,5 +1,7 @@
 # Phase 3 acceptance
 
+> **Legacy engineering Phase 3 → Canonical product Phase 1 / 3 (Foundation / ingestion).** Passing this file does **not** mean Historical Pilot or product ingestion is validated on L&P files.
+
 Document intake and evidence registry. **No OCR. No parser. AI completion is not VERIFIED.**
 
 ## What landed

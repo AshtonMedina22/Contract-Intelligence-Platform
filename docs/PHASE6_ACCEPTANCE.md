@@ -1,5 +1,7 @@
 # Phase 6 acceptance
 
+> **Legacy engineering Phase 6 → Canonical product Phase 2 (Historical Pilot).** Fixture baseline only — **0 real L&P packages scored.** Canonical Phase 2 is **NOT STARTED** until real packages are ingested and verified.
+
 Evidence-based parser routing. AI still never auto-promotes. Canonical `contracts` / `pricing_lines` are still Phase 7.
 
 ## What landed

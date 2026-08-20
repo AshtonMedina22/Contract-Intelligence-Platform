@@ -1,5 +1,7 @@
 # Phase 8 acceptance
 
+> **Legacy engineering Phase 8 → Canonical product Phase 4 (partial).** Bulk RPC/UI exist; **no L&P corpus migrated.**
+
 Controlled bulk historical migration. Verification remains the bottleneck. No Cloud Run (Phase 6 did not justify it).
 
 ## What landed
