@@ -12,9 +12,11 @@ Do not reorder phases to create impressive screens earlier. **Legacy engineering
 
 **Historical Pilot (canonical Phase 2 / Original Phase 2):** **NOT STARTED** — 0 real L&P packages scored.
 
-**Next incomplete product phase:** Historical Pilot. Do not treat legacy engineering phases 7–11 as product-complete.
+**Next incomplete product phase:** Historical Pilot. Do not treat legacy engineering phases 7–11 as product-complete. Ops workspace UI shipped early — empty without packages.
 
 Later Intelligence UX (Ask, Market, Reports) is **KEEP + FREEZE** until the pilot validates the corpus.
+
+Living trail: [WORK_TRAIL.md](WORK_TRAIL.md).
 
 ---
 
@@ -53,8 +55,8 @@ Keep these IDs on SQL migrations, npm scripts, and `PHASE*_ACCEPTANCE.md` filena
 | 9 | Contracts / Cron | 5 | Implemented | Unvalidated |
 | 10 | Win/loss intelligence | 6 | Implemented | Early UX; FREEZE |
 | 11 | Hybrid RAG | 7 | Implemented | Early UX; FREEZE |
-| 12 | Pricing intelligence | 8 | Not started | — |
-| 13 | Proposal builder | 9 | Not started | — |
+| 12 | Pricing intelligence | 8 | Early workbench (not Glide) | Unvalidated |
+| 13 | Proposal builder | 9 | Workspace tabs, not builder | Unvalidated |
 | 14 | Commercial | Later | Not started | — |
 
 Passing a legacy acceptance script does **not** mean the corresponding canonical product phase is complete.

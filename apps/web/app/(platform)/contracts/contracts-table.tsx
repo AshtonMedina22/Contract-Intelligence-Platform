@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { createColumnHelper, tableFeatures, useTable } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
+import { RebidButton } from "@/components/opportunity-workspace/rebid-button";
 import {
   Table,
   TableBody,
@@ -107,6 +108,11 @@ const alertColumns = alertHelper.columns([
         {ctx.getValue()}
       </Link>
     ),
+  }),
+  alertHelper.display({
+    id: "rebid",
+    header: "Rebid",
+    cell: (ctx) => <RebidButton contractId={ctx.row.original.contract_id} />,
   }),
 ]);
 

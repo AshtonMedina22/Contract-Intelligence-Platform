@@ -44,6 +44,7 @@ async function AskIntelligence({
       p_query: query,
       p_for_drafting: true,
       p_limit: 25,
+      p_opportunity_id: opportunityId || null,
     });
     if (error) errorMessage = error.message;
     rows = (data ?? []).map((hit) => ({
@@ -84,7 +85,7 @@ async function AskIntelligence({
           <Link className="underline" href={`/procurement/opportunities/${opportunityId}`}>
             {opportunityTitle}
           </Link>
-          . Results are still org-wide verified chunks — filter mentally to this package&apos;s documents.
+          . Search is limited to verified chunks from documents linked to this pursuit.
         </p>
       ) : null}
 

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { RebidButton } from "@/components/opportunity-workspace/rebid-button";
 
 async function ContractDetail({ contractId }: { contractId: string }) {
   const supabase = await createClient();
@@ -39,6 +40,7 @@ async function ContractDetail({ contractId }: { contractId: string }) {
         <p className="text-sm">
           Start {contract.start_on ?? "—"} · Verified end {contract.verified_end_on ?? "—"}
         </p>
+        <RebidButton contractId={contract.id} />
         {contract.source_fact_id ? (
           <p className="text-xs text-muted-foreground">Source fact {contract.source_fact_id}</p>
         ) : null}

@@ -20,3 +20,11 @@ __pycache__
 .python-version
 next-env.d.ts
 apps/web/app/.well-known
+
+# IronBee runtime artifacts
+.ironbee/sessions/
+.ironbee/otel/
+.ironbee/config.local.json
+.ironbee/codex-threads.json
+.ironbee/vcs-cache.json
+.claude/settings.local.json

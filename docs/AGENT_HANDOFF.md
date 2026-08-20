@@ -2,7 +2,8 @@
 
 **Repo:** https://github.com/AshtonMedina22/Contract-Intelligence-Platform  
 **Branch:** `main` — run `git log -1` for HEAD  
-**Do not redesign the architecture. Read [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before implementing.**
+**Living trail (must update every session):** [WORK_TRAIL.md](WORK_TRAIL.md)  
+**Do not redesign the architecture. Read [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) and [WORK_TRAIL.md](WORK_TRAIL.md) before implementing.**
 
 Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Ask the human for `apps/web/.env.local` values. Never commit `.env.local`.
 
@@ -29,7 +30,7 @@ Historical files → staging → human verification → canonical Postgres. Four
 
 **Wrong:** “Phase 2 complete because RLS 48/48.” RLS = **Original Phase 1**, not Historical Pilot.
 
-**Next task:** Run Historical Pilot (Original Phase 2). Do **not** expand Intelligence UX or build proposal/pricing until pilot validates corpus.
+**Next task:** (1) Apply opportunity migrations `300000` / `310000` / `320000` on Supabase. (2) Confirm Vercel env. (3) **Historical Pilot**. Do **not** add LLM Ask/competitor reports.
 
 ---
 
@@ -37,8 +38,9 @@ Historical files → staging → human verification → canonical Postgres. Four
 
 | Check | Result |
 | --- | --- |
-| `npm run lint` / `typecheck` / `build` | Pass locally (2026-08-19) |
-| Vercel | Verify after each push to `main` |
+| `npm run lint` / `typecheck` / `build` | Build PASS locally after Pass 4 (2026-08-19) |
+| origin/main | Pass 3+4 on `main` after this push — run `git log -1` |
+| Vercel | Deploy follows push; tenant/env not confirmed; **apply migrations** |
 | Legacy phases 3–11 | Code exists; **KEEP + FREEZE** Intelligence UX |
 
 ---

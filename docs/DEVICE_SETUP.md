@@ -46,6 +46,6 @@ npx supabase db push --yes --db-url "$DIRECT_URL"
 
 **Foundation (mostly):** app, RLS (48/48), intake, processor, verification workbench, early schema, Intelligence shell (frozen).
 
-**Not done:** Historical Pilot on real L&P files, verified corpus, OCR/DOCX production paths, Glide pricing, Tiptap proposals, green Vercel deploy verification, secret rotation before real data.
+**Not done:** Historical Pilot (0 packages), verified corpus, OCR/DOCX production paths, Glide pricing, Tiptap proposals, hosted apply of opportunity migrations, confirmed Vercel tenant/env. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md).
 
 **Do not:** clone Prisma/Drizzle, deploy processor on Vercel, put secrets in git, treat RLS as product Phase 2 complete.

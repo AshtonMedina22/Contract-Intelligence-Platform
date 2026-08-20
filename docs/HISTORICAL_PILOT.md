@@ -1,7 +1,7 @@
 # Historical Pilot (canonical Phase 2)
 
 **Status: NOT STARTED** — 0 real L&P packages scored.  
-**Prerequisite:** Foundation lint + typecheck + build green locally; Vercel deploy verified after push.
+**Prerequisite:** Foundation lint + typecheck + build green locally; Vercel env + opportunity migrations applied. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md).
 
 This phase validates the data model, extraction, verification, and promotion assumptions against **20–30 materially different complete L&P procurement packages** — not fixture files alone.
 
@@ -77,7 +77,7 @@ cd services/processor && pytest && python -m lp_processor.evals.harness
 ## Out of scope for this phase
 
 - Expanding Intelligence UX (Ask, Market, Reports) — **KEEP + FREEZE**
-- Glide pricing workbench, Tiptap proposal builder
+- Glide pricing workbench, Tiptap proposal builder (the existing opportunity **workspace tabs** are allowed; do not treat them as Phase 8/9 complete)
 - Full corpus bulk migration (canonical Phase 4)
 - Fake or synthetic business data in production tables
 

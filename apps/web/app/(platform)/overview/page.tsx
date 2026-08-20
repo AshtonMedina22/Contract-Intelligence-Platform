@@ -49,6 +49,7 @@ async function HomeContent() {
   const winLossCount = winLoss.count ?? 0;
   const chunkCount = chunks.count ?? 0;
   const empty = docCount === 0;
+  const corpusEmpty = chunkCount === 0;
 
   const ingestNext =
     reviewCount > 0
@@ -66,6 +67,13 @@ async function HomeContent() {
           price the next solicitation.
         </p>
       </div>
+
+      {corpusEmpty && docCount > 0 ? (
+        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100">
+          Documents are ingested but none are verified yet — Intelligence and pricing comparables stay empty until
+          you complete the verification queue.
+        </p>
+      ) : null}
 
       <section className="space-y-3 border p-4">
         <div>

@@ -52,3 +52,24 @@ export function formatMoney(value: number | null | undefined): string {
   if (value === null || value === undefined || !Number.isFinite(value)) return "—";
   return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+import type { PricingComparableRow } from "./types";
+
+export function summarizeComparableRates(
+  rows: PricingComparableRow[],
+  field: keyof Pick<PricingComparableRow, "proposed_rate" | "awarded_rate" | "current_rate">,
+) {
+  const values = rows.map((r) => r[field]).filter((v): v is number => v != null && Number.isFinite(Number(v)));
+  if (values.length === 0) return null;
+  const nums = values.map(Number);
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+  return {
+    count: nums.length,
+    min,
+    max,
+    avg,
+    label: `${formatMoney(min)} – ${formatMoney(max)} (avg ${formatMoney(avg)}, n=${nums.length})`,
+  };
+}

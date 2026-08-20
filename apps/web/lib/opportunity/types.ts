@@ -33,6 +33,8 @@ export const SERVICE_TYPE_SUGGESTIONS = [
   "Event security",
   "Construction site",
   "Government facility",
+  "Access control / visitor management",
+  "Off-duty / PPO",
 ] as const;
 
 export type PricingCostModelRow = {
@@ -62,4 +64,18 @@ export type PricingLineRow = {
   proposed_source_fact_id: string | null;
   awarded_source_fact_id: string | null;
   current_source_fact_id: string | null;
+};
+
+export type PricingComparableRow = {
+  id: string;
+  opportunity_id: string;
+  opportunity_title: string;
+  client_name: string | null;
+  service_type: string | null;
+  labor_category: string;
+  requested_rate: number | null;
+  proposed_rate: number | null;
+  awarded_rate: number | null;
+  current_rate: number | null;
+  proposed_source_fact_id: string | null;
 };

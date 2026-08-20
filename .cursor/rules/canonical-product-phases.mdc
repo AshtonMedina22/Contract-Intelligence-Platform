@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Contract Intelligence Platform — agent rules
 
-Read [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md) and [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md) before implementing features.
+Read [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md), [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md), and [docs/WORK_TRAIL.md](../docs/WORK_TRAIL.md) before implementing features. After any session that ships, blocks, or changes direction, update `docs/WORK_TRAIL.md` (session log + next work). Do not leave platform status only in chat.
 
 ## Product phases
 
@@ -32,7 +32,7 @@ Preserve: Supabase Storage vault, Vercel Workflow lifecycle, JobPort, Supabase C
 
 ## Next work order
 
-1. Docs aligned (this reconciliation)
-2. Foundation build/lint green (when explicitly requested)
-3. Historical Pilot on real L&P packages
-4. Then expand later phases per BUILD_PLAN
+1. Keep [WORK_TRAIL.md](../docs/WORK_TRAIL.md) + current-state audit honest
+2. Apply opportunity migrations + confirm Vercel Supabase env
+3. Historical Pilot on real L&P packages (0 scored today)
+4. Then expand later phases per BUILD_PLAN — do not thaw Ask/Market/Reports until corpus exists

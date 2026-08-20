@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { OpportunityStage, GoNoGo, PricingCostModelRow, PricingLineRow } from "./types";
+import type { ProcurementRail, SolicitationKind } from "./proposal-packet";
 
 export type OpportunityHeader = {
   id: string;
@@ -10,23 +11,46 @@ export type OpportunityHeader = {
   service_type: string | null;
   notes: string | null;
   client_name: string | null;
+  procurement_rail: ProcurementRail | null;
+  solicitation_kind: SolicitationKind | null;
+  site_location: string | null;
+  submission_method: string | null;
+  coverage_start_on: string | null;
+  vehicle_ref: string | null;
 };
 
 export type WorkspaceSummary = {
   documentCount: number;
   requirementCount: number;
+  evaluationCount: number;
+  staffingCount: number;
   pricingLineCount: number;
+  costModelCount: number;
   hasAward: boolean;
   hasContract: boolean;
   hasWinLoss: boolean;
   competitorBidCount: number;
 };
 
+export type StaffingRequirementRow = {
+  id: string;
+  post_label: string;
+  armed: boolean | null;
+  shift_hours: number | null;
+  posts_count: number | null;
+  weekly_hours: number | null;
+  clearance_note: string | null;
+  notes: string | null;
+  labor_category: string | null;
+};
+
 export async function loadOpportunityHeader(opportunityId: string): Promise<OpportunityHeader | null> {
   const supabase = await createClient();
   const { data } = await supabase
     .from("opportunities")
-    .select("id, title, stage, go_no_go, response_due_on, service_type, notes, clients(name)")
+    .select(
+      "id, title, stage, go_no_go, response_due_on, service_type, notes, procurement_rail, solicitation_kind, site_location, submission_method, coverage_start_on, vehicle_ref, clients(name)",
+    )
     .eq("id", opportunityId)
     .maybeSingle();
   if (!data) return null;
@@ -40,21 +64,40 @@ export async function loadOpportunityHeader(opportunityId: string): Promise<Oppo
     service_type: data.service_type,
     notes: data.notes,
     client_name: client?.name ?? null,
+    procurement_rail: (data.procurement_rail as ProcurementRail | null) ?? null,
+    solicitation_kind: (data.solicitation_kind as SolicitationKind | null) ?? null,
+    site_location: data.site_location ?? null,
+    submission_method: data.submission_method ?? null,
+    coverage_start_on: data.coverage_start_on ?? null,
+    vehicle_ref: data.vehicle_ref ?? null,
   };
 }
 
 export async function loadWorkspaceSummary(opportunityId: string): Promise<WorkspaceSummary> {
   const supabase = await createClient();
-  const [{ count: documentCount }, { data: solicitations }, { count: pricingLineCount }, { data: awards }, { data: contracts }, { data: winLoss }, { count: competitorBidCount }] =
-    await Promise.all([
-      supabase.from("documents").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
-      supabase.from("solicitations").select("id").eq("opportunity_id", opportunityId),
-      supabase.from("pricing_lines").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
-      supabase.from("awards").select("id").eq("opportunity_id", opportunityId).limit(1),
-      supabase.from("contracts").select("id").eq("opportunity_id", opportunityId).limit(1),
-      supabase.from("win_loss_reviews").select("id").eq("opportunity_id", opportunityId).limit(1),
-      supabase.from("competitor_bids").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
-    ]);
+  const [
+    { count: documentCount },
+    { data: solicitations },
+    { count: pricingLineCount },
+    { count: costModelCount },
+    { count: staffingCount },
+    { count: evaluationCount },
+    { data: awards },
+    { data: contracts },
+    { data: winLoss },
+    { count: competitorBidCount },
+  ] = await Promise.all([
+    supabase.from("documents").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
+    supabase.from("solicitations").select("id").eq("opportunity_id", opportunityId),
+    supabase.from("pricing_lines").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
+    supabase.from("pricing_cost_models").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
+    supabase.from("staffing_requirements").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
+    supabase.from("evaluation_criteria").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
+    supabase.from("awards").select("id").eq("opportunity_id", opportunityId).limit(1),
+    supabase.from("contracts").select("id").eq("opportunity_id", opportunityId).limit(1),
+    supabase.from("win_loss_reviews").select("id").eq("opportunity_id", opportunityId).limit(1),
+    supabase.from("competitor_bids").select("*", { count: "exact", head: true }).eq("opportunity_id", opportunityId),
+  ]);
 
   const solicitationIds = (solicitations ?? []).map((s) => s.id);
   let requirementCount = 0;
@@ -69,12 +112,25 @@ export async function loadWorkspaceSummary(opportunityId: string): Promise<Works
   return {
     documentCount: documentCount ?? 0,
     requirementCount,
+    evaluationCount: evaluationCount ?? 0,
+    staffingCount: staffingCount ?? 0,
     pricingLineCount: pricingLineCount ?? 0,
+    costModelCount: costModelCount ?? 0,
     hasAward: (awards ?? []).length > 0,
     hasContract: (contracts ?? []).length > 0,
     hasWinLoss: (winLoss ?? []).length > 0,
     competitorBidCount: competitorBidCount ?? 0,
   };
+}
+
+export async function loadStaffingRequirements(opportunityId: string): Promise<StaffingRequirementRow[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("staffing_requirements")
+    .select("id, post_label, armed, shift_hours, posts_count, weekly_hours, clearance_note, notes, labor_category")
+    .eq("opportunity_id", opportunityId)
+    .order("post_label");
+  return (data ?? []) as StaffingRequirementRow[];
 }
 
 export async function loadFactDocumentMap(factIds: string[]): Promise<Map<string, string>> {

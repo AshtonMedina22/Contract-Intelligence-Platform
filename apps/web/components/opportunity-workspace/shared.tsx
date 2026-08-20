@@ -8,6 +8,7 @@ export function opportunityWorkspaceTabs(opportunityId: string) {
   return [
     { href: base, label: "Overview" },
     { href: `${base}/requirements`, label: "Requirements" },
+    { href: `${base}/staffing`, label: "Staffing" },
     { href: `${base}/pricing`, label: "Pricing" },
     { href: `${base}/documents`, label: "Documents" },
     { href: `${base}/intelligence`, label: "Competitors & outcome" },

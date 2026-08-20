@@ -168,7 +168,7 @@ Proposal generation and advanced intelligence are downstream of verified data.
 
 ## Current implementation status
 
-See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Summary: Foundation engineering mostly exists; **Historical Pilot has not started** (0 L&P packages); later Intelligence UX exists early and is **KEEP + FREEZE**; production deployment is not verified green.
+See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) and the living [WORK_TRAIL.md](WORK_TRAIL.md). Summary: Foundation engineering mostly exists; **Historical Pilot has not started** (0 L&P packages); later Intelligence UX exists early and is **KEEP + FREEZE**; opportunity workspace exists as empty ops UI; production tenant/env not confirmed.
 
 ## Mature user journeys
 

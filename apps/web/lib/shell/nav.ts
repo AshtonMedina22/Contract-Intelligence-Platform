@@ -46,11 +46,12 @@ const PAGE_TITLES: { prefix: string; label: string }[] = [
 
 function findPage(pathname: string) {
   const workspaceTab = pathname.match(
-    /^\/procurement\/opportunities\/[^/]+\/(requirements|pricing|documents|intelligence|contract)$/,
+    /^\/procurement\/opportunities\/[^/]+\/(requirements|staffing|pricing|documents|intelligence|contract)$/,
   );
   if (workspaceTab) {
     const labels: Record<string, string> = {
       requirements: "Requirements",
+      staffing: "Staffing",
       pricing: "Pricing",
       documents: "Documents",
       intelligence: "Competitors & outcome",

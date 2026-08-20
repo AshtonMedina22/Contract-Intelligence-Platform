@@ -4,28 +4,33 @@ import { useMemo, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { PricingCostModelRow, PricingLineRow } from "@/lib/opportunity/types";
+import type { PricingCostModelRow, PricingLineRow, PricingComparableRow } from "@/lib/opportunity/types";
 import { computePlannedRate, formatMoney, parseNum } from "@/lib/opportunity/pricing-math";
 import { saveCostModel } from "@/app/(platform)/procurement/opportunities/[opportunityId]/actions";
 import { FourTruthsTable } from "./four-truths-table";
+import { PricingComparablesPanel } from "./pricing-comparables";
+import { FulfillmentEconomicsPanel } from "./fulfillment-economics";
+import type { FulfillmentEconomics } from "@/lib/opportunity/proposal-packet";
 
 type Props = {
   opportunityId: string;
   pricingLines: PricingLineRow[];
   costModels: PricingCostModelRow[];
+  comparables: PricingComparableRow[];
   factDocumentMap: Map<string, string>;
+  economics: FulfillmentEconomics;
 };
 
 const DEFAULT_INPUTS = {
   base_wage: "",
   fringe: "",
-  burden_pct: "15",
+  burden_pct: "",
   workers_comp: "",
   insurance: "",
   supervision: "",
   equipment: "",
-  overhead_pct: "12",
-  target_margin_pct: "18",
+  overhead_pct: "",
+  target_margin_pct: "",
 };
 
 function CostModelEditor({
@@ -113,15 +118,18 @@ function CostModelEditor({
   );
 }
 
-export function PricingWorkbench({ opportunityId, pricingLines, costModels, factDocumentMap }: Props) {
+export function PricingWorkbench({
+  opportunityId,
+  pricingLines,
+  costModels,
+  comparables,
+  factDocumentMap,
+  economics,
+}: Props) {
   const categories = useMemo(() => {
     const set = new Set<string>();
     for (const line of pricingLines) set.add(line.labor_category);
     for (const model of costModels) set.add(model.labor_category);
-    if (set.size === 0) {
-      set.add("Armed Security Officer");
-      set.add("Unarmed Security Officer");
-    }
     return [...set].sort();
   }, [pricingLines, costModels]);
 
@@ -129,6 +137,8 @@ export function PricingWorkbench({ opportunityId, pricingLines, costModels, fact
 
   return (
     <div className="space-y-6">
+      <FulfillmentEconomicsPanel economics={economics} />
+
       <div className="space-y-2">
         <h2 className="text-sm font-medium">Verified four-truth rates</h2>
         <p className="text-xs text-muted-foreground">
@@ -138,21 +148,55 @@ export function PricingWorkbench({ opportunityId, pricingLines, costModels, fact
         <FourTruthsTable lines={pricingLines} factDocumentMap={factDocumentMap} />
       </div>
 
+      <PricingComparablesPanel comparables={comparables} factDocumentMap={factDocumentMap} />
+
       <div className="space-y-3">
         <h2 className="text-sm font-medium">Internal cost model & margin (planning)</h2>
         <p className="text-xs text-muted-foreground">
-          Planning workspace for ops — does not write to canonical <code className="text-xs">proposed_rate</code>.
-          Final submitted price must still be verified and promoted from source documents.
+          Type wage/burden/overhead yourself. Blank fields are not filled with market averages. This does not
+          write canonical <code className="text-xs">proposed_rate</code>.
         </p>
-        {categories.map((category) => (
-          <CostModelEditor
-            key={category}
-            opportunityId={opportunityId}
-            laborCategory={category}
-            existing={modelByCategory.get(category)}
-          />
-        ))}
+        {categories.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            No labor categories yet. Add one below or promote verified pricing lines from a workbook.
+          </p>
+        ) : (
+          categories.map((category) => (
+            <CostModelEditor
+              key={category}
+              opportunityId={opportunityId}
+              laborCategory={category}
+              existing={modelByCategory.get(category)}
+            />
+          ))
+        )}
+        <AddLaborCategoryForm opportunityId={opportunityId} />
       </div>
     </div>
+  );
+}
+
+function AddLaborCategoryForm({ opportunityId }: { opportunityId: string }) {
+  const [pending, startTransition] = useTransition();
+  return (
+    <form
+      className="flex max-w-xl flex-wrap items-end gap-2 rounded-md border p-3"
+      action={(formData) => {
+        startTransition(async () => {
+          await saveCostModel(opportunityId, formData);
+        });
+      }}
+    >
+      <div className="min-w-56 flex-1 space-y-1">
+        <Label htmlFor="new_labor_category" className="text-xs">
+          Add labor category
+        </Label>
+        <Input id="new_labor_category" name="labor_category" required placeholder="e.g. Armed Security Officer" />
+      </div>
+      <input type="hidden" name="base_wage" value="" />
+      <Button type="submit" size="sm" disabled={pending}>
+        {pending ? "Saving…" : "Add category"}
+      </Button>
+    </form>
   );
 }

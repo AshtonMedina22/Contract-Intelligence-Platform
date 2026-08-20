@@ -1,7 +1,9 @@
 # Current state audit
 
 **Date:** 2026-08-19  
-**HEAD:** `213f951` — data model UI + nav IA + login fix (see git log)  
+**HEAD (origin/main):** Pass 3+4 (staffing, packet, economics) — run `git log -1`  
+**Local product tree:** committed with this push  
+**Living trail (session-by-session):** [WORK_TRAIL.md](WORK_TRAIL.md) — **update that file every session**  
 **Purpose:** Canonical record of what exists today vs what the product must become. Read before implementing.
 
 **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). **Phase 1 audit:** [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md).
@@ -27,17 +29,17 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 
 | Canonical phase | Status |
 | --- | --- |
-| **1 — Foundation** | Mostly implemented; **lint + typecheck + build pass locally**; verify Vercel after deploy |
+| **1 — Foundation** | Mostly implemented; local **build PASS** (2026-08-19); Vercel needs env + applied migrations |
 | **2 — Historical Pilot** | **NOT STARTED** — 0 real L&P packages scored |
 | **3 — Ingestion / processing** | Code exists; unproven on L&P |
 | **4 — Broader migration** | RPC/UI exists; no corpus |
-| **5 — Contracts / compliance** | Schema/UI early; unvalidated |
-| **6 — Market / buyer / competitor** | Thin UX; **KEEP + FREEZE** |
-| **7 — Search / Ask Intelligence** | FTS RPC + Ask UI; partial; **KEEP + FREEZE** |
-| **8 — Pricing intelligence** | Placeholder only |
-| **9 — Proposal builder** | Placeholder only |
+| **5 — Contracts / compliance** | Schema/UI early; unvalidated; rebid clone on main (needs corpus) |
+| **6 — Market / buyer / competitor** | Thin UX; **KEEP + FREEZE** (empty-corpus banners only) |
+| **7 — Search / Ask Intelligence** | FTS + Ask; optional `p_opportunity_id` **local**; **KEEP + FREEZE** |
+| **8 — Pricing intelligence** | Four-truth + planning cost model + comparables **panel** (not Glide) |
+| **9 — Proposal builder** | Pursuit **workspace tabs** + competitor brief template (not section drafting) |
 
-**Next correct product work (after docs + green build):** Canonical Phase 2 — run 20–30 complete L&P procurement packages through intake → parse → stage → verify.
+**Next correct product work:** apply opportunity migrations + Vercel env; then Canonical Phase 2 — 20–30 complete L&P packages through intake → parse → stage → verify. Ops workspace UI is **early and empty** without that corpus.
 
 ---
 
@@ -64,6 +66,8 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 - `document_chunks` + `search_verified_knowledge` FTS RPC
 - Bulk ingest RPCs + UI
 - Routing policy v1.0.0 from **fixtures only** (0 L&P packages)
+- Opportunity workspace (overview / requirements / staffing / pricing / docs / intel / contract)
+- Pass 3+4 (staffing, evaluation criteria, comparables, rebid clone, competitor brief, packet rail, fulfillment economics) — **on main; SQL may be unapplied**
 
 ### Early / future-facing UX (KEEP + FREEZE)
 
@@ -72,7 +76,8 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 - `/intelligence/market` — document/entity counts; not canonical market facts
 - `/intelligence/reports` — catalog cards; no PDF/export generator
 - `/intelligence/win-loss`, `/intelligence/competitors`, `/intelligence/clients` — list views
-- `/intelligence/pricing`, `/proposals` — explicit placeholders
+- `/intelligence/pricing` — still thin; **do not expand Market/Ask/Reports product features**
+- `/proposals` + `/procurement/opportunities/[id]` — **live workspace** (not a placeholder), but **unvalidated / empty corpus**
 - Header search → always `/intelligence/ask` (no LOCATE path)
 
 ### Documented only
@@ -92,9 +97,10 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 
 - Real 20–30 package Historical Pilot on L&P files
 - Production OCR/DOCX paths
-- Glide pricing workbench
-- Tiptap proposal builder
+- Glide pricing workbench (planning cost model UI is **not** Glide)
+- Tiptap proposal builder / section-level drafting
 - Stripe / commercial PaaS (legacy Phase 14)
+- Hosted apply of `20260820300000` + `20260820310000` + `20260820320000` (confirm in Supabase dashboard)
 
 ### Conflicting / obsolete (corrected in this reconciliation)
 
@@ -120,7 +126,8 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 | **Market intelligence** | Evidence-backed trends | Count queries | win_loss, bids | Market tiles | Under-specified | 6 | Counts ≠ verified facts | FREEZE |
 | **Competitor intelligence** | Sourced bids/scores | List UI | `competitor_bids` | Competitors page | Partial | 6 | No line-level pricing | Pilot + verify |
 | **Reports** | Grounded PDF/export briefs | None | Counts only | Catalog cards | Missing generators | 6–7 | Placeholder UX | FREEZE |
-| **Pricing intelligence** | Glide + evidence + human price | None | `pricing_lines` partial | Placeholder | Phase 12 | 8 | Not started | After pilot |
+| **Pricing intelligence** | Glide + evidence + human price | Cost model + comparables panel | `pricing_lines` + `pricing_cost_models` | Opportunity pricing tab | Phase 12 | 8 | Not Glide; no corpus | After pilot |
+| **Pursuit workspace** | Ops coordinator: staffing, eval, four truths, intel | Tabs + Pass 3 forms | staffing/eval migrations | `/procurement/opportunities/[id]` | PRODUCT_SPEC journeys | 8–9 early | Empty; migrations unapplied | Apply SQL; fill via pilot |
 | **Proposal reuse** | Section-level APPROVED/DO_NOT_USE | Chunk promotion | `reuse_status` enum | Content search | Partial | 9 | No proposal_sections | Phase 9 |
 | **Google Docs workflow** | In-app → Docs → final output | None | N/A | None | One MASTER bullet | 9 | Docs-only | Spec in PRODUCT_SPEC |
 | **Federal/security domain** | NAICS, PSC, wage, set-asides relational | None | Not in schema | N/A | Buried in MASTER | 3+ | Not first-class | Expand after pilot |
@@ -128,7 +135,7 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 | **Past performance** | Corp ≠ mgmt ≠ key personnel ≠ sub | None | No table | N/A | MASTER §11 | 3+ | Safeguard docs-only | Add schema when needed |
 | **Contracts/compliance** | Portfolio + 180…expired alerts | Implemented | Phase 9 tables | Portfolio UI | Overclaimed complete | 5 | Unvalidated | Pilot verifies |
 | **CRM / client portal** | Must NOT exist | None | `clients` = buyer only | No portal | Correct intent | N/A | Naming "client" | Document buyer/agency |
-| **Build / deploy** | Green production build | Login Suspense fix; nav + data model pushed | N/A | Deployed routes | Claimed URL | 1 | Verify Vercel after `213f951` | **Mostly fixed** |
+| **Build / deploy** | Green production with live data | Build PASS locally; Vercel app loads | Env + migrations | Deployed | DEVICE_SETUP | 1 | Prod often no org; new SQL unapplied | Env + SQL |
 
 ---
 
@@ -136,10 +143,10 @@ Product definition: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Build order: [BUILD_PLAN
 
 ### Ask Intelligence
 
-- **RPC:** `search_verified_knowledge(p_query, p_query_embedding, p_for_drafting, p_limit)`
+- **RPC:** `search_verified_knowledge(..., p_opportunity_id?)` — apply `20260820310000` on hosted DB
 - **Enforced today:** `HUMAN_VERIFIED` only; org via RLS on `document_chunks`; drafting mode excludes `DO_NOT_USE`, `SUPERSEDED`, non-current versions
-- **UI:** Always `p_for_drafting: true`; no query embeddings (FTS only)
-- **Missing:** retrieval purpose, outcome filter, LOCATE path, grounded synthesis, explicit org predicate in RPC
+- **UI:** Always `p_for_drafting: true`; no query embeddings (FTS only); optional pursuit scope from `?opportunity=`
+- **Missing:** retrieval purpose, outcome filter, LOCATE path, grounded synthesis, explicit org predicate in RPC; **corpus is empty**
 
 ### Market / competitor
 
@@ -184,7 +191,7 @@ Recorded 2026-08-19 after foundation fixes:
 | `npm run lint` | **PASS** |
 | `npm run typecheck` | **PASS** |
 | `npm run build` | **PASS** locally — `/auth/login` uses Suspense around cookie read (Partial Prerender) |
-| Vercel production | **Not verified in this session** — re-deploy main after push to confirm green |
+| Vercel production | App **loads**; last check: sign-in / “No organization”. Pass 3+4 code on `main` after this push — apply SQL before workspace tabs work against live DB. |
 
 ---
 
@@ -195,7 +202,7 @@ Recorded 2026-08-19 after foundation fixes:
 | Ask / Content search | **KEEP + FREEZE** |
 | Market / Reports | **KEEP + FREEZE** |
 | Win/Loss, Competitors, research | **KEEP + FREEZE** |
-| Pricing, Proposals placeholders | **KEEP** |
+| Pricing, Proposals placeholders | **KEEP** — `/proposals` is now a real list; opportunity workspace is real UI, still unvalidated |
 | Contracts UI | **KEEP + FREEZE expansion** |
 | Intelligence shell (sidebar) | **KEEP** — do not remove |
 

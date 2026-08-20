@@ -14,8 +14,8 @@ Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [T
 | 4 | Contract/compliance | Early code; unvalidated |
 | 5 | Analytics dashboards | Early UX; FREEZE |
 | 6 | Search/AI | Early UX; FREEZE |
-| 7 | Pricing intelligence | Not started |
-| 8 | Proposal builder | Not started |
+| 7 | Pricing intelligence | Not started (Glide). Early cost model UI exists — unvalidated |
+| 8 | Proposal builder | Not started (Tiptap/sections). Early pursuit workspace exists — unvalidated |
 
 **RLS 48/48 = Original Phase 1, NOT Phase 2.** See [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
 
@@ -25,7 +25,7 @@ Product rules: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Stack: [T
 
 **Canonical Phase 2 — Historical Pilot:** **NOT STARTED.** Pilot kickoff: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
 
-**Next product work after docs reconciliation and a green build:** run 20–30 complete L&P packages through intake → parse → stage → verify. Do **not** expand Intelligence UX, pricing workbench, or proposal builder until the pilot validates the model.
+**Next product work:** apply opportunity SQL on Supabase + confirm Vercel env; then run 20–30 complete L&P packages through intake → parse → stage → verify. Do **not** expand Intelligence UX (Ask/Market/Reports). An early **opportunity workspace** (tabs, planning cost model, Pass 3 staffing/eval/comparables/rebid) exists as ops UI — it is **unvalidated** until the pilot. Session log: [WORK_TRAIL.md](WORK_TRAIL.md).
 
 Later **legacy engineering** work (schema phases 7–11, Intelligence shell) exists in the repo but is **early / unvalidated**. Passing a `PHASE*_ACCEPTANCE.md` script does **not** mean the corresponding canonical product phase is complete.
 
@@ -46,8 +46,8 @@ Use **canonical product phases** for product maturity. Keep **legacy engineering
 | **5 — Contracts / compliance / renewals** | Operational contract portfolio from verified data | 9 | Schema/UI early; unvalidated |
 | **6 — Market / buyer / competitor intelligence** | Evidence-backed win/loss, competitor, research | 10 | Thin UX + tables; not operational intelligence |
 | **7 — Search / RAG / Ask Intelligence** | LOCATE vs ASK; purpose-aware retrieval | 11 | FTS RPC + Ask surface; partial |
-| **8 — Pricing intelligence** | Glide workbench; human final price | 12 | Placeholder page |
-| **9 — Proposal builder** | Grounded drafting; Google Docs collab; procurement outputs | 13 | Placeholder |
+| **8 — Pricing intelligence** | Glide workbench; human final price | 12 | Four-truth + planning cost model + comparables panel; **not Glide** |
+| **9 — Proposal builder** | Grounded drafting; Google Docs collab; procurement outputs | 13 | Pursuit workspace tabs + brief template; **not section drafting** |
 | **Later — Commercial PaaS** | Stripe, tenant admin | 14 | Future |
 
 **Legacy engineering Phase 2 (tenancy/RLS) is Foundation work, not the Historical Pilot.** The 48/48 `test:phase2-rls` result proves tenant isolation only.

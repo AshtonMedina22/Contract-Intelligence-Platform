@@ -6,6 +6,10 @@ import { cn } from "@/lib/utils";
 import { opportunityWorkspaceTabs, OpportunityBadges } from "./shared";
 import type { OpportunityHeader } from "@/lib/opportunity/load-workspace";
 import type { WorkspaceSummary } from "@/lib/opportunity/load-workspace";
+import {
+  PROCUREMENT_RAILS,
+  SOLICITATION_KINDS,
+} from "@/lib/opportunity/proposal-packet";
 import { Button } from "@/components/ui/button";
 
 export function OpportunityWorkspaceShell({
@@ -33,6 +37,18 @@ export function OpportunityWorkspaceShell({
             {opportunity.service_type ? (
               <p className="text-sm text-muted-foreground">Service: {opportunity.service_type}</p>
             ) : null}
+            {opportunity.site_location ? (
+              <p className="text-sm text-muted-foreground">Site: {opportunity.site_location}</p>
+            ) : null}
+            {opportunity.procurement_rail ? (
+              <p className="text-sm text-muted-foreground">
+                {PROCUREMENT_RAILS.find((r) => r.value === opportunity.procurement_rail)?.label}
+                {opportunity.solicitation_kind
+                  ? ` · ${SOLICITATION_KINDS.find((k) => k.value === opportunity.solicitation_kind)?.label}`
+                  : ""}
+                {opportunity.vehicle_ref ? ` · ${opportunity.vehicle_ref}` : ""}
+              </p>
+            ) : null}
             {opportunity.response_due_on ? (
               <p className="text-sm">
                 Response due:{" "}
@@ -46,6 +62,8 @@ export function OpportunityWorkspaceShell({
           <span>{summary.documentCount} docs</span>
           <span>·</span>
           <span>{summary.requirementCount} requirements</span>
+          <span>·</span>
+          <span>{summary.staffingCount} staffing posts</span>
           <span>·</span>
           <span>{summary.pricingLineCount} pricing lines</span>
           <span>·</span>

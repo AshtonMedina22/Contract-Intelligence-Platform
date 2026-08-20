@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { FactRef } from "@/components/opportunity-workspace/shared";
-import { loadFactDocumentMap } from "@/lib/opportunity/load-workspace";
-import { formatMoney } from "@/lib/opportunity/pricing-math";
+import { CompetitorBriefPanel, type CompetitorBriefData } from "@/components/opportunity-workspace/competitor-brief";
+import { loadFactDocumentMap, loadOpportunityHeader } from "@/lib/opportunity/load-workspace";
+import { loadPricingComparables } from "@/lib/opportunity/comparables";
+import { formatMoney, summarizeComparableRates } from "@/lib/opportunity/pricing-math";
 
 export default async function OpportunityIntelligencePage({
   params,
@@ -12,7 +14,9 @@ export default async function OpportunityIntelligencePage({
   const { opportunityId } = await params;
   const supabase = await createClient();
 
-  const [{ data: winLoss }, { data: competitorBids }] = await Promise.all([
+  const [opportunity, comparables, { data: winLoss }, { data: competitorBids }] = await Promise.all([
+    loadOpportunityHeader(opportunityId),
+    loadPricingComparables(opportunityId),
     supabase
       .from("win_loss_reviews")
       .select(
@@ -34,8 +38,43 @@ export default async function OpportunityIntelligencePage({
   }
   const factDocumentMap = await loadFactDocumentMap(factIds);
 
+  const proposedSummary = summarizeComparableRates(comparables, "proposed_rate");
+  const gaps: string[] = [];
+  if (!winLoss) gaps.push("No win/loss review promoted.");
+  if ((competitorBids ?? []).length === 0) gaps.push("No sourced competitor bids on file.");
+  if (!proposedSummary) gaps.push("No verified comparable pricing for this buyer/service type.");
+
+  const brief: CompetitorBriefData = {
+    opportunityTitle: opportunity?.title ?? opportunityId,
+    clientName: opportunity?.client_name ?? null,
+    winLoss: winLoss
+      ? {
+          outcome: winLoss.outcome,
+          documented_reason: winLoss.documented_reason,
+          internal_analysis: winLoss.internal_analysis,
+          lp_price: winLoss.lp_price,
+          winning_price: winLoss.winning_price,
+          winner_name: winLoss.winner_name,
+        }
+      : null,
+    competitorBids: (competitorBids ?? []).map((bid) => {
+      const competitor = Array.isArray(bid.competitors) ? bid.competitors[0] : bid.competitors;
+      return {
+        name: competitor?.name ?? "Unknown",
+        quoted_amount: bid.quoted_amount,
+        source_url: bid.source_url,
+      };
+    }),
+    comparableRates: proposedSummary
+      ? { label: `Proposed rates ${proposedSummary.label}`, count: proposedSummary.count }
+      : null,
+    gaps,
+  };
+
   return (
     <div className="space-y-6">
+      <CompetitorBriefPanel data={brief} />
+
       <section className="space-y-2 rounded-md border p-4">
         <h2 className="text-sm font-medium">Win / loss review</h2>
         {!winLoss ? (
@@ -83,9 +122,6 @@ export default async function OpportunityIntelligencePage({
 
       <section className="space-y-2">
         <h2 className="text-sm font-medium">Competitor bids (sourced)</h2>
-        <p className="text-xs text-muted-foreground">
-          Only bid-tab or award-document evidence — never inferred competitor pricing.
-        </p>
         {(competitorBids ?? []).length === 0 ? (
           <p className="text-sm text-muted-foreground">No competitor bids linked to this pursuit.</p>
         ) : (

@@ -48,6 +48,12 @@ async function MarketOverview() {
           corporate win-rate or TAM model.
         </p>
       </div>
+      {(documents.count ?? 0) === 0 && (bids.count ?? 0) === 0 ? (
+        <p className="rounded-md border border-dashed px-3 py-2 text-sm text-muted-foreground">
+          Historical Pilot not started — all counts are zero until L&P packages are ingested and verified. Do not
+          treat these tiles as market intelligence.
+        </p>
+      ) : null}
       <dl className="grid grid-cols-2 gap-px border text-sm sm:grid-cols-3">
         {stats.map((row) => (
           <div key={row.label} className="bg-background p-3">
