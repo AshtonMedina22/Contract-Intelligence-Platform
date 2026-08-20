@@ -13,6 +13,7 @@ type Props = {
   clients: NamedOption[];
   opportunities: OpportunityOption[];
   driveConfigured: boolean;
+  defaultOpportunityId?: string;
 };
 
 function ResultList({ result }: { result: IntakeActionResult }) {
@@ -38,7 +39,13 @@ function ResultList({ result }: { result: IntakeActionResult }) {
   );
 }
 
-export function IntakeForm({ organizations, clients, opportunities, driveConfigured }: Props) {
+export function IntakeForm({
+  organizations,
+  clients,
+  opportunities,
+  driveConfigured,
+  defaultOpportunityId = "",
+}: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pending, startTransition] = useTransition();
   const [dragActive, setDragActive] = useState(false);
@@ -47,7 +54,7 @@ export function IntakeForm({ organizations, clients, opportunities, driveConfigu
   const [organizationId, setOrganizationId] = useState(organizations[0]?.id ?? "");
   const [batchLabel, setBatchLabel] = useState("");
   const [clientId, setClientId] = useState("");
-  const [opportunityId, setOpportunityId] = useState("");
+  const [opportunityId, setOpportunityId] = useState(defaultOpportunityId);
 
   function appendSharedFields(formData: FormData) {
     formData.set("organization_id", organizationId);

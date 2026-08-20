@@ -4,7 +4,7 @@ import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
 import { IntakeForm } from "./intake-form";
 import { getIntakeContext } from "@/lib/org/intake-context";
 
-async function IntakeContent() {
+async function IntakeContent({ defaultOpportunityId }: { defaultOpportunityId?: string }) {
   const { user, organizations, clients, opportunities } = await getIntakeContext();
   const driveConfigured = Boolean(process.env.GOOGLE_DRIVE_ACCESS_TOKEN?.trim());
 
@@ -17,6 +17,15 @@ async function IntakeContent() {
           Upload a new RFP/RFQ/IFB or historical package. After upload, continue to Processing → Verification
           before facts become searchable intelligence.
         </p>
+        {defaultOpportunityId ? (
+          <p className="text-sm">
+            Linking uploads to workspace{" "}
+            <Link className="underline" href={`/procurement/opportunities/${defaultOpportunityId}`}>
+              open pursuit
+            </Link>
+            .
+          </p>
+        ) : null}
       </div>
 
       {!user ? (
@@ -41,16 +50,30 @@ async function IntakeContent() {
           clients={clients}
           opportunities={opportunities}
           driveConfigured={driveConfigured}
+          defaultOpportunityId={defaultOpportunityId}
         />
       )}
     </div>
   );
 }
 
-export default function IntakePage() {
+export default function IntakePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ opportunity?: string }>;
+}) {
   return (
     <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
-      <IntakeContent />
+      <IntakeFromParams searchParams={searchParams} />
     </Suspense>
   );
+}
+
+async function IntakeFromParams({
+  searchParams,
+}: {
+  searchParams: Promise<{ opportunity?: string }>;
+}) {
+  const params = await searchParams;
+  return <IntakeContent defaultOpportunityId={params.opportunity?.trim()} />;
 }

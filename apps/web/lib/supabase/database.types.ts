@@ -1,4 +1,13 @@
 export type OpportunityOutcome = "WON" | "LOST" | "PENDING" | "CANCELLED" | "NO_BID";
+export type OpportunityStage =
+  | "INTAKE"
+  | "ANALYSIS"
+  | "PRICING"
+  | "DRAFTING"
+  | "SUBMITTED"
+  | "AWARDED"
+  | "CLOSED";
+export type GoNoGo = "PENDING" | "GO" | "NO_GO";
 export type ReuseStatus = "APPROVED" | "REVIEW" | "DO_NOT_USE" | "SUPERSEDED";
 
 export type ContractAlertBucket = "180" | "120" | "90" | "60" | "30" | "EXPIRED";
@@ -123,6 +132,11 @@ export type Database = {
           organization_id: string;
           client_id: string | null;
           title: string;
+          stage: OpportunityStage;
+          go_no_go: GoNoGo;
+          response_due_on: string | null;
+          service_type: string | null;
+          notes: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -131,6 +145,11 @@ export type Database = {
           organization_id: string;
           client_id?: string | null;
           title: string;
+          stage?: OpportunityStage;
+          go_no_go?: GoNoGo;
+          response_due_on?: string | null;
+          service_type?: string | null;
+          notes?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -139,6 +158,71 @@ export type Database = {
           organization_id?: string;
           client_id?: string | null;
           title?: string;
+          stage?: OpportunityStage;
+          go_no_go?: GoNoGo;
+          response_due_on?: string | null;
+          service_type?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      pricing_cost_models: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          labor_category: string;
+          base_wage: number | null;
+          fringe: number | null;
+          burden_pct: number | null;
+          workers_comp: number | null;
+          insurance: number | null;
+          supervision: number | null;
+          equipment: number | null;
+          overhead_pct: number | null;
+          target_margin_pct: number | null;
+          planned_proposed_rate: number | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          labor_category: string;
+          base_wage?: number | null;
+          fringe?: number | null;
+          burden_pct?: number | null;
+          workers_comp?: number | null;
+          insurance?: number | null;
+          supervision?: number | null;
+          equipment?: number | null;
+          overhead_pct?: number | null;
+          target_margin_pct?: number | null;
+          planned_proposed_rate?: number | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          labor_category?: string;
+          base_wage?: number | null;
+          fringe?: number | null;
+          burden_pct?: number | null;
+          workers_comp?: number | null;
+          insurance?: number | null;
+          supervision?: number | null;
+          equipment?: number | null;
+          overhead_pct?: number | null;
+          target_margin_pct?: number | null;
+          planned_proposed_rate?: number | null;
+          notes?: string | null;
           created_at?: string;
           updated_at?: string;
         };

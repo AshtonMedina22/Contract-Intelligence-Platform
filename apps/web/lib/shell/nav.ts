@@ -21,7 +21,6 @@ const PAGE_TITLES: { prefix: string; label: string }[] = [
   { prefix: "/ingestion/exceptions", label: "Exceptions" },
   { prefix: "/ingestion/bulk", label: "Bulk migration" },
   { prefix: "/procurement/documents", label: "Documents" },
-  { prefix: "/procurement/opportunities/", label: "Package" },
   { prefix: "/procurement/opportunities", label: "Opportunities" },
   { prefix: "/procurement/clients", label: "Clients" },
   { prefix: "/procurement/requirements", label: "Requirements" },
@@ -46,6 +45,22 @@ const PAGE_TITLES: { prefix: string; label: string }[] = [
 ];
 
 function findPage(pathname: string) {
+  const workspaceTab = pathname.match(
+    /^\/procurement\/opportunities\/[^/]+\/(requirements|pricing|documents|intelligence|contract)$/,
+  );
+  if (workspaceTab) {
+    const labels: Record<string, string> = {
+      requirements: "Requirements",
+      pricing: "Pricing",
+      documents: "Documents",
+      intelligence: "Competitors & outcome",
+      contract: "Contract",
+    };
+    return { prefix: pathname, label: labels[workspaceTab[1]!] ?? "Workspace" };
+  }
+  if (/^\/procurement\/opportunities\/[^/]+$/.test(pathname)) {
+    return { prefix: pathname, label: "Overview" };
+  }
   return PAGE_TITLES.find(
     (row) => pathname === row.prefix || pathname.startsWith(`${row.prefix}`),
   );
@@ -106,7 +121,7 @@ export function primaryActionForPath(pathname: string): { href: string; label: s
     return { href: "/ingestion/intake", label: "Add documents" };
   }
   if (pathname.startsWith("/procurement/opportunities/")) {
-    return { href: "/procurement/documents", label: "View documents" };
+    return { href: `/ingestion/intake?opportunity=${pathname.split("/")[3] ?? ""}`, label: "Add documents" };
   }
   if (pathname.startsWith("/procurement/opportunities")) {
     return { href: "/ingestion/intake", label: "Analyze solicitation" };

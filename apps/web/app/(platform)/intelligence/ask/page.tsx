@@ -20,15 +20,22 @@ const EXAMPLE_QUERIES = [
 async function AskIntelligence({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; opportunity?: string }>;
 }) {
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
+  const opportunityId = params.opportunity?.trim() ?? "";
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return <p className="text-sm">Sign in to ask verified intelligence.</p>;
+
+  let opportunityTitle: string | null = null;
+  if (opportunityId) {
+    const { data: opp } = await supabase.from("opportunities").select("title").eq("id", opportunityId).maybeSingle();
+    opportunityTitle = opp?.title ?? null;
+  }
 
   let rows: SearchHitRow[] = [];
   let errorMessage: string | null = null;
@@ -71,7 +78,18 @@ async function AskIntelligence({
         <DataRegistryCallout entry={registryEntry("document_chunks")!} />
       ) : null}
 
+      {opportunityId && opportunityTitle ? (
+        <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+          Scoped to pursuit:{" "}
+          <Link className="underline" href={`/procurement/opportunities/${opportunityId}`}>
+            {opportunityTitle}
+          </Link>
+          . Results are still org-wide verified chunks — filter mentally to this package&apos;s documents.
+        </p>
+      ) : null}
+
       <form className="flex max-w-2xl flex-wrap items-end gap-3" method="get">
+        {opportunityId ? <input type="hidden" name="opportunity" value={opportunityId} /> : null}
         <div className="min-w-72 flex-1 space-y-1">
           <Label htmlFor="q">Search or ask</Label>
           <Input
@@ -149,7 +167,7 @@ async function AskIntelligence({
 export default function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; opportunity?: string }>;
 }) {
   return (
     <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
