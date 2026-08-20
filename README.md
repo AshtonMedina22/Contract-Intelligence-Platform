@@ -6,14 +6,16 @@ Historical procurement files become staged, source-backed facts. Humans verify t
 
 ## Current product position
 
+Reconciled audit: [docs/FOUNDATION_AUDIT_2026-08-20.md](docs/FOUNDATION_AUDIT_2026-08-20.md). Rollback branch: `cursor-phase2-foundation`.
+
 | Status | Detail |
 | --- | --- |
-| **Canonical Phase 1 — Foundation** | Mostly implemented. **Vercel production build green** after login fix. Tenant/env/SQL still required for live data. |
-| **Canonical Phase 2 — Historical Pilot** | **0 scored.** Start from **public** L&P records ([docs/HISTORICAL_PILOT.md](docs/HISTORICAL_PILOT.md)); internal files later. |
-| **Later Intelligence UX** | Ask, Market, Reports, etc. exist early — **KEEP + FREEZE** pending corpus validation. |
-| **Ops workspace** | Opportunity tabs exist; **empty** until pilot. Living trail: [docs/WORK_TRAIL.md](docs/WORK_TRAIL.md). |
+| **Canonical Phase 1 — Foundation** | Mostly real (auth, RLS, staging→verify→promote gates, processor, intake). Confirm Vercel env + migrations. |
+| **Canonical Phase 2 — Historical Pilot** | **Incomplete** — ~**7 A/B** through pipeline; exit ~20–30 unmet. Public-first: [docs/HISTORICAL_PILOT.md](docs/HISTORICAL_PILOT.md). |
+| **Phases 3–8 surfaces** | Large code + VERIFY harnesses exist — corpus-thin; treat “PASS” as **script pass**, not L&P-ready product. |
+| **Living trail** | [docs/WORK_TRAIL.md](docs/WORK_TRAIL.md) — keep consistent with the foundation audit. |
 
-**Do not read "legacy engineering Phase 11" or "Phase 2 RLS complete" as product maturity.**
+**Do not read "legacy engineering Phase 11", "RLS 48/48", or VERIFY9 READY as full product maturity.**
 
 ```bash
 npm install
@@ -41,6 +43,7 @@ SQL migrations through legacy Phase 11 exist in `supabase/migrations/` — that 
 | [docs/DATA_ARCHITECTURE.md](docs/DATA_ARCHITECTURE.md) | Vault, tenancy, live vs future schema |
 | [docs/SOURCE_PRECEDENCE.md](docs/SOURCE_PRECEDENCE.md) | Four truths and conflict rules |
 | [docs/AGENT_HANDOFF.md](docs/AGENT_HANDOFF.md) | Agent continuation snapshot |
+| [docs/FOUNDATION_AUDIT_2026-08-20.md](docs/FOUNDATION_AUDIT_2026-08-20.md) | Reconciled maturity vs later-agent claims |
 
 Repo: [https://github.com/AshtonMedina22/Contract-Intelligence-Platform](https://github.com/AshtonMedina22/Contract-Intelligence-Platform)
 

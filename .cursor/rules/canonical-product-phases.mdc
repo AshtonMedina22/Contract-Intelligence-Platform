@@ -5,39 +5,40 @@ alwaysApply: true
 
 # Contract Intelligence Platform — agent rules
 
-Read [docs/MASTER_BLUEPRINT.md](../docs/MASTER_BLUEPRINT.md), [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md), [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md), and [docs/WORK_TRAIL.md](../docs/WORK_TRAIL.md) before implementing features. After any session that ships, blocks, or changes direction, update `docs/WORK_TRAIL.md` (session log + next work). Do not leave platform status only in chat.
+Read [docs/FOUNDATION_AUDIT_2026-08-20.md](../docs/FOUNDATION_AUDIT_2026-08-20.md), [docs/MASTER_BLUEPRINT.md](../docs/MASTER_BLUEPRINT.md), [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md), [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md), and [docs/WORK_TRAIL.md](../docs/WORK_TRAIL.md) before implementing. After any session that ships, blocks, or changes direction, update `docs/WORK_TRAIL.md` and keep it consistent with the foundation audit. Do not leave platform status only in chat.
 
-Canonical pack reference: [docs/CANONICAL_PRODUCT_PACK.md](../docs/CANONICAL_PRODUCT_PACK.md). UX: [docs/UX_UI.md](../docs/UX_UI.md).
+Canonical pack: [docs/CANONICAL_PRODUCT_PACK.md](../docs/CANONICAL_PRODUCT_PACK.md). UX: [docs/UX_UI.md](../docs/UX_UI.md).
 
 ## Product phases
 
-- **Canonical product phases 1–8** govern product maturity ([BUILD_PLAN.md](../docs/BUILD_PLAN.md)). **Core operational platform is complete after Phase 8.**
-- Optional commercialization (Stripe / selling to other contracting companies) is **not** a core product phase. Architecture is **multi-tenant-ready from day one**.
+- **Canonical product phases 1–8** govern product maturity ([BUILD_PLAN.md](../docs/BUILD_PLAN.md)).
+- Optional commercialization is **not** a core product phase. Architecture is **multi-tenant-ready from day one**.
 - **Legacy engineering IDs 0–14** stay on migrations and `PHASE*_ACCEPTANCE.md` — do not rename.
 - **Legacy Phase 2 (RLS/tenancy) is Foundation (canonical Phase 1), not the Historical Pilot.**
-- **Canonical Phase 2 = Real-Document Historical Pilot** (~20–30 packages). It has **not started** (0 packages through complete pipeline).
-- Passing a legacy acceptance script does **not** mean the corresponding product phase is complete.
-- Do not say “canonical phases 1–9” or treat “Proposal builder” as Phase 9 — that is **Phase 8** (Response / Submission / Result).
+- **Canonical Phase 2 = Historical Pilot** (~20–30 packages). Status: **~7 A/B through pipeline; exit unmet** — see [FOUNDATION_AUDIT_2026-08-20.md](../docs/FOUNDATION_AUDIT_2026-08-20.md). Do not say “0 packages” and do not say “pilot complete.”
+- Passing an acceptance/`VERIFY*` script does **not** mean the corresponding product phase is complete for L&P operators.
+- Do not say “canonical phases 1–9.” Response / Submission / Result is **Phase 8**.
 
 ## What not to build
 
 - Not a CRM: no leads, contact cadence, sales activities, client-facing auth, client portal, or customer self-service.
 - `clients` / buyers = buyer/agency procurement intelligence, not CRM accounts.
 - Do not fabricate procurement intelligence, analytics, or reports without verified evidence.
-- Do not claim a feature is complete because a route or table exists.
+- Do not claim a feature is complete because a route, table, or VERIFY PASS exists.
 - Do not invent L&P prices, staffing, performance metrics, or loss reasons.
+- Do not auto-promote AI extraction to canonical.
 
 ## Early UX — early / partial / unvalidated
 
-Intelligence / Ask / Market / Reports / pursuit shell may exist ahead of the verified corpus. **Do not expand as finished product** until Historical Pilot validates the model. Reconcile to canonical IA: **Home | Pursuits | Intelligence | Contracts | Data Ops** (Ask GPT in header; Data Ops owns Intake). Do not delete useful early code.
+Intelligence / Ask / Market / Reports / pursuit / pricing / response shells may exist ahead of the verified corpus. **Do not expand as finished product** until Historical Pilot validates the model. Reconcile to IA: **Home | Pursuits | Intelligence | Contracts | Data Ops** (Ask GPT in header; Data Ops owns Intake). Do not delete useful early code.
 
 ## Architecture lock
 
-Preserve: Supabase Storage vault, Vercel Workflow lifecycle, JobPort, Supabase Cron, PDF.js, openpyxl, AI Gateway abstraction, pgvector in Postgres. Do not revert to Drive-only vault, Queues-as-lifecycle, Pinecone, or LangGraph-for-ingest.
+Preserve: Supabase Storage vault, Vercel Workflow lifecycle, JobPort, Supabase Cron, PDF.js, openpyxl, AI Gateway abstraction, pgvector in Postgres. Web-only Vercel deploy. FastAPI processor stays off Vercel until explicitly hosted elsewhere. No Prisma/Drizzle, Pinecone, or LangGraph-for-ingest.
 
 ## Next work order
 
-1. Keep [WORK_TRAIL.md](../docs/WORK_TRAIL.md) + current-state audit honest
-2. Apply opportunity migrations + confirm Vercel Supabase env as needed
-3. Historical Pilot on real public L&P packages (0 through pipeline today)
-4. Schema changes only from PILOT_GAP_REPORT evidence — then later phases per BUILD_PLAN
+1. Keep [FOUNDATION_AUDIT_2026-08-20.md](../docs/FOUNDATION_AUDIT_2026-08-20.md) + [WORK_TRAIL.md](../docs/WORK_TRAIL.md) honest and consistent
+2. Confirm Vercel Supabase env + apply pending migrations as needed
+3. Grow Historical Pilot on real public L&P packages toward ~20–30 through verify→promote
+4. Schema changes only from pilot gap evidence — then treat later phases as product-validated

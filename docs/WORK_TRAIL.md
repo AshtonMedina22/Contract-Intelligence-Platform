@@ -4,10 +4,10 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (VERIFY 9 fix pass — **READY WITH NONBLOCKING LIMITATIONS**) |
-| **Git HEAD on origin/main** | `c1747dd` + local VERIFY9 fix-pass (push when asked) |
-| **Product truth gate** | [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md): **READY WITH NONBLOCKING LIMITATIONS** — corpus/Vercel/ASK_MODEL deferred external |
-| **Local uncommitted** | VERIFY9 fix-pass docs + pilot 50 MB harness + trail |
+| **Last updated** | 2026-08-20 (reconciled with [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md)) |
+| **Git HEAD on origin/main** | run `git log -1` (was `f1f16ea` at audit) |
+| **Product truth gate** | VERIFY9 = engineering/trust harness READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 product exit. Corpus ~7 A/B; exit ~20–30 unmet. |
+| **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
 Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
 
@@ -60,6 +60,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-20 | Foundation machine audited `main` vs original lock; fixed split-brain entry docs | [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md); handoff/rules/README/DEVICE_SETUP reconciled; branch `cursor-phase2-foundation` | Grow pilot corpus; confirm prod |
 | 2026-08-19 | Pass 3+4 ops UI | `547e16c` | Migrations |
 | 2026-08-19–20 | Pack sync + pack (1) accuracy | Phases 1–8; multi-tenant-ready | — |
 | 2026-08-20 | User: master context over-condensed | Human locked Storage/Workflow/1–8/pack IA; **rewrote MASTER_PRODUCT_CONTEXT** with full domains + table/Python map | Commit when asked; then pilot |

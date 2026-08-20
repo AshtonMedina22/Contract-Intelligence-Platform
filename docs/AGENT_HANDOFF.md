@@ -2,19 +2,22 @@
 
 **Repo:** https://github.com/AshtonMedina22/Contract-Intelligence-Platform  
 **Branch:** `main` — run `git log -1` for HEAD  
-**Living trail (must update every session):** [WORK_TRAIL.md](WORK_TRAIL.md)  
+**Reconciled truth (read first):** [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md)  
+**Living trail:** [WORK_TRAIL.md](WORK_TRAIL.md)  
 **Canonical pack:** [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md)  
-**Do not redesign the architecture. Read [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) and [WORK_TRAIL.md](WORK_TRAIL.md) before implementing.**
+**Do not redesign the architecture.**
 
 Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Ask the human for `apps/web/.env.local` values. Never commit `.env.local`.
 
 **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Long-form domains/tables/Python:** [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Phases: [BUILD_PLAN.md](BUILD_PLAN.md). UX: [UX_UI.md](UX_UI.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
+**Foundation rollback branch:** `cursor-phase2-foundation` @ `8d2d031` (pre–Prompt 2C–9 expansion).
+
 ---
 
 ## What this product is
 
-**Proposal-centered** Proposal, Contract & Procurement Intelligence for **L&P Global Security**, with **multi-tenant-ready architecture from day one**. Optional commercialization (selling to other contracting companies) is **not** a core product phase.
+**Proposal-centered** Proposal, Contract & Procurement Intelligence for **L&P Global Security**, with **multi-tenant-ready architecture from day one**. Optional commercialization is **not** a core product phase.
 
 Not a CRM, chatbot, client portal, or generic RFP tracker.
 
@@ -24,19 +27,19 @@ Historical files → staging → human verification → canonical Postgres. Four
 
 ---
 
-## Phase status (canonical — use this language)
+## Phase status (honest — use this language)
 
 | Phase | Status |
 | --- | --- |
-| **1 Foundation** | Mostly complete / needs hardening — [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md) |
-| **2 Real-Document Historical Pilot** | **ACTIVE NEXT — 0 packages through complete pipeline** — [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md) |
-| **3 Historical Ingestion & Migration** | Code exists in parts; unproven at corpus scale |
-| **4–8** | Early/partial code only; unvalidated |
+| **1 Foundation** | **Mostly real** (auth, RLS, staging defaults `AI_EXTRACTED`, verify→promote gates, FastAPI processor, intake/workbench). Confirm prod env + migrations. |
+| **2 Real-Document Historical Pilot** | **Incomplete.** ~**7 A/B** packages through source→verify→promote (VERIFY 2B). Exit target **~20–30** unmet. |
+| **3–8** | **Large code + acceptance harnesses exist** (Contracts, Intelligence, Ask, Pricing, Response). Corpus-thin / unvalidated for L&P daily use. Treat “PASS” in WORK_TRAIL as **script pass**, not product exit. |
 
-**Wrong:** “Phase 2 complete because RLS 48/48.” RLS = **Foundation (Phase 1)**, not Historical Pilot.  
-**Wrong:** “Canonical phases 1–9” — core phases are **1–8**; platform complete after Phase 8.
+**Wrong:** “Phase 2 complete because RLS 48/48.” RLS = Foundation, not Historical Pilot.  
+**Wrong:** “Platform READY / Phases 3–8 complete” while pilot corpus and prod processor/`ASK_MODEL` are open.  
+**Wrong:** “0 packages through pipeline” — that is stale; use **~7 A/B**, not zero and not 20–30.
 
-**Next task:** Env + migrations as needed. **Historical Pilot is public-first** — [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md). Do not wait for internal Drive. Do not promote news dollars. Do not declare Ask/Pricing/Response complete before the pilot gap report.
+**Next task:** Grow the public-first Historical Pilot corpus; confirm Vercel + migrations. Do not invent L&P prices. Do not auto-promote AI facts. Do not expand finished-product claims on empty screens.
 
 ---
 
@@ -44,9 +47,9 @@ Historical files → staging → human verification → canonical Postgres. Four
 
 | Check | Result |
 | --- | --- |
-| origin/main | Feature code ahead of evidence; run `git log -1` |
-| Vercel | Deploy may exist; tenant/env not confirmed; **apply migrations** as needed |
-| Early Intelligence / Ask / pursuit shell | Code exists; **early/partial / unvalidated** — reconcile to [UX_UI.md](UX_UI.md) |
+| Architecture | Locked stack largely preserved (no Prisma; web-only Vercel; promote requires `HUMAN_VERIFIED`) |
+| VERIFY 9 | Engineering/trust harness: READY WITH NONBLOCKING LIMITATIONS — **not** full product exit |
+| Production | Tenant/env/processor hosting still ops work |
 
 ---
 
@@ -59,18 +62,18 @@ Historical files → staging → human verification → canonical Postgres. Four
 5. Proposal / Response Intelligence  
 6. Executive / Business Intelligence  
 
-These engines do **not** dictate sidebar navigation. Canonical IA: Home | Pursuits | Intelligence | Contracts | Data Ops | Settings. Data Ops owns Intake/Processing/Verification — not a peer “Ingestion product.”
+Canonical IA: Home | Pursuits | Intelligence | Contracts | Data Ops | Settings.
 
 ---
 
 ## Do not
 
-- Treat RLS tests as Historical Pilot completion  
+- Treat RLS tests or VERIFY scripts as Historical Pilot completion  
 - Build CRM, client portal, or fake analytics  
-- Treat commercialization/PaaS as a required numbered phase  
 - Auto-promote AI extraction to canonical  
 - Collapse four commercial truths into one rate field  
 - Invent L&P prices, staffing, or performance metrics  
+- Delete useful early UI; freeze expansion until corpus validates  
 
 ---
 

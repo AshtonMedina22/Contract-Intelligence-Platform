@@ -11,7 +11,7 @@ Use this when you clone on a new computer. **Secrets are not in git.** Copy them
 - Build order: [BUILD_PLAN.md](BUILD_PLAN.md)
 - Stack: [TECH_STACK.md](TECH_STACK.md)
 
-**Current product position:** Foundation mostly built. **Historical Pilot (Phase 2) ACTIVE NEXT — 0 packages through complete pipeline.** Early Intelligence/Ask UI is early/partial / unvalidated. Core product phases are **1–8** ([CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md)).
+**Current product position:** see [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md). Foundation mostly real. Historical Pilot **~7 A/B** through pipeline (exit ~20–30 unmet). Later UI exists but is corpus-thin. Core phases **1–8**. Rollback: `cursor-phase2-foundation`.
 
 Requires **Node 24+** (`.nvmrc` / `.node-version`). npm workspaces (not pnpm).
 
@@ -45,8 +45,8 @@ npx supabase db push --yes --db-url "$DIRECT_URL"
 
 ## What is done vs not
 
-**Foundation (mostly):** app, RLS (48/48), intake, processor, verification workbench, early schema, Intelligence shell (frozen).
+**Foundation (mostly):** app, RLS, intake, FastAPI processor (DOCX wired; OCR key-gated), verification workbench, promote-on-`HUMAN_VERIFIED`.
 
-**Not done:** Historical Pilot (0 packages through pipeline), verified corpus, OCR/DOCX production paths, Glide pricing, Tiptap Response builder, hosted apply of opportunity migrations, confirmed Vercel tenant/env. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md).
+**Not done as product:** Historical Pilot exit (~20–30 packages), rich verified corpus, confirmed Vercel tenant/env + hosted processor, `ASK_MODEL`. Later phase UIs exist — do not treat VERIFY PASS as operator-ready. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md) + [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md).
 
 **Do not:** clone Prisma/Drizzle, deploy processor on Vercel, put secrets in git, treat RLS as product Phase 2 complete, treat commercialization as a required product phase.
