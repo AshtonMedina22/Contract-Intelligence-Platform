@@ -1,0 +1,403 @@
+{
+  "audit": "VERIFY5",
+  "phase": "Canonical Phase 5 — Intelligence",
+  "stamp": "mt1fkptz",
+  "verdict": "PASS",
+  "total": 24,
+  "passed": 24,
+  "failed": 0,
+  "matrix": [
+    {
+      "domain": "market",
+      "name": "Market metrics exclude documents count",
+      "ok": true,
+      "detail": "awards/win_loss/bids/pricing_lines only",
+      "source": "market/page.tsx"
+    },
+    {
+      "domain": "buyer",
+      "name": "Buyers UI is procurement intelligence not CRM",
+      "ok": true,
+      "detail": "portfolio + research",
+      "source": "clients/page.tsx"
+    },
+    {
+      "domain": "pursuit",
+      "name": "Pursuit Overview consumes intelligence summary",
+      "ok": true,
+      "detail": "wired",
+      "source": "opportunities/[id]/page.tsx"
+    },
+    {
+      "domain": "content",
+      "name": "Content UI surfaces reuse_status",
+      "ok": true,
+      "detail": "Reuse column present",
+      "source": "search-hits-table.tsx"
+    },
+    {
+      "domain": "buyer",
+      "name": "Award promotes from verified award fact",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"award\"}",
+      "source": "promote_verified_fact"
+    },
+    {
+      "domain": "buyer",
+      "name": "Buyer history connects multiple pursuits",
+      "ok": true,
+      "detail": "opps=2",
+      "source": "Westside ISD mt1fkptz"
+    },
+    {
+      "domain": "buyer",
+      "name": "Buyer history connects multiple contracts",
+      "ok": true,
+      "detail": "contracts=2",
+      "source": "Westside ISD mt1fkptz"
+    },
+    {
+      "domain": "buyer",
+      "name": "Buyer award links to pursuit under same buyer",
+      "ok": true,
+      "detail": "[{\"id\":\"f4218b9f-e24f-4f29-863b-e329220b819d\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\"}]",
+      "source": "awards"
+    },
+    {
+      "domain": "competitor",
+      "name": "Sourced competitor bid promotes",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"competitor\",\"competitor_id\":\"659754f6-c895-4901-b5a4-d32d8add50ae\"}",
+      "source": "competitor_bids"
+    },
+    {
+      "domain": "competitor",
+      "name": "L&P bids distinguishable from competitor bids",
+      "ok": true,
+      "detail": "lp=125000 competitor=98000",
+      "source": "win_loss_reviews.lp_price vs competitor_bids"
+    },
+    {
+      "domain": "competitor",
+      "name": "competitor_bids rejects unsourced insert",
+      "ok": true,
+      "detail": "new row for relation \"competitor_bids\" violates check constraint \"competitor_bids_has_source\"",
+      "source": "competitor_bids_has_source"
+    },
+    {
+      "domain": "competitor",
+      "name": "competitor pricing is sourced",
+      "ok": true,
+      "detail": "unsourced rejected; sourced={\"id\":\"84e75fff-6466-4deb-9ea9-0499f225b161\",\"source_fact_id\":\"4c9f5f60-3aa6-4740-aef9-a0286e902e9d\",\"source_document_id\":\"9c70da86-8752-4449-9ca3-a2cca38b5883\",\"hourly_rate\":18.75}",
+      "source": "competitor_pricing_lines"
+    },
+    {
+      "domain": "scores",
+      "name": "ranks/scores match source records",
+      "ok": true,
+      "detail": "{\"scoreRows\":[{\"respondent_name\":\"Acme Guard mt1fkptz\",\"points\":91,\"max_points\":100,\"rank\":1},{\"respondent_name\":\"L&P Global\",\"points\":82,\"max_points\":100,\"rank\":2}],\"bidRank\":{\"rank\":1,\"quoted_amount\":98000}}",
+      "source": "evaluation_scores + competitor_bids.rank"
+    },
+    {
+      "domain": "winloss",
+      "name": "documented loss reason remains separate from internal analysis (constraint)",
+      "ok": true,
+      "detail": "new row for relation \"win_loss_reviews\" violates check constraint \"win_loss_reason_not_analysis\"",
+      "source": "win_loss_reason_not_analysis"
+    },
+    {
+      "domain": "winloss",
+      "name": "documented reason stays distinct from internal analysis after promote",
+      "ok": true,
+      "detail": "{\"documented_reason\":\"Evaluator cited staffing depth\",\"internal_analysis\":\"We understaffed the transition plan\",\"lessons_learned\":null,\"outcome\":\"PENDING\",\"lp_price\":125000}",
+      "source": "win_loss_reviews"
+    },
+    {
+      "domain": "honesty",
+      "name": "raw document mention does not become a competitor bid",
+      "ok": true,
+      "detail": "{\"rawPromote\":{\"ok\":true,\"action\":\"skipped\",\"message\":\"Not an intelligence field.\"},\"aiPromote\":{\"ok\":false,\"action\":\"skipped\",\"message\":\"Only HUMAN_VERIFIED facts promote.\"},\"bidCountAfterMention\":1,\"bidCountAfterAi\":1}",
+      "source": "promote_intelligence_from_fact"
+    },
+    {
+      "domain": "honesty",
+      "name": "raw mention does not become an award",
+      "ok": true,
+      "detail": "{\"awardBefore\":1,\"awardAfter\":1,\"rawAwardPromote\":{\"ok\":true,\"action\":\"skipped\",\"message\":\"Value is not a rate.\"},\"rawAwardError\":null,\"proposedAwardPromote\":{\"ok\":false,\"action\":\"conflict\",\"message\":\"Award facts cannot be written from the requested/proposed/current document.\"},\"proposedAwardError\":null}",
+      "source": "promote_verified_fact"
+    },
+    {
+      "domain": "market",
+      "name": "Market metrics are based on business records",
+      "ok": true,
+      "detail": "{\"documents\":9,\"awards\":1,\"reviews\":1,\"bids\":1,\"pricing_lines\":0}",
+      "source": "business tables ≠ documents"
+    },
+    {
+      "domain": "content",
+      "name": "verified fact becomes knowledge chunk",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"chunked\"}",
+      "source": "promote_knowledge_chunk_from_fact"
+    },
+    {
+      "domain": "content",
+      "name": "WON does not automatically equal APPROVED",
+      "ok": true,
+      "detail": "{\"outcome\":\"WON\",\"reuse\":\"REVIEW_REQUIRED\"}",
+      "source": "win_loss vs document_chunks.reuse_status"
+    },
+    {
+      "domain": "content",
+      "name": "LOST does not automatically equal DO_NOT_USE",
+      "ok": true,
+      "detail": "{\"outcome\":\"LOST\",\"reuse\":\"APPROVED\"}",
+      "source": "win_loss vs document_chunks.reuse_status"
+    },
+    {
+      "domain": "content",
+      "name": "Content reuse state is enforced",
+      "ok": true,
+      "detail": "{\"draftingCount\":0,\"allCount\":1,\"draftingHas\":false,\"allHas\":true}",
+      "source": "search_verified_knowledge"
+    },
+    {
+      "domain": "research",
+      "name": "public facts retain provenance",
+      "ok": true,
+      "detail": "{\"source_url\":\"https://example.com/board-minutes-westside\",\"client_id\":\"0784b237-5c0a-4901-8cd3-9d3db5ca7ab5\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\",\"source_document_id\":\"8e6f7170-66dd-43b8-a8c2-dad91c43adb6\",\"excerpt\":\"Board approved night coverage solicitation\",\"verification_status\":\"HUMAN_VERIFIED\",\"verified_by\":\"1bc96d31-80bc-4ede-bb86-d9ab0f9e1246\",\"verified_at\":\"2026-08-20T11:22:24.161+00:00\",\"published_on\":null,\"retrieved_at\":\"2026-08-20T11:22:24.619411+00:00\"}",
+      "source": "research_facts"
+    },
+    {
+      "domain": "pursuit",
+      "name": "current Pursuit can consume relevant intelligence",
+      "ok": true,
+      "detail": "{\"outcome\":\"WON\",\"bids\":1,\"scores\":2,\"researchCount\":1,\"award\":\"f4218b9f-e24f-4f29-863b-e329220b819d\"}",
+      "source": "opportunity 383e40c3-5107-48e7-9921-7be60e16fee9"
+    }
+  ],
+  "byDomain": {
+    "market": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "market",
+          "name": "Market metrics exclude documents count",
+          "ok": true,
+          "detail": "awards/win_loss/bids/pricing_lines only",
+          "source": "market/page.tsx"
+        },
+        {
+          "domain": "market",
+          "name": "Market metrics are based on business records",
+          "ok": true,
+          "detail": "{\"documents\":9,\"awards\":1,\"reviews\":1,\"bids\":1,\"pricing_lines\":0}",
+          "source": "business tables ≠ documents"
+        }
+      ]
+    },
+    "buyer": {
+      "pass": 5,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "buyer",
+          "name": "Buyers UI is procurement intelligence not CRM",
+          "ok": true,
+          "detail": "portfolio + research",
+          "source": "clients/page.tsx"
+        },
+        {
+          "domain": "buyer",
+          "name": "Award promotes from verified award fact",
+          "ok": true,
+          "detail": "{\"ok\":true,\"action\":\"award\"}",
+          "source": "promote_verified_fact"
+        },
+        {
+          "domain": "buyer",
+          "name": "Buyer history connects multiple pursuits",
+          "ok": true,
+          "detail": "opps=2",
+          "source": "Westside ISD mt1fkptz"
+        },
+        {
+          "domain": "buyer",
+          "name": "Buyer history connects multiple contracts",
+          "ok": true,
+          "detail": "contracts=2",
+          "source": "Westside ISD mt1fkptz"
+        },
+        {
+          "domain": "buyer",
+          "name": "Buyer award links to pursuit under same buyer",
+          "ok": true,
+          "detail": "[{\"id\":\"f4218b9f-e24f-4f29-863b-e329220b819d\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\"}]",
+          "source": "awards"
+        }
+      ]
+    },
+    "pursuit": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "pursuit",
+          "name": "Pursuit Overview consumes intelligence summary",
+          "ok": true,
+          "detail": "wired",
+          "source": "opportunities/[id]/page.tsx"
+        },
+        {
+          "domain": "pursuit",
+          "name": "current Pursuit can consume relevant intelligence",
+          "ok": true,
+          "detail": "{\"outcome\":\"WON\",\"bids\":1,\"scores\":2,\"researchCount\":1,\"award\":\"f4218b9f-e24f-4f29-863b-e329220b819d\"}",
+          "source": "opportunity 383e40c3-5107-48e7-9921-7be60e16fee9"
+        }
+      ]
+    },
+    "content": {
+      "pass": 5,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "content",
+          "name": "Content UI surfaces reuse_status",
+          "ok": true,
+          "detail": "Reuse column present",
+          "source": "search-hits-table.tsx"
+        },
+        {
+          "domain": "content",
+          "name": "verified fact becomes knowledge chunk",
+          "ok": true,
+          "detail": "{\"ok\":true,\"action\":\"chunked\"}",
+          "source": "promote_knowledge_chunk_from_fact"
+        },
+        {
+          "domain": "content",
+          "name": "WON does not automatically equal APPROVED",
+          "ok": true,
+          "detail": "{\"outcome\":\"WON\",\"reuse\":\"REVIEW_REQUIRED\"}",
+          "source": "win_loss vs document_chunks.reuse_status"
+        },
+        {
+          "domain": "content",
+          "name": "LOST does not automatically equal DO_NOT_USE",
+          "ok": true,
+          "detail": "{\"outcome\":\"LOST\",\"reuse\":\"APPROVED\"}",
+          "source": "win_loss vs document_chunks.reuse_status"
+        },
+        {
+          "domain": "content",
+          "name": "Content reuse state is enforced",
+          "ok": true,
+          "detail": "{\"draftingCount\":0,\"allCount\":1,\"draftingHas\":false,\"allHas\":true}",
+          "source": "search_verified_knowledge"
+        }
+      ]
+    },
+    "competitor": {
+      "pass": 4,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "competitor",
+          "name": "Sourced competitor bid promotes",
+          "ok": true,
+          "detail": "{\"ok\":true,\"action\":\"competitor\",\"competitor_id\":\"659754f6-c895-4901-b5a4-d32d8add50ae\"}",
+          "source": "competitor_bids"
+        },
+        {
+          "domain": "competitor",
+          "name": "L&P bids distinguishable from competitor bids",
+          "ok": true,
+          "detail": "lp=125000 competitor=98000",
+          "source": "win_loss_reviews.lp_price vs competitor_bids"
+        },
+        {
+          "domain": "competitor",
+          "name": "competitor_bids rejects unsourced insert",
+          "ok": true,
+          "detail": "new row for relation \"competitor_bids\" violates check constraint \"competitor_bids_has_source\"",
+          "source": "competitor_bids_has_source"
+        },
+        {
+          "domain": "competitor",
+          "name": "competitor pricing is sourced",
+          "ok": true,
+          "detail": "unsourced rejected; sourced={\"id\":\"84e75fff-6466-4deb-9ea9-0499f225b161\",\"source_fact_id\":\"4c9f5f60-3aa6-4740-aef9-a0286e902e9d\",\"source_document_id\":\"9c70da86-8752-4449-9ca3-a2cca38b5883\",\"hourly_rate\":18.75}",
+          "source": "competitor_pricing_lines"
+        }
+      ]
+    },
+    "scores": {
+      "pass": 1,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "scores",
+          "name": "ranks/scores match source records",
+          "ok": true,
+          "detail": "{\"scoreRows\":[{\"respondent_name\":\"Acme Guard mt1fkptz\",\"points\":91,\"max_points\":100,\"rank\":1},{\"respondent_name\":\"L&P Global\",\"points\":82,\"max_points\":100,\"rank\":2}],\"bidRank\":{\"rank\":1,\"quoted_amount\":98000}}",
+          "source": "evaluation_scores + competitor_bids.rank"
+        }
+      ]
+    },
+    "winloss": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "winloss",
+          "name": "documented loss reason remains separate from internal analysis (constraint)",
+          "ok": true,
+          "detail": "new row for relation \"win_loss_reviews\" violates check constraint \"win_loss_reason_not_analysis\"",
+          "source": "win_loss_reason_not_analysis"
+        },
+        {
+          "domain": "winloss",
+          "name": "documented reason stays distinct from internal analysis after promote",
+          "ok": true,
+          "detail": "{\"documented_reason\":\"Evaluator cited staffing depth\",\"internal_analysis\":\"We understaffed the transition plan\",\"lessons_learned\":null,\"outcome\":\"PENDING\",\"lp_price\":125000}",
+          "source": "win_loss_reviews"
+        }
+      ]
+    },
+    "honesty": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "honesty",
+          "name": "raw document mention does not become a competitor bid",
+          "ok": true,
+          "detail": "{\"rawPromote\":{\"ok\":true,\"action\":\"skipped\",\"message\":\"Not an intelligence field.\"},\"aiPromote\":{\"ok\":false,\"action\":\"skipped\",\"message\":\"Only HUMAN_VERIFIED facts promote.\"},\"bidCountAfterMention\":1,\"bidCountAfterAi\":1}",
+          "source": "promote_intelligence_from_fact"
+        },
+        {
+          "domain": "honesty",
+          "name": "raw mention does not become an award",
+          "ok": true,
+          "detail": "{\"awardBefore\":1,\"awardAfter\":1,\"rawAwardPromote\":{\"ok\":true,\"action\":\"skipped\",\"message\":\"Value is not a rate.\"},\"rawAwardError\":null,\"proposedAwardPromote\":{\"ok\":false,\"action\":\"conflict\",\"message\":\"Award facts cannot be written from the requested/proposed/current document.\"},\"proposedAwardError\":null}",
+          "source": "promote_verified_fact"
+        }
+      ]
+    },
+    "research": {
+      "pass": 1,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "research",
+          "name": "public facts retain provenance",
+          "ok": true,
+          "detail": "{\"source_url\":\"https://example.com/board-minutes-westside\",\"client_id\":\"0784b237-5c0a-4901-8cd3-9d3db5ca7ab5\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\",\"source_document_id\":\"8e6f7170-66dd-43b8-a8c2-dad91c43adb6\",\"excerpt\":\"Board approved night coverage solicitation\",\"verification_status\":\"HUMAN_VERIFIED\",\"verified_by\":\"1bc96d31-80bc-4ede-bb86-d9ab0f9e1246\",\"verified_at\":\"2026-08-20T11:22:24.161+00:00\",\"published_on\":null,\"retrieved_at\":\"2026-08-20T11:22:24.619411+00:00\"}",
+          "source": "research_facts"
+        }
+      ]
+    }
+  }
+}

@@ -29,9 +29,9 @@
     {
       "match": "docx",
       "parser_id": "docx-native",
-      "wired": false,
-      "escalate": true,
-      "do_not": "Treat DOCX as a scanned PDF."
+      "wired": true,
+      "escalate": false,
+      "do_not": "Treat DOCX as a scanned PDF or send through OCR."
     },
     {
       "match": "raster_image",

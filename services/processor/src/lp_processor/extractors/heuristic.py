@@ -1,6 +1,7 @@
 from lp_processor.config import settings
 from lp_processor.models import ExtractedFactDraft, NormalizedDocument
 from lp_processor.extractors.base import StructuredExtractor
+from lp_processor.extractors.pdf_structure import extract_pdf_structure
 
 
 class HeuristicExtractor(StructuredExtractor):
@@ -9,7 +10,7 @@ class HeuristicExtractor(StructuredExtractor):
     extractor_id = "heuristic-structure"
 
     def extract(self, document: NormalizedDocument) -> list[ExtractedFactDraft]:
-        drafts: list[ExtractedFactDraft] = []
+        drafts: list[ExtractedFactDraft] = extract_pdf_structure(document)
         for sheet in document.sheets:
             for cell in sheet.cells:
                 value = cell.display_value or cell.cached_value or cell.formula

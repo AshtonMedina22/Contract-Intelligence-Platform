@@ -79,7 +79,7 @@ export function OpportunityWorkspaceShell({
         </div>
       </div>
 
-      <nav className="flex flex-wrap gap-1 border-b pb-2 text-sm" aria-label="Opportunity workspace">
+      <nav className="flex flex-wrap gap-1 border-b pb-2 text-sm" aria-label="Pursuit workspace">
         {tabs.map((tab) => {
           const base = tabs[0].href;
           const active =

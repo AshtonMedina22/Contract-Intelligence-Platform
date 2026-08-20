@@ -27,7 +27,7 @@ class Store:
             raise ValueError("document_version not found for organization.")
         document = (
             self.client.table("documents")
-            .select("id, original_filename, mime_type, processing_status")
+            .select("id, original_filename, mime_type, processing_status, document_type")
             .eq("id", req.document_id)
             .eq("organization_id", req.organization_id)
             .single()
@@ -40,7 +40,13 @@ class Store:
     def download_evidence(self, bucket: str, path: str) -> bytes:
         return self.client.storage.from_(bucket).download(path)
 
+    _ALLOWED_STATUSES = frozenset(
+        {"UPLOADED", "QUEUED", "PARSING", "EXTRACTING", "VALIDATING", "NEEDS_REVIEW", "FAILED"}
+    )
+
     def set_status(self, document_id: str, organization_id: str, status: str, error: str | None = None) -> None:
+        if status == "VERIFIED" or status not in self._ALLOWED_STATUSES:
+            raise ValueError("Processor must never mark documents VERIFIED or write canonical status.")
         payload: dict[str, Any] = {
             "processing_status": status,
             "updated_at": datetime.now(timezone.utc).isoformat(),

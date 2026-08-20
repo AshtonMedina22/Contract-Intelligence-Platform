@@ -1,6 +1,12 @@
-import type { JobPort, StartDocumentLifecycleInput, StartDocumentLifecycleResult } from "@lp/shared";
+import type {
+  EmbedFanOutInput,
+  JobPort,
+  StartDocumentLifecycleInput,
+  StartDocumentLifecycleResult,
+} from "@lp/shared";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { runProcessorParseExtract } from "@/lib/jobs/run-processor";
+import { embedVerifiedChunk } from "@/lib/search/embed-chunk";
 
 export class InlineLifecycleJobPort implements JobPort {
   constructor(private readonly reason: string | null = null) {}
@@ -28,5 +34,9 @@ export class InlineLifecycleJobPort implements JobPort {
     await runProcessorParseExtract(input);
 
     return { runId, adapter: "inline" };
+  }
+
+  async enqueueEmbedFanOut(input: EmbedFanOutInput): Promise<void> {
+    await embedVerifiedChunk(input.sourceFactId);
   }
 }

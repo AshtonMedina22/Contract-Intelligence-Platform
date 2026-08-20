@@ -8,11 +8,21 @@ export function opportunityWorkspaceTabs(opportunityId: string) {
   return [
     { href: base, label: "Overview" },
     { href: `${base}/requirements`, label: "Requirements" },
-    { href: `${base}/staffing`, label: "Staffing" },
     { href: `${base}/pricing`, label: "Pricing" },
-    { href: `${base}/documents`, label: "Documents" },
-    { href: `${base}/intelligence`, label: "Competitors & outcome" },
-    { href: `${base}/contract`, label: "Contract" },
+    { href: `${base}/response`, label: "Response" },
+    { href: `${base}/submission`, label: "Submission" },
+    { href: `${base}/result`, label: "Result" },
+  ] as const;
+}
+
+export function contractWorkspaceTabs(contractId: string) {
+  const base = `/contracts/${contractId}`;
+  return [
+    { href: base, label: "Overview" },
+    { href: `${base}/service-plan`, label: "Service Plan" },
+    { href: `${base}/commercial-terms`, label: "Commercial Terms" },
+    { href: `${base}/changes`, label: "Changes" },
+    { href: `${base}/renewal`, label: "Renewal" },
   ] as const;
 }
 

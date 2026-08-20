@@ -1,96 +1,169 @@
-# Master product context
+# Master product context — full long-form specification
 
-**Canonical long-form spec** (merged historical draft). It is **not** the short product authority.
+**Role:** Preserve the **complete product definition** (domains, verification, pricing, contracts, RAG, proposal rules, table maps, Python responsibilities).  
+**Not** the short product authority.
 
-| Concern | Document |
+| Concern | Wins |
 | --- | --- |
 | **Business / product truth** | [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) |
-| **Technical architecture truth** | [TECH_STACK.md](TECH_STACK.md) |
-| **Current reality** | [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) |
-| **Execution order** | [BUILD_PLAN.md](BUILD_PLAN.md) |
+| **Concise product** | [PRODUCT_SPEC.md](PRODUCT_SPEC.md) |
+| **Tech / architecture** | [TECH_STACK.md](TECH_STACK.md) |
+| **Data / end-state domain map** | [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md) |
+| **Execution order** | [BUILD_PLAN.md](BUILD_PLAN.md) · [FULL_PHASE_BUILD_PLAN.md](FULL_PHASE_BUILD_PLAN.md) |
+| **UX / IA** | [UX_UI.md](UX_UI.md) |
+| **Current maturity** | [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) |
+| **Pack reference** | [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md) |
 
-If this file disagrees with MASTER_BLUEPRINT on product, or TECH_STACK on architecture, those files win. Do not use the long sitemap below as the intended UX.
+**Architecture decisions locked (human-confirmed 2026-08-20):**
 
-This file lives in git so it is available on any computer after clone/push.
+- **Evidence vault** = Supabase Storage (immutable-by-policy). Google Drive = import/source/human workspace only — **not** the permanent canonical vault.
+- **Lifecycle** = Vercel Workflow (`intake → parse → extract → validate → wait for human → promote`). Vercel Queues = fan-out only behind JobPort.
+- **Product phases** = **1–8** (Historical Pilot = Phase 2). Core platform complete after Phase 8. Optional commercialization is not a core phase.
+- **Global IA** = Home | Pursuits | Intelligence | Contracts | Data Ops | Settings. Ask GPT in header.
 
-- Source merged: L&P Master Product Context — Final Updated 2026-08-19 (Downloads).
-- Earlier draft filenames LP SETUP DRAFT.md and LP_MASTER_PRODUCT_CONTEXT_FINAL_UPDATED_2026-08-19.md were not present in Downloads at merge time.
-- Locked architecture (Workflow, Storage-by-policy, Cron split, Excel/PDF, repo layout, pricing wording) is applied below. If an older paragraph still says Drive is the permanent vault or Queues are the lifecycle coordinator, the **Locked architecture** section wins.
-- Phase naming: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Living trail: [WORK_TRAIL.md](WORK_TRAIL.md).
+If any older paragraph below says Drive is the permanent vault, Queues are the lifecycle coordinator, Document AI is hard-required, LangGraph is required, Ingestion/Proposals are peer global nav, or phases are 1–14 with pilot as Phase 6 — **those lines are superseded**. Business capability detail remains.
 
-For implementation: read [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before adding features. Canonical product phases 1–9 govern maturity; legacy engineering IDs 0–14 remain on migrations only.
+Living trail: [WORK_TRAIL.md](WORK_TRAIL.md). Phase naming: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
 
-## Locked architecture (wins over any older wording in this file)
+---
 
-### Product
+## Before implementing anything
 
-Verified procurement operating system. Historical files become staged, source-backed facts. Humans verify. Only then: contracts, four commercial truths, pricing evidence, grounded drafts. AI never auto-promotes to canonical.
+Understand the complete product. Do not start coding from this file alone.
 
-Four truths, never collapsed: customer requested / L&P proposed / customer awarded / current contract.
+Understand: finished product; business problem; full feature set; data architecture; locked stack; ingestion/verification; AI/RAG; pricing; contract lifecycle; proposal-generation rules; multi-tenant-ready tenancy; implementation sequence (phases 1–8).
 
-### Six product engines
+Then: inspect the repo; identify foundation that exists; update canonical docs; identify conflicts; recommend minimum next phase; **STOP** before implementing unless the user asked for a specific phase prompt ([CURSOR_PROMPTS.md](CURSOR_PROMPTS.md)).
 
-All product and roadmap docs must preserve these engines explicitly:
+---
 
-1. **Opportunity / Solicitation** — current pursuits (RFP, RFQ, IFB, quote, deadlines, requirements, go/no-go). Buyer/agency is procurement data, not CRM.
-2. **Contract & Compliance** — won work, terms, amendments, renewals, certifications, expirations.
-3. **Pricing Intelligence** — requested structure ≠ cost model ≠ submitted ≠ awarded ≠ current; evidence-backed; human final price.
-4. **Buyer / Market / Competitor Intelligence** — sourced history, bid tabs, competitors, public research; no unsupported causation.
-5. **Proposal Intelligence** — section-level reuse with approval states; `DO_NOT_USE` never in drafting retrieval.
-6. **Executive / Business Intelligence** — pipeline, win rates, trends from verified data only.
+## 1. What we are building
 
-### Proposal output workflow
+A long-term **Proposal, Contract & Procurement Intelligence Platform**, initially for L&P Global Security.
 
-```text
-IN-APP INTELLIGENCE / DRAFTING
-        → GOOGLE DOCS WORKING PROPOSAL (collaboration)
-        → FINAL PROCUREMENT OUTPUT (PDF / DOCX / portal / workbook)
-```
+Architecture is **multi-tenant-ready from day one**. Optional future commercialization (selling to other contracting companies) does **not** define the core build.
 
-Google Docs and Sheets are workspace/export — not competing canonical databases. See [PRODUCT_SPEC.md](PRODUCT_SPEC.md).
-
-### Early UX rule
-
-Later-phase functionality implemented early (Intelligence shell, Ask, Market, Reports) does **not** make that canonical product phase complete. **KEEP + FREEZE** until the Historical Pilot validates the corpus. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
-
-### Document lifecycle
+Complete lifecycle:
 
 ```text
-UPLOAD / IMPORT
-        ->
-Supabase Storage
-CANONICAL IMMUTABLE-BY-POLICY SOURCE COPY
-        ->
-Vercel Workflow
-intake -> parse -> extract -> validate -> wait for human -> promote
+Historical Documents → Pursuit/Opportunity → RFP/RFQ/IFB → Requirements → Research
+→ Pricing → Response/Proposal → Submission → Result/Win-Loss → Award → Contract
+→ Amendments/Modifications → Options/Renewal → Rebid
+→ verified outcome improves future intelligence
 ```
 
-Vercel Queues = optional fan-out only (embeddings, notifications, independent jobs). Keep a JobPort. No LangGraph. No eve.
+Central pre-award UX: **Pursuit → Requirements → Pricing → Response → Submission → Result.**
 
-### Evidence vault
+The platform converts years of paper and digital procurement records into:
 
-Supabase Storage is the canonical **immutable-by-policy** ingested evidence vault. It is not magically WORM.
+**verified + source-backed + searchable + reusable structured intelligence.**
 
-Path:
+**This is not:** generic CRM; simple document repository; spreadsheet replacement; basic RFP tracker; generic chatbot; autonomous proposal writer; AI that invents pricing; system that blindly reuses old proposal language.
+
+The core product is an **auditable procurement-intelligence platform** with AI operating on top of **verified** business data.
+
+---
+
+## 2. Primary business problem
+
+L&P has information distributed across: paper; scans; PDFs; Word; spreadsheets; RFPs/RFQs/IFBs; addenda; Q&A; proposal drafts; final proposals; pricing schedules; awards; bid tabs; evaluator scorecards; POs; contracts; amendments; modifications; renewals; licenses; insurance; certifications; resumes; personnel qualifications; past-performance records; public procurement records.
+
+The platform must determine:
+
+- which **buyer/agency** owns the information (product language; physical table may be `clients`);
+- which procurement opportunity/package it belongs to;
+- document type and version;
+- what the buyer **requested**;
+- what L&P **proposed**;
+- what the buyer **awarded**;
+- what changed afterward;
+- what is **currently** effective;
+- whether L&P won / lost / no-bid / pending / cancelled / no-award;
+- pricing submitted / awarded / competitor when evidenced;
+- evaluator feedback;
+- active contract terms; expirations and renewals;
+- strong historical proposal content vs content that must not be reused;
+- the **source** supporting every important fact.
+
+**First engineering priority:**
 
 ```text
-org_id/document_id/version_id/sha256/original.<ext>
+Historical digitization → extraction → staging → validation → human verification → canonical data
 ```
 
-Never overwrite an original evidence object. New source file = new document_version + new object. Checksum before processing. Normal users cannot update/delete originals. Privileged delete/change requires an auditable privileged workflow. RLS enforces tenant ownership.
+Proposal generation is **downstream**.
 
-Google Drive = import/source + human workspace. Retain Drive file ID + SHA-256. Do not delete Drive files.
+---
 
-### Compute, cron, parsers
+## 3. FINAL production architecture (locked)
 
-- Cloud Run Jobs: documented; deploy only at bulk migration (Phase 8).
-- Supabase Cron / pg_cron: contract, renewal, compliance SQL (180/120/90/60/30/expired).
-- Vercel Cron: later, application-level jobs only (syncs, digests). Failed Vercel Cron invocations are not retried.
-- PDF.js source-page viewer in the verification workbench.
-- Native XLSX via openpyxl (structure/cells/formulas). Do not OCR clean workbooks first.
-- Do not lock OCR or model provider until the L&P benchmark.
+```text
+PAPER + DIGITAL DOCUMENTS
+PDF / DOCX / XLSX / scans
+        ↓
+DOCUMENT INTAKE (upload / Drive import)
+        ↓
+SUPABASE STORAGE
+CANONICAL IMMUTABLE-BY-POLICY EVIDENCE COPY
+        ↓
+DOCUMENT REGISTRY
+Supabase PostgreSQL
+        ↓
+VERCEL WORKFLOW
+(lifecycle coordinator)
+        ↓
+PYTHON PROCESSING
+FastAPI + Pydantic (services/processor)
+        ↓
+DocumentParser abstraction
+(digital PDF / OCR / DOCX / XLSX — route from pilot benchmarks)
+        ↓
+STRUCTURED AI EXTRACTION
+schema-constrained outputs
+        ↓
+STAGING (extracted_facts + source_evidence)
+        ↓
+AUTOMATED VALIDATION / RECONCILIATION
+        ↓
+HUMAN VERIFICATION
+        ↓
+SUPABASE POSTGRESQL
+CANONICAL SYSTEM OF RECORD
+        ↓
+Contracts / Renewals / Compliance
+Win-Loss / Buyer / Competitor Intelligence
+Pricing Intelligence
+Structured Search + FTS + pgvector Hybrid RAG
+Response Builder / Ask GPT / Reports / Analytics
+```
 
-### Repo
+| Layer | Technology |
+| --- | --- |
+| Web | Next.js App Router + React + TypeScript on Vercel |
+| UI | Tailwind + shadcn/ui + Lucide |
+| Tables | TanStack Table |
+| Client/server state | TanStack Query |
+| Forms | React Hook Form + Zod |
+| Pricing grid | Glide Data Grid (when Phase 7) |
+| Response editor | Tiptap / Novel patterns (when Phase 8) |
+| Evidence viewer | PDF.js / react-pdf |
+| Database | Supabase-hosted PostgreSQL |
+| Auth | Supabase Auth + RLS |
+| Evidence vault | **Supabase Storage** |
+| Import/source | Google Drive (IDs/metadata; not canonical vault) |
+| Lifecycle | **Vercel Workflow** |
+| Fan-out jobs | Vercel Queues behind JobPort only |
+| Processing | Python + FastAPI + Pydantic |
+| Heavy bulk | Cloud Run Jobs only when pilot proves need |
+| OCR/layout | Behind `DocumentParser` abstraction — **do not hard-lock Document AI** until benchmarks |
+| AI app | Vercel AI SDK + AI Gateway |
+| Search | Postgres FTS + pgvector + hybrid retrieval |
+| Cron (dates) | Supabase Cron / pg_cron |
+| Cron (app) | Vercel Cron optional |
+| Billing | Stripe **optional later** — not a core phase |
+| LangGraph / MCP | Only when a proven workflow requires it — not assumed |
+
+Repo:
 
 ```text
 apps/web
@@ -98,2144 +171,427 @@ services/processor
 packages/shared
 packages/schemas
 supabase/migrations
+docs
 ```
-
-pnpm (or npm workspaces if pnpm is unavailable) for JS. Python owns pyproject.toml. Node 24 is Vercel default for new projects. `vercel.ts` is optional — do not create it in Phase 1 unless configuration-as-code is needed.
-
-### Workflow cost (snapshot, recheck before bulk)
-
-- Hobby: 50K Workflow events/month included.
-- Pro: Workflow events usage-based (about $20 per 1M currently). Pro is $20/month and includes $20 general infrastructure credit that can absorb usage before extra charges.
-- Do **not** claim Workflow automatically incurs separately billed Queue API operations unless Vercel billing docs say so. Functions still bill as compute.
 
 ---
 
-# ---
-
-**MASTER PRODUCT CONTEXT — L\&P Proposal, Contract & Procurement Intelligence Platform**
-
-## **Before implementing anything**
-
-Read [PRODUCT_SPEC.md](PRODUCT_SPEC.md), [BUILD_PLAN.md](BUILD_PLAN.md), and [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) first.
-
-**Current product position:** Foundation mostly built; **Historical Pilot (canonical Phase 2) NOT STARTED** (0 L&P packages). Do not expand Intelligence UX until the pilot completes.
-
-Your responsibility when continuing implementation:
-
-> 1. inspect the existing repository against CURRENT_STATE_AUDIT;  
-> 2. respect canonical product phase order;  
-> 3. do not treat legacy engineering acceptance scripts as product maturity;  
-> 4. do not build CRM, client portal, or fake analytics;  
-> 5. recommend the minimum next phase — currently Historical Pilot after docs + green build.
-
-# ---
-
-**1\. What I Am Building**
-
-I am building a long-term **Proposal, Contract & Procurement Intelligence Platform**, initially for L\&P Global Security.  
-It may later evolve into a **multi-tenant commercial PaaS** for organizations managing complex procurement and proposal lifecycles.  
-The complete lifecycle is:  
-**Historical Documents → Opportunity → RFP/RFQ/IFB → Requirements → Research → Pricing → Proposal → Submission → Win/Loss → Award → Contract → Amendments/Modifications → Options/Renewal → Rebid**  
-The platform converts years of paper and digital procurement records into:  
-**verified \+ source-backed \+ searchable \+ reusable structured intelligence.**  
-This is **not**:
-
-> * a generic CRM;  
-> * a simple document repository;  
-> * a spreadsheet replacement;  
-> * a basic RFP tracker;  
-> * a generic chatbot;  
-> * an autonomous proposal writer;  
-> * an AI that invents pricing;  
-> * a system that blindly reuses old proposal language.
-
-The core product is an **auditable procurement-intelligence platform with AI operating on top of verified business data**.
-
-# ---
-
-**2\. Primary Business Problem**
-
-L\&P has information distributed across:
-
-> * paper files;  
-> * scans;  
-> * PDFs;  
-> * Word files;  
-> * spreadsheets;  
-> * RFPs/RFQs/IFBs;  
-> * addenda;  
-> * Q\&A;  
-> * proposal drafts;  
-> * final proposals;  
-> * pricing schedules;  
-> * awards;  
-> * bid tabs;  
-> * evaluator scorecards;  
-> * purchase orders;  
-> * contracts;  
-> * amendments;  
-> * modifications;  
-> * renewals;  
-> * licenses;  
-> * insurance;  
-> * certifications;  
-> * resumes;  
-> * personnel qualifications;  
-> * past-performance records;  
-> * public procurement records.
-
-The platform must determine:
-
-> * which client owns the information;  
-> * which procurement opportunity/package it belongs to;  
-> * document type;  
-> * document version;  
-> * what the customer requested;  
-> * what L\&P proposed;  
-> * what the customer awarded;  
-> * what changed afterward;  
-> * what is currently effective;  
-> * whether L\&P won/lost/no-bid/pending;  
-> * pricing submitted;  
-> * pricing awarded;  
-> * competitor pricing when evidenced;  
-> * evaluator feedback;  
-> * active contract terms;  
-> * expirations and renewals;  
-> * strong historical proposal content;  
-> * content that should not be reused;  
-> * the source supporting every important fact.
-
-The first engineering priority is therefore:  
-**Historical digitization → extraction → staging → validation → human verification → canonical data**  
-Proposal generation is downstream.
-
-# ---
-
-**3\. FINAL Production Architecture & Locked Tool Stack**
-
-The architecture is now locked at the **platform/framework level**. The document parser and AI model are intentionally provider-abstracted because actual L\&P document accuracy must be benchmarked before one provider is designated as the production default.  
-PAPER \+ DIGITAL DOCUMENTS  
-PDF / DOCX / XLSX / scans / forms / pricing matrices  
-        ↓  
-CANONICAL IMMUTABLE-BY-POLICY EVIDENCE VAULT
-Supabase Storage
-(org/document/version/sha256/original.ext)
-        ↓
-GOOGLE DRIVE
-import/source + human workspace (retain Drive ID; do not delete)
-        ↓
-DOCUMENT INTAKE
-upload/import into Storage  
-        ↓  
-DOCUMENT REGISTRY  
-Supabase PostgreSQL  
-        ↓  
-VERCEL WORKFLOW (lifecycle)
-intake → parse → extract → validate → wait for human → promote
-        ↓  
-QUEUES (optional fan-out only)
-embeddings / notifications / independent jobs  
-        ↓  
-PYTHON PROCESSING SERVICE  
-FastAPI \+ Pydantic  
-        ↓  
-DOCUMENT PARSER ADAPTER  
-├── XlsxParser (openpyxl; not OCR first)  
-├── Docling  
-├── Mistral OCR 4  
-├── Google Document AI  
-└── Native multimodal PDF/model route  
-        ↓  
-NORMALIZED DOCUMENT REPRESENTATION  
-layout \+ page \+ table \+ cell \+ text \+ source coordinates  
-        ↓  
-STRUCTURED EXTRACTOR  
-model/provider abstraction  
-        ↓  
-STAGING  
-extracted\_facts \+ source\_evidence  
-        ↓  
-AUTOMATED VALIDATION / RECONCILIATION  
-        ↓  
-HUMAN VERIFICATION  
-        ↓  
-SUPABASE POSTGRESQL  
-CANONICAL SYSTEM OF RECORD  
-        ↓  
-────────────────────────────────────────  
-Contracts / Renewals / Compliance  
-Win-Loss / Client / Competitor Intelligence  
-Pricing Intelligence  
-Structured Search / Full-Text Search  
-pgvector Semantic Search / Hybrid RAG  
-Analytics / Natural-Language Data Analysis  
-Proposal Builder / Evidence-Backed AI
-
-## **Final framework / systems**
-
-| Layer | Final choice | Purpose / rule   |
-| :---- | :---- | :---- |
-| **Base application** | **Vercel Supabase Starter** | Starting project architecture |
-| **Web framework** | **Next.js App Router \+ React \+ TypeScript** | Main production application |
-| **Hosting** | **Vercel** | Web app, server routes/actions, light async consumers |
-| **UI system** | **Tailwind CSS \+ shadcn/ui \+ Lucide** | One consistent enterprise UI system |
-| **Normal data tables** | **TanStack Table** | Opportunities, documents, requirements, contracts, compliance, intelligence |
-| **Spreadsheet-style workbenches** | **Glide Data Grid** | Pricing matrices, bulk data editing, cost models, competitor pricing, high-density QA where cell editing is genuinely useful |
-| **Client/server state** | **TanStack Query** | Interactive server-state, polling/refresh, processing states |
-| **Forms / schema validation** | **React Hook Form \+ Zod** | Structured forms and frontend validation |
-| **Rich proposal editor** | **Tiptap OSS; borrow Novel interaction patterns** | Notion-style proposal drafting/editor experience |
-| **Database** | **Supabase-hosted PostgreSQL** | Authoritative structured system of record |
-| **Authentication / tenant security** | **Supabase Auth \+ PostgreSQL RLS** | Login, organization ownership, tenant isolation |
-| **Drive** | **Import + human workspace** | Retain Drive ID + checksum; not the application vault |
-| **Canonical evidence vault** | **Supabase Storage (immutable-by-policy)** | Ingested originals; never overwrite; new file = new version |
-| **Scheduled alerts** | **Supabase Cron / pg_cron** | Contract/compliance/renewal SQL. Vercel Cron only later for app-level jobs |
-| **Document lifecycle** | **Vercel Workflow** | intake → parse → extract → validate → wait for human → promote |
-| **Fan-out** | **Vercel Queues behind JobPort** | Optional; not the lifecycle coordinator |
-| **Processing code** | **Python \+ FastAPI \+ Pydantic** | OCR/parser orchestration, extraction, normalization, validation |
-| **Light async processing** | **Vercel Functions** | Short orchestration and external API calls |
-| **Heavy / bulk processing** | **Google Cloud Run Jobs** | Documented now; deploy only at bulk historical migration |
-| **Config-as-code** | **vercel.ts optional** | Do not create in Phase 1 unless needed |
-| **Document parser architecture** | **DocumentParser provider abstraction** | Never couple the product to one OCR/parser vendor |
-| **Free/local parser candidate** | **Docling** | Low-cost local/self-hosted parsing, OCR, layout and tables |
-| **Managed document-AI candidate** | **Mistral OCR 4 / Document AI** | Managed OCR, structural output, bounding boxes / annotations |
-| **Enterprise extraction fallback** | **Google Document AI** | Use when benchmarked accuracy justifies the additional page cost |
-| **Native multimodal PDF route** | **Benchmark current frontier PDF-capable models** | Whole-document contextual extraction / cross-checking |
-| **AI application framework** | **Vercel AI SDK** | Streaming, structured outputs, tool calls, AI UI |
-| **AI model router** | **Vercel AI Gateway** | Provider-neutral routing across Google/OpenAI/Anthropic/Mistral/etc. without hard-coding the application to one model |
-| **High-volume model candidate** | **Gemini 3.5 Flash-Lite or benchmark winner** | Cheap structured extraction; not automatically assumed to be the most accurate |
-| **Complex multimodal model candidate** | **Gemini 3.6 Flash or benchmark winner** | More complex PDF/reasoning/extraction work |
-| **Historical bulk model calls** | **Provider Batch API when cheaper/supported** | Bulk jobs do not need to be forced through interactive inference |
-| **Structured search** | **PostgreSQL queries/views** | Exact business filtering |
-| **Keyword search** | **PostgreSQL full-text search** | Exact/lexical retrieval |
-| **Semantic search** | **pgvector inside Supabase Postgres** | Embeddings/vector similarity |
-| **Hybrid RAG** | **Postgres structured \+ FTS \+ pgvector** | No Pinecone/Qdrant initially |
-| **Public research** | **AI Research Agent pattern, provider-adapted** | Source-backed research; avoid paid browser dependencies unless justified |
-| **Analytics AI** | **OSS Data Analyst \+ Natural Language Postgres patterns** | Semantic layer \+ controlled read-only text-to-SQL |
-| **Agent orchestration** | **LangGraph later only if needed** | Durable multi-step agents/human interrupts; not required for initial ingestion |
-| **External AI/tool access** | **MCP later** | Optional external search/fetch/tool interface |
-| **Realtime collaboration** | **Not initially** | Do not add Liveblocks until genuine realtime co-editing justifies another paid service/state layer |
-| **Commercial billing** | **Stripe later** | Only when the platform is commercialized as PaaS |
-
-## **The table / spreadsheet / Notion-style UI decision**
-
-The product needs multiple data-work interfaces. Do not force every workflow into one table library.  
-NORMAL BUSINESS TABLES  
-→ TanStack Table
-
-HIGH-VOLUME VERIFICATION  
-→ TanStack Table \+ Forefront-style filtering/review UX
-
-EXCEL / AIRTABLE-LIKE CELL EDITING  
-→ Glide Data Grid
-
-RICH PROPOSAL WRITING  
-→ Tiptap \+ Novel-style editor UX
-
-**Novel is a Notion-style rich-text editor pattern, not a Notion database/table.**  
-**Liveblocks AI Spreadsheet is useful as a UX reference only.** Do not adopt Liveblocks Storage as a second business-data store, and do not adopt its Handsontable dependency merely to obtain spreadsheet behavior. Supabase remains the authoritative data store and Glide Data Grid provides the spreadsheet-style interface.
-
-## **Document processing strategy — final architecture**
-
-There is deliberately **no single hard-coded parser** yet.  
-The production architecture uses a provider interface such as:  
-DocumentParser  
-├── DoclingParser  
-├── MistralOcrParser  
-├── GoogleDocumentAiParser  
-└── NativeMultimodalPdfParser
-
-StructuredExtractor  
-├── AI-Gateway-backed interactive model  
-└── direct provider batch model when appropriate
-
-The first representative benchmark must determine routing based on actual L\&P documents.  
-Benchmark at minimum:
-
-> * clean digital PDFs;  
-> * scanned PDFs;  
-> * long contracts;  
-> * RFPs/RFQs;  
-> * multi-page and nested pricing tables;  
-> * checkboxes/forms;  
-> * addenda;  
-> * scorecards;  
-> * Word files;  
-> * Excel pricing workbooks.
-
-Measure:
-
-> * pricing-table cell accuracy;  
-> * requirement recall;  
-> * date/entity accuracy;  
-> * source-page/source-section preservation;  
-> * checkbox/form accuracy;  
-> * scanned-document accuracy;  
-> * page/table structure accuracy;  
-> * cross-document reconciliation accuracy;  
-> * processing time;  
-> * compute/API cost.
-
-The expected outcome may be a **hybrid routing policy**, for example:  
-LOW-COST / CLEAN DOCUMENT  
-→ Docling or native parse  
-→ structured AI extraction
-
-DIFFICULT SCAN / TABLE / FORM  
-→ managed OCR/Document AI provider  
-→ structured AI extraction
-
-LOW CONFIDENCE / CONFLICT  
-→ alternate provider or stronger model  
-→ human review
-
-The benchmark decides the route. The architecture does not need to change afterward.
-
-## **AI model strategy**
-
-Do not hard-code Gemini, OpenAI, Anthropic or Mistral into core business logic.  
-Use:  
-Application  
-→ Vercel AI SDK  
-→ Vercel AI Gateway / provider adapter  
-→ selected model
-
-For large historical migrations, use direct provider Batch APIs when they materially lower cost and are operationally appropriate.  
-Current **benchmark candidates** include:
-
-> * Gemini 3.6 Flash for complex multimodal/PDF work;  
-> * Gemini 3.5 Flash-Lite for high-volume structured extraction;  
-> * current OpenAI frontier models through AI Gateway;  
-> * current Anthropic frontier models through AI Gateway;  
-> * Mistral models/OCR where document extraction is the primary task.
-
-The winner must be selected with actual L\&P accuracy/cost measurements rather than vendor marketing.
-
-## **Cost strategy — snapshot for August 19, 2026**
-
-The architecture is designed to keep the permanent base cost low and make document/AI processing usage-based.
-
-| Item | Current cost posture   |
-| :---- | :---- |
-| **Next.js / React / TypeScript / Tailwind / shadcn / TanStack / Zod** | Open-source / no software license fee |
-| **Glide Data Grid** | MIT / no commercial license fee |
-| **Docling** | MIT / no parser API fee; pay only for compute if hosted |
-| **Vercel development** | Local development can be free |
-| **Vercel commercial production** | Pro currently starts at **$20/month** and includes usage credit |
-| **Supabase development/pilot** | Free tier available but limited |
-| **Supabase production** | Pro currently starts at **$25/month** |
-| **Base commercial infrastructure floor** | Approximately **$45/month** before variable compute/AI |
-| **Vercel Queues** | 1M API operations/month currently included; then starts around **$0.60 per 1M operations**, plus invoked compute |
-| **Vercel AI Gateway** | No model token markup; free accounts currently receive a small monthly credit until moved to paid credits |
-| **Cloud Run Jobs** | Usage based; monthly CPU/RAM free allowance exists; appropriate for bulk/long-running jobs |
-| **Mistral OCR 4** | Currently **$4/1,000 OCR pages** or **$5/1,000 Document-AI/annotated pages** |
-| **80,000-page Mistral example** | Approximately **$320 OCR** or **$400 Document AI**, before other model/compute costs |
-| **Google Document AI Enterprise OCR** | First 1,000 pages/month currently free, then $1.50/1,000 pages up to the published tier |
-| **80,000-page Google OCR example** | About **$118.50** if processed in one month after the 1,000-page free amount |
-| **Google Document AI Layout Parser** | Currently $10/1,000 pages → about **$800 for 80,000 pages** |
-| **Google Form Parser / Custom Extractor** | Currently $30/1,000 pages → about **$2,400 for 80,000 pages** |
-| **AI inference** | Usage based; use benchmark-selected model and batch inference where appropriate |
-
-Prices are a planning snapshot, not architectural constants. They must be rechecked before committing a bulk migration.
-
-### **Cost-control rules**
-
-> * Do not pay Document AI Form Parser/Custom Extractor rates across the whole corpus unless the accuracy benchmark justifies it.  
-> * Do not pay for Liveblocks, Handsontable, AG Grid Enterprise, Pinecone, Qdrant, or managed Tiptap collaboration unless a real product requirement requires them.  
-> * Deduplicate and checksum documents before OCR/embedding.  
-> * Do not re-OCR/re-embed an unchanged document version.  
-> * Use cheap/local parsing first when it meets the accuracy threshold.  
-> * Escalate only difficult/low-confidence pages/documents.  
-> * Use batch inference for non-urgent historical processing.  
-> * Keep human verification as the final trust boundary regardless of parser/model.
-
-# ---
-
-**4\. Historical Digitization**
-
-The first real application workflow is:  
-SCAN / UPLOAD  
-→ Create Batch  
-→ Create Document ID  
-→ SHA-256 checksum  
-→ Duplicate/version check  
-→ Classify  
-→ Identify procurement package  
-→ OCR/parse  
-→ Extract  
-→ Stage  
-→ Validate  
-→ Human verify  
-→ Canonical promotion  
-→ Search / Analytics / AI  
-Original documents are never replaced by extracted text.
-
-# ---
-
-**5\. Document Registry**
-
-Every file needs a document record supporting:
-
-> * organization;  
-> * batch;  
-> * internal document number;  
-> * original filename;  
-> * storage provider;  
-> * storage path;  
-> * Google Drive ID;  
-> * checksum;  
-> * MIME type;  
-> * page count;  
-> * document type/subtype;  
-> * client;  
-> * opportunity;  
-> * solicitation;  
-> * contract;  
-> * date;  
-> * version;  
-> * current-version flag;  
-> * processing status;  
-> * extraction status;  
-> * verification status;  
-> * creator/importer;  
-> * timestamps.
-
-Document types include:  
-RFP, RFQ, IFB, solicitation, addendum, Q\&A, proposal draft, final proposal, quote, pricing workbook, award notice, bid tab, evaluator scorecard, PO, contract, amendment, modification, option exercise, renewal, license, insurance, certification, resume, reference, past-performance evidence, other.
-
-# ---
-
-**6\. Procurement Packages**
-
-The core unit is **the opportunity/package**, not a random PDF.  
-Client  
-└── Opportunity  
-├── Original RFP  
-├── Addenda  
-├── Q\&A  
-├── Proposal Draft  
-├── Final Proposal  
-├── Pricing  
-├── Award  
-├── Bid Tab  
-├── PO  
-├── Contract  
-├── Amendment  
-└── Renewal  
-Every file retains its own identity/version while being linked to the same lifecycle.
-
-# ---
-
-**7\. Four Separate Business Truths**
+## 4. Historical digitization workflow
+
+```text
+SCAN / UPLOAD / IMPORT
+→ Create Batch
+→ Create Document ID
+→ SHA-256 checksum
+→ Duplicate/version check
+→ Classify
+→ Identify procurement package
+→ Parse/OCR (routed)
+→ Extract
+→ Stage
+→ Validate
+→ Human verify
+→ Canonical promotion
+→ Search / Analytics / AI
+```
+
+Original evidence objects are **never** replaced by extracted text.
+
+---
+
+## 5. Document registry
+
+Every file needs a document record supporting at minimum:
+
+organization; batch; internal document number; original filename; storage provider; Storage path; Google Drive ID (when imported); checksum; MIME type; page count; document type/subtype; buyer (`clients`); opportunity; solicitation; contract; date; version; current-version flag; processing status; extraction status; verification status; commercial truth; creator/importer; timestamps.
+
+**Document types** (extensible): RFP, RFQ, IFB, solicitation, addendum, Q&A, proposal draft, final proposal, quote, pricing workbook, award notice, bid tab, evaluator scorecard, PO, contract, amendment, modification, option exercise, renewal, license, insurance, certification, resume, reference, past-performance evidence, public research capture, other.
+
+Detail: [DOCUMENT_TAXONOMY.md](DOCUMENT_TAXONOMY.md).
+
+---
+
+## 6. Procurement packages
+
+The core unit is the **opportunity/package**, not a random PDF.
+
+```text
+BUYER / AGENCY (clients)
+└── Opportunity / Pursuit
+    ├── Original RFP / RFQ / IFB
+    ├── Addenda
+    ├── Q&A
+    ├── Proposal Draft
+    ├── Final Proposal
+    ├── Pricing workbook / schedule
+    ├── Award
+    ├── Bid Tab / evaluator scorecard
+    ├── PO
+    ├── Contract
+    ├── Amendment / modification / option
+    └── Renewal / compliance evidence
+```
+
+Every file retains its own identity/version while linked to the same lifecycle.
+
+---
+
+## 7. Four separate business truths
 
 Never collapse:
 
-### **Customer Requested**
+1. **Buyer Requested** — RFP/RFQ/IFB/addenda/Q&A  
+2. **L&P Proposed** — final submitted proposal/pricing/forms  
+3. **Buyer Awarded** — award notice/PO/executed contract  
+4. **Current / Amended** — amendments/modifications/options/renewals  
 
-RFP/RFQ/IFB/addenda/Q\&A.
+Never overwrite `requested_rate` / `proposed_rate` / `awarded_rate` / `current_rate` into one meaningless rate.
 
-### **L\&P Proposed**
-
-Final submitted proposal/pricing/forms.
-
-### **Customer Awarded**
-
-Award notice/PO/executed contract.
-
-### **Current Contract**
-
-Amendments/modifications/options/renewals.  
-Never overwrite:  
-requested\_rate  
-proposed\_rate  
-awarded\_rate  
-current\_rate  
-into one meaningless rate.  
-This separation is already a core requirement of the original product definition.
-
-# ---
-
-**8\. Structured Extraction / Staging**
-
-AI extraction NEVER writes directly to canonical business tables.  
-Every extracted fact stores:
-
-> * extraction run;  
-> * document;  
-> * entity;  
-> * field;  
-> * raw value;  
-> * normalized value;  
-> * normalized type;  
-> * source page;  
-> * source section;  
-> * source excerpt;  
-> * confidence;  
-> * verification status;  
-> * verified value;  
-> * verifier;  
-> * verification timestamp.
-
-Statuses:  
-AI\_EXTRACTED  
-NEEDS\_REVIEW  
-HUMAN\_VERIFIED  
-REJECTED  
-CONFLICT  
-Only verified data is promoted where verification is required.
-
-# ---
-
-**9\. Automated Validation**
-
-Validate:
-
-### **Identity**
-
-Client, solicitation, contract, PO, package association.
-
-### **Pricing**
-
-Quantity × rate, totals, proposal vs award, award vs amendment.
-
-### **Dates**
-
-Issue \< submission \< award, start \< expiration, amendment chronology.
-
-### **Cross-document consistency**
-
-Do not silently resolve legitimate differences between proposed/awarded/current values.
-
-### **Entity conflicts**
-
-Wrong client/company names.
-
-### **Required package contents**
-
-Required forms, references, COI, pricing workbook, etc.  
-Unresolved issues become validation\_exceptions.
-
-# ---
-
-**10\. Human Verification Workbench**
-
-First major operational UI:  
-SOURCE DOCUMENT / PAGE  
-↔  
-EXTRACTED DATA  
-Actions:  
-VERIFY  
-EDIT  
-REJECT  
-FLAG  
-RESOLVE CONFLICT  
-VERIFY GROUP  
-VIEW SOURCE  
-Borrow the useful **Forefront Dataset Filtering** UX concepts for fast/high-volume review.  
-Every material verification action must be auditable.
-
-# ---
-
-**11\. Core Business Domains**
-
-The long-term system includes:  
-**Clients** — canonical customer history.  
-**Opportunities/Solicitations** — RFP/RFQ/IFB, deadlines, services, pursuit status.  
-**Requirements** — every meaningful requirement as its own sourced record.  
-**Evaluation Criteria** — weights, points and scoring.  
-**Proposals** — versions, sections, responses, commitments, assumptions, exceptions.  
-**Awards/Outcomes** — winner, prices, scores, ranking, evaluator feedback.  
-**Pricing** — requested format, internal cost, submitted, awarded, current, competitor.  
-**Contracts** — terms, rates, sites, options, modifications, amendments and renewals.  
-**Compliance** — licenses, insurance, SAM, GSA, TXMAS, certifications, expiration.  
-**Personnel/Past Performance** — distinguish company experience, individual experience, key personnel and subcontractor experience.  
-**Client Intelligence** — procurement history, awards, incumbent, evaluation behavior.  
-**Competitor Intelligence** — bids, prices, scores, rankings and outcomes.  
-**Content Library** — approved reusable proposal/company content.  
-**Documents/Evidence** — source files, facts, chunks, citations and verification history.
-
-# ---
-
-**12\. Government Procurement Data**
-
-Where applicable support:
-
-> * NAICS;  
-> * PSC;  
-> * GSA SIN;  
-> * UEI;  
-> * CAGE;  
-> * SAM;  
-> * contract vehicle;  
-> * GSA/TXMAS;  
-> * set-aside;  
-> * WBE/MBE/HUB/WOSB/etc.
-
-Do not hard-code one classification to every opportunity.
-
-### **Wage determinations**
-
-Support:
-
-> * determination ID;  
-> * locality;  
-> * labor category;  
-> * base wage;  
-> * H\&W;  
-> * benefits;  
-> * CBA;  
-> * overtime/holiday;  
-> * revision/effective date;  
-> * source;  
-> * verification.
-
-# ---
-
-**13\. Win/Loss Intelligence**
-
-Statuses:  
-WON  
-LOST  
-PENDING  
-CANCELLED  
-NO\_BID  
-Store when available:
-
-> * L\&P price;  
-> * winner;  
-> * winning price;  
-> * rank;  
-> * L\&P score;  
-> * winning score;  
-> * category scores;  
-> * evaluator feedback;  
-> * strengths;  
-> * weaknesses;  
-> * documented reason;  
-> * internal analysis;  
-> * lessons learned.
-
-**Documented reason and internal inference are different fields.**  
-Never claim a loss occurred because of price unless evidence supports that conclusion.
-
-# ---
-
-**14\. Proposal Content Reuse**
-
-Segment historical proposals into sections such as:  
-Staffing, Management, Transition, Recruiting, Training, QC, Emergency Response, Technology, Incident Reporting, Past Performance.  
-Each retains:
-
-> * proposal;  
-> * client;  
-> * opportunity;  
-> * source;  
-> * outcome;  
-> * evaluator performance;  
-> * verification;  
-> * human approval;  
-> * reuse status;  
-> * embedding later.
-
-Statuses:  
-APPROVED  
-REVIEW\_REQUIRED  
-DO\_NOT\_USE  
-SUPERSEDED  
-Rules:  
-**WON ≠ automatically reusable.**  
-**LOST ≠ automatically worthless.**  
-DO\_NOT\_USE content must never enter drafting retrieval.
-
-# ---
-
-**15\. Contracts / Renewals / Compliance**
-
-Track:
-
-> * original/current contract;  
-> * original/current value;  
-> * NTE;  
-> * effective/expiration;  
-> * services;  
-> * locations;  
-> * rates;  
-> * options;  
-> * exercised/remaining options;  
-> * amendments;  
-> * modifications;  
-> * renewal notice;  
-> * termination notice;  
-> * internal review deadline;  
-> * notice deadline;  
-> * expected rebid;  
-> * owner;  
-> * status.
-
-Alerts:  
-180  
-120  
-90  
-60  
-30  
-EXPIRED  
-Apply similar expiration handling to insurance, licenses and certifications.
-
-# ---
-
-**16\. Pricing Intelligence**
-
-Support:
-
-> * hourly;  
-> * labor-category hourly;  
-> * component pricing;  
-> * shift/post/site;  
-> * day/week/month/year;  
-> * fixed fee;  
-> * patrol/trip;  
-> * event/unit;  
-> * NTE;  
-> * option-year pricing;  
-> * escalation;  
-> * overtime;  
-> * holiday;  
-> * equipment;  
-> * vehicle;  
-> * travel/pass-through.
-
-Evaluate evidence from:
-
-> * L\&P wins;  
-> * L\&P losses;  
-> * same client;  
-> * comparable clients;  
-> * service;  
-> * geography;  
-> * staffing;  
-> * contract size;  
-> * recency;  
-> * competitor awards;  
-> * wage determinations;  
-> * cost floor;  
-> * target margin.
-
-Show:
-
-> * included records;  
-> * excluded records;  
-> * reasons;  
-> * range;  
-> * median/statistics;  
-> * confidence;  
-> * source evidence.
-
-**FINAL PRICE \= HUMAN DECISION.**
-
-# ---
-
-**17\. Public Client / Competitor Intelligence**
-
-Sources may include:
-
-> * public solicitations;  
-> * award notices;  
-> * contracts;  
-> * bid tabs;  
-> * board/council agendas;  
-> * budgets;  
-> * procurement plans;  
-> * evaluator reports;  
-> * amendments;  
-> * incumbent records;  
-> * expiration/options;  
-> * public-record responses.
-
-Every research fact retains:
-
-> * URL;  
-> * organization;  
-> * document;  
-> * publication date;  
-> * retrieval date;  
-> * page/section;  
-> * verification;  
-> * confidence.
-
-Borrow the **AI Research Agent** concept for parallel source-backed research.  
-Research still passes through provenance/staging rules.
-
-# ---
-
-**18\. Search / RAG**
-
-Use:  
-Structured PostgreSQL filters  
-\+  
-PostgreSQL Full-Text Search  
-\+  
-pgvector Semantic Search  
-\=  
-Hybrid Retrieval  
-Supabase currently supports hybrid search using Postgres tsvector \+ pgvector. (see Supabase hybrid search docs)  
-Retrieval must enforce:
-
-> * organization;  
-> * permissions;  
-> * verification state;  
-> * outcome;  
-> * reuse status;  
-> * current/superseded version.
-
-Use checksum/change detection so unchanged documents do not needlessly OCR/extract/embed again.
-
-# ---
-
-**19\. Analytics / Natural Language Analysis**
-
-Analytics eventually include:
-
-> * pipeline;  
-> * win rates;  
-> * win rates by service/client/geography;  
-> * pricing trends;  
-> * evaluator weaknesses;  
-> * competitors;  
-> * active contract value;  
-> * renewal value at risk;  
-> * compliance risk.
-
-Borrow:  
-**OSS Data Analyst** → semantic business layer.  
-**Natural Language Postgres** → controlled text-to-SQL.  
-Text-to-SQL must use:
-
-> * read-only access;  
-> * approved views;  
-> * business semantic layer;  
-> * RLS/tenant controls;  
-> * query validation;  
-> * timeouts;  
-> * no destructive SQL.
-
-# ---
-
-**20\. Future Proposal Builder**
-
-For each new requirement:  
-CURRENT REQUIREMENT  
-\+  
-VERIFIED COMPANY DATA  
-\+  
-APPROVED CONTENT  
-\+  
-RELEVANT HISTORICAL RESULTS  
-\+  
-CLIENT INTELLIGENCE  
-\+  
-CURRENT EVIDENCE  
-↓  
-GROUNDED DRAFT  
-If data is missing:  
-**L\&P INPUT REQUIRED**  
-Never invent:
-
-> * staffing capacity;  
-> * employee counts;  
-> * turnover;  
-> * contracts;  
-> * references;  
-> * certifications;  
-> * capabilities;  
-> * response times;  
-> * prices;  
-> * margins;  
-> * performance statistics.
-
-Use **Tiptap / Novel-style rich editing**, evidence panels, requirement mapping, source access and human approval.
-
-# ---
-
-**21\. AI Framework, Model Routing & Agent Strategy**
-
-### **Vercel AI SDK**
-
-Use Vercel AI SDK for application-facing AI functionality:
-
-> * structured outputs;  
-> * streaming;  
-> * model/tool invocation;  
-> * AI-assisted UI;  
-> * evidence/citation presentation;  
-> * proposal-drafting interactions.
-
-The AI SDK is the application abstraction. Business rules must not depend on one model vendor.
-
-### **Vercel AI Gateway / model abstraction**
-
-Use Vercel AI Gateway as the default interactive model-routing layer so the application can use and compare models from multiple providers without rewriting business logic.  
-The model layer should support:  
-AIProvider / ModelRouter  
-├── Google  
-├── OpenAI  
-├── Anthropic  
-├── Mistral  
-└── additional approved providers
-
-Reasons:
-
-> * provider flexibility;  
-> * model comparison;  
-> * fallback/routing;  
-> * cost/latency observability;  
-> * no need to bake one model ID through the application.
-
-Do **not** call Gemini “the permanent AI engine.” It is one candidate/provider.
-
-### **Initial model candidates**
-
-Use actual benchmark data before locking the model routing policy.  
-Current candidates include:
-
-> * **Gemini 3.6 Flash** for complex multimodal/PDF reasoning;  
-> * **Gemini 3.5 Flash-Lite** for high-volume structured extraction where its accuracy is sufficient;  
-> * current OpenAI frontier models for difficult reasoning/extraction cross-checks;  
-> * current Anthropic frontier models for difficult reasoning/extraction cross-checks;  
-> * Mistral models where they benchmark well with OCR/document outputs.
-
-Historical bulk work should use provider Batch APIs when they materially reduce cost.
-
-### **Structured extraction rule**
-
-The AI receives normalized document content/source evidence and returns schema-constrained data.  
-Pydantic/Zod schemas validate shape.  
-AI output goes to staging.  
-AI confidence is useful for triage, **not proof of correctness**.
-
-### **LangGraph later**
-
-Use LangGraph only when the application genuinely requires durable multi-step workflows such as:
-
-> * persistent state;  
-> * pause/resume;  
-> * explicit human interrupts;  
-> * multi-tool research;  
-> * multi-step proposal workflows;  
-> * long-running approval-aware agents.
-
-Do not install it merely because the platform uses AI.
-
-### **MCP later**
-
-Potential external tools may include:  
-search\_procurement\_history  
-get\_contract  
-search\_proposal\_content  
-get\_client\_history  
-get\_pricing\_evidence  
-search\_public\_procurement\_sources
-
-MCP is not an initial ingestion dependency.
-
-# ---
-
-**22\. Multi-Tenant Architecture**
-
-Build tenant ownership from day one:  
-organizations  
-memberships  
-organization\_id  
-RLS  
-tenant-aware storage/retrieval  
-L\&P is initially one tenant.  
-Stripe/billing comes later.
-
-# ---
-
-**23\. Frontend / UX & Data-Work Interfaces**
-
-Framework:  
-Next.js App Router  
-React  
-TypeScript  
-Tailwind CSS  
-shadcn/ui  
-Lucide  
-TanStack Table  
-Glide Data Grid  
-TanStack Query  
-React Hook Form  
-Zod  
-Tiptap
-
-The UI should be:
-
-> * enterprise;  
-> * information dense;  
-> * audit oriented;  
-> * desktop first;  
-> * responsive;  
-> * table/grid-centric where appropriate;  
-> * source/evidence aware.
-
-Do not build the product around a generic chatbot.
-
-## **Use the correct interface for each job**
-
-### **Normal application tables — TanStack Table**
-
-Use for:
-
-> * opportunities;  
-> * clients;  
-> * documents;  
-> * requirements lists;  
-> * contracts;  
-> * renewals;  
-> * compliance;  
-> * win/loss;  
-> * intelligence indexes;  
-> * processing queues.
-
-### **Verification Workbench — Forefront-style review pattern**
-
-Use TanStack Table plus purpose-built review UX for:
-
-> * filters;  
-> * status queues;  
-> * rapid field review;  
-> * keyboard-friendly approval where appropriate;  
-> * source document alongside extracted facts;  
-> * verify/edit/reject/conflict actions.
-
-### **Spreadsheet-style workbenches — Glide Data Grid**
-
-Use only where actual cell-oriented editing is beneficial:
-
-> * dynamic client pricing matrices;  
-> * internal cost-model lines;  
-> * competitor pricing matrices;  
-> * bulk extracted-fact QA;  
-> * large requirements QA;  
-> * other controlled bulk-edit workflows.
-
-Glide renders the UI. Supabase/Postgres still owns the data.
-
-### **Proposal writing — Tiptap / Novel pattern**
-
-Novel is a reference for a **Notion-style rich-text editing experience**.  
-Use Tiptap for:
-
-> * rich proposal content;  
-> * headings/lists/tables;  
-> * requirement-linked drafting;  
-> * evidence panels;  
-> * AI rewrite/expand actions;  
-> * human edits/approval.
-
-Do not treat Novel as a database/table engine.
-
-## **Main navigation**
-
-INGESTION  
-  Document Intake  
-  Processing Queue  
-  Verification Queue  
-  Exceptions
-
-PROCUREMENT  
-  Clients  
-  Opportunities  
-  Requirements  
-  Documents
-
-CONTRACTS  
-  Contracts  
-  Renewals  
-  Compliance
-
-INTELLIGENCE  
-  Win/Loss  
-  Pricing  
-  Clients  
-  Competitors  
-  Content Library  
-  Analytics
-
-PROPOSALS  
-  Proposal Workspaces
-
-SYSTEM  
-  Data Quality  
-  Settings
-
-Avoid:
-
-> * marketing-site layouts;  
-> * giant hero sections;  
-> * decorative illustrations;  
-> * excessive gradients;  
-> * fake AI effects;  
-> * unnecessary animation;  
-> * excessive whitespace;  
-> * multiple competing UI component libraries.
-
-# ---
-
-**24\. Reference Templates / Extensions — Final Usage Decisions**
-
-These references are **patterns/components to borrow**, not applications to merge wholesale.
-
-| Template / reference | Decision | What we use   |
-| :---- | :---- | :---- |
-| **Vercel Supabase Starter** | **USE AS BASE** | Next.js \+ Supabase foundation |
-| **Forefront AI Dataset Filtering** | **USE PATTERN** | Verification/review/filter UX |
-| **Novel** | **USE PATTERN** | Notion-style Tiptap proposal editor UX |
-| **Next.js OpenAI Doc Search Starter** | **USE PATTERN** | Checksums/change detection, chunks, pgvector/RAG concepts |
-| **Morphic** | **USE PATTERN** | Evidence/citation-rich AI answers and generative result UI |
-| **AI Research Agent** | **USE LATER PATTERN** | Parallel source-backed client/competitor research; do not automatically adopt paid browser dependencies |
-| **Natural Language Postgres** | **USE LATER PATTERN** | Controlled “ask the database” experience |
-| **OSS Data Analyst Agent** | **USE LATER PATTERN** | Semantic/business analytics layer |
-| **Liveblocks AI Spreadsheet** | **UX REFERENCE ONLY** | Spreadsheet interaction ideas; replace storage/grid stack with Supabase \+ Glide Data Grid |
-| **Python Queue Subscribers Starter** | **USE PATTERN** | Vercel Queue \+ Python consumer structure |
-| **SaaS Microservices** | **USE PATTERN** | Web/processing service separation |
-| **OpenAI Deep Research-compatible MCP** | **LATER** | External search/fetch/tool interface concepts |
-| **Azure AI RAG Chatbot** | **PATTERN ONLY** | AI SDK streaming/tool patterns; do not adopt Azure Search as the core search system |
-| **WeatherGPT** | **NO** | Irrelevant weather/plugin architecture |
-| **Chatbot UI** | **NO** | Generic chat product; wrong application architecture |
-| **AssistLoop** | **NO** | Customer support product; unrelated |
-| **v0 Platform API Demo** | **NO** | App-generation demo; unrelated to procurement operations |
-
-## **Do not add these initially**
-
-> * Liveblocks persistent storage;  
-> * Handsontable commercial dependency;  
-> * AG Grid Enterprise;  
-> * Pinecone;  
-> * Qdrant;  
-> * Azure AI Search;  
-> * second relational database;  
-> * second editable Google Sheets database;  
-> * Redux/Zustand unless a demonstrated client-state problem later requires one;  
-> * another component/design system.
-
-## **Why**
-
-The product needs specialized interfaces, but it still needs:  
-**one authoritative backend, one UI system, one provenance model, and one trust boundary.**
-
-# ---
-
-**25\. Core Data Integrity Rules**
-
-> 1. Never fabricate data.  
-> 2. Unknown remains unknown.  
-> 3. AI-extracted ≠ verified.  
-> 4. Preserve provenance.  
-> 5. Preserve originals.  
-> 6. Preserve versions.  
-> 7. Preserve historical values.  
-> 8. Requested ≠ proposed ≠ awarded ≠ current.  
-> 9. Never overwrite historical states.  
-> 10. Canonical ≠ staging.  
-> 11. Recommendations require explainability.  
-> 12. Pricing requires evidence.  
-> 13. Final pricing requires human approval.  
-> 14. Proposal reuse requires approval/status.  
-> 15. Loss content is not automatically reusable.  
-> 16. Public research requires sources.  
-> 17. Documented reason ≠ internal analysis.  
-> 18. Verification is auditable.  
-> 19. Tenant boundaries are mandatory.  
-> 20. Blocked/superseded content must not silently enter AI retrieval.
-
-# ---
-
-**26\. Database Strategy**
-
-### **Start with only:**
-
-organizations  
-memberships  
-document\_batches  
-documents  
-document\_versions  
-extraction\_runs  
-extracted\_facts  
-source\_evidence  
-verification\_events  
-validation\_exceptions  
-clients  
-opportunities
-
-### **Long-term domains include:**
-
-SOURCE / AUDIT  
-documents  
-document\_versions  
-document\_chunks  
-extraction\_runs  
-extracted\_facts  
-source\_evidence  
-verification\_events  
-validation\_exceptions  
-PROCUREMENT  
-clients  
-contacts  
-opportunities  
-solicitations  
-solicitation\_addenda  
-requirements  
-requirement\_responses  
-evaluation\_criteria  
-evaluation\_scores  
-proposals  
-proposal\_versions  
-proposal\_sections  
-awards  
-win\_loss\_reviews  
-PRICING  
-pricing\_structures  
-pricing\_lines  
-labor\_categories  
-wage\_determinations  
-cost\_models  
-competitors  
-competitor\_bids  
-competitor\_pricing\_lines  
-CONTRACTS  
-contracts  
-contract\_rates  
-contract\_sites  
-contract\_options  
-contract\_amendments  
-contract\_modifications  
-purchase\_orders  
-renewals  
-COMPLIANCE / KNOWLEDGE  
-certifications  
-licenses  
-insurance\_policies  
-company\_documents  
-personnel\_qualifications  
-past\_performance  
-content\_library  
-RESEARCH  
-public\_sources  
-client\_intelligence  
-research\_facts  
-Do **not** blindly create all tables before testing real packages.
-
-# ---
-
-**27\. FINAL Correct Build Order (canonical product phases)**
-
-Use **canonical product phases 1–9** for product maturity. **Legacy engineering IDs 0–14** remain on migrations, npm scripts, and `PHASE*_ACCEPTANCE.md` filenames — do not rename them. Full mapping: [BUILD_PLAN.md](BUILD_PLAN.md), [IMPLEMENTATION_ROADMAP.md](IMPLEMENTATION_ROADMAP.md).
-
-| Canonical phase | Name | Legacy engineering IDs |
-| --- | --- | --- |
-| 1 | Foundation | 0–5 |
-| 2 | Historical Pilot | 6 |
-| 3 | Historical ingestion / processing | 3–5, 7 |
-| 4 | Broader historical migration | 8 |
-| 5 | Contracts / compliance / renewals | 9 |
-| 6 | Market / buyer / competitor intelligence | 10 |
-| 7 | Search / RAG / Ask Intelligence | 11 |
-| 8 | Pricing intelligence | 12 |
-| 9 | Proposal builder / grounded drafting | 13 |
-| Later | Commercial PaaS | 14 |
-
-**Current position (2026-08-19):** Foundation mostly built; **Historical Pilot NOT STARTED** (0 L&P packages). Later Intelligence UX exists early — **KEEP + FREEZE**. See [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
-
-### Phase 1 — Foundation
-
-Repo, Next.js app, Supabase/Postgres, Auth/RLS, tenant foundation, document registry/versions, extraction/staging, provenance/evidence, verification/audit structure, Storage foundation, Workflow skeleton, application shell, processor interfaces, verification workbench (PDF.js).
-
-**Legacy Phase 2 (RLS/tenancy) is Foundation work — not the Historical Pilot.**
-
-### Phase 2 — Historical Pilot
-
-~20–30 materially different **complete** L&P procurement packages. Wins, losses, RFP/RFQ/IFB, proposals, pricing, scorecards, contracts, amendments, renewals, DOCX, XLSX, clean PDFs, scans. Locks production routing **from evidence**, not fixtures alone.
-
-### Phase 3 — Historical ingestion / processing
-
-Intake, classification, parsing/OCR, extraction, staging, validation, reconciliation, human verification, canonical promotion — **proven on L&P files**.
-
-### Phase 4 — Broader historical migration
-
-Controlled batches of the larger corpus. Cloud Run only if the pilot proves need.
-
-### Phase 5 — Contracts / compliance / renewals
-
-Operational contract portfolio, renewals center, compliance, Supabase Cron alerts on verified dates.
-
-### Phase 6 — Analytics / market / buyer / competitor intelligence
-
-Win/loss, buyer history, competitor bids, public research, evidence-backed strategy — **not document count dashboards pretending to be market facts**.
-
-### Phase 7 — Search / RAG / Ask Intelligence
-
-LOCATE vs ASK; verified retrieval; purpose-aware filters; hybrid FTS + pgvector; grounded synthesis with citations.
-
-### Phase 8 — Pricing intelligence
-
-Glide workbench, comparables, wage/cost inputs, human final price.
-
-### Phase 9 — Proposal builder
-
-Tiptap in-app drafting → Google Docs working proposal → final procurement output. Requirement coverage, approval gates, `L&P INPUT REQUIRED`.
-
-Do not reorder phases for demo screens. **Operational checklist:** [BUILD_PLAN.md](BUILD_PLAN.md).
-
-### Legacy engineering detail (reference only)
-
-The subsections below in older copies of this file listed 14 engineering phases (Phase 1 Repository Foundation through Phase 14 Commercial). That detail now lives in [BUILD_PLAN.md](BUILD_PLAN.md) under legacy IDs. Do not treat "legacy Phase 11 implemented" as product Phase 7 complete.
-
-# ---
-
-**28\. Finished Product**
-
-When mature, uploading a new RFP should let the system answer:
-
-> * What is required?  
-> * What are the deadlines?  
-> * What submission method/forms are required?  
-> * What pricing structure is required?  
-> * What evaluation criteria matter?  
-> * What services/staffing are required?  
-> * What certifications/insurance apply?  
-> * What wage determination applies?  
-> * Have we bid this client before?  
-> * Did we win or lose?  
-> * What did we propose?  
-> * What was awarded?  
-> * What changed later?  
-> * What are the current contract terms?  
-> * What did competitors bid/win at?  
-> * What did evaluators say?  
-> * Which proposal content performed well?  
-> * What is approved for reuse?  
-> * What must not be reused?  
-> * What compliance items are expiring?  
-> * What comparable pricing evidence exists?  
-> * What cost floor applies?  
-> * What pricing range does evidence support?  
-> * Which records were included/excluded?  
-> * What information is missing?  
-> * What requires human approval?  
-> * What source supports the answer?
-
-Then it helps create the compliant proposal.  
-The result of that opportunity becomes new verified intelligence for the next one.
-
-## 29. Finished UX / UI, features, and functional outcome
-
-**Intended product architecture = the six engines in [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md).**  
-**Intended app IA = workflow groups** (Home, Ingestion, Procurement/pursuits, Contracts, Intelligence, Proposals) that **map to those engines**. Ingestion feeds engines; it is not a seventh product.
-
-The numbered workspaces below are a **mature capability inventory**. They are **not** a CRM-style table-per-nav sitemap and **not** an instruction to add a sidebar item per table.
-
-Application shell: shadcn dashboard; information-dense; desktop-first; source-aware; audit-oriented.
-
-Current sidebar groups → engines: [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Early Intelligence screens are KEEP + FREEZE until Historical Pilot.
-
-Final pages / workspaces (capability inventory, not IA)
-
-1\. Executive / Operations Dashboard
-
-Purpose: give leadership and operators one current view of pipeline, active contracts, upcoming deadlines, risk, and performance.
-
-UI:
-
-\- KPI cards;
-
-\- compact trend charts only when supported by real data;
-
-\- TanStack data tables;
-
-\- urgency/status badges;
-
-\- drill-down links rather than giant decorative cards.
-
-Capabilities:
-
-\- open opportunities;
-
-\- pipeline value;
-
-\- submitted value;
-
-\- awarded value;
-
-\- win rate;
-
-\- active contract value;
-
-\- contracts expiring in 180/120/90/60/30 days;
-
-\- renewal value at risk;
-
-\- compliance expirations;
-
-\- outstanding proposal requirements;
-
-\- pricing/operations/executive approval bottlenecks.
-
-2\. Document Intake
-
-Purpose: controlled entry point for paper scans and digital procurement files.
-
-UI:
-
-\- drag/drop upload;
-
-\- batch ID;
-
-\- source type;
-
-\- optional client/opportunity/package association;
-
-\- upload progress;
-
-\- processing status.
-
-Capabilities:
-
-\- PDF/DOCX/XLSX intake;
-
-\- checksum generation;
-
-\- duplicate/version detection;
-
-\- document registry creation;
-
-\- queue processing;
-
-\- automatic/manual package assignment;
-
-\- original-file preservation.
-
-3\. Processing Queue
-
-Purpose: operational visibility into large-scale document processing.
-
-UI:
-
-\- TanStack queue table;
-
-\- filters by batch, type, client, stage, status, failure reason;
-
-\- retry/open-source actions.
-
-Statuses include:
-
-UPLOADED, QUEUED, PARSING, EXTRACTING, VALIDATING, NEEDS\_REVIEW, VERIFIED, FAILED.
-
-AI completion must never equal VERIFIED.
-
-4\. Human Verification Workbench
-
-Purpose: fastest possible source-backed review of AI-extracted facts before canonical promotion.
-
-Primary UX:
-
-SOURCE DOCUMENT / PAGE  ↔  EXTRACTED FACTS
-
-Use a Forefront-style review/filter workflow with TanStack tables and purpose-built review interactions.
-
-Capabilities:
-
-\- inspect exact source page/section/excerpt;
-
-\- see raw and normalized values;
-
-\- confidence/status;
-
-\- VERIFY;
-
-\- EDIT;
-
-\- REJECT;
-
-\- FLAG CONFLICT;
-
-\- RESOLVE;
-
-\- VERIFY GROUP;
-
-\- keyboard-efficient review where appropriate;
-
-\- exception queue;
-
-\- full verification audit trail;
-
-\- promote accepted facts to canonical records.
-
-5\. Documents / Evidence Registry
-
-Purpose: master index of every source document and version.
-
-Capabilities:
-
-\- search/filter by client, opportunity, contract, type, date, batch, status;
-
-\- document version history;
-
-\- checksum/duplicate status;
-
-\- original source link;
-
-\- extraction history;
-
-\- verification history;
-
-\- source-evidence drill-down;
-
-\- current/superseded version status.
-
-6\. Opportunity Workspace
-
-Purpose: central operating record for every RFP/RFQ/IFB/quote pursuit.
-
-Use tabs such as:
-
-Overview | Requirements | Evaluation | Pricing | Client Intelligence | Competitors | Historical Matches | Proposal | Sources
-
-Capabilities:
-
-\- solicitation metadata and deadlines;
-
-\- go/no-go/status/owner;
-
-\- requirements completion;
-
-\- evaluation/scoring criteria;
-
-\- requested pricing structure;
-
-\- same-client history;
-
-\- similar prior opportunities;
-
-\- win/loss intelligence;
-
-\- public research evidence;
-
-\- compliance readiness;
-
-\- proposal progress;
-
-\- source documents.
-
-7\. Requirements Matrix
-
-Purpose: turn large solicitations into actionable requirement-level work.
-
-Default UI: TanStack Table.
-
-For very large QA/bulk-edit cases, use Glide Data Grid selectively.
-
-Each requirement can show:
-
-\- exact wording;
-
-\- normalized title/interpretation;
-
-\- category;
-
-\- mandatory/scored;
-
-\- points/weight;
-
-\- owner;
-
-\- response status;
-
-\- evidence status;
-
-\- verification status;
-
-\- source page/section;
-
-\- required attachment/form;
-
-\- proposal response link.
-
-8\. Pricing Intelligence Workbench
-
-Purpose: spreadsheet-like analysis without turning Google Sheets into the system of record.
-
-Primary UI: Glide Data Grid backed by Supabase/PostgreSQL.
-
-Work areas:
-
-A. Client-required pricing structure
-
-B. Internal cost model
-
-C. Historical L\&P pricing evidence
-
-D. Competitor/award evidence
-
-E. Comparable selection
-
-F. Review range / statistics
-
-G. Human final price decision
-
-Capabilities:
-
-\- dynamic client-defined matrices;
-
-\- hourly/labor category/component/site/shift/fixed/NTE/option-year structures;
-
-\- wage/fringe/cost-floor inputs;
-
-\- selectable comparable records;
-
-\- included/excluded records and reason;
-
-\- win/loss comparison;
-
-\- competitor pricing;
-
-\- ranges/median/statistics;
-
-\- confidence/data-sufficiency indicator;
-
-\- Show Evidence drawer;
-
-\- final bid-price approval.
-
-The system must never automatically fill the final bid price.
-
-9\. Client Intelligence Workspace
-
-Purpose: one evidence-backed profile of the customer and its procurement history.
-
-Capabilities:
-
-\- prior L\&P opportunities;
-
-\- wins/losses;
-
-\- incumbent vendors;
-
-\- previous solicitations/awards;
-
-\- prior pricing;
-
-\- evaluation criteria;
-
-\- evaluator comments;
-
-\- contract expirations/options;
-
-\- public board/council/procurement records;
-
-\- current client-related contracts;
-
-\- documented patterns with confidence/source evidence.
-
-10\. Competitor Intelligence Workspace
-
-Purpose: build a structured competitor evidence base, not unsupported competitive guesses.
-
-Capabilities:
-
-\- competitor profiles;
-
-\- opportunities encountered;
-
-\- submitted/awarded prices;
-
-\- pricing lines/rates;
-
-\- scores/rankings;
-
-\- award results;
-
-\- service/geography/client-type filters;
-
-\- source documents/URLs;
-
-\- comparative trends;
-
-\- confidence/sample-size display.
-
-11\. Win/Loss Intelligence
-
-Purpose: explain performance from evidence and preserve lessons for future bids.
-
-Capabilities:
-
-\- WON / LOST / PENDING / CANCELLED / NO\_BID;
-
-\- L\&P price vs winning price;
-
-\- winner/rank;
-
-\- total and category scores;
-
-\- evaluator feedback;
-
-\- strengths/weaknesses;
-
-\- documented reason;
-
-\- separate internal analysis;
-
-\- lessons learned;
-
-\- section-level performance;
-
-\- reuse implications.
-
-12\. Contract Portfolio & Contract Detail
-
-Purpose: convert awarded work into an operational lifecycle record.
-
-Capabilities:
-
-\- original/current value;
-
-\- NTE;
-
-\- start/expiration;
-
-\- sites/services/rates;
-
-\- PO/vehicle;
-
-\- amendment/modification timeline;
-
-\- option years;
-
-\- renewals;
-
-\- notice deadlines;
-
-\- expected rebid;
-
-\- source evidence;
-
-\- owner/status;
-
-\- linked originating opportunity.
-
-13\. Renewals & Compliance Center
-
-Purpose: ensure contracts and compliance do not expire unnoticed.
-
-Capabilities:
-
-\- 180/120/90/60/30-day and expired states;
-
-\- renewal/option/rebid deadlines;
-
-\- license/insurance/certification/SAM/GSA/TXMAS tracking;
-
-\- missing required evidence;
-
-\- owner/action status;
-
-\- scheduled alerts driven from verified dates.
-
-14\. Content Library & Reusable Proposal Knowledge
-
-Purpose: controlled source for reusable company/proposal content.
-
-Capabilities:
-
-\- section/category taxonomy;
-
-\- source proposal/opportunity/client;
-
-\- WON/LOST outcome;
-
-\- evaluator score when available;
-
-\- human approval;
-
-\- APPROVED / REVIEW\_REQUIRED / DO\_NOT\_USE / SUPERSEDED;
-
-\- source evidence;
-
-\- full-text/semantic retrieval;
-
-\- review date/owner;
-
-\- usage history.
-
-15\. Analytics / Ask the Data
-
-Purpose: executive and operational analysis over controlled business semantics.
-
-Capabilities:
-
-\- dashboards and filters;
-
-\- pipeline/win-rate/contract/renewal/pricing/competitor/evaluator trends;
-
-\- semantic business layer;
-
-\- read-only natural-language-to-SQL over approved views;
-
-\- tables/charts generated only from real query results;
-
-\- source/query transparency.
-
-16\. Proposal Workspace / Builder
-
-Purpose: requirement-driven proposal drafting grounded in verified L\&P evidence.
-
-Primary UX: Tiptap rich editor using Novel-style interaction patterns, not a generic chatbot.
-
-Recommended layout:
-
-LEFT: current requirement, scoring, instructions, client history, warnings.
-
-CENTER: rich proposal response editor.
-
-RIGHT: sources/evidence, approved historical sections, reuse status, missing information.
-
-Capabilities:
-
-\- requirement-by-requirement drafting;
-
-\- approved historical retrieval;
-
-\- same-client intelligence;
-
-\- loss warnings;
-
-\- evaluator intelligence;
-
-\- source citations;
-
-\- AI rewrite/expand actions;
-
-\- draft/approve/review states;
-
-\- L\&P INPUT REQUIRED when evidence is missing;
-
-\- gap/compliance check;
-
-\- final human approvals;
-
-\- future Google Docs working-document/export flow.
-
-17\. Data Quality / Exceptions
-
-Purpose: central control surface for integrity issues across the corpus.
-
-Capabilities:
-
-\- conflicting values;
-
-\- missing source evidence;
-
-\- duplicate documents;
-
-\- failed extraction;
-
-\- unresolved entities;
-
-\- stale/superseded records;
-
-\- low-confidence facts;
-
-\- incomplete procurement packages;
-
-\- canonical/staging discrepancies.
-
-18\. Settings / Administration
-
-Purpose: controlled platform configuration.
-
-Capabilities eventually include:
-
-\- organization/tenant;
-
-\- memberships/roles;
-
-\- RLS-aware permissions;
-
-\- service taxonomy;
-
-\- document taxonomy;
-
-\- parser/provider configuration;
-
-\- model routing configuration;
-
-\- alert settings;
-
-\- source-precedence rules;
-
-\- integrations;
-
-\- future billing/tenant administration.
-
-Cross-application UX rules
-
-Every relevant screen should visibly expose the record's trust state and source lineage.
-
-Shared UI components/statuses should include:
-
-\- VerificationBadge;
-
-\- OutcomeBadge;
-
-\- ReuseStatusBadge;
-
-\- ExpirationStatusBadge;
-
-\- ProcessingStatusBadge;
-
-\- SourceEvidenceDrawer;
-
-\- DataTable;
-
-\- SpreadsheetGrid;
-
-\- EmptyState;
-
-\- AuditHistory.
-
-The interface must make distinctions such as these obvious rather than hiding them in tooltips:
-
-\- AI EXTRACTED — NOT VERIFIED
-
-\- HUMAN VERIFIED
-
-\- CONFLICT
-
-\- WON
-
-\- LOST
-
-\- REVIEW REQUIRED
-
-\- DO NOT USE
-
-\- SUPERSEDED
-
-\- L\&P INPUT REQUIRED
-
-No screen may fabricate data merely to avoid an empty state.
-
-Primary finished user journeys
-
-Historical migration journey:
-
-Upload/import source files → queue → parse/OCR → extract → validate → verification queue → canonical promotion → package/opportunity grouping → contracts/intelligence/search.
-
-New RFP journey:
-
-New RFP → intake → extraction → human verification → opportunity → requirements/evaluation/pricing structure → client/competitor research → historical intelligence → compliance readiness → pricing evidence → human pricing → approved content retrieval → grounded drafting → requirement/compliance check → approval → submission → win/loss → award/contract → renewal/rebid → intelligence updated for next bid.
-
-Finished-product outcome
-
-The finished product is one integrated procurement operating system where users can:
-
-\- digitize and verify historical procurement records at scale;
-
-\- trace every material fact back to evidence;
-
-\- work opportunities requirement-by-requirement;
-
-\- understand prior client and competitor history;
-
-\- compare requested, proposed, awarded and current commercial terms without overwriting history;
-
-\- build evidence-backed pricing decisions in an Excel-like workbench without creating a second database;
-
-\- manage active contracts, amendments, renewals and compliance;
-
-\- search verified knowledge structurally, lexically and semantically;
-
-\- analyze win/loss and evaluator performance;
-
-\- safely reuse approved proposal knowledge;
-
-\- create source-grounded proposal drafts in a rich editor;
-
-\- explicitly identify missing L\&P information rather than inventing it;
-
-\- feed each new outcome back into the corpus so the platform becomes more useful over time.
+Precedence: [SOURCE_PRECEDENCE.md](SOURCE_PRECEDENCE.md).
 
 ---
 
-**30\. Paste-Ready FIRST Cursor Prompt**
+## 8. Structured extraction / staging
 
-You are working on the L\&P Proposal, Contract & Procurement Intelligence Platform.
+**AI extraction NEVER writes directly to canonical business tables.**
 
-This is a production procurement-intelligence platform, not a CRM, chatbot, demo, document repository, or basic RFP tracker.
+Every extracted fact should retain: extraction run; document/version; entity; field; raw value; normalized value/type; source page/sheet/cell; section; excerpt; confidence; verification status; verified value; verifier; verification timestamp.
 
-Its purpose is to convert paper and digital procurement history into verified, source-backed structured data and then use that data for procurement management, contracts, renewals, compliance, win/loss analysis, pricing intelligence, client/competitor intelligence, search/RAG, analytics, and evidence-backed proposal drafting.
+Statuses: `AI_EXTRACTED` · `NEEDS_REVIEW` · `HUMAN_VERIFIED` · `REJECTED` · `CONFLICT`
 
-CORE LIFECYCLE
+Only verified data is promoted where verification is required.
 
-Historical Documents  
-→ Opportunity  
-→ RFP/RFQ/IFB  
-→ Requirements  
-→ Research  
-→ Pricing  
-→ Proposal  
-→ Submission  
-→ Win/Loss  
-→ Award  
-→ Contract  
-→ Amendment/Modification  
-→ Renewal/Rebid
+Live staging tables today include: `extraction_runs`, `extracted_facts`, `source_evidence`, `verification_events`, `validation_exceptions`.
 
-NON-NEGOTIABLE DATA FLOW
+---
 
-SOURCE  
-→ extraction  
-→ STAGING  
-→ automated validation/reconciliation  
-→ HUMAN VERIFICATION  
-→ canonical database
+## 9. Automated validation
 
-AI-extracted information must never automatically become trusted canonical business data.
+Validate:
 
-Preserve separately:  
-1\. customer requested  
-2\. L\&P proposed  
-3\. customer awarded  
-4\. current/amended contract
+- **Identity** — buyer, solicitation, contract, PO, package association  
+- **Pricing** — quantity × rate, totals, proposal vs award, award vs amendment  
+- **Dates** — issue < submission < award; start < expiration; amendment chronology  
+- **Cross-document consistency** — do not silently resolve legitimate proposed/awarded/current differences  
+- **Entity conflicts** — wrong buyer/company names  
+- **Required package contents** — forms, references, COI, pricing workbook, etc.  
 
-LOCKED PLATFORM / FRAMEWORK
+Unresolved issues → `validation_exceptions`.
 
-\- Vercel Supabase Starter  
-\- Next.js App Router \+ React \+ TypeScript  
-\- Vercel hosting  
-\- Tailwind \+ shadcn/ui \+ Lucide  
-\- TanStack Table for normal application tables  
-\- Glide Data Grid for genuine spreadsheet-style pricing/bulk-edit workbenches  
-\- TanStack Query  
-\- React Hook Form \+ Zod  
-\- Tiptap for the future rich proposal editor; borrow Novel UX patterns  
-\- Supabase-hosted PostgreSQL as the authoritative structured system of record  
-\- Supabase Auth \+ PostgreSQL RLS  
-\- Supabase Storage as canonical immutable-by-policy evidence vault  
-\- Google Drive as import/source + human workspace (retain Drive ID; do not delete)  
-\- Supabase Cron/pg_cron for renewal/compliance SQL  
-\- Vercel Workflow for document lifecycle; Queues optional fan-out behind JobPort  
-\- Python \+ FastAPI \+ Pydantic processing service  
-\- Vercel Functions for light async/orchestration work  
-\- Google Cloud Run Jobs documented for heavy/bulk processing (defer deploy)  
-\- vercel.ts optional (not Phase 1 unless needed)  
-\- PostgreSQL full-text search \+ pgvector \+ hybrid retrieval  
-\- Vercel AI SDK  
-\- Vercel AI Gateway/provider abstraction for interactive model routing  
-\- LangGraph later only if durable multi-step agent workflows actually require it  
-\- MCP later  
-\- Stripe later
+---
 
-DOCUMENT PROCESSING ARCHITECTURE
+## 10. Human verification workbench
 
-Do NOT hard-code a single OCR/parser vendor into the application.
+First major operational UI (under **Data Ops → Verification**):
 
-Create a DocumentParser provider interface supporting adapters such as:  
-\- Docling  
-\- Mistral OCR 4  
-\- Google Document AI  
-\- native multimodal PDF/model processing
+```text
+SOURCE DOCUMENT / PAGE  ↔  EXTRACTED DATA
+```
 
-Create a separate StructuredExtractor/model interface.
+Actions: VERIFY · EDIT · REJECT · FLAG CONFLICT · RESOLVE CONFLICT · VERIFY GROUP · VIEW SOURCE
 
-The production parser/model routing policy will be selected after benchmarking real L\&P documents for:  
-\- pricing-table accuracy  
-\- requirement recall  
-\- source-page/section preservation  
-\- scanned-document accuracy  
-\- forms/checkboxes  
-\- dates/entities  
-\- cross-document reconciliation  
-\- processing time  
-\- actual cost
+Borrow Forefront Dataset Filtering UX concepts for fast/high-volume review. Every material verification action must be auditable (`verification_events`).
 
-Do NOT state that Gemini, Docling, Mistral or Google Document AI is permanently “the parser” before that benchmark.
+---
 
-AI MODEL ARCHITECTURE
+## 11. Core business domains → Supabase mapping
 
-Do not hard-code one AI provider into business logic.
+These domains must exist in the finished product. **Do not blindly create all tables before the pilot.** Map facts to **live** tables first; record schema-gap findings.
 
-Use:  
-Application  
-→ Vercel AI SDK  
-→ AI Gateway/provider abstraction  
-→ selected model
+| Domain | Product meaning | Live / end-state tables (see DATA_ARCHITECTURE) |
+| --- | --- | --- |
+| Buyers/agencies | Canonical buyer history (not CRM) | `clients` (legacy name OK) |
+| Opportunities / solicitations | RFP/RFQ/IFB, deadlines, services, pursuit status | `opportunities`, `solicitations`, addenda/Q&A (gaps) |
+| Requirements | Every meaningful requirement as sourced record | `requirements` (+ forms/submission gaps) |
+| Evaluation | Weights, points, scoring | `evaluation_criteria`, `evaluation_scores` (gap), `competitor_bids.note` interim |
+| Proposals | Versions, sections, responses, commitments | `proposals` / `proposal_sections` (end-state gaps); stage as facts until proven |
+| Awards / outcomes | Winner, prices, scores, ranking, feedback | `awards`, `win_loss_reviews` |
+| Pricing | Requested / cost / submitted / awarded / current / competitor | `pricing_lines`, cost models, wage_determinations (gaps) |
+| Contracts | Terms, rates, sites, options, amendments, renewals | `contracts`, amendments, options, renewals, alerts; PO/rates/sites gaps |
+| Compliance | Licenses, insurance, SAM, GSA, TXMAS, certifications | `compliance_items` + end-state license/insurance tables |
+| Personnel / past performance | Company ≠ management ≠ key personnel ≠ subcontractor | End-state + integrity rules; stage carefully |
+| Buyer intelligence | Procurement history, awards, incumbent, eval behavior | Derived + `research_facts` |
+| Competitor intelligence | Bids, prices, scores, rankings, outcomes | `competitors`, `competitor_bids` |
+| Content library | Approved reusable proposal/company content | End-state reuse records; chunks with reuse status |
+| Documents / evidence | Source files, facts, chunks, citations, verification | `documents`, `document_versions`, staging, chunks |
 
-Current benchmark candidates may include Gemini 3.6 Flash, Gemini 3.5 Flash-Lite, current OpenAI/Anthropic frontier models, and Mistral models.
+---
 
-Use provider Batch APIs directly for large historical jobs when that is more economical.
+## 12. Government procurement data
 
-UI WORKBENCH RULES
+Where applicable support relationally: NAICS; PSC; GSA SIN; UEI; CAGE; SAM; contract vehicle; GSA/TXMAS; set-aside; WBE/MBE/HUB/WOSB/etc.
 
-\- Standard records/lists: TanStack Table.  
-\- High-volume verification: Forefront-style filtering/review UX.  
-\- Excel/Airtable-like pricing or bulk editing: Glide Data Grid backed by Supabase.  
-\- Proposal drafting: Tiptap / Novel-style rich editor.  
-\- Liveblocks AI Spreadsheet is a UX reference only; do not make Liveblocks Storage another source of truth.  
-\- Do not add Handsontable, AG Grid Enterprise, Pinecone, Qdrant, Azure AI Search or another component library without an approved requirement.
+Do **not** hard-code one classification to every opportunity.
 
-REFERENCE TEMPLATE PATTERNS
+**Wage determinations** support: determination ID; locality; labor category; base wage; H&W; benefits; CBA; overtime/holiday; revision/effective date; source; verification.
 
-Use as references rather than wholesale code merges:  
-\- Forefront Dataset Filtering → verification UX  
-\- Next.js OpenAI Doc Search → checksum/chunk/pgvector patterns  
-\- Morphic → evidence/citation AI UX  
-\- AI Research Agent → public research architecture  
-\- OSS Data Analyst → semantic analytics layer  
-\- Natural Language Postgres → controlled text-to-SQL  
-\- Novel → Tiptap proposal editor UX  
-\- Python Queue Subscribers → Python queue-consumer pattern  
-\- SaaS Microservices → web/processor separation  
-\- Deep Research MCP → later external search/fetch tool pattern  
-\- Azure RAG → AI SDK patterns only
+---
 
-Do not use WeatherGPT, generic Chatbot UI, AssistLoop, or v0 Platform API Demo as product foundations.
+## 13. Win/loss intelligence
 
-COST / SCALE PRINCIPLES
+Statuses: `WON` · `LOST` · `PENDING` · `CANCELLED` · `NO_BID` · (also support **no-award / all-bids-rejected** as evidenced).
 
-The historical corpus may contain hundreds/thousands of proposals/contracts and tens of thousands of pages.
+Store when available: L&P price; winner; winning price; rank; L&P score; winning score; category scores; evaluator feedback; strengths; weaknesses; **documented reason**; **internal analysis**; lessons learned.
 
-\- Dedupe/checksum before OCR, extraction or embeddings.  
-\- Do not reprocess unchanged document versions.  
-\- Keep cheap/local parsing available.  
-\- Escalate difficult/low-confidence documents to managed OCR/stronger models.  
-\- Use Batch inference for non-urgent historical work.  
-\- Run heavy bulk processing on Cloud Run Jobs rather than forcing everything through Vercel Functions.  
-\- Avoid paid secondary systems unless they solve a measured requirement.  
-\- Human verification remains the final trust boundary.
+Documented reason ≠ internal inference. Never claim a loss occurred because of price unless evidence supports that conclusion.
 
-YOUR TASK RIGHT NOW
+---
 
-DO NOT IMPLEMENT FEATURES YET.
+## 14. Proposal content reuse
 
-1\. Inspect the existing repository.  
-2\. Identify what already exists.  
-3\. Identify conflicts with this architecture.  
-4\. Create/update the canonical repo documentation:  
-   \- docs/PRODUCT\_SPEC.md  
-   \- docs/TECH\_STACK.md  
-   \- docs/DATA\_ARCHITECTURE.md  
-   \- docs/DOCUMENT\_TAXONOMY.md  
-   \- docs/SOURCE\_PRECEDENCE.md  
-   \- docs/IMPLEMENTATION\_ROADMAP.md  
-5\. In TECH\_STACK.md, document:  
-   \- locked platform choices  
-   \- parser/model provider abstractions  
-   \- benchmark candidates  
-   \- interface choices (TanStack vs Glide vs Tiptap)  
-   \- cost-control principles  
-6\. Recommend the smallest correct Phase 1 implementation.  
-7\. Do not simplify this into a mockup/generic SaaS/CRM/chatbot.  
-8\. STOP.
+Segment historical proposals into sections such as: Staffing, Management, Transition, Recruiting, Training, QC, Emergency Response, Technology, Incident Reporting, Past Performance.
 
-Return a concise architecture/readiness report for approval.  
+Each retains: proposal; buyer; opportunity; source; outcome; evaluator performance; verification; human approval; reuse status; embedding later.
+
+Reuse statuses: `APPROVED` · `REVIEW_REQUIRED` · `DO_NOT_USE` · `SUPERSEDED`
+
+Rules: WON ≠ automatically reusable; LOST ≠ automatically worthless; `DO_NOT_USE` must never enter drafting retrieval.
+
+Drafting evidence states: `VERIFIED_DRAFT_AVAILABLE` · `REVIEW_REQUIRED` · `L&P_INPUT_REQUIRED`
+
+---
+
+## 15. Contracts / renewals / compliance
+
+Track: original/current contract; original/current/NTE value; effective/expiration; services; locations/sites/posts; rates; options exercised/remaining; amendments; modifications; renewal/termination notice; internal review deadline; expected rebid; owner; status.
+
+**Service Plan** (security ops): sites/posts; staffing; schedules; substitutes; training; equipment/vehicles; guard classifications; operational obligations.
+
+Alerts: 180 / 120 / 90 / 60 / 30 / EXPIRED (Supabase Cron on verified dates). Same pattern for insurance, licenses, certifications.
+
+Canonical Contract workspace tabs: Overview | Service Plan | Commercial Terms | Changes | Renewal.
+
+---
+
+## 16. Pricing intelligence
+
+Support structures: hourly; labor-category hourly; component; shift/post/site; day/week/month/year; fixed fee; patrol/trip; event/unit; NTE; option-year; escalation; overtime; holiday; equipment; vehicle; travel/pass-through.
+
+Evidence from: L&P wins/losses; same buyer; comparable buyers; service; geography; staffing; contract size; recency; competitor awards; wage determinations; cost floor; target margin.
+
+Show: included/excluded records; reasons; range; median/statistics; confidence; source evidence.
+
+**FINAL PRICE = HUMAN DECISION.**
+
+Pursuit Pricing = Glide workbench for this solicitation. Intelligence → Pricing = cross-corpus analysis only.
+
+---
+
+## 17. Public buyer / competitor intelligence
+
+Sources may include: public solicitations; award notices; contracts; bid tabs; board/council agendas; budgets; procurement plans; evaluator reports; amendments; incumbent records; expiration/options; public-record responses.
+
+Every research fact retains: URL; organization; document; publication date; retrieval date; page/section; verification; confidence.
+
+Parallel source-backed research is fine; research still passes provenance/staging rules. Unsourced AI summaries are not truth.
+
+---
+
+## 18. Search / RAG
+
+```text
+Structured PostgreSQL filters
++ PostgreSQL Full-Text Search
++ pgvector Semantic Search
+= Hybrid Retrieval
+```
+
+Retrieval must enforce: organization; permissions; verification state; outcome; reuse status; current/superseded version; **purpose** (e.g. `DO_NOT_USE` may support loss analysis, never drafting).
+
+Checksum/change detection: unchanged documents do not needlessly OCR/extract/embed again.
+
+Ask GPT is a **header** capability: LOCATE (no LLM) vs ASK/ANALYZE (grounded synthesis) vs REPORT.
+
+---
+
+## 19. Analytics / natural language analysis
+
+Eventually: pipeline; win rates; win rates by service/buyer/geography; pricing trends; evaluator weaknesses; competitors; active contract value; renewal value at risk; compliance risk.
+
+Text-to-SQL / semantic analytics (if added) must use: read-only access; approved views; business semantic layer; RLS/tenant controls; query validation; timeouts; **no destructive SQL**.
+
+Never fake KPIs to fill UI.
+
+---
+
+## 20. Response / proposal builder (Phase 8)
+
+For each new requirement:
+
+```text
+CURRENT REQUIREMENT
++ VERIFIED COMPANY DATA
++ APPROVED CONTENT
++ RELEVANT HISTORICAL RESULTS
++ BUYER INTELLIGENCE
++ CURRENT EVIDENCE
+↓
+GROUNDED DRAFT
+```
+
+If data is missing: **L&P INPUT REQUIRED**.
+
+Never invent: staffing capacity; employee counts; turnover; contracts; references; certifications; capabilities; response times; prices; margins; performance statistics.
+
+Use Tiptap / Novel-style editing, evidence panels, requirement mapping, source access, human approval. Google Docs = working collaboration, not canonical structured truth.
+
+---
+
+## 21. AI framework
+
+**Vercel AI SDK + Gateway:** provider abstraction; streaming; structured output; tool calls; AI UI.
+
+Controlled tools may include: `structured_query`, `locate_record`, `search_documents`, `semantic_search`, `retrieve_evidence`, `pricing_analysis`, `public_research`, `generate_report`.
+
+**LangGraph / durable agents:** only when a proven business workflow requires durable multi-step execution, persistence, human interrupts — **not** assumed architecture.
+
+**MCP later:** optional external interoperability (`search_procurement_history`, `get_contract`, etc.) — not core Phase 1–8.
+
+AI never receives unrestricted authority to mutate canonical truth.
+
+---
+
+## 22. Multi-tenant-ready architecture
+
+From day one: `organizations`; `memberships`; `organization_id`; RLS; tenant-aware storage/retrieval/AI/reports.
+
+L&P is the first tenant. Procurement buyers are **data entities**, not platform tenants. Stripe/billing is optional later.
+
+---
+
+## 23. Frontend / UX (canonical)
+
+Framework as in TECH_STACK. UI: enterprise; information dense; audit-oriented; desktop-first; table-centric.
+
+**Global sidebar:** Home · Pursuits · Intelligence · Contracts · Data Ops · Settings  
+
+**Header:** Breadcrumbs | Find or Ask GPT… | + New | User  
+
+**Pursuit tabs:** Overview | Requirements | Pricing | Response | Submission | Result  
+
+**Contract tabs:** Overview | Service Plan | Commercial Terms | Changes | Renewal  
+
+**Data Ops:** Intake | Processing | Verification | Exceptions | Historical Migration  
+
+**Intelligence:** Buyers | Competitors | Market | Pricing | Win/Loss | Content | Reports  
+
+Do **not** build peer global modules for Ingestion / Proposals / Data Quality as the finished IA. The authenticated shell was remapped to [UX_UI.md](UX_UI.md) (Prompt 0B). Legacy routes may still exist as redirects/remounts.
+
+---
+
+## 24. Reference patterns we may borrow (not replace Supabase)
+
+| Reference | Borrow |
+| --- | --- |
+| Forefront Dataset Filtering | Verification workbench UX |
+| OpenAI Doc Search | Checksums/chunks/pgvector patterns |
+| Morphic | Evidence/citation AI UX |
+| AI Research Agent | Public research patterns |
+| OSS Data Analyst | Semantic analytics ideas |
+| Natural Language Postgres | Controlled text-to-SQL ideas |
+| Novel | Proposal editor patterns |
+| SaaS Microservices | Monorepo/service separation ideas |
+
+We are **not** replacing Supabase/Postgres with those templates.
+
+---
+
+## 25. Core data integrity rules
+
+- Never fabricate data. Unknown remains unknown.  
+- AI-extracted ≠ verified.  
+- Preserve provenance, originals, versions, historical values.  
+- Requested ≠ proposed ≠ awarded ≠ current. Never overwrite historical states.  
+- Canonical ≠ staging.  
+- Recommendations require explainability. Pricing requires evidence. Final pricing requires human approval.  
+- Proposal reuse requires approval/status. Loss content is not automatically reusable.  
+- Public research requires sources. Documented reason ≠ internal analysis.  
+- Verification is auditable. Tenant boundaries are mandatory.  
+- Blocked/superseded content must not silently enter AI retrieval.  
+- Past performance: corporate ≠ management ≠ key personnel ≠ subcontractor.  
+
+---
+
+## 26. Database strategy
+
+### Start / Foundation minimum (already largely present)
+
+`organizations`, `memberships`, `document_batches`, `documents`, `document_versions`, `extraction_runs`, `extracted_facts`, `source_evidence`, `verification_events`, `validation_exceptions`, `clients`, `opportunities`
+
+### Long-term domain map (pilot may validate/refine — do not create all upfront)
+
+**SOURCE / AUDIT:** documents, document_versions, document_chunks, extraction_runs, extracted_facts, source_evidence, verification_events, validation_exceptions, processing_jobs, procurement_packages  
+
+**PROCUREMENT:** clients (buyers), opportunities/pursuits, solicitations, solicitation_addenda, solicitation_q_and_a, requirements, required_forms, requirement_responses, evaluation_criteria, evaluation_scores, proposals, proposal_versions, proposal_sections, awards, win_loss_reviews, submission_items  
+
+**SERVICES / STAFFING:** service_types, sites, posts, staffing_requirements, schedules, personnel_requirements, training_requirements  
+
+**PRICING:** pricing_structures, pricing_lines, labor_categories, wage_determinations, cost_models, competitors, competitor_bids, competitor_pricing_lines, comparable_sets  
+
+**CONTRACTS:** contracts, contract_service_plans, contract_rates, contract_sites, contract_options, contract_amendments, contract_modifications, purchase_orders, renewals, contract_alerts  
+
+**COMPLIANCE / KNOWLEDGE:** certifications, licenses, insurance_policies, company_documents, personnel_qualifications, past_performance (typed), content_library / reuse records  
+
+**RESEARCH:** research_sources, research_facts, buyer_intelligence derived views  
+
+**SEARCH / AI:** document_chunks / embeddings, Ask/report audit records  
+
+See [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md). Schema changes after Phase 2 only with **PILOT_GAP_REPORT** evidence ([CURSOR_PROMPTS.md](CURSOR_PROMPTS.md) Prompt 2).
+
+---
+
+## 27. Python processor responsibilities (`services/processor`)
+
+- Receive parse/extract jobs from the web app / Workflow step (`PROCESSOR_URL`).  
+- Download evidence from Supabase Storage (service role).  
+- Route via `DocumentParser` (PDF digital / OCR / DOCX / openpyxl XLSX).  
+- Emit schema-constrained extractions into staging (`extracted_facts` + `source_evidence`).  
+- Never mark facts `HUMAN_VERIFIED`. Never promote to canonical.  
+- Benchmarks/evals drive OCR/provider routing — do not hard-code Document AI as product architecture.  
+
+---
+
+## 28. FINAL correct build order (canonical product phases 1–8)
+
+| Phase | Name |
+| --- | --- |
+| 1 | Foundation |
+| 2 | Real-Document Historical Pilot |
+| 3 | Historical Ingestion & Migration |
+| 4 | Contract & Compliance Intelligence |
+| 5 | Buyer / Competitor / Market / Win-Loss Intelligence |
+| 6 | Search / Ask GPT / Reports / Automation |
+| 7 | Pricing Intelligence |
+| 8 | Response Builder / Submission / Result |
+
+**Core operational platform complete after Phase 8.**
+
+Older “Phase 1–14 with pilot as Phase 6” engineering sequences described foundation slices that are now **inside** Phase 1 / early Phase 3 **code**. They do **not** redefine product maturity. Legacy migration IDs remain on SQL/scripts only.
+
+---
+
+## 29. Finished product checklist
+
+When mature, uploading a new solicitation should let the system answer (from verified evidence):
+
+What is required? Deadlines? Submission method/forms? Pricing structure? Evaluation criteria? Services/staffing? Certifications/insurance? Wage determination? Have we bid this buyer before? Win/loss? What did we propose? What was awarded? What changed later? Current contract terms? Competitor bids/awards? Evaluator comments? Which proposal content performed well? What is approved for reuse? What must not be reused? Compliance expirations? Comparable pricing evidence? Cost floor? Evidence-backed pricing range? Included/excluded records? Missing information? What requires human approval? What source supports the answer?
+
+Then it helps create the compliant proposal. The result becomes new verified intelligence for the next pursuit.
+
+---
+
+## 30. Paste-ready first Cursor posture (docs-aligned)
+
+You are working on the L&P Proposal, Contract & Procurement Intelligence Platform — production procurement intelligence, not CRM/chatbot/demo/basic RFP tracker.
+
+Non-negotiable data flow: SOURCE → extraction → STAGING → validation → HUMAN VERIFICATION → canonical database. AI extraction never auto-becomes trusted truth. Preserve four commercial truths.
+
+Final technology and IA are in TECH_STACK / UX_UI / CANONICAL_PRODUCT_PACK — **not** Drive-as-vault, Queues-as-lifecycle, or Ingestion/Proposals peer nav.
+
+Do not implement yet unless given a phase prompt. Inspect repo; identify what exists; update docs; recommend smallest next phase; STOP.
+
+---
+
+## Capability inventory note
+
+Long numbered “workspace” inventories in older drafts are **feature inventories**, not sitemap instructions. Prefer [UX_UI.md](UX_UI.md) for navigation.

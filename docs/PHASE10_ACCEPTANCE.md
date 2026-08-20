@@ -1,6 +1,6 @@
 # Phase 10 acceptance
 
-> **Legacy engineering Phase 10 → Canonical product Phase 6 (partial).** Tables + thin UX; **KEEP + FREEZE** — not operational market intelligence without verified corpus.
+> **Legacy engineering Phase 10 → Canonical product Phase 5 (partial).** Tables + thin UX; early/partial / unvalidated — not operational market intelligence without verified corpus.
 
 Evidence-backed win/loss, competitor bids, and research facts. Dashboard counts come from Postgres, not placeholders.
 

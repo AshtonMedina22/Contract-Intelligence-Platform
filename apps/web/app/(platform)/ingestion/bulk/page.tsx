@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { getIntakeContext } from "@/lib/org/intake-context";
-import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
+import { DataOpsNav } from "@/components/section-tabs";
 import { BulkMigrationForm } from "./bulk-migration-form";
 
 async function BatchList() {
@@ -90,9 +90,9 @@ async function BulkPageContent() {
 export default function BulkMigrationPage() {
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={INGESTION_TABS} />
+      <DataOpsNav />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Bulk migration</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Historical Migration</h1>
         <p className="text-sm text-muted-foreground">
           Phase 8 — controlled corpus batches. Duplicates skip re-OCR.{" "}
           <Link className="underline" href="/ingestion/verification">

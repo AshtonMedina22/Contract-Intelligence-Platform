@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { OpportunityMetadataForm } from "@/components/opportunity-workspace/metadata-form";
 import { ProposalPacketGaps } from "@/components/opportunity-workspace/proposal-packet-gaps";
 import { FulfillmentEconomicsPanel } from "@/components/opportunity-workspace/fulfillment-economics";
+import { PursuitIntelligenceSummary } from "@/components/opportunity-workspace/pursuit-intelligence-summary";
 import {
   loadOpportunityHeader,
   loadWorkspaceSummary,
@@ -11,21 +13,35 @@ import {
   collectFactIdsFromPricingLines,
   loadFactDocumentMap,
 } from "@/lib/opportunity/load-workspace";
+import { loadPursuitIntelSummary } from "@/lib/intelligence/load-corpus";
 import { listProposalPacketGaps, computeFulfillmentEconomics } from "@/lib/opportunity/proposal-packet";
 import { FourTruthsTable } from "@/components/opportunity-workspace/four-truths-table";
 
-export default async function OpportunityOverviewPage({
+export default function OpportunityOverviewPage({
+  params,
+}: {
+  params: Promise<{ opportunityId: string }>;
+}) {
+  return (
+    <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
+      <OpportunityOverviewContent params={params} />
+    </Suspense>
+  );
+}
+
+async function OpportunityOverviewContent({
   params,
 }: {
   params: Promise<{ opportunityId: string }>;
 }) {
   const { opportunityId } = await params;
-  const [opportunity, summary, pricingLines, costModels, staffing] = await Promise.all([
+  const [opportunity, summary, pricingLines, costModels, staffing, intel] = await Promise.all([
     loadOpportunityHeader(opportunityId),
     loadWorkspaceSummary(opportunityId),
     loadPricingLines(opportunityId),
     loadCostModels(opportunityId),
     loadStaffingRequirements(opportunityId),
+    loadPursuitIntelSummary(opportunityId),
   ]);
   if (!opportunity) return null;
 
@@ -72,6 +88,7 @@ export default async function OpportunityOverviewPage({
 
       <ProposalPacketGaps opportunityId={opportunityId} gaps={gaps} />
       <FulfillmentEconomicsPanel economics={economics} />
+      <PursuitIntelligenceSummary data={intel} />
 
       <section className="space-y-2">
         <h2 className="text-sm font-medium">Verified pricing snapshot</h2>

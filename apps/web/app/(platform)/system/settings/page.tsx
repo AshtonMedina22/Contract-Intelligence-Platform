@@ -1,4 +1,5 @@
 import { createOrganization } from "@/app/(platform)/system/settings/actions";
+import { SettingsNav } from "@/components/section-tabs";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,10 +34,11 @@ async function SettingsContent({
 
   return (
     <div className="max-w-xl space-y-6">
+      <SettingsNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground">
-          Organization membership. Document intake is under Ingestion.
+          Organization membership. Document intake is under Data Ops.
         </p>
       </div>
 

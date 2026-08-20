@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Index of phases. **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Execute tasks in [BUILD_PLAN.md](BUILD_PLAN.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
+Index of phases. **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Execute tasks in [BUILD_PLAN.md](BUILD_PLAN.md). Current state: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
 
 Do not reorder phases to create impressive screens earlier. **Legacy engineering phase numbers on migrations and acceptance files are not product maturity.**
 
@@ -8,32 +8,33 @@ Do not reorder phases to create impressive screens earlier. **Legacy engineering
 
 ## Current product position
 
-**Foundation (canonical Phase 1 / Original Phase 1):** mostly built. Local lint/typecheck/build green. **Vercel production build green** after login Partial Prerender fix (`8d083a5` / `213f951`+). Env + migrations still required for a working tenant.
+**Phase 1 Foundation:** mostly built / needs hardening. Env + migrations still required for a working tenant.
 
-**Historical Pilot (canonical Phase 2 / Original Phase 2):** **NOT STARTED** — 0 real L&P packages scored.
+**Phase 2 Real-Document Historical Pilot:** **ACTIVE NEXT — 0 packages through complete pipeline** (intake → verify → promote). Public queue: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
 
-**Next incomplete product phase:** Historical Pilot. Do not treat legacy engineering phases 7–11 as product-complete. Ops workspace UI shipped early — empty without packages.
+**Next incomplete product phase:** Historical Pilot. Do not treat legacy engineering phases 7–11 as product-complete. Early pursuit/Ask/Intelligence UI shipped early — empty/unvalidated without packages.
 
-Later Intelligence UX (Ask, Market, Reports) is **KEEP + FREEZE** until the pilot validates the corpus.
+Early Intelligence / Ask / Market / Reports surfaces are **early/partial** — do not expand as finished product before the pilot gap report. Reconcile IA to [UX_UI.md](UX_UI.md).
 
 Living trail: [WORK_TRAIL.md](WORK_TRAIL.md).
 
 ---
 
-## Canonical product phases
+## Canonical product phases (1–8 core)
 
-| Canonical phase | Name | Usable product outcome |
+| Phase | Name | Usable product outcome |
 | --- | --- | --- |
-| 1 | Foundation | App builds; org isolation; registry; staging; verification structure; Storage; Workflow skeleton |
-| 2 | Historical Pilot | 20–30 complete L&P packages verified; routing locked from real evidence |
-| 3 | Historical ingestion / processing | Production ingest → verify → promote loop proven on L&P |
-| 4 | Broader historical migration | Controlled corpus batches with failure isolation |
-| 5 | Contracts / compliance / renewals | Portfolio, renewals, compliance from verified data |
-| 6 | Market / buyer / competitor intelligence | Evidence-backed win/loss, competitor, research |
-| 7 | Search / RAG / Ask Intelligence | LOCATE vs ASK; purpose-aware verified retrieval |
-| 8 | Pricing intelligence | Glide workbench; human final price |
-| 9 | Proposal builder | Grounded drafts; Google Docs collab; procurement outputs |
-| Later | Commercial PaaS | Stripe / tenant admin (legacy Phase 14) |
+| 1 | Foundation | App builds; org isolation; registry; staging; verification structure; Storage; Workflow skeleton; UX shell |
+| 2 | Real-Document Historical Pilot | ~20–30 packages through trust pipeline; PILOT_GAP_REPORT |
+| 3 | Historical Ingestion & Migration | Production ingest → verify → promote at corpus scale |
+| 4 | Contract & Compliance Intelligence | Portfolio + Contract workspace (Service Plan / Commercial Terms / Changes / Renewal) |
+| 5 | Buyer / Competitor / Market / Win-Loss | Evidence-backed cross-corpus intelligence |
+| 6 | Search / Ask GPT / Reports / Automation | LOCATE vs ASK; reports; bounded automation |
+| 7 | Pricing Intelligence | Glide workbench; four truths; human final price |
+| 8 | Response Builder / Submission / Result | End-to-end proposal production without fabricated data |
+
+**Core operational platform complete after Phase 8.**  
+Optional commercialization (Stripe / selling to other tenants) is **not** a core product phase.
 
 ---
 
@@ -45,20 +46,18 @@ Keep these IDs on SQL migrations, npm scripts, and `PHASE*_ACCEPTANCE.md` filena
 | --- | --- | --- | --- | --- |
 | 0 | Docs in git | 1 | Done | — |
 | 1 | Framework foundation | 1 | Done | Foundation partial |
-| 2 | Schema / provenance / RLS | **1** (not pilot) | Done (48/48 RLS) | Foundation partial |
+| 2 | Schema / provenance / RLS | **1** (not pilot) | Done (48/48 RLS) | Foundation only |
 | 3 | Intake + Workflow | 1 / 3 | Implemented | Unvalidated |
 | 4 | Processor interfaces | 1 / 3 | Implemented | Unvalidated |
 | 5 | Verification workbench | 1 / 3 | Implemented | Unvalidated |
-| 6 | Pilot benchmark | **2** | Fixtures only | **Not started** |
-| 7 | Expand canonical schema | 3 | Implemented | Unvalidated |
-| 8 | Bulk migration | 4 | Implemented | No corpus |
-| 9 | Contracts / Cron | 5 | Implemented | Unvalidated |
-| 10 | Win/loss intelligence | 6 | Implemented | Early UX; FREEZE |
-| 11 | Hybrid RAG | 7 | Implemented | Early UX; FREEZE |
-| 12 | Pricing intelligence | 8 | Early workbench (not Glide) | Unvalidated |
-| 13 | Proposal builder | 9 | Workspace tabs, not builder | Unvalidated |
-| 14 | Commercial | Later | Not started | — |
+| 6 | Pilot benchmarks | **2** | Fixtures only | Pilot not started |
+| 7 | Four truths / promotion | 1 / 7 | Implemented | Unvalidated |
+| 8 | Bulk migration | 3 | UI/RPC exists | No corpus |
+| 9 | Contracts / renewals Cron | 4 | Early | Unvalidated |
+| 10 | Win/loss / competitor | 5 | Early UX | Unvalidated |
+| 11 | Hybrid RAG / Ask | 6 | Early UX | Unvalidated |
+| 12 | Pricing Glide | 7 | Not Glide yet | Unvalidated |
+| 13 | Proposal / Response | 8 | Shell only | Not complete |
+| 14 | Commercialization | optional | Future | Not a core phase |
 
-Passing a legacy acceptance script does **not** mean the corresponding canonical product phase is complete.
-
-Execute using [BUILD_PLAN.md](BUILD_PLAN.md). Setup: [DEVICE_SETUP.md](DEVICE_SETUP.md).
+**RLS 48/48 = Phase 1 Foundation, not Phase 2.**

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { createColumnHelper, tableFeatures, useTable } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,6 +21,7 @@ export type ResearchFactRow = {
   published_on: string | null;
   retrieved_at: string;
   verification_status: FactVerificationStatus;
+  source_document_id: string | null;
   client_name: string | null;
   competitor_name: string | null;
 };
@@ -28,7 +30,7 @@ const features = tableFeatures({});
 const helper = createColumnHelper<typeof features, ResearchFactRow>();
 const columns = helper.columns([
   helper.accessor("client_name", {
-    header: "Client",
+    header: "Buyer / org",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("competitor_name", {
@@ -36,23 +38,43 @@ const columns = helper.columns([
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("title", {
-    header: "Title",
+    header: "Title / section",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("source_url", {
-    header: "URL",
+    header: "Source URL",
     cell: (ctx) => (
       <a className="underline" href={ctx.getValue()} target="_blank" rel="noreferrer">
         {ctx.getValue()}
       </a>
     ),
   }),
+  helper.accessor("source_document_id", {
+    header: "Document",
+    cell: (ctx) => {
+      const v = ctx.getValue();
+      return v ? (
+        <Link className="font-mono text-xs underline" href={`/ingestion/verification/${v}`}>
+          {v.slice(0, 8)}…
+        </Link>
+      ) : (
+        "—"
+      );
+    },
+  }),
   helper.accessor("published_on", {
     header: "Published",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
+  helper.accessor("excerpt", {
+    header: "Excerpt",
+    cell: (ctx) => {
+      const v = ctx.getValue();
+      return v ? <span className="line-clamp-2 text-xs">{v}</span> : "—";
+    },
+  }),
   helper.accessor("verification_status", {
-    header: "Status",
+    header: "Verification",
     cell: (ctx) => <Badge variant="outline">{ctx.getValue()}</Badge>,
   }),
 ]);

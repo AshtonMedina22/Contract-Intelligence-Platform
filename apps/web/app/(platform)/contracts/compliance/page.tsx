@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { CONTRACT_TABS, SectionTabs } from "@/components/section-tabs";
+import { ContractsNav } from "@/components/section-tabs";
 
 async function ComplianceContent() {
   const supabase = await createClient();
@@ -19,10 +19,13 @@ async function ComplianceContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={CONTRACT_TABS} />
+      <ContractsNav />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Compliance</h1>
-        <p className="text-sm text-muted-foreground">Insurance, license, and certification facts after human verify.</p>
+        <h1 className="text-lg font-semibold tracking-tight">Company compliance</h1>
+        <p className="text-sm text-muted-foreground">
+          Licenses, COIs/insurance, SAM/GSA/TXMAS, certifications, and personnel qualification evidence after
+          human verify — never invented.
+        </p>
       </div>
       <ul className="space-y-2 text-sm">
         {(data ?? []).map((row) => {

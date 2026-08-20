@@ -7,19 +7,11 @@ class _StubParser(DocumentParser):
         return False
 
     def parse(self, payload: bytes, *, mime_type: str | None, filename: str | None) -> NormalizedDocument:
-        raise ParserNotWiredError(f"{self.parser_id} is not wired in Phase 4.")
+        raise ParserNotWiredError(f"{self.parser_id} is not wired in Phase 3.")
 
 
 class DoclingParser(_StubParser):
     parser_id = "pdf-docling"
-
-
-class DocxParser(_StubParser):
-    parser_id = "docx-native"
-
-
-class MistralOcrParser(_StubParser):
-    parser_id = "ocr-mistral"
 
 
 class GoogleDocumentAiParser(_StubParser):

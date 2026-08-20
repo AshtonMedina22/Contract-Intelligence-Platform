@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { SettingsNav } from "@/components/section-tabs";
 import { DataLayerBadge } from "@/components/data-layer-badge";
 import {
   LAYER_LABELS,
@@ -13,6 +14,7 @@ const LAYER_ORDER: DataLayer[] = ["staging", "canonical", "derived", "intelligen
 function DataModelContent() {
   return (
     <div className="max-w-4xl space-y-8">
+      <SettingsNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Data model</h1>
         <p className="text-sm text-muted-foreground">
@@ -61,8 +63,8 @@ function DataModelContent() {
                 <td className="p-2 font-mono text-xs">commercial_truth = REQUESTED</td>
                 <td className="p-2 font-mono text-xs">requested_rate</td>
                 <td className="p-2">
-                  <Link className="underline" href="/procurement/requirements">
-                    Requirements
+                  <Link className="underline" href="/procurement/opportunities">
+                    Pursuits
                   </Link>
                 </td>
               </tr>

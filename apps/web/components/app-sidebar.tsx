@@ -10,11 +10,8 @@ import {
   FolderOpen,
   LayoutDashboard,
   LineChart,
-  PenLine,
   Scale,
   Settings,
-  ShieldCheck,
-  Upload,
 } from "lucide-react";
 import {
   Sidebar,
@@ -32,29 +29,9 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const INGESTION = [
-  { href: "/ingestion/intake", title: "Intake" },
-  { href: "/ingestion/processing", title: "Processing" },
-  { href: "/ingestion/verification", title: "Verification" },
-  { href: "/ingestion/exceptions", title: "Exceptions" },
-  { href: "/ingestion/bulk", title: "Bulk migration" },
-] as const;
-
-const PROCUREMENT = [
-  { href: "/procurement/documents", title: "Documents" },
-  { href: "/procurement/opportunities", title: "Opportunities" },
-  { href: "/procurement/clients", title: "Clients" },
-  { href: "/procurement/requirements", title: "Requirements" },
-] as const;
-
-const CONTRACTS = [
-  { href: "/contracts", title: "Portfolio" },
-  { href: "/contracts/renewals", title: "Renewals" },
-  { href: "/contracts/compliance", title: "Compliance" },
-] as const;
-
 const INTELLIGENCE = [
-  { href: "/intelligence/ask", title: "Ask Intelligence" },
+  { href: "/intelligence/clients", title: "Buyers" },
+  { href: "/intelligence/competitors", title: "Competitors" },
   { href: "/intelligence/market", title: "Market" },
   { href: "/intelligence/pricing", title: "Pricing" },
   { href: "/intelligence/win-loss", title: "Win/Loss" },
@@ -62,11 +39,21 @@ const INTELLIGENCE = [
   { href: "/intelligence/reports", title: "Reports" },
 ] as const;
 
+const DATA_OPS = [
+  { href: "/ingestion/intake", title: "Intake" },
+  { href: "/ingestion/processing", title: "Processing" },
+  { href: "/ingestion/verification", title: "Verification" },
+  { href: "/ingestion/exceptions", title: "Exceptions" },
+  { href: "/ingestion/bulk", title: "Historical Migration" },
+] as const;
+
 function pathActive(pathname: string, href: string) {
   if (href === "/overview") return pathname === "/overview";
-  if (href === "/contracts") return pathname === "/contracts";
-  if (href === "/ingestion/intake") {
-    return pathname === "/ingestion/intake" || pathname.startsWith("/ingestion/intake/");
+  if (href === "/contracts") {
+    return pathname === "/contracts" || pathname.startsWith("/contracts/");
+  }
+  if (href === "/procurement/opportunities") {
+    return pathname.startsWith("/procurement/opportunities") || pathname.startsWith("/proposals");
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -110,15 +97,11 @@ function ExpandableSection({
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const ingestionActive = pathname.startsWith("/ingestion/");
-  const procurementActive = pathname.startsWith("/procurement/");
-  const intelActive = pathname.startsWith("/intelligence");
-  const contractsActive = pathname.startsWith("/contracts");
-  const proposalsActive = pathname.startsWith("/proposals");
-  const [ingestionOpen, setIngestionOpen] = useOpenSection(ingestionActive);
-  const [procurementOpen, setProcurementOpen] = useOpenSection(procurementActive);
+  const intelActive =
+    pathname.startsWith("/intelligence") && !pathname.startsWith("/intelligence/ask");
+  const dataOpsActive = pathname.startsWith("/ingestion/");
   const [intelOpen, setIntelOpen] = useOpenSection(intelActive);
-  const [contractsOpen, setContractsOpen] = useOpenSection(contractsActive);
+  const [dataOpsOpen, setDataOpsOpen] = useOpenSection(dataOpsActive);
 
   return (
     <Sidebar collapsible="icon">
@@ -156,62 +139,25 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              <ExpandableSection
-                title="Ingestion"
-                icon={Upload}
-                tooltip="Document ingestion pipeline"
-                active={ingestionActive}
-                open={ingestionOpen}
-                onToggle={() => setIngestionOpen((v) => !v)}
-              >
-                {INGESTION.map((sub) => (
-                  <SidebarMenuSubItem key={sub.href}>
-                    <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
-                      <Link href={sub.href}>{sub.title}</Link>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                ))}
-              </ExpandableSection>
-
-              <ExpandableSection
-                title="Procurement"
-                icon={Briefcase}
-                tooltip="Packages, opportunities, requirements"
-                active={procurementActive}
-                open={procurementOpen}
-                onToggle={() => setProcurementOpen((v) => !v)}
-              >
-                {PROCUREMENT.map((sub) => (
-                  <SidebarMenuSubItem key={sub.href}>
-                    <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
-                      <Link href={sub.href}>{sub.title}</Link>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                ))}
-              </ExpandableSection>
-
-              <ExpandableSection
-                title="Contracts"
-                icon={Scale}
-                tooltip="Contracts & compliance"
-                active={contractsActive}
-                open={contractsOpen}
-                onToggle={() => setContractsOpen((v) => !v)}
-              >
-                {CONTRACTS.map((sub) => (
-                  <SidebarMenuSubItem key={sub.href}>
-                    <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
-                      <Link href={sub.href}>{sub.title}</Link>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                ))}
-              </ExpandableSection>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  size="sm"
+                  isActive={pathActive(pathname, "/procurement/opportunities")}
+                  tooltip="Pursuits"
+                >
+                  <Link href="/procurement/opportunities">
+                    <Briefcase />
+                    <span>Pursuits</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               <ExpandableSection
                 title="Intelligence"
                 icon={LineChart}
-                tooltip="Search and analyze verified corpus"
-                active={intelActive}
+                tooltip="Cross-corpus analysis"
+                active={intelActive || pathname.startsWith("/intelligence")}
                 open={intelOpen}
                 onToggle={() => setIntelOpen((v) => !v)}
               >
@@ -228,15 +174,32 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   asChild
                   size="sm"
-                  isActive={proposalsActive}
-                  tooltip="Proposal workspaces (Phase 13)"
+                  isActive={pathActive(pathname, "/contracts")}
+                  tooltip="Contracts"
                 >
-                  <Link href="/proposals">
-                    <PenLine />
-                    <span>Proposals</span>
+                  <Link href="/contracts">
+                    <Scale />
+                    <span>Contracts</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
+              <ExpandableSection
+                title="Data Ops"
+                icon={Database}
+                tooltip="Trusted data workflow"
+                active={dataOpsActive}
+                open={dataOpsOpen}
+                onToggle={() => setDataOpsOpen((v) => !v)}
+              >
+                {DATA_OPS.map((sub) => (
+                  <SidebarMenuSubItem key={sub.href}>
+                    <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
+                      <Link href={sub.href}>{sub.title}</Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ))}
+              </ExpandableSection>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -248,33 +211,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               size="sm"
-              isActive={pathname.startsWith("/system/data-model")}
-              tooltip="Table map and RFQ data flow"
-            >
-              <Link href="/system/data-model">
-                <Database />
-                <span>Data model</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              size="sm"
-              isActive={pathname.startsWith("/system/data-quality")}
-              tooltip="Data quality"
-            >
-              <Link href="/system/data-quality">
-                <ShieldCheck />
-                <span>Data quality</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              size="sm"
-              isActive={pathname.startsWith("/system/settings")}
+              isActive={pathname.startsWith("/system")}
               tooltip="Settings"
             >
               <Link href="/system/settings">

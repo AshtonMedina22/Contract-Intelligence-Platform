@@ -1,105 +1,138 @@
-import { Suspense } from "react";
-import { createClient } from "@/lib/supabase/server";
-import { RebidButton } from "@/components/opportunity-workspace/rebid-button";
+import Link from "next/link";
+import {
+  deriveContractStatus,
+  loadContractCore,
+  loadContractOverviewExtras,
+} from "@/lib/contracts/load-workspace";
 
-async function ContractDetail({ contractId }: { contractId: string }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return <p className="text-sm">Sign in to view this contract.</p>;
+function dash(v: string | number | null | undefined): string {
+  if (v === null || v === undefined || v === "") return "—";
+  return String(v);
+}
 
-  const { data: contract, error } = await supabase
-    .from("contracts")
-    .select("id, title, contract_number, start_on, verified_end_on, source_fact_id, clients(name)")
-    .eq("id", contractId)
-    .maybeSingle();
-  if (error || !contract) {
-    return <p className="text-sm text-red-600">{error?.message ?? "Contract not found."}</p>;
+export default async function ContractOverviewPage({
+  params,
+}: {
+  params: Promise<{ contractId: string }>;
+}) {
+  const { contractId } = await params;
+  const contract = await loadContractCore(contractId);
+  if (!contract) {
+    return <p className="text-sm text-muted-foreground">Contract not found.</p>;
   }
 
-  const [{ data: amendments }, { data: options }, { data: renewals }, { data: alerts }] = await Promise.all([
-    supabase.from("contract_amendments").select("id, note, effective_on").eq("contract_id", contractId),
-    supabase.from("contract_options").select("id, label, exercise_by").eq("contract_id", contractId),
-    supabase.from("renewals").select("id, notice, notice_due_on").eq("contract_id", contractId),
-    supabase.from("contract_alerts").select("id, bucket, days_until").eq("contract_id", contractId),
-  ]);
-
   const client = Array.isArray(contract.clients) ? contract.clients[0] : contract.clients;
+  const opportunity = Array.isArray(contract.opportunities)
+    ? contract.opportunities[0]
+    : contract.opportunities;
+  const extras = await loadContractOverviewExtras(contractId, contract.opportunity_id);
+  const status = deriveContractStatus({
+    verifiedEndOn: contract.verified_end_on,
+    alertBucket: extras.alert?.bucket ?? null,
+  });
+
+  const vehicle =
+    extras.federal.find((f) => f.scheme === "contract_vehicle")?.identifier ??
+    extras.federal[0]?.identifier ??
+    null;
+
+  const nextOption = extras.options.find((o) => o.exercise_by) ?? extras.options[0] ?? null;
+  const nextAction =
+    extras.alert != null
+      ? `${extras.alert.bucket} bucket · ${extras.alert.days_until} days until verified end`
+      : contract.verified_end_on
+        ? "No active alert bucket (outside 180-day window or not refreshed)"
+        : "No verified end date — alerts cannot fire";
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        Use breadcrumbs above to navigate back. Phase 13 adds tabbed workspaces per solicitation.
-      </p>
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">{contract.title}</h1>
-        <p className="text-sm text-muted-foreground">
-          {client?.name ?? "No client"} · {contract.contract_number ?? "no number"}
-        </p>
-        <p className="text-sm">
-          Start {contract.start_on ?? "—"} · Verified end {contract.verified_end_on ?? "—"}
-        </p>
-        <RebidButton contractId={contract.id} />
-        {contract.source_fact_id ? (
-          <p className="text-xs text-muted-foreground">Source fact {contract.source_fact_id}</p>
-        ) : null}
-      </div>
-      <section>
-        <h2 className="text-sm font-medium">Renewal buckets</h2>
-        {(alerts ?? []).length === 0 ? (
-          <p className="text-sm text-muted-foreground">None. Run after a verified end date is promoted.</p>
+      <dl className="grid gap-3 text-sm sm:grid-cols-2">
+        <div>
+          <dt className="text-muted-foreground">Buyer</dt>
+          <dd>{dash(client?.name)}</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Contract #</dt>
+          <dd>{dash(contract.contract_number)}</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Linked pursuit / award</dt>
+          <dd>
+            {opportunity ? (
+              <Link className="underline" href={`/procurement/opportunities/${opportunity.id}`}>
+                {opportunity.title}
+              </Link>
+            ) : (
+              "—"
+            )}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Status</dt>
+          <dd>{status === "UNKNOWN" ? "—" : status}</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Original value</dt>
+          <dd>—</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Current value</dt>
+          <dd>—</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">NTE</dt>
+          <dd>
+            {extras.award?.amount_nte != null
+              ? `$${Number(extras.award.amount_nte).toLocaleString()}`
+              : "—"}
+            <span className="text-muted-foreground"> (linked award only)</span>
+          </dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Dates</dt>
+          <dd>
+            {dash(contract.start_on)} → {dash(contract.verified_end_on)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Vehicle / federal ID</dt>
+          <dd>{dash(vehicle)}</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">Current option state</dt>
+          <dd>
+            {nextOption
+              ? `${nextOption.label}${nextOption.exercise_by ? ` · exercise by ${nextOption.exercise_by}` : ""}`
+              : "—"}
+          </dd>
+        </div>
+        <div className="sm:col-span-2">
+          <dt className="text-muted-foreground">Next action / risk</dt>
+          <dd>{nextAction}</dd>
+        </div>
+      </dl>
+
+      <section className="space-y-2">
+        <h2 className="text-sm font-medium">Compliance on this contract</h2>
+        {extras.compliance.length === 0 ? (
+          <p className="text-sm text-muted-foreground">None on file.</p>
         ) : (
-          <ul className="text-sm">
-            {(alerts ?? []).map((alert) => (
-              <li key={alert.id}>
-                {alert.bucket}-day · {alert.days_until} days
+          <ul className="list-disc pl-5 text-sm">
+            {extras.compliance.map((row) => (
+              <li key={row.id}>
+                {row.kind}: {row.statement}
+                {row.expires_on ? ` · expires ${row.expires_on}` : ""}
               </li>
             ))}
           </ul>
         )}
       </section>
-      <section>
-        <h2 className="text-sm font-medium">Amendments</h2>
-        <ul className="list-disc pl-5 text-sm">
-          {(amendments ?? []).map((row) => (
-            <li key={row.id}>
-              {row.note} {row.effective_on ? `(${row.effective_on})` : ""}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2 className="text-sm font-medium">Options</h2>
-        <ul className="list-disc pl-5 text-sm">
-          {(options ?? []).map((row) => (
-            <li key={row.id}>
-              {row.label} {row.exercise_by ? `by ${row.exercise_by}` : ""}
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2 className="text-sm font-medium">Renewal notices</h2>
-        <ul className="list-disc pl-5 text-sm">
-          {(renewals ?? []).map((row) => (
-            <li key={row.id}>{row.notice ?? "Notice"} {row.notice_due_on ?? ""}</li>
-          ))}
-        </ul>
-      </section>
+
+      <p className="text-sm">
+        <Link className="underline" href={`/contracts/${contractId}/renewal`}>
+          Rebid / renewal workspace
+        </Link>
+      </p>
     </div>
-  );
-}
-
-async function FromParams({ params }: { params: Promise<{ contractId: string }> }) {
-  const { contractId } = await params;
-  return <ContractDetail contractId={contractId} />;
-}
-
-export default function ContractPage({ params }: { params: Promise<{ contractId: string }> }) {
-  return (
-    <Suspense fallback={<p className="text-sm text-muted-foreground">Loading contract…</p>}>
-      <FromParams params={params} />
-    </Suspense>
   );
 }

@@ -6,8 +6,15 @@ const nextConfig = {
   serverExternalPackages: ["pdfjs-dist"],
   experimental: {
     serverActions: {
-      bodySizeLimit: "25mb",
+      bodySizeLimit: "50mb",
     },
+  },
+  async redirects() {
+    return [
+      { source: "/proposals", destination: "/procurement/opportunities", permanent: false },
+      { source: "/procurement/requirements", destination: "/procurement/opportunities", permanent: false },
+      { source: "/intelligence", destination: "/intelligence/market", permanent: false },
+    ];
   },
 } as NextConfig;
 

@@ -68,6 +68,8 @@ export async function ingestBulkBatch(
     files: { filename: string; bytes: Uint8Array; mimeType?: string }[];
     clientId?: string | null;
     opportunityId?: string | null;
+    packageKey?: string | null;
+    packageTitle?: string | null;
   },
 ): Promise<BulkIngestSummary> {
   const items: BatchItemResult[] = [];
@@ -98,6 +100,8 @@ export async function ingestBulkBatch(
         opportunityId: input.opportunityId,
         batchId: input.batchId,
         deferLifecycle: true,
+        packageKey: input.packageKey,
+        packageTitle: input.packageTitle,
       });
 
       const outcome = result.duplicate ? "DUPLICATE" : "INGESTED";

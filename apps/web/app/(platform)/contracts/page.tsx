@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { CONTRACT_TABS, SectionTabs } from "@/components/section-tabs";
+import { ContractsNav } from "@/components/section-tabs";
 import { ContractsTable, type ContractRow } from "./contracts-table";
+import { deriveContractStatus } from "@/lib/contracts/load-workspace";
 
 async function ContractsContent() {
   const supabase = await createClient();
@@ -12,30 +13,39 @@ async function ContractsContent() {
 
   const { data, error } = await supabase
     .from("contracts")
-    .select("id, title, contract_number, verified_end_on, clients(name)")
+    .select("id, title, contract_number, verified_end_on, clients(name), contract_alerts(bucket, days_until)")
     .order("verified_end_on", { ascending: true })
     .limit(200);
   if (error) return <p className="text-sm text-red-600">{error.message}</p>;
 
   const rows: ContractRow[] = (data ?? []).map((row) => {
     const client = Array.isArray(row.clients) ? row.clients[0] : row.clients;
+    const alerts = Array.isArray(row.contract_alerts) ? row.contract_alerts : row.contract_alerts ? [row.contract_alerts] : [];
+    const alert = alerts[0] ?? null;
+    const status = deriveContractStatus({
+      verifiedEndOn: row.verified_end_on,
+      alertBucket: alert?.bucket ?? null,
+    });
     return {
       id: row.id,
       title: row.title,
       contract_number: row.contract_number,
       verified_end_on: row.verified_end_on,
       client_name: client?.name ?? null,
+      status,
+      alert_bucket: alert?.bucket ?? null,
+      days_until: alert?.days_until ?? null,
     };
   });
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={CONTRACT_TABS} />
+      <ContractsNav />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Contracts & compliance</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Contracts</h1>
         <p className="text-sm text-muted-foreground">
-          Awarded and current truths that feed future pricing and rebid intelligence. Expiration uses
-          verified_end_on only.
+          Awarded portfolio from verified facts only. Open a contract for Overview, Service Plan, Commercial
+          Terms, Changes, and Renewal. Absent terms stay blank — never invented.
         </p>
       </div>
       <ContractsTable rows={rows} />

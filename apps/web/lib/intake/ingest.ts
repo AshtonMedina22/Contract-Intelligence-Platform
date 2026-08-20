@@ -61,13 +61,18 @@ export async function ingestSourceBytes(
     batchLabel?: string | null;
     sourceDriveFileId?: string | null;
     deferLifecycle?: boolean;
+    packageKey?: string | null;
+    packageTitle?: string | null;
+    corpusClass?: "A_LP_ORIGINATED" | "B_LP_TIED" | "C_COMPETITOR_TEST" | null;
   },
 ): Promise<IngestResult> {
   if (input.bytes.byteLength === 0) {
     throw new Error(`File ${input.filename} is empty.`);
   }
   if (input.bytes.byteLength > MAX_INTAKE_BYTES) {
-    throw new Error(`File ${input.filename} exceeds the 25 MB Phase 3 limit.`);
+    throw new Error(
+      `File ${input.filename} exceeds the ${Math.floor(MAX_INTAKE_BYTES / (1024 * 1024))} MB intake limit.`,
+    );
   }
 
   const mimeType = inferMimeType(input.filename, input.mimeType);
@@ -156,6 +161,44 @@ export async function ingestSourceBytes(
       batchId: row.batch_id,
       filename: input.filename,
     };
+  }
+
+  const packageKey = input.packageKey?.trim();
+  if (packageKey) {
+    const { data: existingPkg } = await supabase
+      .from("procurement_packages")
+      .select("id")
+      .eq("organization_id", input.organizationId)
+      .eq("package_key", packageKey)
+      .maybeSingle();
+
+    let packageId = existingPkg?.id ?? null;
+    if (!packageId) {
+      const { data: createdPkg, error: pkgError } = await supabase
+        .from("procurement_packages")
+        .insert({
+          organization_id: input.organizationId,
+          client_id: input.clientId ?? null,
+          opportunity_id: input.opportunityId ?? null,
+          package_key: packageKey,
+          title: input.packageTitle?.trim() || packageKey,
+          corpus_class: input.corpusClass ?? "A_LP_ORIGINATED",
+        })
+        .select("id")
+        .single();
+      if (pkgError) throw new Error(pkgError.message);
+      packageId = createdPkg.id;
+    }
+
+    const { error: linkError } = await supabase
+      .from("documents")
+      .update({
+        procurement_package_id: packageId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", row.document_id)
+      .eq("organization_id", input.organizationId);
+    if (linkError) throw new Error(linkError.message);
   }
 
   if (input.deferLifecycle) {

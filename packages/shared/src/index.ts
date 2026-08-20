@@ -7,6 +7,7 @@ export {
 } from "./evidence-path";
 export type {
   JobPort,
+  EmbedFanOutInput,
   StartDocumentLifecycleInput,
   StartDocumentLifecycleResult,
 } from "./job-port";

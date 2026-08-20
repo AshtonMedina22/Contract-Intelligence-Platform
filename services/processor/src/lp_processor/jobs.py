@@ -12,10 +12,13 @@ def run_parse(req: ProcessorJobRequest, store: Store | None = None) -> dict:
     store.set_status(req.document_id, req.organization_id, "PARSING")
     payload = store.download_evidence(version["storage_bucket"], version["storage_path"])
     parser = select_parser(document.get("mime_type"), document.get("original_filename"), payload)
+    filename_hint = " ".join(
+        part for part in (document.get("original_filename"), document.get("document_type")) if part
+    )
     normalized = parser.parse(
         payload,
         mime_type=document.get("mime_type"),
-        filename=document.get("original_filename"),
+        filename=filename_hint,
     )
     run_id = store.ensure_run(req, parser.parser_id, "heuristic-structure")
     store.save_normalized(run_id, normalized, parser.parser_id, extractor_id="pending")

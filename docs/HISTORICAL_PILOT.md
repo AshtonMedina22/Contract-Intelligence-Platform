@@ -1,15 +1,21 @@
-# Historical Pilot (canonical Phase 2)
+# Historical Pilot (canonical Phase 2 — Real-Document Historical Pilot)
 
-**Status: NOT STARTED as a scored corpus** — **0 / 20 packages ingested and human-verified.**  
-A **public-records queue** is opened below. Do **not** wait for internal L&P Drive access to begin.
+**Status: IN PROGRESS — 13 packages pilot-processed; 0 structured canonical promotion; gap report filed**  
+(source preservation → extraction → staging → validation → human verification → canonical promotion).
 
-**Prerequisite for ingest into the app:** Foundation build green; Vercel/Supabase env; opportunity migrations applied. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md). Queue detail: [pilot/PUBLIC_PACKAGE_QUEUE.md](pilot/PUBLIC_PACKAGE_QUEUE.md).
+A **public-records queue** is opened. Do **not** wait for internal L&P Drive access to begin.
 
-This phase validates the data model against **20–30 materially different real L&P procurement packages**.
+**Prerequisite for ingest into the app:** Foundation build green; Vercel/Supabase env; processor for parse/extract. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md). Queue: [pilot/PUBLIC_PACKAGE_QUEUE.md](pilot/PUBLIC_PACKAGE_QUEUE.md). Gap report target: `docs/benchmarks/PILOT_GAP_REPORT.md` (create when first packages run).
 
-**Start with public records. Supplement with internal L&P files later when access is available.**
+This phase validates the data model against **~20–30 materially different real procurement packages/doc sets**.
 
-See also: [BUILD_PLAN.md](BUILD_PLAN.md) (legacy engineering Phase 6), [ROUTING_POLICY.md](ROUTING_POLICY.md), [benchmarks/PILOT_RESULTS.md](benchmarks/PILOT_RESULTS.md).
+**Corpus strategy (Canonical Product Pack):**
+
+- Start with verified **public L&P** records and actual L&P proposals/contracts/POs/evaluations where obtainable.
+- Supplement with internal L&P files later.
+- Use **non-L&P** security procurement documents only as explicitly labeled **TEST CORPUS** for missing document/schema types — never call them L&P history.
+
+See also: [BUILD_PLAN.md](BUILD_PLAN.md), [FULL_PHASE_BUILD_PLAN.md](FULL_PHASE_BUILD_PLAN.md), [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md), [ROUTING_POLICY.md](ROUTING_POLICY.md).
 
 ---
 
@@ -21,7 +27,7 @@ See also: [BUILD_PLAN.md](BUILD_PLAN.md) (legacy engineering Phase 6), [ROUTING_
 | **B — official award/listing** | Agency contract register, board agenda/minutes naming L&P, TxSmartBuy/GSA listing | Yes (the listing PDF/HTML) | Facts only as stated on that page; hunt the instrument |
 | **C — press / secondary** | News, Scribd copies, aggregator pages | Keep as research notes only | **No** dollar/staffing facts |
 
-News figures (Allen ~$694k, Wylie ~$534,170, Mesquite ~$1.9M) stay in notes until the **district packet or contract** is in hand.
+News / secondary figures stay in notes until the **district packet or contract** is in hand. Allen board packet cites probable cost **$584,138** for 2024–25 — promote only after VERIFY on that page.
 
 ---
 
@@ -45,23 +51,29 @@ Target cross-section: wins and losses; RFP/RFQ/IFB/quotes/task orders; ISD / mun
 
 ## First wave (assemble now)
 
-Priority order for download + intake (not yet ingested):
+**Start with lifecycle packets** (solicitation → proposal → evaluation → award/contract), not minutes that only say “approved.” Detail + URLs + local files: [pilot/PUBLIC_PACKAGE_QUEUE.md](pilot/PUBLIC_PACKAGE_QUEUE.md).
 
-| # | Buyer | Why it belongs | Grade now | Hunt next |
+**Ingested / verified / promoted: 0.** Files may be downloaded locally and still count as 0 until they pass intake → staging → verification → canonical promotion.
+
+Priority order (not yet ingested):
+
+| # | Buyer | Why it belongs | Grade now | Prep / hunt |
 | --- | --- | --- | --- | --- |
-| 1 | **Terrell ISD** 2025–26 Security Officer Services Agreement | Public executed contract: parties, license B06267001, POP 8/1/2025–7/31/2026, armed campus posts, **$29.35/hr** in the BoardBook text | **A** | Exhibits A/B (locations/hours), invoice/PO |
-| 2 | **Terrell ISD** 2026–27 | BoardBook 2026-05-18 item: unarmed/armed services with L&P, NTE **$100,000**, ESR + contract attachments | **B** | Download those two attachments |
-| 3 | **TXMAS vehicle** TXMAS-24-99003 | TxSmartBuy vendor list: Guard and Security Services through 8/29/2027 | **B** | Full TXMAS catalog / price pages |
-| 4 | **GSA MAS** | HigherGov: MAS PoP 8/30/22–8/29/27, NAICS 561612. Number **47QSWA22D008W** reported on GSA contractor URL (eLibrary retrieve can fail) | **B** | SAM/eLibrary price list PDF |
-| 5 | **Texas HHSC** HHS001540800001 | Official [contracts.hhs.texas.gov](https://contracts.hhs.texas.gov/) row: L&P GLOBAL SECURITY LLC, start **9/1/2024**, reason **TXMAS** | **B** | Posted contract PDF; Region 07 SOW |
-| 6 | **Texas HHSC** 383549 | Same register: start **10/1/2025**, Statewide Contracting Authority | **B** | Instrument PDF |
-| 7 | **Mesquite ISD** ~Aug 2023 | Official process described in contemporaneous reporting: RFP, 7 proposers, 2-year elementary armed posts. **Need board packet** | **C→A** | Swagit 2023-09-01 / Aug 2023 agenda attachments |
-| 8 | **Allen ISD** 2023–24 | Board-approved armed coverage (17 campuses). Press ~$694k. Vendor list cites GSA `47QSWA22D008W` exp 8/29/2027 | **C / B** | Board packet + Thrillshare vendor PDF |
-| 9 | **Wylie ISD** 2023–24 | Press: 13 officers + supervisor, ~$534,170. **Need district packet** | **C** | Board agenda/contract |
-| 10 | **TxDMV PO #0000016167** | Cited as TXMAS-24-99003 PO. **Not confirmed** on TxDMV FTP this pass (no matching L&P PO found) | **unverified** | FTP `60800 0000016167.pdf` or Open Records |
-| 11–12 | **Lancaster ISD 2025–26 / 2026–27** | Cited as L&P NTE $130k / $150k. **Not confirmed.** 2024–25 Lancaster BoardBook items name **Code 3 Security**, not L&P | **do not queue as L&P** until a primary names L&P | Confirm vendor on Diligent agendas |
+| 1 | **Williamson County** — **Services Contract with Proposal** (19 pp) + #202569 lifecycle | **Grade A primary found.** Proposal **November 7, 2024**; sections (Exec Summary, EAP, Pricing, …); **Unarmed $31.45/hr**; **Golf Cart $500/month**; GSA **47QSWA22D008W**; TXMAS **TXMAS-24-99003**. Award: #202569 Lake Creek Annex NTE **$300k**. Later disbursements cite 202569. Strongest first package for proposal + pricing + award + payment **facts** + attribution. | **A** | Ingest proposal/contract PDF first; attach minutes + one funding report as same package |
+| 2 | **Allen ISD** security agreement in board packet | **$32.28/hr**, POP **8/1/2024–7/31/2025**, **30-day** termination; board probable cost **$584,138** (verify on packet page). | **A** | Full PDF ~32 MB — needs excerpt or intake limit > 25 MB |
+| 3 | **Arlington RFP 22-0143** invitation + staff report | Bid invitation (~35 pp) + eval: L&P **70.48** vs Vets **90.46**, award **$960,343**. Documented criteria only — do not invent loss reason. | **A** | Both PDFs ready in Downloads |
+| 4 | **TxDMV PO #0000016167** | **Armed Security Guard = 72 HR × $33.25 = $2,394.00**; separate **Extended Hours = $445.55**; **Total PO = $2,839.55**. TXMAS-24-99003; site/dates. | **A** | Ready |
+| 5 | **Jefferson County IFB 18-009** + bid tab | Competitor hourly rates (L&P **$18.75/hr**); **all bids rejected** — outcome model stress test. | **A** / **B** | Tab ready (`12.pdf`); keep IFB URL |
+| 6 | **Texas Lottery IFB RQ22-0480DP** (149 pp) | Monster solicitation: forms, cost sheet, ≥5 references, HUB, scoring. L&P on vendor list — **bid submission not verified**. | **A** (solicitation) | Ready; use for required-form schema-gap findings |
+| 7 | **GSA MAS 47QSWA22D008W** | Identifiers via HigherGov; confirm status on SAM/eLibrary. Map to live facts; **federal_identifiers** = schema-gap. | **B** | Official eLibrary / SAM |
+| 8 | **Terrell ISD** 2025–26 agreement | B06267001, POP 8/1/2025–7/31/2026, **$29.35/hr** | **A** | BoardBook download |
+| 9–10 | Terrell 2026–27 / TXMAS / HHSC | Listings + NTE attachments | **B** | Posted PDFs |
 
-Then keep filling to 20–30 with other ISD/city/state/federal/commercial public packets.
+**Do not start with:** Lancaster-as-L&P (unproven), or press-only Mesquite/Wylie dollar amounts.
+
+Map pilot facts to the **current live schema** first. Treat `proposal_sections`, `payments`, `purchase_orders`, `federal_identifiers`, etc. as **proposed end-state domain entities** — record **schema-gap findings**; do not add migrations until the corpus proves need.
+
+Then keep filling to 20–30 by missing instrument types (amendment, pricing workbook, evaluator scorecard, renewal, long RFP with L&P submission).
 
 ---
 
@@ -87,10 +99,17 @@ cd services/processor && pytest && python -m lp_processor.evals.harness
 
 | # | Buyer / agency | Opportunity | Outcome | Doc types present | Verified | Scored | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Terrell ISD | 2025–26 security officer services | Win (public contract) | Contract text (BoardBook) | No | No | Queue #1; not in app yet |
+| 1 | Williamson County | Lake Creek / #202569 | Win | **19-pp proposal+contract PDF found**; minutes; funding reports | Pilot (page_text) | No | P01 Grade A; SRC-01 through pipeline |
+| 2 | Allen ISD | Security services 2024–25 | Win | Board packet w/ embedded contract (~32 MB) | Pilot excerpt only | No | P02; SRC-03 blocked 25MB |
+| 3 | Arlington | RFP 22-0143 | **Loss** | Bid invitation + staff eval/award | Pilot (page_text) | No | P03; scores not structured |
+| 4 | TxDMV | PO 0000016167 | Win (PO) | PO: 72×$33.25=$2,394 + Extended Hours $445.55 = **$2,839.55** total | Pilot (page_text) | No | P04 |
+| 5 | Jefferson County | IFB 18-009/YS | All bids rejected | Bid tab (+ IFB) | Pilot (page_text) | No | P05 |
+| 6 | Texas Lottery | RQ22-0480DP | Unknown (vendor list only) | 149-pp IFB | Pilot (page_text) | No | P06 |
+| 7 | GSA | MAS 47QSWA22D008W | Vehicle listing | HigherGov | No | No | P07 |
+| 8 | Terrell ISD | 2025–26 security officer services | Win | BoardBook contract text | No | No | P08 |
 | … | | | | | | | |
 
-**L&P packages scored:** 0 / 20 minimum.
+**L&P packages ingested / scored:** **6 A/B packages through pilot pipeline (page_text only) / 0 structured scored** minimum.
 
 ---
 
@@ -105,15 +124,18 @@ cd services/processor && pytest && python -m lp_processor.evals.harness
 
 ---
 
-## Out of scope
+## Out of scope (this phase)
 
-- Expanding Intelligence UX — **KEEP + FREEZE**
-- Glide / Tiptap as Phase 8/9 complete
-- Promoting news dollar amounts
-- Fake or synthetic business rows
+- Declaring later phases complete because early code/UI exists  
+- Expanding Ask/Pricing AI/Response AI as finished product before gap report  
+- Promoting news dollar amounts or unsourced summaries  
+- Fake or synthetic business rows  
+- Labeling non-L&P test-corpus docs as L&P history  
+
+Canonical IA for later work: Home | Pursuits | Intelligence | Contracts | Data Ops ([UX_UI.md](UX_UI.md)).
 
 ---
 
 ## After the pilot
 
-Then expand canonical Phases 3–7 with confidence.
+Then expand canonical Phases 3–8 with confidence per [BUILD_PLAN.md](BUILD_PLAN.md).

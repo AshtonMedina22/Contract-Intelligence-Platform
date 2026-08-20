@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,7 +13,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { crumbsForPath, primaryActionForPath } from "@/lib/shell/nav";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { crumbsForPath } from "@/lib/shell/nav";
 import { UserMenu } from "@/components/user-menu";
 
 export function AppShellHeader({
@@ -25,7 +31,6 @@ export function AppShellHeader({
 }) {
   const pathname = usePathname();
   const crumbs = crumbsForPath(pathname);
-  const action = primaryActionForPath(pathname);
 
   return (
     <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -60,19 +65,40 @@ export function AppShellHeader({
       <form
         action="/intelligence/ask"
         method="get"
-        className="hidden min-w-0 max-w-xs flex-1 items-center lg:flex"
+        className="flex min-w-0 max-w-[10rem] flex-1 items-center sm:max-w-xs"
       >
+        <input type="hidden" name="mode" value="ask" />
+        <input type="hidden" name="purpose" value="GENERAL_QA" />
         <Search className="mr-1 size-3.5 shrink-0 text-muted-foreground" />
         <Input
           name="q"
-          placeholder="Search verified knowledge…"
+          placeholder="Find or Ask GPT..."
           className="h-8"
-          aria-label="Search verified knowledge"
+          aria-label="Find or Ask GPT"
         />
       </form>
-      <Button asChild size="sm" variant={pathname === "/overview" ? "default" : "outline"}>
-        <Link href={action.href}>{action.label}</Link>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="sm">
+            <Plus className="size-3.5" />
+            New
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem asChild>
+            <Link href="/ingestion/intake">New solicitation</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/ingestion/bulk">Import historical package</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/contracts">Add existing contract</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/intelligence/clients">Add research source</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <UserMenu email={email} />
     </div>
   );

@@ -20,4 +20,4 @@ npm run typecheck
 
 ## Out of scope (still true)
 
-Cloud Run Jobs, managed OCR wiring, auto-verification, proposal editor, contract Cron (Phase 9).
+Cloud Run Jobs, managed OCR wiring, auto-verification, proposal editor, contract Cron (**legacy Phase 9 / canonical Phase 4**).

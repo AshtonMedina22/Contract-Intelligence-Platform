@@ -1,4 +1,4 @@
-export type OpportunityOutcome = "WON" | "LOST" | "PENDING" | "CANCELLED" | "NO_BID";
+export type OpportunityOutcome = "WON" | "LOST" | "PENDING" | "CANCELLED" | "NO_BID" | "NO_AWARD";
 export type OpportunityStage =
   | "INTAKE"
   | "ANALYSIS"
@@ -8,7 +8,17 @@ export type OpportunityStage =
   | "AWARDED"
   | "CLOSED";
 export type GoNoGo = "PENDING" | "GO" | "NO_GO";
-export type ReuseStatus = "APPROVED" | "REVIEW" | "DO_NOT_USE" | "SUPERSEDED";
+export type ReuseStatus = "APPROVED" | "REVIEW_REQUIRED" | "DO_NOT_USE" | "SUPERSEDED";
+export type RetrievalPurpose =
+  | "GENERAL_QA"
+  | "LOCATE"
+  | "LOSS_ANALYSIS"
+  | "COMPETITOR_ANALYSIS"
+  | "PRICING_ANALYSIS"
+  | "BID_STRATEGY"
+  | "PROPOSAL_DRAFTING"
+  | "COMPLIANCE_REVIEW"
+  | "REPORT_GENERATION";
 
 export type ContractAlertBucket = "180" | "120" | "90" | "60" | "30" | "EXPIRED";
 export type ComplianceKind = "insurance" | "license" | "certification" | "other";
@@ -25,6 +35,16 @@ export type BatchMigrationStatus =
 export type BatchItemOutcome = "INGESTED" | "DUPLICATE" | "FAILED";
 
 export type CommercialTruth = "requested" | "proposed" | "awarded" | "current";
+
+export type CorpusClass = "A_LP_ORIGINATED" | "B_LP_TIED" | "C_COMPETITOR_TEST";
+
+export type PricingRateType =
+  | "standard"
+  | "overtime"
+  | "holiday"
+  | "equipment"
+  | "extended_hours"
+  | "other";
 
 export type MembershipRole =
   | "admin"
@@ -204,6 +224,10 @@ export type Database = {
           weekly_hours: number | null;
           labor_category: string | null;
           clearance_note: string | null;
+          site_name: string | null;
+          building: string | null;
+          guard_classification: string | null;
+          schedule_note: string | null;
           source_fact_id: string | null;
           notes: string | null;
           created_at: string;
@@ -220,6 +244,10 @@ export type Database = {
           weekly_hours?: number | null;
           labor_category?: string | null;
           clearance_note?: string | null;
+          site_name?: string | null;
+          building?: string | null;
+          guard_classification?: string | null;
+          schedule_note?: string | null;
           source_fact_id?: string | null;
           notes?: string | null;
           created_at?: string;
@@ -236,6 +264,10 @@ export type Database = {
           weekly_hours?: number | null;
           labor_category?: string | null;
           clearance_note?: string | null;
+          site_name?: string | null;
+          building?: string | null;
+          guard_classification?: string | null;
+          schedule_note?: string | null;
           source_fact_id?: string | null;
           notes?: string | null;
           created_at?: string;
@@ -287,14 +319,19 @@ export type Database = {
           labor_category: string;
           base_wage: number | null;
           fringe: number | null;
+          health_welfare: number | null;
           burden_pct: number | null;
           workers_comp: number | null;
           insurance: number | null;
           supervision: number | null;
           equipment: number | null;
+          vehicles: number | null;
+          travel: number | null;
           overhead_pct: number | null;
           target_margin_pct: number | null;
           planned_proposed_rate: number | null;
+          cost_floor: number | null;
+          wage_determination_ref: string | null;
           notes: string | null;
           created_at: string;
           updated_at: string;
@@ -306,14 +343,19 @@ export type Database = {
           labor_category: string;
           base_wage?: number | null;
           fringe?: number | null;
+          health_welfare?: number | null;
           burden_pct?: number | null;
           workers_comp?: number | null;
           insurance?: number | null;
           supervision?: number | null;
           equipment?: number | null;
+          vehicles?: number | null;
+          travel?: number | null;
           overhead_pct?: number | null;
           target_margin_pct?: number | null;
           planned_proposed_rate?: number | null;
+          cost_floor?: number | null;
+          wage_determination_ref?: string | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -325,15 +367,134 @@ export type Database = {
           labor_category?: string;
           base_wage?: number | null;
           fringe?: number | null;
+          health_welfare?: number | null;
           burden_pct?: number | null;
           workers_comp?: number | null;
           insurance?: number | null;
           supervision?: number | null;
           equipment?: number | null;
+          vehicles?: number | null;
+          travel?: number | null;
           overhead_pct?: number | null;
           target_margin_pct?: number | null;
           planned_proposed_rate?: number | null;
+          cost_floor?: number | null;
+          wage_determination_ref?: string | null;
           notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      pricing_decisions: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          labor_category: string | null;
+          pricing_line_id: string | null;
+          final_bid_rate: number | null;
+          final_bid_amount: number | null;
+          cost_floor: number | null;
+          target_margin_pct: number | null;
+          observed_min: number | null;
+          observed_max: number | null;
+          observed_median: number | null;
+          observed_n: number;
+          confidence: string | null;
+          data_sufficiency: string | null;
+          include_summary: string | null;
+          exclude_summary: string | null;
+          rationale: string | null;
+          status: "DRAFT" | "HUMAN_APPROVED";
+          decided_by: string | null;
+          decided_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          labor_category?: string | null;
+          pricing_line_id?: string | null;
+          final_bid_rate?: number | null;
+          final_bid_amount?: number | null;
+          cost_floor?: number | null;
+          target_margin_pct?: number | null;
+          observed_min?: number | null;
+          observed_max?: number | null;
+          observed_median?: number | null;
+          observed_n?: number;
+          confidence?: string | null;
+          data_sufficiency?: string | null;
+          include_summary?: string | null;
+          exclude_summary?: string | null;
+          rationale?: string | null;
+          status?: "DRAFT" | "HUMAN_APPROVED";
+          decided_by?: string | null;
+          decided_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          labor_category?: string | null;
+          pricing_line_id?: string | null;
+          final_bid_rate?: number | null;
+          final_bid_amount?: number | null;
+          cost_floor?: number | null;
+          target_margin_pct?: number | null;
+          observed_min?: number | null;
+          observed_max?: number | null;
+          observed_median?: number | null;
+          observed_n?: number;
+          confidence?: string | null;
+          data_sufficiency?: string | null;
+          include_summary?: string | null;
+          exclude_summary?: string | null;
+          rationale?: string | null;
+          status?: "DRAFT" | "HUMAN_APPROVED";
+          decided_by?: string | null;
+          decided_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      pricing_comparable_judgments: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          source_pricing_line_id: string;
+          included: boolean;
+          reason: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          source_pricing_line_id: string;
+          included?: boolean;
+          reason: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          source_pricing_line_id?: string;
+          included?: boolean;
+          reason?: string;
+          created_by?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -446,6 +607,7 @@ export type Database = {
           client_id: string | null;
           opportunity_id: string | null;
           solicitation_id: string | null;
+          procurement_package_id: string | null;
           original_filename: string;
           mime_type: string | null;
           document_type: string | null;
@@ -464,6 +626,7 @@ export type Database = {
           client_id?: string | null;
           opportunity_id?: string | null;
           solicitation_id?: string | null;
+          procurement_package_id?: string | null;
           original_filename: string;
           mime_type?: string | null;
           document_type?: string | null;
@@ -482,6 +645,7 @@ export type Database = {
           client_id?: string | null;
           opportunity_id?: string | null;
           solicitation_id?: string | null;
+          procurement_package_id?: string | null;
           original_filename?: string;
           mime_type?: string | null;
           document_type?: string | null;
@@ -784,6 +948,22 @@ export type Database = {
           solicitation_id: string;
           source_fact_id: string | null;
           statement: string;
+          mandatory: boolean;
+          scored: boolean;
+          weight_pct: number | null;
+          section_ref: string | null;
+          source_page: number | null;
+          response_required: boolean;
+          attachment_required: boolean;
+          form_name: string | null;
+          owner_name: string | null;
+          verification_note: string | null;
+          matrix_status:
+            | "OPEN"
+            | "DRAFTING"
+            | "DRAFTED"
+            | "APPROVED"
+            | "L_AND_P_INPUT_REQUIRED";
           created_at: string;
         };
         Insert: {
@@ -792,6 +972,22 @@ export type Database = {
           solicitation_id: string;
           source_fact_id?: string | null;
           statement: string;
+          mandatory?: boolean;
+          scored?: boolean;
+          weight_pct?: number | null;
+          section_ref?: string | null;
+          source_page?: number | null;
+          response_required?: boolean;
+          attachment_required?: boolean;
+          form_name?: string | null;
+          owner_name?: string | null;
+          verification_note?: string | null;
+          matrix_status?:
+            | "OPEN"
+            | "DRAFTING"
+            | "DRAFTED"
+            | "APPROVED"
+            | "L_AND_P_INPUT_REQUIRED";
           created_at?: string;
         };
         Update: {
@@ -800,7 +996,215 @@ export type Database = {
           solicitation_id?: string;
           source_fact_id?: string | null;
           statement?: string;
+          mandatory?: boolean;
+          scored?: boolean;
+          weight_pct?: number | null;
+          section_ref?: string | null;
+          source_page?: number | null;
+          response_required?: boolean;
+          attachment_required?: boolean;
+          form_name?: string | null;
+          owner_name?: string | null;
+          verification_note?: string | null;
+          matrix_status?:
+            | "OPEN"
+            | "DRAFTING"
+            | "DRAFTED"
+            | "APPROVED"
+            | "L_AND_P_INPUT_REQUIRED";
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      requirement_responses: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          requirement_id: string;
+          draft_html: string;
+          draft_json: Record<string, unknown> | null;
+          evidence_state: "VERIFIED_DRAFT_AVAILABLE" | "REVIEW_REQUIRED" | "L_AND_P_INPUT_REQUIRED";
+          draft_status: "EMPTY" | "DRAFT" | "APPROVED";
+          sources_used: unknown;
+          assumptions: string | null;
+          missing_information: string | null;
+          confidence: string | null;
+          generated_at: string | null;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          requirement_id: string;
+          draft_html?: string;
+          draft_json?: Record<string, unknown> | null;
+          evidence_state?: "VERIFIED_DRAFT_AVAILABLE" | "REVIEW_REQUIRED" | "L_AND_P_INPUT_REQUIRED";
+          draft_status?: "EMPTY" | "DRAFT" | "APPROVED";
+          sources_used?: unknown;
+          assumptions?: string | null;
+          missing_information?: string | null;
+          confidence?: string | null;
+          generated_at?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          requirement_id?: string;
+          draft_html?: string;
+          draft_json?: Record<string, unknown> | null;
+          evidence_state?: "VERIFIED_DRAFT_AVAILABLE" | "REVIEW_REQUIRED" | "L_AND_P_INPUT_REQUIRED";
+          draft_status?: "EMPTY" | "DRAFT" | "APPROVED";
+          sources_used?: unknown;
+          assumptions?: string | null;
+          missing_information?: string | null;
+          confidence?: string | null;
+          generated_at?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      pursuit_approval_layers: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          layer_key: "content" | "operations" | "pricing" | "compliance" | "executive";
+          enabled: boolean;
+          status: "requested" | "approved" | "changes_requested" | "rejected";
+          approver_id: string | null;
+          notes: string | null;
+          decided_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          layer_key: "content" | "operations" | "pricing" | "compliance" | "executive";
+          enabled?: boolean;
+          status?: "requested" | "approved" | "changes_requested" | "rejected";
+          approver_id?: string | null;
+          notes?: string | null;
+          decided_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          layer_key?: "content" | "operations" | "pricing" | "compliance" | "executive";
+          enabled?: boolean;
+          status?: "requested" | "approved" | "changes_requested" | "rejected";
+          approver_id?: string | null;
+          notes?: string | null;
+          decided_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      submission_packets: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          due_at: string | null;
+          question_deadline_at: string | null;
+          submission_method: string | null;
+          portal_recipient: string | null;
+          final_output_version: string | null;
+          google_docs_url: string | null;
+          submitted_at: string | null;
+          confirmation_reference: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          due_at?: string | null;
+          question_deadline_at?: string | null;
+          submission_method?: string | null;
+          portal_recipient?: string | null;
+          final_output_version?: string | null;
+          google_docs_url?: string | null;
+          submitted_at?: string | null;
+          confirmation_reference?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          due_at?: string | null;
+          question_deadline_at?: string | null;
+          submission_method?: string | null;
+          portal_recipient?: string | null;
+          final_output_version?: string | null;
+          google_docs_url?: string | null;
+          submitted_at?: string | null;
+          confirmation_reference?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      submission_checklist_items: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          item_key: string;
+          label: string;
+          required: boolean;
+          completed: boolean;
+          notes: string | null;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          item_key: string;
+          label: string;
+          required?: boolean;
+          completed?: boolean;
+          notes?: string | null;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          item_key?: string;
+          label?: string;
+          required?: boolean;
+          completed?: boolean;
+          notes?: string | null;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -810,7 +1214,13 @@ export type Database = {
           organization_id: string;
           opportunity_id: string;
           labor_category: string;
+          rate_type: PricingRateType;
+          site_or_post: string;
+          unit: string | null;
+          quantity: number | null;
+          extended_amount: number | null;
           requested_rate: number | null;
+          internal_cost_rate: number | null;
           proposed_rate: number | null;
           awarded_rate: number | null;
           current_rate: number | null;
@@ -826,7 +1236,13 @@ export type Database = {
           organization_id: string;
           opportunity_id: string;
           labor_category: string;
+          rate_type?: PricingRateType;
+          site_or_post?: string | null;
+          unit?: string | null;
+          quantity?: number | null;
+          extended_amount?: number | null;
           requested_rate?: number | null;
+          internal_cost_rate?: number | null;
           proposed_rate?: number | null;
           awarded_rate?: number | null;
           current_rate?: number | null;
@@ -842,7 +1258,13 @@ export type Database = {
           organization_id?: string;
           opportunity_id?: string;
           labor_category?: string;
+          rate_type?: PricingRateType;
+          site_or_post?: string | null;
+          unit?: string | null;
+          quantity?: number | null;
+          extended_amount?: number | null;
           requested_rate?: number | null;
+          internal_cost_rate?: number | null;
           proposed_rate?: number | null;
           awarded_rate?: number | null;
           current_rate?: number | null;
@@ -864,6 +1286,9 @@ export type Database = {
           source_fact_id: string | null;
           notice: string | null;
           awarded_on: string | null;
+          amount_nte: number | null;
+          winner_name: string | null;
+          rank: number | null;
           created_at: string;
         };
         Insert: {
@@ -874,6 +1299,9 @@ export type Database = {
           source_fact_id?: string | null;
           notice?: string | null;
           awarded_on?: string | null;
+          amount_nte?: number | null;
+          winner_name?: string | null;
+          rank?: number | null;
           created_at?: string;
         };
         Update: {
@@ -884,6 +1312,9 @@ export type Database = {
           source_fact_id?: string | null;
           notice?: string | null;
           awarded_on?: string | null;
+          amount_nte?: number | null;
+          winner_name?: string | null;
+          rank?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -941,6 +1372,8 @@ export type Database = {
           source_document_id: string | null;
           source_fact_id: string | null;
           note: string;
+          amendment_number: string | null;
+          title: string | null;
           effective_on: string | null;
           created_at: string;
         };
@@ -951,6 +1384,8 @@ export type Database = {
           source_document_id?: string | null;
           source_fact_id?: string | null;
           note: string;
+          amendment_number?: string | null;
+          title?: string | null;
           effective_on?: string | null;
           created_at?: string;
         };
@@ -961,6 +1396,8 @@ export type Database = {
           source_document_id?: string | null;
           source_fact_id?: string | null;
           note?: string;
+          amendment_number?: string | null;
+          title?: string | null;
           effective_on?: string | null;
           created_at?: string;
         };
@@ -1004,6 +1441,9 @@ export type Database = {
           source_fact_id: string | null;
           notice: string | null;
           notice_due_on: string | null;
+          escalation_index: string | null;
+          escalation_pct: number | null;
+          option_year: number | null;
           created_at: string;
         };
         Insert: {
@@ -1013,6 +1453,9 @@ export type Database = {
           source_fact_id?: string | null;
           notice?: string | null;
           notice_due_on?: string | null;
+          escalation_index?: string | null;
+          escalation_pct?: number | null;
+          option_year?: number | null;
           created_at?: string;
         };
         Update: {
@@ -1022,6 +1465,9 @@ export type Database = {
           source_fact_id?: string | null;
           notice?: string | null;
           notice_due_on?: string | null;
+          escalation_index?: string | null;
+          escalation_pct?: number | null;
+          option_year?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -1102,9 +1548,14 @@ export type Database = {
           outcome: OpportunityOutcome;
           documented_reason: string | null;
           internal_analysis: string | null;
+          lessons_learned: string | null;
           winner_name: string | null;
           lp_price: number | null;
           winning_price: number | null;
+          lp_score: number | null;
+          winning_score: number | null;
+          rank: number | null;
+          evaluator_comments: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -1117,9 +1568,14 @@ export type Database = {
           outcome: OpportunityOutcome;
           documented_reason?: string | null;
           internal_analysis?: string | null;
+          lessons_learned?: string | null;
           winner_name?: string | null;
           lp_price?: number | null;
           winning_price?: number | null;
+          lp_score?: number | null;
+          winning_score?: number | null;
+          rank?: number | null;
+          evaluator_comments?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -1132,9 +1588,14 @@ export type Database = {
           outcome?: OpportunityOutcome;
           documented_reason?: string | null;
           internal_analysis?: string | null;
+          lessons_learned?: string | null;
           winner_name?: string | null;
           lp_price?: number | null;
           winning_price?: number | null;
+          lp_score?: number | null;
+          winning_score?: number | null;
+          rank?: number | null;
+          evaluator_comments?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -1174,6 +1635,7 @@ export type Database = {
           source_fact_id: string | null;
           source_url: string | null;
           quoted_amount: number | null;
+          rank: number | null;
           note: string | null;
           created_at: string;
         };
@@ -1186,6 +1648,7 @@ export type Database = {
           source_fact_id?: string | null;
           source_url?: string | null;
           quoted_amount?: number | null;
+          rank?: number | null;
           note?: string | null;
           created_at?: string;
         };
@@ -1198,7 +1661,539 @@ export type Database = {
           source_fact_id?: string | null;
           source_url?: string | null;
           quoted_amount?: number | null;
+          rank?: number | null;
           note?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      procurement_packages: {
+        Row: {
+          id: string;
+          organization_id: string;
+          client_id: string | null;
+          opportunity_id: string | null;
+          package_key: string;
+          title: string;
+          corpus_class: CorpusClass;
+          buyer_name: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          client_id?: string | null;
+          opportunity_id?: string | null;
+          package_key: string;
+          title: string;
+          corpus_class: CorpusClass;
+          buyer_name?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          client_id?: string | null;
+          opportunity_id?: string | null;
+          package_key?: string;
+          title?: string;
+          corpus_class?: CorpusClass;
+          buyer_name?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      solicitation_addenda: {
+        Row: {
+          id: string;
+          organization_id: string;
+          solicitation_id: string;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          addendum_number: string | null;
+          title: string | null;
+          issued_on: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          solicitation_id: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          addendum_number?: string | null;
+          title?: string | null;
+          issued_on?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          solicitation_id?: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          addendum_number?: string | null;
+          title?: string | null;
+          issued_on?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      required_forms: {
+        Row: {
+          id: string;
+          organization_id: string;
+          solicitation_id: string;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          form_name: string;
+          mandatory: boolean;
+          section_ref: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          solicitation_id: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          form_name: string;
+          mandatory?: boolean;
+          section_ref?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          solicitation_id?: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          form_name?: string;
+          mandatory?: boolean;
+          section_ref?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      evaluation_scores: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          evaluation_criterion_id: string | null;
+          respondent_name: string;
+          competitor_id: string | null;
+          points: number;
+          max_points: number | null;
+          rank: number | null;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          evaluation_criterion_id?: string | null;
+          respondent_name: string;
+          competitor_id?: string | null;
+          points: number;
+          max_points?: number | null;
+          rank?: number | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          evaluation_criterion_id?: string | null;
+          respondent_name?: string;
+          competitor_id?: string | null;
+          points?: number;
+          max_points?: number | null;
+          rank?: number | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      competitor_pricing_lines: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          competitor_id: string | null;
+          vendor_name: string;
+          labor_category: string;
+          rate_type: PricingRateType;
+          site_or_post: string | null;
+          hourly_rate: number | null;
+          extended_amount: number | null;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          competitor_id?: string | null;
+          vendor_name: string;
+          labor_category?: string;
+          rate_type?: PricingRateType;
+          site_or_post?: string | null;
+          hourly_rate?: number | null;
+          extended_amount?: number | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          competitor_id?: string | null;
+          vendor_name?: string;
+          labor_category?: string;
+          rate_type?: PricingRateType;
+          site_or_post?: string | null;
+          hourly_rate?: number | null;
+          extended_amount?: number | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      cost_build_components: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string | null;
+          competitor_id: string | null;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          component_label: string;
+          amount: number | null;
+          unit: string | null;
+          sort_order: number;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id?: string | null;
+          competitor_id?: string | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          component_label: string;
+          amount?: number | null;
+          unit?: string | null;
+          sort_order?: number;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string | null;
+          competitor_id?: string | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          component_label?: string;
+          amount?: number | null;
+          unit?: string | null;
+          sort_order?: number;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      purchase_orders: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string | null;
+          contract_id: string | null;
+          client_id: string | null;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          po_number: string;
+          issued_on: string | null;
+          total_amount: number | null;
+          payment_terms: string | null;
+          vehicle_ref: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id?: string | null;
+          contract_id?: string | null;
+          client_id?: string | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          po_number: string;
+          issued_on?: string | null;
+          total_amount?: number | null;
+          payment_terms?: string | null;
+          vehicle_ref?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string | null;
+          contract_id?: string | null;
+          client_id?: string | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          po_number?: string;
+          issued_on?: string | null;
+          total_amount?: number | null;
+          payment_terms?: string | null;
+          vehicle_ref?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      purchase_order_lines: {
+        Row: {
+          id: string;
+          organization_id: string;
+          purchase_order_id: string;
+          source_fact_id: string | null;
+          line_label: string;
+          quantity: number | null;
+          unit: string | null;
+          unit_rate: number | null;
+          extended_amount: number | null;
+          rate_type: PricingRateType;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          purchase_order_id: string;
+          source_fact_id?: string | null;
+          line_label: string;
+          quantity?: number | null;
+          unit?: string | null;
+          unit_rate?: number | null;
+          extended_amount?: number | null;
+          rate_type?: PricingRateType;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          purchase_order_id?: string;
+          source_fact_id?: string | null;
+          line_label?: string;
+          quantity?: number | null;
+          unit?: string | null;
+          unit_rate?: number | null;
+          extended_amount?: number | null;
+          rate_type?: PricingRateType;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      proposal_sections: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          section_key: string;
+          title: string;
+          source_page: number | null;
+          excerpt: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          section_key: string;
+          title: string;
+          source_page?: number | null;
+          excerpt?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          section_key?: string;
+          title?: string;
+          source_page?: number | null;
+          excerpt?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      federal_identifiers: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string | null;
+          contract_id: string | null;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          scheme: string;
+          identifier: string;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id?: string | null;
+          contract_id?: string | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          scheme: string;
+          identifier: string;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string | null;
+          contract_id?: string | null;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          scheme?: string;
+          identifier?: string;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      contract_service_plans: {
+        Row: {
+          id: string;
+          organization_id: string;
+          contract_id: string;
+          source_document_id: string | null;
+          source_fact_id: string | null;
+          site_name: string;
+          post_label: string | null;
+          guard_classification: string | null;
+          hours_per_week: number | null;
+          schedule_note: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          contract_id: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          site_name: string;
+          post_label?: string | null;
+          guard_classification?: string | null;
+          hours_per_week?: number | null;
+          schedule_note?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          contract_id?: string;
+          source_document_id?: string | null;
+          source_fact_id?: string | null;
+          site_name?: string;
+          post_label?: string | null;
+          guard_classification?: string | null;
+          hours_per_week?: number | null;
+          schedule_note?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      automation_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          kind: string;
+          entity_type: string | null;
+          entity_id: string | null;
+          severity: string;
+          title: string;
+          detail: string | null;
+          due_on: string | null;
+          source: string;
+          acknowledged_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          kind: string;
+          entity_type?: string | null;
+          entity_id?: string | null;
+          severity?: string;
+          title: string;
+          detail?: string | null;
+          due_on?: string | null;
+          source?: string;
+          acknowledged_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          kind?: string;
+          entity_type?: string | null;
+          entity_id?: string | null;
+          severity?: string;
+          title?: string;
+          detail?: string | null;
+          due_on?: string | null;
+          source?: string;
+          acknowledged_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -1334,6 +2329,7 @@ export type Database = {
           p_for_drafting?: boolean;
           p_limit?: number;
           p_opportunity_id?: string | null;
+          p_purpose?: RetrievalPurpose | null;
         };
         Returns: {
           chunk_id: string;
@@ -1349,6 +2345,14 @@ export type Database = {
           rank: number;
           match_kind: string;
         }[];
+      };
+      run_intelligence_automation: {
+        Args: Record<string, never>;
+        Returns: Record<string, unknown>;
+      };
+      run_intelligence_automation_service: {
+        Args: Record<string, never>;
+        Returns: Record<string, unknown>;
       };
       ensure_competitor: {
         Args: { p_organization_id: string; p_name: string };
@@ -1444,6 +2448,24 @@ export type Database = {
           batch_id: string | null;
         };
       };
+      append_document_version: {
+        Args: {
+          p_organization_id: string;
+          p_document_id: string;
+          p_version_id: string;
+          p_sha256: string;
+          p_storage_path: string;
+          p_byte_size: number | null;
+          p_source_drive_file_id: string | null;
+        };
+        Returns: {
+          duplicate: boolean;
+          document_id: string;
+          document_version_id: string;
+          storage_path: string;
+          version_number: number;
+        };
+      };
       storage_path_org_id: {
         Args: { object_name: string };
         Returns: string | null;
@@ -1470,6 +2492,8 @@ export type Database = {
       document_processing_status: DocumentProcessingStatus;
       fact_verification_status: FactVerificationStatus;
       commercial_truth: CommercialTruth;
+      corpus_class: CorpusClass;
+      pricing_rate_type: PricingRateType;
       batch_migration_status: BatchMigrationStatus;
       batch_item_outcome: BatchItemOutcome;
       contract_alert_bucket: ContractAlertBucket;

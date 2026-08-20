@@ -1,0 +1,225 @@
+{
+  "stamp": "mt1fkegd",
+  "passed": 31,
+  "failed": 0,
+  "total": 31,
+  "matrix": [
+    {
+      "domain": "corpus",
+      "name": "SRC-02 bytes present + SHA",
+      "ok": true,
+      "detail": "334504 sha=44497b51d423… ok",
+      "source": "PKG-02 SRC-02"
+    },
+    {
+      "domain": "corpus",
+      "name": "SRC-04 bytes present + SHA",
+      "ok": true,
+      "detail": "38345 sha=e1f3f631bdc5… ok",
+      "source": "PKG-04 SRC-04"
+    },
+    {
+      "domain": "corpus",
+      "name": "SRC-14 bytes present + SHA",
+      "ok": true,
+      "detail": "80083 sha=21a3f215cf8b… ok",
+      "source": "PKG-11 SRC-14"
+    },
+    {
+      "domain": "corpus",
+      "name": "SRC-15 bytes present + SHA",
+      "ok": true,
+      "detail": "3887551 sha=8f80d1b94611… ok",
+      "source": "PKG-12 SRC-15"
+    },
+    {
+      "domain": "corpus",
+      "name": "SRC-16 bytes present + SHA",
+      "ok": true,
+      "detail": "976191 sha=b91a8441f18f… ok",
+      "source": "PKG-12 SRC-16"
+    },
+    {
+      "domain": "corpus",
+      "name": "five real instruments registered with vault SHA paths",
+      "ok": true,
+      "detail": "orig=6a4be858 amend=1be5caa0 po=a8a93c52",
+      "source": "SRC-15/16/04"
+    },
+    {
+      "domain": "linkage",
+      "name": "linked pursuit/award remains traceable",
+      "ok": true,
+      "detail": "award=0fbca1f7-1ffd-4be2-93d7-16cde89b4a3f nte=12500000",
+      "source": "SRC-16 PKG-12"
+    },
+    {
+      "domain": "promote",
+      "name": "original contract end/start/number promote",
+      "ok": true,
+      "detail": "{\"end\":{\"ok\":true,\"action\":\"contract_end\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\",\"verified_end_on\":\"2025-08-31\"},\"start\":{\"ok\":true,\"action\":\"contract_start\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"},\"num\":{\"ok\":true,\"action\":\"contract_number\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"}}",
+      "source": "SRC-15"
+    },
+    {
+      "domain": "truth",
+      "name": "original terms seeded on contract",
+      "ok": true,
+      "detail": "{\"id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\",\"verified_end_on\":\"2025-08-31\",\"start_on\":\"2024-09-01\",\"contract_number\":\"24-001-000\",\"opportunity_id\":\"d9b834d5-6d2f-4bc8-9fd2-551eb172ec8e\",\"source_fact_id\":\"8fdb6e42-ff6f-40a2-859b-19bac863aeae\",\"source_document_id\":\"6a4be858-8e39-4d38-99bb-3310634f5a5b\"}",
+      "source": "SRC-15"
+    },
+    {
+      "domain": "changes",
+      "name": "amendment promote appends note row",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"amendment\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"}",
+      "source": "SRC-16"
+    },
+    {
+      "domain": "promote",
+      "name": "promote writes amendment_number (Amend 4 grain)",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"amendment\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\",\"amendment_number\":\"4\"}",
+      "source": "SRC-16"
+    },
+    {
+      "domain": "promote",
+      "name": "promote writes purchase_order from verified PO fact",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"purchase_order\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\",\"purchase_order_id\":\"93b5a3c1-e4a5-4f40-81c9-0fb145aba42d\"}",
+      "source": "SRC-04"
+    },
+    {
+      "domain": "promote",
+      "name": "promote writes payment_terms onto PO",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"payment_terms\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\",\"purchase_order_id\":\"93b5a3c1-e4a5-4f40-81c9-0fb145aba42d\"}",
+      "source": "SRC-04"
+    },
+    {
+      "domain": "promote",
+      "name": "promote writes federal/TXMAS identifier",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"federal_identifier\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"}",
+      "source": "SRC-04"
+    },
+    {
+      "domain": "promote",
+      "name": "promote writes contract_service_plans from site fact",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"service_plan\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"}",
+      "source": "SRC-02"
+    },
+    {
+      "domain": "promote",
+      "name": "promote writes guard_classification service-plan row",
+      "ok": true,
+      "detail": "{\"ok\":true,\"action\":\"service_plan\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"}",
+      "source": "SRC-15"
+    },
+    {
+      "domain": "truth",
+      "name": "latest change drives current verified_end_on",
+      "ok": true,
+      "detail": "{\"promote\":{\"ok\":true,\"action\":\"contract_end\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\",\"verified_end_on\":\"2026-11-23\"},\"contract\":{\"verified_end_on\":\"2026-11-23\",\"start_on\":\"2024-09-01\",\"contract_number\":\"24-001-000\",\"source_fact_id\":\"c47baf17-d455-4fc4-8511-3fa4e096f738\",\"source_document_id\":\"1be5caa0-8203-4a05-80bf-6c238e4cd299\"}}",
+      "source": "SRC-16"
+    },
+    {
+      "domain": "truth",
+      "name": "original terms remain preserved (start + number + amd0 after later end)",
+      "ok": true,
+      "detail": "{\"start\":\"2024-09-01\",\"number\":\"24-001-000\",\"amd0\":\"0dd67b64-7670-46da-890b-c03597f0dcb8\"}",
+      "source": "SRC-15→SRC-16"
+    },
+    {
+      "domain": "changes",
+      "name": "amendment lineage works (original + Amend 4 retained)",
+      "ok": true,
+      "detail": "[{\"n\":\"0\",\"title\":\"Executed original 24-001-000\"},{\"n\":\"4\",\"title\":null},{\"n\":\"4-manual\",\"title\":\"Amend 4 — NTE / option years / funding\"},{\"n\":null,\"title\":null}]",
+      "source": "SRC-15+SRC-16"
+    },
+    {
+      "domain": "commercial",
+      "name": "PO retains source evidence (document + fact)",
+      "ok": true,
+      "detail": "{\"id\":\"ba2e53b2-c87f-4997-ae64-5ac0e6e81002\",\"source_document_id\":\"a8a93c52-9d73-49b6-91bb-9c912d92e2f5\",\"source_fact_id\":\"12ef1afc-c41c-49e4-b744-c96734754823\",\"po_number\":\"0000016167\"}",
+      "source": "SRC-04 PKG-04"
+    },
+    {
+      "domain": "commercial",
+      "name": "PO lines match TxDMV pilot grain (72×$33.25 + Extended Hours)",
+      "ok": true,
+      "detail": "[{\"id\":\"b068f9d6-f07d-49ff-91fa-4059de32adbe\",\"line_label\":\"Security hours\",\"unit_rate\":33.25,\"quantity\":72},{\"id\":\"68930e5c-0ff0-47e3-8682-9c1198ef6e06\",\"line_label\":\"Extended Hours\",\"unit_rate\":445.55,\"quantity\":1}]",
+      "source": "SRC-04"
+    },
+    {
+      "domain": "commercial",
+      "name": "rates/current value update without erasing history",
+      "ok": true,
+      "detail": "po_lines=2 amendments=5",
+      "source": "SRC-04+SRC-16"
+    },
+    {
+      "domain": "commercial",
+      "name": "federal/vehicle identifier retains PO source",
+      "ok": true,
+      "detail": "TXMAS-24-99003",
+      "source": "SRC-04"
+    },
+    {
+      "domain": "service-plan",
+      "name": "Service Plan reflects source obligations (Allen + Level II/III)",
+      "ok": true,
+      "detail": "[{\"site\":\"Allen ISD promote-path site\",\"class\":null},{\"site\":\"contract\",\"class\":\"Level II\"},{\"site\":\"Allen ISD campus (excerpt)\",\"class\":\"Unarmed\"},{\"site\":\"TFC Level II site\",\"class\":\"Level II\"},{\"site\":\"TFC Level III site\",\"class\":\"Level III\"}]",
+      "source": "SRC-02+SRC-15"
+    },
+    {
+      "domain": "renewal",
+      "name": "option exercise works (promote + row)",
+      "ok": true,
+      "detail": "{\"promote\":{\"ok\":true,\"action\":\"option\",\"contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"},\"options\":[{\"id\":\"1e978e89-41f5-49dd-8091-9b778869f0c2\",\"label\":\"option_year_1\",\"exercise_by\":\"2026-10-19\",\"source_fact_id\":\"ad3ae598-2f5b-4c1e-ad5e-441663caef1a\"}]}",
+      "source": "SRC-14"
+    },
+    {
+      "domain": "renewal",
+      "name": "renewal state works (notice + CPI-W + option year)",
+      "ok": true,
+      "detail": "[{\"id\":\"e748af12-0042-4e46-99cc-589eff4e3b74\",\"notice\":\"Harris 26-0534 / Job 220401 CPI-W renewal notice\",\"escalation_index\":\"CPI-W\",\"option_year\":1,\"notice_due_on\":\"2026-10-04\",\"source_fact_id\":\"2492e2ea-6a77-44e9-b0c6-b2a761f265ab\"}]",
+      "source": "SRC-14 PKG-11"
+    },
+    {
+      "domain": "alerts",
+      "name": "alert buckets 180/120/90/60/30/EXPIRED from verified dates",
+      "ok": true,
+      "detail": "{\"alert\":{\"bucket\":\"120\",\"days_until\":95,\"verified_end_on\":\"2026-11-23\"},\"bucketsOk\":true}",
+      "source": "verified_end_on only"
+    },
+    {
+      "domain": "renewal",
+      "name": "rebid risk is visible (alert bucket + days_until)",
+      "ok": true,
+      "detail": "{\"bucket\":\"120\",\"days_until\":95,\"verified_end_on\":\"2026-11-23\"}",
+      "source": "contract_alerts"
+    },
+    {
+      "domain": "renewal",
+      "name": "rebid pursuit linkable from contract",
+      "ok": true,
+      "detail": "{\"id\":\"d80cb9ad-516e-42fc-9bfe-d1ada6f795c8\",\"rebid_from_contract_id\":\"55ecf64e-5b4c-4ff8-9d99-41343ff5198c\"}",
+      "source": "opportunities.rebid_from_contract_id"
+    },
+    {
+      "domain": "compliance",
+      "name": "compliance eligibility affects Renewal readiness",
+      "ok": true,
+      "detail": "expired=1 of 2; blocked=true",
+      "source": "compliance_items"
+    },
+    {
+      "domain": "ui",
+      "name": "Renewal UI surfaces rebid + eligibility + buckets",
+      "ok": true,
+      "detail": "workspace loader + renewal page",
+      "source": "apps/web"
+    }
+  ]
+}

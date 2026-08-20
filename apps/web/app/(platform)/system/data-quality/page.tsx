@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { SettingsNav } from "@/components/section-tabs";
 import { DataRegistryCallout } from "@/components/data-registry-callout";
 import { registryEntry } from "@/lib/data-model/registry";
 
@@ -24,6 +25,7 @@ async function DataQualityContent() {
 
   return (
     <div className="max-w-3xl space-y-6">
+      <SettingsNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Data quality</h1>
         <p className="text-sm text-muted-foreground">

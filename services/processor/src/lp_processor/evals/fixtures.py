@@ -63,6 +63,17 @@ def pricing_workbook() -> bytes:
     return buf.getvalue()
 
 
+def sample_docx() -> bytes:
+    from docx import Document
+
+    document = Document()
+    document.add_paragraph("L&P Global Security proposal narrative.")
+    document.add_paragraph("Client Northside ISD. Unarmed Security Officer $31.45.")
+    buf = io.BytesIO()
+    document.save(buf)
+    return buf.getvalue()
+
+
 DIGITAL_RFP_TEXT = (
     "Northside ISD RFP 26-04 Provide 24/7 coverage. "
     "Due date 2026-03-15. Client Northside ISD. "
@@ -135,12 +146,12 @@ def fixture_cases() -> list[FixtureCase]:
             package_role="proposal_narrative",
             filename="proposal.docx",
             mime_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            payload=b"PK\x03\x04not-a-real-docx",
+            payload=sample_docx(),
             gold_cells={},
             gold_requirements=[],
             gold_entities=[],
             gold_dates=[],
-            expect_escalate=True,
+            expect_escalate=False,
             expected_parser_id="docx-native",
             form_fields=[],
         ),

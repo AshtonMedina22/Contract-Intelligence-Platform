@@ -1,8 +1,8 @@
-# Phase reconciliation — original blueprint vs repo naming
+# Phase reconciliation — product phases vs legacy engineering IDs
 
-**Purpose:** Stop phase-label confusion. One place that explains what “Phase 2” means in each system.
+**Purpose:** Stop phase-label confusion. Product maturity uses the Canonical Product Pack’s **eight core phases**. Legacy engineering IDs stay on migrations and `PHASE*_ACCEPTANCE.md`.
 
-Read with: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [BUILD_PLAN.md](BUILD_PLAN.md), [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
+Read with: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [BUILD_PLAN.md](BUILD_PLAN.md), [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md), [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
 
 ---
 
@@ -10,108 +10,56 @@ Read with: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [BUILD_PLAN.md](BUILD_PLA
 
 | Wrong (do not say) | Correct |
 | --- | --- |
-| “Legacy/engineering Phase 2 complete = product ready for intake at scale” | Engineering Phase 2 = **RLS/tenancy** = **Original Phase 1 (Foundation)** |
-| “Phase 1 done, Phase 2 done, ready for Phase 3” | Original Phase 1 **mostly** done; Original Phase 2 **NOT STARTED**; Original Phase 3 **NOT STARTED** |
-| “Phase 11 implemented → next is Glide” | Legacy Phase 11 = hybrid RAG **code** exists; Original Phase 6/7 not product-complete without corpus |
-
-The **48/48 RLS tests** prove tenant isolation. They do **not** prove the historical data model on 20–30 L&P packages.
+| “Legacy/engineering Phase 2 complete = product ready for intake at scale” | Engineering Phase 2 = **RLS/tenancy** = **Product Phase 1 (Foundation)** |
+| “Phase 1 done, Phase 2 done, ready for Phase 3” | Phase 1 mostly done; **Phase 2 Historical Pilot NOT STARTED (0 packages through complete pipeline)** |
+| “RLS 48/48 = Historical Pilot complete” | RLS proves Foundation only |
+| “Canonical phases 1–9” / “Phase 9 = Proposal builder” | Core product phases are **1–8**; Response/Submission/Result is **Phase 8**. Commercialization is **optional**, not a numbered core phase |
+| “Later Commercial PaaS is a product phase” | Optional future commercialization — **not** part of core product build |
 
 ---
 
-## Three naming systems
-
-### A. Original master blueprint (product truth)
+## Canonical product phases (pack — use for maturity)
 
 | Phase | Name | Done when |
 | --- | --- | --- |
-| 1 | Foundation | DB, auth, registry, staging/verification structure, Drive references |
-| 2 | **Historical pilot** | 20–30 complete L&P packages verified; routing locked from real evidence |
-| 3 | Historical ingestion | Production pipeline + bulk migration of remaining history |
-| 4 | Contract/compliance | Operational contracts, renewals, certifications from verified data |
-| 5 | Analytics | Win/loss, pricing, competitor, contract dashboards (verified only) |
-| 6 | Search/AI | Embeddings, semantic retrieval |
-| 7 | Pricing intelligence | Dynamic structure, cost model, Glide, evidence ranges |
-| 8 | Proposal builder | Grounded drafts, Google Docs handoff, final outputs |
+| 1 | Foundation | Tenant isolation, evidence vault, staging/verification structure, Workflow/processor interfaces, UX shell foundation |
+| 2 | **Real-Document Historical Pilot** | ~20–30 real packages through source → verify → promote; PILOT_GAP_REPORT actionable |
+| 3 | Historical Ingestion & Migration | Production ingest + batch migration at corpus scale |
+| 4 | Contract & Compliance Intelligence | Contract workspace Overview/Service Plan/Commercial Terms/Changes/Renewal from verified data |
+| 5 | Buyer / Competitor / Market / Win-Loss | Cross-corpus intelligence from canonical verified records |
+| 6 | Search / Ask GPT / Reports / Automation | LOCATE + ASK + reports + bounded automation |
+| 7 | Pricing Intelligence | Glide workbench; four truths; human final price |
+| 8 | Response Builder / Submission / Result | End-to-end pursuit proposal production without fabricated data |
 
-### B. Canonical product phases (BUILD_PLAN — use for maturity)
+**Core operational platform is complete after Phase 8.**
 
-| Canonical | Maps from original | Notes |
-| --- | --- | --- |
-| 1 Foundation | Original 1 | Includes RLS — **not** pilot |
-| 2 Historical Pilot | Original 2 | **Blocking milestone** |
-| 3 Ingestion/processing | Original 3 (partial) | Code exists; unproven on L&P |
-| 4 Broader migration | Original 3 (scale) | After pilot |
-| 5 Contracts | Original 4 | |
-| 6 Market/buyer/competitor | Original 5 (partial) | + intelligence tables |
-| 7 Search/Ask | Original 6 | |
-| 8 Pricing | Original 7 | |
-| 9 Proposal builder | Original 8 | |
-
-### C. Legacy engineering IDs (migrations, scripts only)
-
-| Legacy ID | What it is | Original phase | Product maturity today |
-| --- | --- | --- | --- |
-| 0 | Docs in git | 1 | Done |
-| 1 | Next.js scaffold | 1 | Done |
-| **2** | **Tenancy / RLS** | **1 (Foundation)** | **Proven (48/48)** — **NOT Original Phase 2** |
-| 3 | Intake + Workflow | 1 | Implemented, unvalidated |
-| 4 | Processor | 1 / 3 | Implemented, unvalidated |
-| 5 | Verification workbench | 1 | Implemented, unvalidated |
-| **6** | Pilot benchmark harness | **2 (Pilot)** | **Fixtures only — 0 L&P packages** |
-| 7 | Four-truth schema + promotion | 2 validates | Implemented, unvalidated |
-| 8 | Bulk migration | 3 | RPC/UI exists, no corpus |
-| 9 | Contracts + cron | 4 | Early, unvalidated |
-| 10 | Win/loss + competitor tables | 5 / engine 4 | Early UX — FREEZE |
-| 11 | Hybrid RAG | 6 / engine 5 | Early UX — FREEZE |
-| 12 | Glide pricing | 8 | Not started (planning panel ≠ Glide) |
-| 13 | Proposal builder | 8 | Not started |
-| 14 | Commercial PaaS | Later | Not started |
+Optional commercialization (Stripe / selling to other contracting companies) is **not** a core phase. Architecture is **multi-tenant-ready from day one**; that is not the same as “build a PaaS product phase.”
 
 ---
 
-## Six engines vs sidebar navigation
+## Engine names (canonical)
 
-**Engines** = functional product domains (blueprint §3).  
-**Navigation** = how users reach workflows — must map **to** engines, not replace them.
+1. Opportunity / Solicitation Intelligence  
+2. Contract & Compliance Intelligence  
+3. Pricing Intelligence  
+4. Buyer / Market / Competitor Intelligence  
+5. Proposal / Response Intelligence  
+6. Executive / Business Intelligence  
 
-Current app sidebar (post IA fix):
-
-| Sidebar group | Primary engine(s) |
-| --- | --- |
-| Ingestion | Foundation for all engines (historical migration) |
-| Procurement | Opportunity + package registry |
-| Contracts | Contract & Compliance |
-| Intelligence | Pricing + Client/Competitor + Proposal (search) + partial Executive |
-| Proposals | Opportunity (active pursuit) → Phase 8 workspace |
-| System / Data model | Transparency + admin |
-
-**Do not** confuse ingestion pipeline steps with the six engines. Ingestion **feeds** all engines.
+Do not use outdated labels like “Client / Competitor” or “Executive Analytics” as product engine names.
 
 ---
 
-## ChatGPT audit items — disposition
+## Legacy engineering IDs (keep filenames; do not rename)
 
-| Audit finding | Status in repo docs |
-| --- | --- |
-| Phase 2 mislabeled as RLS | ✅ Corrected in BUILD_PLAN, PRODUCT_SPEC, this file |
-| Historical corpus should drive schema validation | ✅ HISTORICAL_PILOT.md; canonical Phase 2 NOT STARTED |
-| Six engines blurred | ✅ PRODUCT_SPEC, MASTER_BLUEPRINT, MASTER locked header |
-| Opportunity over-downgraded | ✅ MASTER_BLUEPRINT engine 1; opportunity fields = pilot-driven schema |
-| Client = intelligence not CRM | ✅ PRODUCT_SPEC, DATA_ARCHITECTURE |
-| Competitor/client first-class module | ✅ Engine 4; tables exist; UX early |
-| Executive Analytics underplayed | ✅ Engine 6 in PRODUCT_SPEC; dashboards not built |
-| Bid Strategy explicit | ✅ MASTER_BLUEPRINT §9; not yet a route/workspace |
-| Google Docs handoff | ✅ PRODUCT_SPEC proposal output workflow |
-| Drive → Storage vault deviation | ✅ MASTER_BLUEPRINT §2 + TECH_STACK |
-| POC sidebar ≠ architecture | ✅ IA reconciled to workflows; six engines preserved in docs |
-| Intelligence before pilot | ✅ KEEP + FREEZE in BUILD_PLAN / CURRENT_STATE_AUDIT |
+Legacy phases 0–14 on migrations and acceptance scripts map **into** Foundation through early Intelligence/Pricing/Proposal **code**, not product completion. Passing `test:phase2-rls` ≠ Historical Pilot.
+
+Early Intelligence / Ask / Market / Reports UI may exist. Prefer pack language: they are **early/partial / unvalidated** — do not expand as finished product before the pilot proves the data foundation. Do not treat “KEEP + FREEZE” as an alternate phase system; reconcile to canonical IA ([UX_UI.md](UX_UI.md)).
 
 ---
 
-## What to do next (strict order)
+## Navigation note
 
-1. Finish [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md) open items (if any).  
-2. Run [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md) — **Original Phase 2**.  
-3. Only then: Original Phase 3 scale migration.  
-4. Thaw frozen Intelligence UX when corpus exists.  
-5. Original Phases 7–8 last (pricing workbench, proposal builder).
+Canonical IA: **Home | Pursuits | Intelligence | Contracts | Data Ops | Settings.**  
+Ask GPT = header capability.  
+Older peer modules (Ingestion, Proposals as global peers, etc.) are **to reconcile**, not product truth.

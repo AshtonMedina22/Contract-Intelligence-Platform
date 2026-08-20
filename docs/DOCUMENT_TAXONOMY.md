@@ -1,6 +1,6 @@
 # Document taxonomy
 
-See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md), [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md). Production routing: [ROUTING_POLICY.md](ROUTING_POLICY.md) (legacy Phase 6 fixtures). Scores: [benchmarks/PILOT_RESULTS.md](benchmarks/PILOT_RESULTS.md).
+See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md) (§5–6, §11), [DATA_ARCHITECTURE.md](DATA_ARCHITECTURE.md). Production routing: [ROUTING_POLICY.md](ROUTING_POLICY.md). Scores: [benchmarks/PILOT_RESULTS.md](benchmarks/PILOT_RESULTS.md).
 
 ## Procurement package structure
 

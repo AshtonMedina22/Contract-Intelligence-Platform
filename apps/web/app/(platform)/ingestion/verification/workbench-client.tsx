@@ -2,14 +2,30 @@
 
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import { createColumnHelper, tableFeatures, useTable } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { FactVerificationStatus } from "@/lib/supabase/database.types";
 import {
   applyFactDecision,
   completeDocumentVerification,
+  recordViewSource,
+  resolveValidationException,
   verifyFactGroup,
 } from "./actions";
 import { PdfSourcePane } from "./pdf-source-pane";
@@ -48,9 +64,13 @@ type Props = {
   sheets: WorkbenchSheet[];
   facts: WorkbenchFact[];
   processingStatus: string;
+  openExceptionIds?: string[];
 };
 
 const OPEN: FactVerificationStatus[] = ["AI_EXTRACTED", "NEEDS_REVIEW", "CONFLICT"];
+
+const features = tableFeatures({});
+const helper = createColumnHelper<typeof features, WorkbenchFact>();
 
 export function WorkbenchClient({
   documentId,
@@ -60,6 +80,7 @@ export function WorkbenchClient({
   sheets,
   facts,
   processingStatus,
+  openExceptionIds = [],
 }: Props) {
   const [pending, startTransition] = useTransition();
   const [statusFilter, setStatusFilter] = useState<string>("open");
@@ -67,6 +88,7 @@ export function WorkbenchClient({
   const [message, setMessage] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [selectedId, setSelectedId] = useState(facts[0]?.id ?? null);
+  const [sourceFocus, setSourceFocus] = useState(0);
 
   const filtered = useMemo(() => {
     return facts.filter((fact) => {
@@ -120,6 +142,37 @@ export function WorkbenchClient({
     });
   }, [selected, facts]);
 
+  const viewSource = useCallback(() => {
+    if (!selected) return;
+    setSourceFocus((n) => n + 1);
+    startTransition(async () => {
+      const result = await recordViewSource({
+        documentId,
+        factId: selected.id,
+        page: selected.source_page,
+        section: selected.source_section,
+      });
+      setMessage(result.error ?? "VIEW SOURCE audited.");
+    });
+  }, [selected, documentId]);
+
+  const resolveOpen = useCallback(() => {
+    if (openExceptionIds.length === 0) return;
+    startTransition(async () => {
+      for (const id of openExceptionIds) {
+        const result = await resolveValidationException({
+          exceptionId: id,
+          note: `Resolved from verification workbench for ${filename}`,
+        });
+        if (result.error) {
+          setMessage(result.error);
+          return;
+        }
+      }
+      setMessage(`RESOLVE: ${openExceptionIds.length} exception(s) closed.`);
+    });
+  }, [openExceptionIds, filename]);
+
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
       const tag = (event.target as HTMLElement | null)?.tagName;
@@ -150,10 +203,42 @@ export function WorkbenchClient({
         event.preventDefault();
         runGroup();
       }
+      if (event.key === "s") {
+        event.preventDefault();
+        viewSource();
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selected, filtered, run, runGroup]);
+  }, [selected, filtered, run, runGroup, viewSource]);
+
+  const columns = useMemo(
+    () =>
+      helper.columns([
+        helper.accessor("field", { header: "Field" }),
+        helper.accessor("verification_status", {
+          header: "Status",
+          cell: (ctx) => <Badge variant="outline">{ctx.getValue()}</Badge>,
+        }),
+        helper.accessor((row) => row.normalized_value ?? row.raw_value ?? "", {
+          id: "value",
+          header: "Value",
+          cell: (ctx) => <span className="line-clamp-1 text-xs">{String(ctx.getValue())}</span>,
+        }),
+        helper.accessor((row) => row.source_section ?? (row.source_page != null ? `p.${row.source_page}` : "—"), {
+          id: "source",
+          header: "Source",
+          cell: (ctx) => <span className="font-mono text-xs">{String(ctx.getValue())}</span>,
+        }),
+      ]),
+    [],
+  );
+
+  const table = useTable({
+    features,
+    columns,
+    data: filtered,
+  });
 
   const isPdf = (mimeType ?? "").includes("pdf") || filename.toLowerCase().endsWith(".pdf");
 
@@ -163,14 +248,19 @@ export function WorkbenchClient({
         <div>
           <h1 className="text-lg font-semibold tracking-tight">{filename}</h1>
           <p className="text-sm text-muted-foreground">
-            Status {processingStatus}. Keys: j/k move, v verify, r reject, c conflict, g verify group. Unverified
-            facts never become canonical rates.
+            Status {processingStatus}. Keys: j/k move, v verify, r reject, c conflict, g verify group, s view
+            source. Unverified facts never become canonical.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" asChild>
             <Link href="/ingestion/verification">Queue</Link>
           </Button>
+          {openExceptionIds.length > 0 ? (
+            <Button variant="secondary" disabled={pending} onClick={resolveOpen}>
+              Resolve ({openExceptionIds.length})
+            </Button>
+          ) : null}
           <Button
             disabled={pending}
             onClick={() =>
@@ -187,20 +277,25 @@ export function WorkbenchClient({
 
       {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-md border p-3">
-          {isPdf ? (
-            <PdfSourcePane
-              fileUrl={pdfUrl}
-              page={selected?.source_page ?? 1}
-              excerpt={selected?.source_excerpt ?? selected?.source_section ?? null}
-            />
-          ) : (
-            <XlsxSourcePane sheets={sheets} activeSection={selected?.source_section ?? null} />
-          )}
-        </div>
-
-        <div className="space-y-3 rounded-md border p-3">
+      <ResizablePanelGroup
+        orientation="horizontal"
+        className="min-h-[70vh] rounded-md border"
+      >
+        <ResizablePanel defaultSize={50} minSize={30} className="p-3">
+          <div key={sourceFocus} className="h-full">
+            {isPdf ? (
+              <PdfSourcePane
+                fileUrl={pdfUrl}
+                page={selected?.source_page ?? 1}
+                excerpt={selected?.source_excerpt ?? selected?.source_section ?? null}
+              />
+            ) : (
+              <XlsxSourcePane sheets={sheets} activeSection={selected?.source_section ?? null} />
+            )}
+          </div>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={50} minSize={30} className="space-y-3 overflow-auto p-3">
           <div className="grid gap-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label htmlFor="status">Status</Label>
@@ -229,25 +324,37 @@ export function WorkbenchClient({
             </div>
           </div>
 
-          <ul className="max-h-56 space-y-1 overflow-auto text-sm">
-            {filtered.map((fact) => (
-              <li key={fact.id}>
-                <button
-                  type="button"
-                  className={`w-full rounded-md border px-2 py-1 text-left ${
-                    fact.id === selected?.id ? "border-primary bg-muted" : "border-transparent"
-                  }`}
-                  onClick={() => setSelectedId(fact.id)}
-                >
-                  <span className="font-medium">{fact.field}</span>{" "}
-                  <Badge variant="outline">{fact.verification_status}</Badge>
-                  <div className="truncate text-xs text-muted-foreground">
-                    {fact.normalized_value ?? fact.raw_value}
-                  </div>
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="max-h-64 overflow-auto rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((group) => (
+                  <TableRow key={group.id}>
+                    {group.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.original.id === selected?.id ? "selected" : undefined}
+                    className="cursor-pointer data-[state=selected]:bg-muted"
+                    onClick={() => setSelectedId(row.original.id)}
+                  >
+                    {row.getAllCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        <table.FlexRender cell={cell} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
           {selected ? (
             <div className="space-y-2">
@@ -273,13 +380,16 @@ export function WorkbenchClient({
                 <Button size="sm" variant="outline" disabled={pending} onClick={runGroup}>
                   Verify group
                 </Button>
+                <Button size="sm" variant="outline" disabled={pending} onClick={viewSource}>
+                  View source
+                </Button>
               </div>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">No facts match these filters.</p>
           )}
-        </div>
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }

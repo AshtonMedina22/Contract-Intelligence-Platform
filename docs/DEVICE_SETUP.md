@@ -11,7 +11,7 @@ Use this when you clone on a new computer. **Secrets are not in git.** Copy them
 - Build order: [BUILD_PLAN.md](BUILD_PLAN.md)
 - Stack: [TECH_STACK.md](TECH_STACK.md)
 
-**Current product position:** Foundation mostly built. **Historical Pilot (canonical Phase 2) NOT STARTED** — 0 L&P packages. Later Intelligence UX exists early and is frozen pending corpus validation.
+**Current product position:** Foundation mostly built. **Historical Pilot (Phase 2) ACTIVE NEXT — 0 packages through complete pipeline.** Early Intelligence/Ask UI is early/partial / unvalidated. Core product phases are **1–8** ([CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md)).
 
 Requires **Node 24+** (`.nvmrc` / `.node-version`). npm workspaces (not pnpm).
 
@@ -47,6 +47,6 @@ npx supabase db push --yes --db-url "$DIRECT_URL"
 
 **Foundation (mostly):** app, RLS (48/48), intake, processor, verification workbench, early schema, Intelligence shell (frozen).
 
-**Not done:** Historical Pilot (0 packages), verified corpus, OCR/DOCX production paths, Glide pricing, Tiptap proposals, hosted apply of opportunity migrations, confirmed Vercel tenant/env. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md).
+**Not done:** Historical Pilot (0 packages through pipeline), verified corpus, OCR/DOCX production paths, Glide pricing, Tiptap Response builder, hosted apply of opportunity migrations, confirmed Vercel tenant/env. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md).
 
-**Do not:** clone Prisma/Drizzle, deploy processor on Vercel, put secrets in git, treat RLS as product Phase 2 complete.
+**Do not:** clone Prisma/Drizzle, deploy processor on Vercel, put secrets in git, treat RLS as product Phase 2 complete, treat commercialization as a required product phase.

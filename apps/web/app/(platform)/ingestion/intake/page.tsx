@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
+import { DataOpsNav } from "@/components/section-tabs";
 import { IntakeForm } from "./intake-form";
 import { getIntakeContext } from "@/lib/org/intake-context";
 
@@ -10,7 +10,7 @@ async function IntakeContent({ defaultOpportunityId }: { defaultOpportunityId?: 
 
   return (
     <div className="space-y-6">
-      <SectionTabs tabs={INGESTION_TABS} />
+      <DataOpsNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Intake — step 1</h1>
         <p className="text-sm text-muted-foreground">

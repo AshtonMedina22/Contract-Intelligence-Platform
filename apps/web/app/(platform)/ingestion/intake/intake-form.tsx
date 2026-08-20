@@ -53,19 +53,23 @@ export function IntakeForm({
   const [fileCount, setFileCount] = useState(0);
   const [organizationId, setOrganizationId] = useState(organizations[0]?.id ?? "");
   const [batchLabel, setBatchLabel] = useState("");
+  const [packageKey, setPackageKey] = useState("");
+  const [packageTitle, setPackageTitle] = useState("");
   const [clientId, setClientId] = useState("");
   const [opportunityId, setOpportunityId] = useState(defaultOpportunityId);
 
   function appendSharedFields(formData: FormData) {
     formData.set("organization_id", organizationId);
     formData.set("batch_label", batchLabel);
+    formData.set("package_key", packageKey);
+    formData.set("package_title", packageTitle);
     formData.set("client_id", clientId);
     formData.set("opportunity_id", opportunityId);
   }
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-1">
           <Label htmlFor="organization_id">Organization</Label>
           <select
@@ -88,6 +92,24 @@ export function IntakeForm({
             value={batchLabel}
             onChange={(event) => setBatchLabel(event.currentTarget.value)}
             placeholder="FY26 RFP package"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="package_key">Package key (optional)</Label>
+          <Input
+            id="package_key"
+            value={packageKey}
+            onChange={(event) => setPackageKey(event.currentTarget.value)}
+            placeholder="PKG-01"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="package_title">Package title (optional)</Label>
+          <Input
+            id="package_title"
+            value={packageTitle}
+            onChange={(event) => setPackageTitle(event.currentTarget.value)}
+            placeholder="Williamson #202569"
           />
         </div>
         <div className="space-y-1">
@@ -177,7 +199,7 @@ export function IntakeForm({
                 <p className="mt-2 text-xs text-muted-foreground">
                   {fileCount > 0
                     ? `${fileCount} file(s) selected.`
-                    : "Max 25 MB per file. Originals are never overwritten."}
+                    : "Max 50 MB per file. Originals are never overwritten."}
                 </p>
               </div>
 

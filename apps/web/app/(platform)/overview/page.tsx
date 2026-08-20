@@ -78,11 +78,11 @@ async function HomeContent() {
       <section className="space-y-3 border p-4">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Workflow A — Build the corpus
+            Data Ops
           </p>
           <h2 className="text-base font-semibold">Digitize historical procurement</h2>
           <p className="text-sm text-muted-foreground">
-            Upload → process → human verify → promote to canonical truth. Intelligence and proposals consume only
+            Upload → process → human verify → promote to canonical truth. Intelligence and pursuits consume only
             verified facts.
           </p>
         </div>
@@ -114,9 +114,9 @@ async function HomeContent() {
           <li>
             <Link
               className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
-              href="/procurement/documents"
+              href="/ingestion/exceptions"
             >
-              4. Documents & packages
+              4. Exceptions
             </Link>
           </li>
         </ol>
@@ -143,12 +143,12 @@ async function HomeContent() {
       <section className="space-y-3 border p-4">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Workflow B — Pursue a solicitation
+            Pursuits
           </p>
-          <h2 className="text-base font-semibold">Analyze and respond to new RFP</h2>
+          <h2 className="text-base font-semibold">Analyze and respond to a solicitation</h2>
           <p className="text-sm text-muted-foreground">
-            Intake the solicitation → group into an opportunity → requirements, pricing, and proposal workspace
-            (Phase 13). Outcomes feed win/loss and contracts.
+            Intake the packet, then work Overview → Requirements → Pricing → Response → Submission → Result.
+            Awards open a Contract workspace.
           </p>
         </div>
         <ol className="flex flex-wrap items-center gap-1 text-sm">
@@ -163,16 +163,16 @@ async function HomeContent() {
               className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
               href="/procurement/opportunities"
             >
-              2. Opportunity
+              2. Pursuits
             </Link>
           </li>
           <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
           <li>
             <Link
               className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
-              href="/proposals"
+              href="/contracts"
             >
-              3. Proposal workspace
+              3. Contracts
             </Link>
           </li>
           <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
@@ -190,7 +190,7 @@ async function HomeContent() {
             <Link href="/ingestion/intake">Analyze new solicitation</Link>
           </Button>
           <Button asChild size="sm" variant="outline">
-            <Link href="/procurement/opportunities">View opportunities</Link>
+            <Link href="/procurement/opportunities">View pursuits</Link>
           </Button>
         </div>
       </section>
@@ -202,7 +202,7 @@ async function HomeContent() {
         </p>
         <div className="flex flex-wrap gap-2">
           <Button asChild size="sm" variant="outline">
-            <Link href="/intelligence/ask">Ask Intelligence</Link>
+            <Link href="/intelligence/ask">Find or Ask GPT</Link>
           </Button>
           <Button asChild size="sm" variant="outline">
             <Link href="/intelligence/market">Market overview</Link>
@@ -220,8 +220,7 @@ async function HomeContent() {
           </p>
           <h2 className="text-base font-semibold">Table map & lineage</h2>
           <p className="text-sm text-muted-foreground">
-            See which Postgres tables store what, which columns matter, and how verified rows feed Ask Intelligence
-            and the opportunity package when you prepare a new RFQ.
+            See which Postgres tables store what. Table maps live in Settings, not in the global sidebar.
           </p>
         </div>
         <Button asChild size="sm" variant="outline">

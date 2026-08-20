@@ -96,7 +96,7 @@ export function listProposalPacketGaps(input: PacketInput): PacketGap[] {
   if (vehicleRail && !input.vehicleRef) {
     add("vehicle", "Contract vehicle reference not entered (do not assume TXMAS-24-99003 or GSA MAS)", "", "warn");
   }
-  if (input.documentCount === 0) add("docs", "No solicitation / quote documents ingested", "/documents");
+  if (input.documentCount === 0) add("docs", "No solicitation / quote documents ingested", "/submission");
   if (formal && input.requirementCount === 0) {
     add("reqs", "No verified requirements captured", "/requirements");
   }
@@ -193,11 +193,14 @@ export function computeFulfillmentEconomics(
     const result = computePlannedRate({
       baseWage: parseNum(matched.base_wage),
       fringe: parseNum(matched.fringe),
+      healthWelfare: parseNum(matched.health_welfare),
       burdenPct: parseNum(matched.burden_pct),
       workersComp: parseNum(matched.workers_comp),
       insurance: parseNum(matched.insurance),
       supervision: parseNum(matched.supervision),
       equipment: parseNum(matched.equipment),
+      vehicles: parseNum(matched.vehicles),
+      travel: parseNum(matched.travel),
       overheadPct: parseNum(matched.overhead_pct),
       targetMarginPct: parseNum(matched.target_margin_pct),
     });

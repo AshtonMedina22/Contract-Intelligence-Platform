@@ -19,6 +19,9 @@ export type ContractRow = {
   contract_number: string | null;
   verified_end_on: string | null;
   client_name: string | null;
+  status?: string | null;
+  alert_bucket?: string | null;
+  days_until?: number | null;
 };
 
 const features = tableFeatures({});
@@ -37,8 +40,16 @@ const columns = helper.columns([
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("client_name", {
-    header: "Client",
+    header: "Buyer",
     cell: (ctx) => ctx.getValue() ?? "—",
+  }),
+  helper.accessor("status", {
+    header: "Status",
+    cell: (ctx) => {
+      const v = ctx.getValue();
+      if (!v || v === "UNKNOWN") return "—";
+      return <Badge variant="outline">{v}</Badge>;
+    },
   }),
   helper.accessor("verified_end_on", {
     header: "Verified end",

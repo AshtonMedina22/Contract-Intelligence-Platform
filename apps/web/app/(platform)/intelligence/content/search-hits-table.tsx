@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { ReuseStatus } from "@/lib/supabase/database.types";
+import { formatReuseStatus } from "@/lib/intelligence/reuse-status";
 
 export type SearchHitRow = {
   chunk_id: string;
@@ -34,15 +35,19 @@ const columns = helper.columns([
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("content", {
-    header: "document_chunks.content",
+    header: "Verified proposal section",
     cell: (ctx) => <span className="line-clamp-3 whitespace-pre-wrap">{ctx.getValue()}</span>,
+  }),
+  helper.accessor("reuse_status", {
+    header: "Reuse",
+    cell: (ctx) => <Badge variant="outline">{formatReuseStatus(ctx.getValue())}</Badge>,
   }),
   helper.accessor("chunk_id", {
     header: "document_chunks.id",
     cell: (ctx) => <span className="font-mono text-xs">{ctx.getValue().slice(0, 8)}…</span>,
   }),
   helper.accessor("storage_path", {
-    header: "Storage original",
+    header: "Source proposal / path",
     cell: (ctx) => (
       <code className="break-all text-xs">{ctx.getValue()}</code>
     ),

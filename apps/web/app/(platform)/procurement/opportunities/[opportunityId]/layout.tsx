@@ -1,10 +1,8 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { OpportunityWorkspaceShell } from "@/components/opportunity-workspace/workspace-shell";
 import { loadOpportunityHeader, loadWorkspaceSummary } from "@/lib/opportunity/load-workspace";
-import { PROCUREMENT_TABS, SectionTabs } from "@/components/section-tabs";
 
 async function WorkspaceLayoutInner({
   opportunityId,
@@ -18,12 +16,7 @@ async function WorkspaceLayoutInner({
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return (
-      <div className="space-y-4">
-        <SectionTabs tabs={PROCUREMENT_TABS} />
-        <p className="text-sm">Sign in to open this workspace.</p>
-      </div>
-    );
+    return <p className="text-sm">Sign in to open this workspace.</p>;
   }
 
   const [opportunity, summary] = await Promise.all([
@@ -33,21 +26,9 @@ async function WorkspaceLayoutInner({
   if (!opportunity) notFound();
 
   return (
-    <div className="space-y-4">
-      <SectionTabs tabs={PROCUREMENT_TABS} />
-      <p className="text-xs text-muted-foreground">
-        <Link className="underline" href="/proposals">
-          All proposal workspaces
-        </Link>
-        {" · "}
-        <Link className="underline" href="/procurement/opportunities">
-          Opportunities list
-        </Link>
-      </p>
-      <OpportunityWorkspaceShell opportunity={opportunity} summary={summary}>
-        {children}
-      </OpportunityWorkspaceShell>
-    </div>
+    <OpportunityWorkspaceShell opportunity={opportunity} summary={summary}>
+      {children}
+    </OpportunityWorkspaceShell>
   );
 }
 

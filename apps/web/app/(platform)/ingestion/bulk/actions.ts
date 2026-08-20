@@ -8,6 +8,7 @@ import {
   startBatchProcessing,
   type BulkIngestSummary,
 } from "@/lib/intake/batch-migrate";
+import { INTAKE_ROLES, requireOrgRole } from "@/lib/org/roles";
 
 export type BulkActionResult = {
   error?: string;
@@ -22,7 +23,7 @@ function emptyToNull(value: FormDataEntryValue | null): string | null {
   return trimmed.length > 0 ? trimmed : null;
 }
 
-async function requireMembership(organizationId: string) {
+async function requireIntakeMembership(organizationId: string) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -30,14 +31,7 @@ async function requireMembership(organizationId: string) {
   } = await supabase.auth.getUser();
   if (userError || !user) throw new Error("You must be signed in.");
 
-  const { data: membership, error } = await supabase
-    .from("memberships")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .eq("organization_id", organizationId)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  if (!membership) throw new Error("You are not a member of that organization.");
+  await requireOrgRole(supabase, user.id, organizationId, INTAKE_ROLES);
   return supabase;
 }
 
@@ -51,7 +45,7 @@ export async function createAndIngestBulkBatch(formData: FormData): Promise<Bulk
     const files = formData.getAll("files").filter((value): value is File => value instanceof File);
     if (files.length === 0) return { error: "Choose at least one file." };
 
-    const supabase = await requireMembership(organizationId);
+    const supabase = await requireIntakeMembership(organizationId);
     const batchId = await createMigrationBatch(supabase, organizationId, label);
 
     const payload = [];
@@ -70,6 +64,8 @@ export async function createAndIngestBulkBatch(formData: FormData): Promise<Bulk
       files: payload,
       clientId: emptyToNull(formData.get("client_id")),
       opportunityId: emptyToNull(formData.get("opportunity_id")),
+      packageKey: emptyToNull(formData.get("package_key")),
+      packageTitle: emptyToNull(formData.get("package_title")),
     });
 
     revalidatePath("/ingestion/bulk");
@@ -87,7 +83,7 @@ export async function processBulkBatch(formData: FormData): Promise<BulkActionRe
     const batchId = emptyToNull(formData.get("batch_id"));
     if (!organizationId || !batchId) return { error: "Missing batch." };
 
-    const supabase = await requireMembership(organizationId);
+    const supabase = await requireIntakeMembership(organizationId);
     const processing = await startBatchProcessing(supabase, organizationId, batchId);
 
     revalidatePath("/ingestion/bulk");

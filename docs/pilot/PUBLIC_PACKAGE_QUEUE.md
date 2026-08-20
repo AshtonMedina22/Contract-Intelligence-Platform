@@ -1,29 +1,90 @@
 # Public L&P package queue
 
-Working list for canonical Phase 2. **Not ingested. Not verified in-app.**  
+Working list for canonical Phase 2. **Not ingested. Not verified in-app. 0 packages through intake → staging → verification → canonical promotion.**  
 Policy: [HISTORICAL_PILOT.md](../HISTORICAL_PILOT.md).
+
+**Rule:** prefer packets with structured facts (rates, scores, PO lines, contract numbers, proposal sections, eval scores) over minutes that only say “approved.”
 
 Do not copy dollar amounts from this file into Postgres. Promote only from a human-verified source page.
 
-| ID | Buyer | Instrument / listing | Public URL | Grade | Status |
-| --- | --- | --- | --- | --- | --- |
-| P01 | Terrell ISD | Security Officer(s) Service Agreement 2025–26 (executed-style board packet). Parties L&P Global Security LLC + Terrell ISD; license B06267001; term 08/01/2025–07/31/2026; armed campus posts; compensation clause **$29.35/hr** in packet text | https://meetings.boardbook.org/Documents/DownloadPDF/b88c8f9f-5708-44af-bb54-76b9572b2de9?org=1294 | A | Download + intake next |
-| P02 | Terrell ISD | Regular Meeting 2026-05-18 item 9.P — contract unarmed/armed with L and P Global Securities LLC NTE $100,000; attachments ESR + Contract | https://meetings.boardbook.org/Public/Agenda/1294?meeting=740692 | B | Download attachments |
-| P03 | CPA / TxSmartBuy | TXMAS-24-99003 Guard and Security Services, L&P Global Security LLC, through 8/29/2027 | TxSmartBuy contracted vendor list (2025 listing) | B | Save vendor-list page/PDF |
-| P04 | GSA | MAS vehicle; HigherGov PoP 8/30/22–8/29/27; contractor URL uses `47QSWA22D008W` (eLibrary retrieve may error) | https://www.gsaelibrary.gsa.gov/ElibMain/home.do/contractorInfo.do?contractNumber=47QSWA22D008W&contractorName=L%26P+GLOBAL+SECURITY%2C+LLC&executeQuery=YES | B | Confirm number + price list on SAM/eLibrary |
-| P05 | Texas HHSC | HHS001540800001 — L&P GLOBAL SECURITY LLC — start 9/1/2024 — TXMAS | https://contracts.hhs.texas.gov/ | B | Open-records / posted PDF |
-| P06 | Texas HHSC | 383549 — L&P GLOBAL SECURITY LLC — start 10/1/2025 — Statewide Contracting Authority | https://contracts.hhs.texas.gov/ | B | Posted PDF |
-| P07 | Mesquite ISD | 2023 elementary armed-guard award after RFP (7 proposers); 2-year; ~34 campuses. Press ~$1.9M | https://mesquiteisdtx.new.swagit.com/videos/270610 | C | Board packet/contract |
-| P08 | Allen ISD | 2023-07-31 board approval; 17 campuses; press ~$694k. Vendor commodity file reported to list GSA 47QSWA22D008W exp 8/29/2027 | https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3952/Aisd/c648f8bc-2683-439e-a28b-a74bb7a1ef0f/Contracted_Vendors_-_By_Commodity__Rev_11.10.2.pdf | C/B | Packet + vendor PDF |
-| P09 | Wylie ISD | 2023–24 press: 13 officers + supervisor, ~$534,170 | https://dallasexpress.com/education/local-isd-secures-private-armed-security/ | C | District packet |
-| P10 | TxDMV | PO #0000016167 under TXMAS-24-99003 — **not found** on TxDMV contract-reporting FTP this session | — | unverified | Hunt `60800 0000016167.pdf` |
-| — | Lancaster ISD | Claimed L&P 2025–26/2026–27 NTE $130k/$150k — **not independently confirmed**; 2024–25 items name Code 3 Security | — | **hold** | Only add if a primary names L&P |
+## Live schema vs end-state domain concepts
 
-## Next download actions
+For the pilot, map every fact onto the **current live schema** first:
 
-1. Save P01 BoardBook PDF into intake (browser or authenticated download; unauthenticated GET may 400).
-2. Open P02 agenda and save ESR + Contract PDFs.
-3. Pull HHSC posted files for P05/P06 (or OpenRecordsRequest@hhsc.state.tx.us if redacted).
-4. Confirm GSA contract number and download MAS price list.
-5. Request Mesquite/Allen/Wylie board packets (Open Records if not posted).
-6. Do **not** treat Lancaster as an L&P package until proven.
+| Live table / mechanism | What the packet should produce after VERIFY |
+| --- | --- |
+| `documents`, `document_versions`, `extracted_facts`, `source_evidence`, `verification_events` | Every value tied to a PDF page |
+| `clients`, `opportunities` | Buyer + pursuit |
+| `pricing_lines` | Hourly / line rates (four truths; only fill the truth the doc supports) |
+| `contracts`, `awards` | Number, title, dates, award notice |
+| `staffing_requirements` | Posts / hours when the instrument lists them |
+| `evaluation_criteria` | Criteria + max points / weights from the RFP/eval report |
+| `competitors`, `competitor_bids`, `win_loss_reviews` | Named rivals, scores/amounts in `note` if no bid $ |
+| `research_facts` | Secondary listings (HigherGov, vendor registers) until primary SAM/eLibrary |
+| Opportunity `procurement_rail` / `vehicle_ref` | TXMAS / GSA numbers as stated on the page |
+
+Concepts such as `proposal_sections`, `purchase_orders`, invoice/payment evidence, `evaluation_scores`, and federal identifiers (NAICS/PSC/UEI/CAGE) are **canonical end-state domain entities** in [DATA_ARCHITECTURE.md](../DATA_ARCHITECTURE.md) — not fabricated data. They are **not all live tables today**. During the pilot:
+
+1. Stage those facts on live tables (`extracted_facts` + `source_evidence`, etc.).
+2. Record each unsupported concept as a **schema-gap finding**.
+3. Do **not** add migrations until the verified corpus proves the gap.
+
+**Known schema-gap findings these packets will surface:**
+
+- Proposal section structure / TOC (Williamson) — stage as facts; gap = section library.
+- Invoice / disbursement association (Williamson funding reports) — stage as facts; gap = payments/financial evidence model.
+- PO as first-class instrument (TxDMV) — stage as `documents` + `contracts.contract_number`; gap = purchase_orders.
+- NAICS / PSC / UEI / CAGE (GSA) — stage as facts / research; gap = federal_identifiers.
+- Per-vendor evaluation scorecards (Arlington) — `evaluation_criteria` has weights only; scores on `competitor_bids.note` until a scorecard table is justified.
+- Outcome beyond won/lost (Jefferson all-bids-rejected) — confirm `OpportunityOutcome` covers `ALL_BIDS_REJECTED` / no award.
+
+## First wave (Grade A / B ready for ingest)
+
+| ID | Buyer | Proven on primary | Grade | Source file / URL |
+| --- | --- | --- | --- | --- |
+| **P01** | **Williamson County** | **19-page Services Contract with Proposal** (public). Proposal dated **November 7, 2024**; sections include Transmittal / Executive Summary / Emergency Action Plan / Pricing / Summary; **Unarmed Security Officer $31.45/hr**; **Golf Cart $500/month**; GSA **47QSWA22D008W**; TXMAS **TXMAS-24-99003**. Later award: Contract **#202569**, Lake Creek Annex, NTE **$300,000**, TXMAS 24-99003 (minutes). Funding reports associate disbursements to **202569**. Tests proposal content + pricing + award + contract association + payment **facts** + attribution (historical-performance language). | **A** | Local: `Downloads/1770_43.35658_Services_Contract_with_proposal_Final.pdf`. Public: https://public.destinyhosted.com/wilcomindocs/2024/COM/20241126_1872/1770_43.35658_Services_Contract_with_proposal_Final.pdf. Minutes: https://public.destinyhosted.com/wilcomindocs/2024/COM/20241210_1874/1771_11-26-2024_Commissioners_Court_Minutes.pdf |
+| **P01b** | Williamson (same POP) | Disbursements tied to **202569** / Lake Creek (e.g. **$23,133.99** + **$500.00**; **$23,398.80** + **$274.19**; **$23,304.45** + **$500.00**). Map to live facts; record **payments** as schema-gap. | **B** | Funding report PDFs on DestinyHosted (see WORK_TRAIL / prior fetch notes) |
+| **P02** | **Allen ISD** | Embedded security agreement: **$32.28 per hour per officer** (actual production hours); term **08/01/2024–07/31/2025**; **thirty (30) days** written notice. Board record also cites approved probable cost **$584,138** for 2024–25 (promote only from that page after VERIFY). Full packet is **~31 MB** — exceeds Phase 3 **25 MB** intake limit; use contract-page excerpt or raise limit before ingest. | **A** | Local: `Downloads/5-21_AllenISD.pdf`. Public: https://swagit-attachments.granicus.com/uploads/video/agenda_file/306017/5-21_AllenISD.pdf |
+| **P03** | **City of Arlington** | **RFP 22-0143** bid invitation (~35 pp) + staff eval/award report (3 pp). L&P **loss**: Operational **41.48/55**, Price/Refs/Staff **29.00/45**, total **70.48**. Winner **Vets Securing America**: **50.00 / 40.46 / 90.46**, estimated award **$960,343**. Nine respondents; documented criteria only — do not invent “lost on price.” | **A** | Local: `Downloads/22-0143-bid-invitation.pdf`, `Downloads/22-0143-staff-report.pdf`. Staff report: https://www.arlingtontx.gov/files/assets/city/v/1/finance/documents/financial-transparency/contracts-and-procurement/bid-documents/goods-and-services/2022/22-0143-staff-report.pdf |
+| **P04** | **TxDMV** | PO **0000016167**; vendor L&P GLOBAL SECURITY, LLC; **TXMAS-24-99003**; PO date **06/23/2025**; PO end **08/31/2025**; service term **06/30/2025–07/11/2025**; NET30; Dallas North RSC ship-to. **Armed Security Guard = 72 HR × $33.25 = $2,394.00**; separate **Extended Hours** line = **$445.55**; **Total PO = $2,839.55**. | **A** | Local: `Downloads/60800 0000016167.pdf`. Public: https://ftp.txdmv.gov/pub/txdmv-info/fas/contract_reporting/60800%200000016167.pdf |
+| **P05** | **Jefferson County** IFB **18-009/YS** | Bid tab: L&P **$18.75/hr** among competitors (Blackstone $14.97, Janissary $16.52, Allied $19.31, …). Listing: **all bids rejected**. Tests competitor pricing + outcome ≠ won/lost only. | **A** (tab) / **B** (outcome listing) | Local tab: `Downloads/12.pdf`. IFB: https://jeffersoncountytx.gov/Purchasing/Bid_Notices/20180430_IFB18-009YS_SecurityPersonnelServices.pdf |
+| **P06** | **Texas Lottery** IFB **RQ22-0480DP** | **149-page** security IFB: forms, cost sheet, references (≥5), HUB, scoring matrix, submission rules. L&P appears on vendor distribution data in package — **not verified that L&P submitted a bid**. Use to discover required-form / reference fields as schema-gap findings. | **A** (solicitation) | Local: `Downloads/IFB_for_Security_Officer_Services_RQ22-0480DP_FINAL.pdf`. Public: https://www.texaslottery.com/export/sites/lottery/Documents/procurement/IFB_for_Security_Officer_Services_RQ22-0480DP_FINAL.pdf |
+| **P07** | GSA MAS **47QSWA22D008W** | HigherGov: NAICS 561612, PSC S206, UEI/CAGE, PoP; cancellation note Nov 2025 — confirm on SAM/eLibrary before treating as active. | **B** | https://www.highergov.com/idv/47QSWA22D008W/ |
+
+## Still useful after first wave
+
+| ID | Buyer | Notes | Grade |
+| --- | --- | --- | --- |
+| **P08** | Terrell ISD 2025–26 | BoardBook contract: B06267001, POP 8/1/2025–7/31/2026, **$29.35/hr** | **A** |
+| **P09** | Terrell ISD 2026–27 | BoardBook NTE $100,000 + attachments | **B** |
+| **P10** | TxSmartBuy / HHSC | TXMAS-24-99003 listing; HHSC register rows | **B** |
+
+## Hold / Grade C
+
+| Item | Why |
+| --- | --- |
+| Lancaster ISD as L&P | 2024–25 BoardBook named **Code 3**, not L&P |
+| Mesquite / Wylie / Allen **press-only** dollars | Grade C until district packet page is verified |
+| Inventing loss reasons for Arlington | Only store documented scores/award facts |
+
+## Source files ready for ingestion (local Downloads)
+
+| File | Package | Intake note |
+| --- | --- | --- |
+| `1770_43.35658_Services_Contract_with_proposal_Final.pdf` | P01 Williamson | **Ready** (~4 MB, 19 pp) |
+| `22-0143-bid-invitation.pdf` | P03 Arlington solicitation | **Ready** (~0.3 MB, 35 pp) |
+| `22-0143-staff-report.pdf` | P03 Arlington eval/award | **Ready** (~0.2 MB, 3 pp) |
+| `60800 0000016167.pdf` | P04 TxDMV PO | **Ready** (~38 KB, 2 pp) |
+| `12.pdf` | P05 Jefferson bid tab | **Ready** (~31 KB, 1 pp) |
+| `IFB_for_Security_Officer_Services_RQ22-0480DP_FINAL.pdf` | P06 Texas Lottery IFB | **Ready** (~6 MB, 149 pp) |
+| `5-21_AllenISD.pdf` | P02 Allen | **Blocked at 25 MB limit** (~32 MB) — extract contract pages or raise `MAX_INTAKE_BYTES` before intake |
+
+**Ingested / verified / promoted:** **0**.
+
+## Next download / prep (not blockers for Grade A list above)
+
+1. Jefferson full IFB PDF if not already local.
+2. Allen contract-page excerpt under 25 MB, or raise intake limit for pilot.
+3. Official GSA eLibrary / SAM for 47QSWA22D008W.
+4. One Williamson funding-report PDF into the same package as P01.
+5. Do **not** promote HigherGov or press as canonical.

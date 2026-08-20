@@ -1,30 +1,35 @@
 ---
-description: Canonical product phases, historical-pilot-first, not-a-CRM, freeze early Intelligence UX
+description: Canonical product phases 1–8, historical-pilot-first, not-a-CRM, multi-tenant-ready (not PaaS phase)
 alwaysApply: true
 ---
 
 # Contract Intelligence Platform — agent rules
 
-Read [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md), [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md), and [docs/WORK_TRAIL.md](../docs/WORK_TRAIL.md) before implementing features. After any session that ships, blocks, or changes direction, update `docs/WORK_TRAIL.md` (session log + next work). Do not leave platform status only in chat.
+Read [docs/MASTER_BLUEPRINT.md](../docs/MASTER_BLUEPRINT.md), [docs/PRODUCT_SPEC.md](../docs/PRODUCT_SPEC.md), [docs/CURRENT_STATE_AUDIT.md](../docs/CURRENT_STATE_AUDIT.md), and [docs/WORK_TRAIL.md](../docs/WORK_TRAIL.md) before implementing features. After any session that ships, blocks, or changes direction, update `docs/WORK_TRAIL.md` (session log + next work). Do not leave platform status only in chat.
+
+Canonical pack reference: [docs/CANONICAL_PRODUCT_PACK.md](../docs/CANONICAL_PRODUCT_PACK.md). UX: [docs/UX_UI.md](../docs/UX_UI.md).
 
 ## Product phases
 
-- **Canonical product phases 1–9** govern product maturity ([BUILD_PLAN.md](../docs/BUILD_PLAN.md)).
+- **Canonical product phases 1–8** govern product maturity ([BUILD_PLAN.md](../docs/BUILD_PLAN.md)). **Core operational platform is complete after Phase 8.**
+- Optional commercialization (Stripe / selling to other contracting companies) is **not** a core product phase. Architecture is **multi-tenant-ready from day one**.
 - **Legacy engineering IDs 0–14** stay on migrations and `PHASE*_ACCEPTANCE.md` — do not rename.
 - **Legacy Phase 2 (RLS/tenancy) is Foundation (canonical Phase 1), not the Historical Pilot.**
-- **Canonical Phase 2 = Historical Pilot** (20–30 complete L&P packages). It has **not started** (0 packages).
+- **Canonical Phase 2 = Real-Document Historical Pilot** (~20–30 packages). It has **not started** (0 packages through complete pipeline).
 - Passing a legacy acceptance script does **not** mean the corresponding product phase is complete.
+- Do not say “canonical phases 1–9” or treat “Proposal builder” as Phase 9 — that is **Phase 8** (Response / Submission / Result).
 
 ## What not to build
 
 - Not a CRM: no leads, contact cadence, sales activities, client-facing auth, client portal, or customer self-service.
-- `clients` = buyer/agency procurement intelligence, not CRM accounts.
+- `clients` / buyers = buyer/agency procurement intelligence, not CRM accounts.
 - Do not fabricate procurement intelligence, analytics, or reports without verified evidence.
 - Do not claim a feature is complete because a route or table exists.
+- Do not invent L&P prices, staffing, performance metrics, or loss reasons.
 
-## Early UX — KEEP + FREEZE
+## Early UX — early / partial / unvalidated
 
-Intelligence screens (Ask, Market, Reports, Win/Loss, Content) exist ahead of the verified corpus. **Do not expand** until Historical Pilot validates the model. Do not delete them.
+Intelligence / Ask / Market / Reports / pursuit shell may exist ahead of the verified corpus. **Do not expand as finished product** until Historical Pilot validates the model. Reconcile to canonical IA: **Home | Pursuits | Intelligence | Contracts | Data Ops** (Ask GPT in header; Data Ops owns Intake). Do not delete useful early code.
 
 ## Architecture lock
 
@@ -33,6 +38,6 @@ Preserve: Supabase Storage vault, Vercel Workflow lifecycle, JobPort, Supabase C
 ## Next work order
 
 1. Keep [WORK_TRAIL.md](../docs/WORK_TRAIL.md) + current-state audit honest
-2. Apply opportunity migrations + confirm Vercel Supabase env
-3. Historical Pilot on real L&P packages (0 scored today)
-4. Then expand later phases per BUILD_PLAN — do not thaw Ask/Market/Reports until corpus exists
+2. Apply opportunity migrations + confirm Vercel Supabase env as needed
+3. Historical Pilot on real public L&P packages (0 through pipeline today)
+4. Schema changes only from PILOT_GAP_REPORT evidence — then later phases per BUILD_PLAN

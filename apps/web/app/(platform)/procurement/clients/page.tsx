@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { PROCUREMENT_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 import { DataRegistryCallout } from "@/components/data-registry-callout";
 import { createClient } from "@/lib/supabase/server";
 import { registryEntry } from "@/lib/data-model/registry";
@@ -23,7 +23,7 @@ async function ClientsContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={PROCUREMENT_TABS} />
+      <IntelligenceNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Clients (buyers / agencies)</h1>
         <p className="text-sm text-muted-foreground">

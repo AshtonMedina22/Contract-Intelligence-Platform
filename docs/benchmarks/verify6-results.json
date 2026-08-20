@@ -1,0 +1,385 @@
+{
+  "audit": "VERIFY6",
+  "phase": "Canonical Phase 6 — Ask / Reports / Automation",
+  "stamp": "mt1fl6p8",
+  "verdict": "PASS",
+  "total": 24,
+  "passed": 24,
+  "failed": 0,
+  "matrix": [
+    {
+      "domain": "locate",
+      "name": "LOCATE implementation does not require LLM",
+      "ok": true,
+      "detail": "SQL/ilike only in locateRecords",
+      "source": "lib/retrieval/search.ts"
+    },
+    {
+      "domain": "locate",
+      "name": "Ask page wires LOCATE mode without synthesis",
+      "ok": true,
+      "detail": "mode=locate path",
+      "source": "intelligence/ask/page.tsx"
+    },
+    {
+      "domain": "ask",
+      "name": "ASK refuses unsupported answer with canonical copy",
+      "ok": true,
+      "detail": "empty hits → INSUFFICIENT",
+      "source": "lib/ask/synthesize.ts"
+    },
+    {
+      "domain": "ask",
+      "name": "Answer UI cites Sources / Evidence and View Source",
+      "ok": true,
+      "detail": "contract headings always present",
+      "source": "components/ask/answer-panel.tsx"
+    },
+    {
+      "domain": "reports",
+      "name": "Reports disclose data scope and withhold fabrication",
+      "ok": true,
+      "detail": "generateIntelligenceReport honesty",
+      "source": "lib/reports/generate.ts"
+    },
+    {
+      "domain": "automation",
+      "name": "Automation never auto-approves pricing/proposal/submission (documented + no approve RPCs)",
+      "ok": true,
+      "detail": "migration comment + no approve/submit RPC",
+      "source": "phase6 + verify6 approval migrations"
+    },
+    {
+      "domain": "locate",
+      "name": "LOCATE finds records directly",
+      "ok": true,
+      "detail": "[\"V6 Locate Target mt1fl6p8\"]",
+      "source": "opportunities.ilike"
+    },
+    {
+      "domain": "ask",
+      "name": "ASK answers from verified sources",
+      "ok": true,
+      "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe\"}",
+      "source": "search_verified_knowledge"
+    },
+    {
+      "domain": "ask",
+      "name": "ASK cites evidence (storage path + fact linkage)",
+      "ok": true,
+      "detail": "{\"storage_path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10/v/478514d543b7c226ef2a5e09c3c963f0bf27bf55c7d83351ab915d38cbeeb85a/original.pdf\",\"source_fact_id\":\"8e93a382-8819-4303-978c-ca67d41102ba\",\"document_id\":\"765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10\"}",
+      "source": "search_verified_knowledge"
+    },
+    {
+      "domain": "ask",
+      "name": "ASK refuses unsupported answer when no verified hits",
+      "ok": true,
+      "detail": "{\"emptyHits\":0,\"canonicalCopy\":true}",
+      "source": "search + synthesize.ts"
+    },
+    {
+      "domain": "purpose",
+      "name": "DO_NOT_USE cannot enter drafting retrieval",
+      "ok": true,
+      "detail": "[]",
+      "source": "PROPOSAL_DRAFTING"
+    },
+    {
+      "domain": "purpose",
+      "name": "DO_NOT_USE appears in loss analysis where relevant",
+      "ok": true,
+      "detail": "[\"DO_NOT_USE\"]",
+      "source": "LOSS_ANALYSIS"
+    },
+    {
+      "domain": "tenancy",
+      "name": "Cross-org evidence cannot leak",
+      "ok": true,
+      "detail": "{\"n\":0,\"err\":null}",
+      "source": "org B search"
+    },
+    {
+      "domain": "tenancy",
+      "name": "Cross-org structured records cannot leak (LOCATE)",
+      "ok": true,
+      "detail": "[]",
+      "source": "clients RLS"
+    },
+    {
+      "domain": "reports",
+      "name": "Empty/insufficient corpus does not produce fabricated conclusions",
+      "ok": true,
+      "detail": "{\"awards\":0,\"reviews\":0,\"bids\":0,\"pricing\":0}",
+      "source": "org B + generate.ts"
+    },
+    {
+      "domain": "reports",
+      "name": "Report source scope disclosed",
+      "ok": true,
+      "detail": "dataScope string built in generateIntelligenceReport",
+      "source": "lib/reports/generate.ts"
+    },
+    {
+      "domain": "reports",
+      "name": "Unsupported statistics withheld",
+      "ok": true,
+      "detail": "honesty copy present; no fabricated share UI",
+      "source": "reports/page.tsx + generate.ts"
+    },
+    {
+      "domain": "automation",
+      "name": "Submission deadline reminder fires correctly",
+      "ok": true,
+      "detail": "{\"run\":{\"ok\":true,\"note\":\"No human gates bypassed\",\"compliance\":0,\"contract_alerts\":1,\"pursuit_deadlines\":2,\"approval_reminders\":2,\"verification_backlog\":2},\"events\":[{\"kind\":\"pursuit_deadline\",\"due_on\":\"2026-08-22\",\"title\":\"Pursuit response due 2026-08-22 (3)\"},{\"kind\":\"verification_backlog\",\"due_on\":\"2026-08-20\",\"title\":\"Verification backlog: 1 document(s)\"},{\"kind\":\"approval_reminder\",\"due_on\":\"2026-08-22\",\"title\":\"Internal approval pending before response due 2026-08-22\"}]}",
+      "source": "pursuit_deadline on response_due_on"
+    },
+    {
+      "domain": "automation",
+      "name": "Approval reminder respects state",
+      "ok": true,
+      "detail": "{\"refresher\":true,\"pendingOpen\":1,\"openAfterGo\":0}",
+      "source": "approval_reminder + go_no_go"
+    },
+    {
+      "domain": "automation",
+      "name": "Duplicate execution is idempotent",
+      "ok": true,
+      "detail": "{\"before\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"],\"after\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"]}",
+      "source": "ensure_automation_event"
+    },
+    {
+      "domain": "automation",
+      "name": "Renewal/compliance checks use verified dates",
+      "ok": true,
+      "detail": "{\"alerts\":[{\"bucket\":\"30\",\"verified_end_on\":\"2026-09-09\",\"days_until\":20}],\"err\":null}",
+      "source": "contracts.verified_end_on → contract_alerts"
+    },
+    {
+      "domain": "automation",
+      "name": "Compliance expiration automation uses expires_on",
+      "ok": true,
+      "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-30\",\"entity_id\":\"0a9e774b-2abe-405b-abdd-c64db0d37c97\"}]",
+      "source": "compliance_expiration"
+    },
+    {
+      "domain": "automation",
+      "name": "Processing failure is visible/retriable",
+      "ok": true,
+      "detail": "{\"failed\":{\"id\":\"9b537695-49cc-4376-ba44-f9509384c2e7\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
+      "source": "documents FAILED → QUEUED + processing UI"
+    },
+    {
+      "domain": "automation",
+      "name": "Pursuit deadline respects closed stage (no new open alert)",
+      "ok": true,
+      "detail": "[]",
+      "source": "refresh_pursuit_deadline_alerts stage filter"
+    }
+  ],
+  "byDomain": {
+    "locate": {
+      "pass": 3,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "locate",
+          "name": "LOCATE implementation does not require LLM",
+          "ok": true,
+          "detail": "SQL/ilike only in locateRecords",
+          "source": "lib/retrieval/search.ts"
+        },
+        {
+          "domain": "locate",
+          "name": "Ask page wires LOCATE mode without synthesis",
+          "ok": true,
+          "detail": "mode=locate path",
+          "source": "intelligence/ask/page.tsx"
+        },
+        {
+          "domain": "locate",
+          "name": "LOCATE finds records directly",
+          "ok": true,
+          "detail": "[\"V6 Locate Target mt1fl6p8\"]",
+          "source": "opportunities.ilike"
+        }
+      ]
+    },
+    "ask": {
+      "pass": 5,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "ask",
+          "name": "ASK refuses unsupported answer with canonical copy",
+          "ok": true,
+          "detail": "empty hits → INSUFFICIENT",
+          "source": "lib/ask/synthesize.ts"
+        },
+        {
+          "domain": "ask",
+          "name": "Answer UI cites Sources / Evidence and View Source",
+          "ok": true,
+          "detail": "contract headings always present",
+          "source": "components/ask/answer-panel.tsx"
+        },
+        {
+          "domain": "ask",
+          "name": "ASK answers from verified sources",
+          "ok": true,
+          "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe\"}",
+          "source": "search_verified_knowledge"
+        },
+        {
+          "domain": "ask",
+          "name": "ASK cites evidence (storage path + fact linkage)",
+          "ok": true,
+          "detail": "{\"storage_path\":\"e519fcd6-4be2-4e34-8945-f5ae81530821/765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10/v/478514d543b7c226ef2a5e09c3c963f0bf27bf55c7d83351ab915d38cbeeb85a/original.pdf\",\"source_fact_id\":\"8e93a382-8819-4303-978c-ca67d41102ba\",\"document_id\":\"765e0298-fe8a-4f9e-aa6c-a4d7f5ceae10\"}",
+          "source": "search_verified_knowledge"
+        },
+        {
+          "domain": "ask",
+          "name": "ASK refuses unsupported answer when no verified hits",
+          "ok": true,
+          "detail": "{\"emptyHits\":0,\"canonicalCopy\":true}",
+          "source": "search + synthesize.ts"
+        }
+      ]
+    },
+    "reports": {
+      "pass": 4,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "reports",
+          "name": "Reports disclose data scope and withhold fabrication",
+          "ok": true,
+          "detail": "generateIntelligenceReport honesty",
+          "source": "lib/reports/generate.ts"
+        },
+        {
+          "domain": "reports",
+          "name": "Empty/insufficient corpus does not produce fabricated conclusions",
+          "ok": true,
+          "detail": "{\"awards\":0,\"reviews\":0,\"bids\":0,\"pricing\":0}",
+          "source": "org B + generate.ts"
+        },
+        {
+          "domain": "reports",
+          "name": "Report source scope disclosed",
+          "ok": true,
+          "detail": "dataScope string built in generateIntelligenceReport",
+          "source": "lib/reports/generate.ts"
+        },
+        {
+          "domain": "reports",
+          "name": "Unsupported statistics withheld",
+          "ok": true,
+          "detail": "honesty copy present; no fabricated share UI",
+          "source": "reports/page.tsx + generate.ts"
+        }
+      ]
+    },
+    "automation": {
+      "pass": 8,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "automation",
+          "name": "Automation never auto-approves pricing/proposal/submission (documented + no approve RPCs)",
+          "ok": true,
+          "detail": "migration comment + no approve/submit RPC",
+          "source": "phase6 + verify6 approval migrations"
+        },
+        {
+          "domain": "automation",
+          "name": "Submission deadline reminder fires correctly",
+          "ok": true,
+          "detail": "{\"run\":{\"ok\":true,\"note\":\"No human gates bypassed\",\"compliance\":0,\"contract_alerts\":1,\"pursuit_deadlines\":2,\"approval_reminders\":2,\"verification_backlog\":2},\"events\":[{\"kind\":\"pursuit_deadline\",\"due_on\":\"2026-08-22\",\"title\":\"Pursuit response due 2026-08-22 (3)\"},{\"kind\":\"verification_backlog\",\"due_on\":\"2026-08-20\",\"title\":\"Verification backlog: 1 document(s)\"},{\"kind\":\"approval_reminder\",\"due_on\":\"2026-08-22\",\"title\":\"Internal approval pending before response due 2026-08-22\"}]}",
+          "source": "pursuit_deadline on response_due_on"
+        },
+        {
+          "domain": "automation",
+          "name": "Approval reminder respects state",
+          "ok": true,
+          "detail": "{\"refresher\":true,\"pendingOpen\":1,\"openAfterGo\":0}",
+          "source": "approval_reminder + go_no_go"
+        },
+        {
+          "domain": "automation",
+          "name": "Duplicate execution is idempotent",
+          "ok": true,
+          "detail": "{\"before\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"],\"after\":[\"165e569e-46a1-48da-a7d0-747aec7dee0c\"]}",
+          "source": "ensure_automation_event"
+        },
+        {
+          "domain": "automation",
+          "name": "Renewal/compliance checks use verified dates",
+          "ok": true,
+          "detail": "{\"alerts\":[{\"bucket\":\"30\",\"verified_end_on\":\"2026-09-09\",\"days_until\":20}],\"err\":null}",
+          "source": "contracts.verified_end_on → contract_alerts"
+        },
+        {
+          "domain": "automation",
+          "name": "Compliance expiration automation uses expires_on",
+          "ok": true,
+          "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-30\",\"entity_id\":\"0a9e774b-2abe-405b-abdd-c64db0d37c97\"}]",
+          "source": "compliance_expiration"
+        },
+        {
+          "domain": "automation",
+          "name": "Processing failure is visible/retriable",
+          "ok": true,
+          "detail": "{\"failed\":{\"id\":\"9b537695-49cc-4376-ba44-f9509384c2e7\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
+          "source": "documents FAILED → QUEUED + processing UI"
+        },
+        {
+          "domain": "automation",
+          "name": "Pursuit deadline respects closed stage (no new open alert)",
+          "ok": true,
+          "detail": "[]",
+          "source": "refresh_pursuit_deadline_alerts stage filter"
+        }
+      ]
+    },
+    "purpose": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "purpose",
+          "name": "DO_NOT_USE cannot enter drafting retrieval",
+          "ok": true,
+          "detail": "[]",
+          "source": "PROPOSAL_DRAFTING"
+        },
+        {
+          "domain": "purpose",
+          "name": "DO_NOT_USE appears in loss analysis where relevant",
+          "ok": true,
+          "detail": "[\"DO_NOT_USE\"]",
+          "source": "LOSS_ANALYSIS"
+        }
+      ]
+    },
+    "tenancy": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "tenancy",
+          "name": "Cross-org evidence cannot leak",
+          "ok": true,
+          "detail": "{\"n\":0,\"err\":null}",
+          "source": "org B search"
+        },
+        {
+          "domain": "tenancy",
+          "name": "Cross-org structured records cannot leak (LOCATE)",
+          "ok": true,
+          "detail": "[]",
+          "source": "clients RLS"
+        }
+      ]
+    }
+  }
+}

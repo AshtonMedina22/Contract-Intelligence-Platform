@@ -1,149 +1,174 @@
-# Data architecture
+# Data architecture — verified procurement intelligence
 
-See [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md), [BUILD_PLAN.md](BUILD_PLAN.md), [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Vault rules below are the lock.
+Synced with Canonical Product Pack + full domain map from [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md).  
+Business rules: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
+
+This file owns **data/evidence architecture**, not navigation. UX/IA: [UX_UI.md](UX_UI.md).
+
+## Core principle
+
+The system must distinguish **source evidence**, **extracted staging data**, and **canonical verified business records**. AI never writes trusted truth directly.
 
 ## Systems of record
 
-| Concern | System | Rule |
-| --- | --- | --- |
-| Structured business data | Supabase PostgreSQL | Canonical tables receive only promoted, verification-gated facts where required |
-| Original files | Supabase Storage | Canonical **immutable-by-policy** ingested evidence vault |
-| Human file workspace | Google Drive | Import source and optional staff browsing. **Not** the application vault or a second database |
-| Working proposal collaboration | Google Docs | Human workspace and export path — not canonical Postgres |
-| Controlled export/QA | Google Sheets | Export/import/QA only — not bidirectionally editable with Supabase as a second DB |
-| Extraction truth | Staging tables | AI writes here, never directly to canonical business tables |
-| Audit | `verification_events`, extraction runs, checksums | Every material verification action is attributable |
+| Role | System |
+| --- | --- |
+| Structured business data | Supabase PostgreSQL — canonical tenant-scoped procurement data |
+| Original/ingested evidence | Supabase Storage — canonical immutable-by-policy evidence copy |
+| External/human file source | Google Drive — import/source and human workspace; not a second canonical database |
+| Proposal collaboration/output | Google Docs — working proposal handoff; not canonical structured data |
+| Controlled spreadsheet export/QA | Google Sheets — import/export/QA where useful; not a bidirectional second database |
+| AI/extraction working truth | Staging tables — AI-extracted facts, confidence, and source coordinates await verification |
+| Audit | verification events, extraction runs, checksums, workflow events, validation exceptions |
 
-## Evidence vault (immutable-by-policy)
-
-Supabase Storage is not WORM merely by naming it the vault. Make original evidence effectively append-only in our design.
-
-Object path:
+## Canonical document lifecycle
 
 ```text
-org_id/
-  document_id/
-    version_id/
-      sha256/
-        original.<ext>
+Upload/import
+→ exact evidence copy to Supabase Storage
+→ document registry/version/checksum
+→ Vercel Workflow
+→ parser/OCR route
+→ structured extraction
+→ staging
+→ automated validation/reconciliation
+→ HUMAN verification
+→ Workflow resume
+→ canonical promotion
+→ eligible FTS/chunks/embeddings/intelligence
 ```
 
-Rules (implemented in Phase 3):
+## Evidence vault
 
-- Never overwrite an existing source object.
-- A new source file is a new `document_version` and a new object.
-- Record SHA-256 before processing.
-- Normal users cannot update or delete original evidence objects.
-- RLS/storage policies enforce tenant ownership.
-- Deletion or replacement requires an explicit privileged workflow plus an audit event.
+Recommended object pattern: `organization_id/document_id/version_id/sha256/original.ext`
 
-Google Drive remains the original external source/import location for existing L&P files, plus a familiar human workspace. Import copies the exact version into tenant-isolated Storage and retains `source_drive_file_id` + checksum + source metadata. Do not delete the Drive file. If checksum matches an existing version, do not re-OCR or re-embed.
+Rules: never overwrite original evidence; revision = new document version/object; SHA-256 before expensive processing; normal users cannot casually update/delete evidence objects; tenant-scoped Storage/RLS; retain original source URL/Drive ID and acquisition metadata; matching checksum avoids unnecessary OCR/extraction/embedding.
 
-## Tenant model
+## Tenancy
 
-- `organizations`
-- `memberships`
-- `organization_id` on every business table
-- RLS on Postgres and on `storage.objects`
-- Roles beyond membership: admin, importer, verifier, bidder, executive (stored in Phase 2)
-- **Role enforcement decision (Phase 2):** Option A. Roles are stored now. Organization/member administration is admin-only. Business-table RLS currently uses `is_org_member` for tenant isolation. Domain permission matrices (importer vs verifier vs bidder) start with the first later phase that exposes those mutations. Do not assume the enum already enforces workflow permissions.
+From day one: organizations; memberships; `organization_id` on tenant-owned records; Postgres RLS; Storage tenant isolation; same-organization foreign-key integrity; tenant-scoped retrieval, AI context, and reports.
 
-L&P is the first tenant. Stripe comes later.
+L&P is initial tenant. Future tenants are contracting companies. Procurement buyers/customers are **data entities**, not platform tenants merely because L&P serves them.
 
-Same-organization foreign keys: child rows that point at another table must include `organization_id` in the relationship (composite unique + composite FK). Tenant integrity does not rely on UUID secrecy.
+## Buyer / agency entity
 
-## Buyers / agencies — not CRM
+Buyer/agency/procurement customer is **not CRM**. It connects solicitations, pursuits, proposals, awards, contracts, and public intelligence. No lead nurture/contact cadence/customer portal is implied.
 
-**`clients` = buyers, agencies, procurement customers** — intelligence entities linked to opportunities, contracts, and research.
+Physical table may remain `clients` if migration cost is not justified; product language is **buyers/agencies**.
 
-**Not:** CRM accounts, lead records, contact cadence, sales pipeline, or customer portal identities.
+## Procurement package as the core data unit
 
-## Live tables (implemented in migrations)
+Documents should be grouped around the same real procurement lifecycle. A package can include:
 
-Tenancy: `organizations`, `memberships`
+solicitation/RFP/RFQ/IFB · addenda · Q&A/clarifications · required forms · pricing workbook · proposal drafts · final submitted response · references/certifications · award notice · bid tab/evaluation · PO · executed contract · amendments/modifications · option/renewal documents · invoices/payment evidence when useful · public research records.
 
-Buyers / pipeline: `clients`, `opportunities`
+## Document registry
 
-Documents / staging: `document_batches`, `documents`, `document_versions`, `extraction_runs`, `extracted_facts`, `source_evidence`, `verification_events`, `validation_exceptions`, `batch_ingest_items`
+Each document/version should retain: organization; package/batch; document and version IDs; source provider/URL/Drive ID; original filename; Storage object; checksum; MIME type; page/workbook structure; document type/subtype; buyer; pursuit/solicitation/contract association; document date; version/current-version state; commercial truth; processing/extraction/verification status; timestamps.
 
-Four truths / procurement: `solicitations`, `requirements`, `pricing_lines`, `awards`
+## Staging fact shape
 
-Contracts: `contracts`, `contract_amendments`, `contract_options`, `renewals`, `compliance_items`, `contract_alerts`
+Every material extracted fact should be capable of retaining: extraction run; document/version; target entity/field; raw value; normalized value/type; source page/sheet/cell; section; excerpt; confidence; verification state; verified value; verifier/timestamp.
 
-Intelligence: `win_loss_reviews`, `competitors`, `competitor_bids`, `research_facts`
+## Verification states
 
-Search: `document_chunks` (FTS + optional `vector(1536)`)
+`AI_EXTRACTED` · `NEEDS_REVIEW` · `HUMAN_VERIFIED` · `REJECTED` · `CONFLICT`
 
-## Future canonical domain tables (do not create all up front)
+## Data classification (separate from verification)
 
-Create only what the Historical Pilot proves necessary.
-
-**Procurement package:** `solicitation_addenda`, `requirement_responses`, `evaluation_criteria`, `evaluation_scores`, `proposals`, `proposal_versions`, `proposal_sections`, `content_library`
-
-**Pricing / labor:** `pricing_structures`, `labor_categories`, `wage_determinations`, `cost_models`, `competitor_pricing_lines`
-
-**Contracts (extended):** `contract_rates`, `contract_sites`, `contract_modifications`, `purchase_orders`
-
-**Compliance / personnel:** `certifications`, `licenses`, `insurance_policies`, `company_documents`, `personnel_qualifications`, `past_performance`
-
-**Research:** `public_sources`, `client_intelligence` (buyer intelligence aggregates — not CRM)
-
-**Contacts:** `contacts` — if needed for key procurement contacts, not sales CRM graph
-
-## Extracted fact shape
-
-Every extracted fact stores: extraction run, document, entity, field, raw value, normalized value, normalized type, source page, source section, source excerpt, confidence, verification status, verified value, verifier, verification timestamp.
-
-Statuses: `AI_EXTRACTED`, `NEEDS_REVIEW`, `HUMAN_VERIFIED`, `REJECTED`, `CONFLICT`.
+`verified_public` · `verified_internal` · `internal_unverified` · `illustrative_demo`
 
 ## Four commercial truths
 
-Never overwrite `requested_rate`, `proposed_rate`, `awarded_rate`, and `current_rate` into one field.
+1. **BUYER REQUESTED** — solicitation/addenda/Q&A/requested pricing  
+2. **L&P PROPOSED** — final submitted proposal/pricing/forms  
+3. **BUYER AWARDED** — award notice/PO/executed contract  
+4. **CURRENT/AMENDED** — executed amendments/modifications/options/renewals  
 
-| Truth | Implemented today | Future expansion |
-| --- | --- | --- |
-| Requested | `commercial_truth` on documents; `requested_rate` on `pricing_lines`; `requirements` from requested sources | `solicitation_addenda` table |
-| Proposed | `proposed_rate`; promotion from final proposal/quote docs | `proposal_sections`, pricing structures |
-| Awarded | `awarded_rate`; `awards` table | Bid tab / scorecard line items |
-| Current | `current_rate`; contract promotion from amendments | `contract_rates`, modifications |
+Never collapse requested/proposed/awarded/current into a generic `rate` or overwrite history.
 
-Promotion RPCs refuse silent overwrite and write `validation_exceptions` on conflict.
+## Source precedence
 
-## Search / RAG retrieval filters
+- Requirements: latest applicable addendum/official clarification > original solicitation  
+- L&P submitted position: final submitted proposal/pricing > draft  
+- Current commercial terms: latest executed amendment/modification/option > executed contract/PO > award > proposal  
 
-### Enforced today (`search_verified_knowledge`)
+If sources still conflict, preserve both and create a validation/reconciliation exception.
 
-1. Authentication required
-2. Organization — via RLS on `document_chunks` (no explicit `organization_id` in RPC WHERE)
-3. `verification_status = 'HUMAN_VERIFIED'` always
-4. Drafting mode (`p_for_drafting = true`, default): exclude `DO_NOT_USE`, `SUPERSEDED`; require `is_current_version`
-5. Audit mode (`p_for_drafting = false`): verified only; allows DO_NOT_USE / SUPERSEDED / non-current for analysis views
-6. Match: Postgres FTS; optional vector if `p_query_embedding` provided (UI currently passes text only)
+## Canonical end-state domain model
 
-### Required end state (not fully implemented)
+**Do not blindly create all tables before the pilot.** This is the domain map the pilot may validate/refine. Proposed end-state entities that are not live yet are **schema-gap findings**, not “invented tables.”
 
-1. Organization / RLS (explicit org predicate in RPC as defense in depth)
-2. Verification state
-3. Reuse status — purpose-aware (`PROPOSAL_DRAFTING` vs `LOSS_ANALYSIS` vs `MARKET_RESEARCH`)
-4. Outcome (won/lost as context, never automatic reuse)
-5. Current vs historical version
-6. Permissions beyond bare membership (verifier vs bidder)
-7. LOCATE path — structured/FTS record lookup without LLM
-8. ASK path — grounded synthesis with mandatory citations
+### Tenancy
 
-Text-to-SQL (later) is read-only, over approved views, with a semantic layer, RLS, timeouts, and no destructive SQL.
+`organizations`, `memberships`
 
-## Schema contract
+### Evidence / processing
 
-`packages/schemas` holds JSON Schema / OpenAPI shared by Pydantic (processor) and Zod (web). Do not let the two drift.
+`document_batches`, `procurement_packages`, `documents`, `document_versions`, `extraction_runs`, `extracted_facts`, `source_evidence`, `verification_events`, `validation_exceptions`, `processing_jobs`
 
-## Past performance (future)
+### Buyers / pursuits
 
-When implemented, `past_performance` must distinguish:
+buyers/agencies (legacy `clients` may remain), pursuits/opportunities, solicitations, solicitation_addenda, solicitation_q_and_a, pursuit_milestones/deadlines
 
-- L&P corporate past performance
-- Management prior experience
-- Key personnel experience
-- Subcontractor experience
+### Requirements / submission
 
-No table exists today. AI must never conflate individual résumé history with L&P contract performance.
+`requirements`, `required_forms`, `requirement_responses`, `submission_items`, `submission_events`/confirmations
+
+### Evaluation / result
+
+`evaluation_criteria`, `evaluation_scores`, `awards`, `win_loss_reviews`
+
+### Services / staffing
+
+`service_types`, sites, posts, `staffing_requirements`, schedules, personnel_requirements, training_requirements
+
+### Pricing
+
+`pricing_structures`, `pricing_lines`, labor_categories, wage_determinations, cost_models, comparable_sets, competitor_pricing_lines
+
+### Proposal / content
+
+`proposals`, `proposal_versions`, `proposal_sections`, content_library/reuse records, approvals
+
+### Contracts
+
+`contracts`, `contract_service_plans`, contract_sites/posts, contract_rates, `purchase_orders`, `contract_amendments`, contract_modifications/change records, `contract_options`, `renewals`, `contract_alerts`
+
+### Compliance
+
+licenses, insurance_policies/COIs, certifications, company_documents, personnel_qualifications
+
+### Intelligence
+
+`competitors`, `competitor_bids`, research_sources, `research_facts`, buyer_intelligence facts/derived views, report records where reports are persisted
+
+### Search / AI
+
+document_chunks/eligible embeddings, Ask/report audit records as needed
+
+### Federal / vehicle identifiers (when relationally justified)
+
+NAICS · PSC · GSA SIN · UEI · CAGE · SAM · set-aside · contract vehicle · GSA/TXMAS · WBE/MBE/HUB/WOSB · wage determination/locality · armed/unarmed/PPO/patrol service taxonomy · screening/background/fingerprint/drug/driver/firearm/security-clearance/training requirements
+
+## Past performance integrity
+
+Never conflate: L&P corporate past performance; management prior experience; key personnel experience; subcontractor experience.
+
+## Search / RAG
+
+Hybrid retrieval = structured Postgres queries + PostgreSQL FTS + pgvector.  
+No separate vector database unless measured scale/performance proves Postgres insufficient.
+
+Retrieval must be: tenant-aware · permission-aware · verification-aware · version-aware · source-precedence-aware · outcome-aware · reuse-aware · purpose-aware.
+
+Purpose matters. Example: `DO_NOT_USE` losing proposal content may support loss analysis, but not proposal drafting.
+
+## Schema governance
+
+- shared JSON Schema/OpenAPI/Pydantic/Zod contracts must stay aligned  
+- migrations must be additive/safe and **evidence-driven**  
+- UI sections do not automatically justify tables  
+- source documents remain the audit root  
+- canonical business data must always be traceable back to evidence  
+- map pilot facts to **live** tables first; record unsupported end-state concepts as **schema-gap findings**; do not create migrations prematurely  

@@ -1,98 +1,76 @@
-# Phase 1 foundation audit (original blueprint)
+# Canonical Phase 1 — Foundation audit
 
-**Original Phase 1 — Foundation:** Supabase/Postgres, database schema, authentication/security, Google Drive references, document registry, staging/verification structure.
+**Canonical Phase 1 — Foundation:** tenant isolation, evidence vault, document identity, staging/verification/audit, Workflow/JobPort/processor interfaces, shared schemas, app shell + source/PDF review.
 
-**Audit date:** 2026-08-19  
-**Repo HEAD:** `ded2bee` on `main` (see `git log -1`). Foundation login/build issue closed as of `8d083a5` / `213f951`.  
-**Verdict:** **Mostly complete** — sufficient to **begin Original Phase 2 (Historical Pilot)** after any open ⚠️ items are accepted or closed.
+**Audit date:** 2026-08-20 (Prompt 1 — Foundation hardening)  
+**Verdict:** **Local exit gate proven.** Do not rebuild working foundation code. **Canonical Phase 2 (Historical Pilot) has not started** (0 packages through the complete pipeline).
 
-Cross-check: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) §13–14, [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).
-
----
-
-## Checklist
-
-| # | Original Phase 1 requirement | Evidence | Status | Notes |
-| --- | --- | --- | --- | --- |
-| 1 | Supabase project + PostgreSQL | Project `lhmurblikkcomdxcrymx`; migrations through legacy Phase 11 | ✅ | Engineering ahead of product validation |
-| 2 | Multi-tenant schema (`organizations`, `memberships`, RLS) | `20260819100000_phase2_tenancy_provenance.sql`; `npm run test:phase2-rls` 48/48 | ✅ | **This is Foundation, NOT Historical Pilot** |
-| 3 | Authentication / security | Supabase Auth; org bootstrap RPC; middleware session | ✅ | Operator login on Vercel after login Suspense fix |
-| 4 | Document registry | `documents`, `document_versions`; `/procurement/documents` | ✅ | Shows `commercial_truth`, `document_type` |
-| 5 | Staging structure | `extracted_facts`, `extraction_runs`, `source_evidence` | ✅ | Processor writes staging only |
-| 6 | Human verification structure | Workbench, `verification_events`, statuses | ✅ | PDF.js pane; XLSX normalized view |
-| 7 | Validation / exceptions on promotion | `validation_exceptions`; `promote_verified_fact` | ✅ | Exceptions page wired to table |
-| 8 | Google Drive references | `source_drive_file_id`; import token in intake | ✅ | Drive not deleted on import |
-| 9 | Evidence vault (approved deviation) | Supabase Storage immutable-by-policy path | ✅ | Documented vs original Drive-as-vault |
-| 10 | Workflow orchestration (upgrade) | `document-lifecycle` Workflow + statuses | ✅ | Not in original one-pager |
-| 11 | Python processing pipeline interface | `services/processor`; JobPort | ✅ | OCR/DOCX stubs unwired |
-| 12 | Checksum + duplicate detection | SHA-256 before process; duplicate skip | ✅ | Phase 3 acceptance |
-| 13 | Four-truth **schema** (minimal) | `pricing_lines` 4 columns; `commercial_truth` on documents | ✅ | **Pilot must prove on real packages** |
-| 14 | Canonical promotion RPCs | Phase 7 SQL; identity + four-truth promotion | ✅ | Unvalidated on L&P corpus |
-| 15 | Role storage (admin/importer/verifier/bidder/executive) | `memberships.role` enum | ⚠️ | Stored; not enforced in UI/workflows yet |
-| 16 | Production build deployable | `npm run build` green; login Partial Prerender | ✅ | Verify Vercel after each push |
-| 17 | Lint + typecheck | Pass locally (2026-08-19) | ✅ | |
-| 18 | Honest phase documentation | MASTER_BLUEPRINT, PHASE_RECONCILIATION, this file | ✅ | This audit |
+Cross-check: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [BUILD_PLAN.md](BUILD_PLAN.md), [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md).  
+Single test command: `npm run test:foundation` (includes `npm run test:verify1`). Also run `npm run lint`, `npm run typecheck`, `npm run build`.
 
 ---
 
-## Explicitly NOT Phase 1 (do not block pilot for these)
+## Checklist (Prompt 1)
 
-These belong to **Original Phase 2+** but exist as early engineering:
+| # | Requirement | Evidence | Status |
+| --- | --- | --- | --- |
+| 1 | Next.js / React / TypeScript application shell | `apps/web`; canonical IA Home \| Pursuits \| Intelligence \| Contracts \| Data Ops | ✅ |
+| 2 | Supabase Auth | Auth routes; `apps/web/proxy.ts` session | ✅ |
+| 3 | organizations | `organizations` table + bootstrap RPC | ✅ |
+| 4 | memberships | `memberships` + `memberships.role` enum stored | ✅ |
+| 5 | `organization_id` tenancy | Tenant columns + RLS on operational tables | ✅ |
+| 6 | PostgreSQL RLS | `npm run test:phase2-rls` **48/48** | ✅ |
+| 7 | same-organization relationship integrity | Same suite (same-org FK / integrity cases) | ✅ |
+| 8 | tenant-scoped Storage | Storage isolation cases in Phase 2 RLS suite | ✅ |
+| 9 | canonical evidence vault | Supabase Storage; Drive = import/source only | ✅ |
+| 10 | SHA-256 document identity | Intake checksum; duplicate skip | ✅ |
+| 11 | document registry | `documents` | ✅ |
+| 12 | document versions | `document_versions` | ✅ |
+| 13 | batches / packages | Intake batches / package grouping | ✅ |
+| 14 | extraction runs | `extraction_runs` | ✅ |
+| 15 | staging facts | `extracted_facts` default **`AI_EXTRACTED`** | ✅ |
+| 16 | source evidence | `source_evidence` append-only (no upsert/update/delete in tests) | ✅ |
+| 17 | verification events | `verification_events`; HUMAN_VERIFIED requires actor + timestamp | ✅ |
+| 18 | validation exceptions | `validation_exceptions`; promotion path | ✅ |
+| 19 | shared schema contracts | `packages/schemas` Zod ↔ `lp_processor.models` Pydantic | ✅ |
+| 20 | Vercel Workflow document-lifecycle | `apps/web/workflows/document-lifecycle.ts` | ✅ |
+| 21 | JobPort fan-out abstraction | `packages/shared` JobPort + Vercel Workflow adapter | ✅ |
+| 22 | Python / FastAPI / Pydantic processor | `services/processor`; **9 pytest passed** | ✅ |
+| 23 | source / PDF review foundation | Verification workbench + PDF.js | ✅ |
+| 24 | Multi-tenant from day one | Not deferred to a PaaS phase | ✅ |
+| 25 | AI-extracted data defaults unverified | DB default + processor writes `AI_EXTRACTED` | ✅ |
+| 26 | Original evidence not casually overwritten | Evidence vault policy + RLS suite | ✅ |
 
-| Item | Original phase | Today |
+---
+
+## Explicitly NOT Phase 1 (do not block this gate)
+
+| Item | Canonical phase | Today |
 | --- | --- | --- |
-| 20–30 package pilot corpus | **Phase 2** | **0 packages** |
-| Full opportunity fields (deadlines, go/no-go, $) | 2 validates schema | Ops metadata + rail/packet exist on main; **unvalidated**; still not a complete engine |
-| Contracts portfolio operational | Phase 4 | Schema + UI early |
-| Win/loss / competitor dashboards | Phase 5 | List views only |
-| Embeddings + Ask Intelligence | Phase 6 | RPC + UI; empty corpus |
-| Glide pricing workbench | Phase 7 | Not started |
-| Proposal builder + Google Docs | Phase 8 | Placeholder |
-| `proposal_sections`, cost model, pricing structures tables | 7–8 | Documented future in DATA_ARCHITECTURE |
+| 20–30 packages through complete pipeline | **2** | **0** |
+| OCR/DOCX production routing | 3 | Stubs / unwired |
+| Role enum enforced in every UI/workflow | later ops | Stored; not UI-gated |
+| Opportunity / contract / intelligence product completeness | 4–8 | Early/partial code must not be called complete |
+| 25 MB intake vs large board packets | 2/3 ingest | Ops limit, not missing Foundation tables |
 
 ---
 
-## Gaps before Historical Pilot (Original Phase 2)
+## Gaps that block the **pilot**, not Foundation rebuild
 
-**Must have (Foundation):**
+- [ ] Operator smoke: **1 real package** source → extract → stage → human verify → canonical (not done)  
+- [ ] Vercel production + signed-in org + processor running for live intake  
+- [ ] Opportunity migrations on remote if still missing (`20260820300000` / `310000` / `320000`)  
+- [ ] L&P selects first pilot packages from [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md)
 
-- [x] Ingest path: upload → Storage → registry → Workflow → staging  
-- [x] Verification workbench usable on real files  
-- [x] Promotion path to canonical tables  
-- [ ] **Operator can run end-to-end on 1 package manually** (smoke test — do before scaling to 20–30)  
-- [ ] Vercel production confirmed green after latest `main`  
-
-**Should document before pilot:**
-
-- [x] Phase naming reconciled (RLS ≠ Phase 2 pilot)  
-- [x] Package manifest template in HISTORICAL_PILOT.md  
-- [ ] L&P selects first 3 pilot packages (buyer + file list from Drive)  
-
-**Must NOT do before pilot completes:**
-
-- Expand Intelligence UX (Ask/Market/Reports) beyond FREEZE  
-- Build proposal builder or Glide pricing  
-- Add opportunity CRM fields without pilot evidence  
+**Must NOT do as “Foundation work”:** expand Ask/Pricing/Response; invent schema from PDFs without PILOT_GAP_REPORT; treat RLS 48/48 as Historical Pilot complete.
 
 ---
 
-## Four truths verification (Foundation schema)
+## VERIFY 1 (2026-08-20)
 
-| Rule | Implemented? | Where |
-| --- | --- | --- |
-| Separate requested/proposed/awarded/current columns | ✅ | `pricing_lines` |
-| Document tagged by commercial truth | ✅ | `documents.commercial_truth` |
-| Promotion refuses silent overwrite | ✅ | `promote_verified_fact` → `validation_exceptions` |
-| Requirements from requested sources only | ✅ | Promotion logic + SOURCE_PRECEDENCE |
-| UI shows four columns on package | ✅ | `/procurement/opportunities/[id]` |
-| Dynamic pricing **structure** per solicitation | ❌ | Future `pricing_structures` |
-| L&P internal **cost model** | ❌ | Future Phase 7 tables |
-
----
+Independent live proofs: `npm run test:verify1` — architecture **5/5**, runtime **21/21**. Failures found in audit were fixed (append-version RPC, actor NOT NULL, append-only provenance, immutable version identity, processor VERIFIED guard). Opportunity migrations `20260820300000` / `310000` / `320000` were applied to the linked remote as part of this push.
 
 ## Recommendation
 
-**Original Phase 1:** Accept as **mostly complete**.  
-**Next task:** **Original Phase 2 — Historical Pilot** per [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md).
-
-Do **not** interpret legacy engineering Phase 3–11 completion as permission to skip the pilot or build proposal/pricing UX first.
+**Canonical Phase 1:** Accept as **complete for the local/code exit gate** (2026-08-20).  
+**Next product work:** **Canonical Phase 2 — Real-Document Historical Pilot.**

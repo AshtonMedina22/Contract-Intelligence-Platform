@@ -58,6 +58,12 @@ async function WorkbenchContent({ documentId }: { documentId: string }) {
     sheets = normalized?.sheets ?? [];
   }
 
+  const { data: exceptions } = await supabase
+    .from("validation_exceptions")
+    .select("id")
+    .eq("document_id", documentId)
+    .eq("resolved", false);
+
   return (
     <WorkbenchClient
       documentId={document.id}
@@ -67,6 +73,7 @@ async function WorkbenchContent({ documentId }: { documentId: string }) {
       sheets={sheets}
       facts={(facts ?? []) as WorkbenchFact[]}
       processingStatus={document.processing_status}
+      openExceptionIds={(exceptions ?? []).map((row) => row.id)}
     />
   );
 }

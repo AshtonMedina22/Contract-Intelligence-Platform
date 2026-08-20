@@ -80,9 +80,9 @@ def decide_route(
         return RouteDecision(
             parser_id="docx-native",
             document_class="docx",
-            reason="Checked-in policy: DOCX is a native/Docling path. Adapter is not wired; escalate, do not OCR as PDF.",
-            wired=False,
-            escalate=True,
+            reason="Checked-in policy: DOCX uses python-docx native extraction. Never OCR as PDF.",
+            wired=True,
+            escalate=False,
             policy_version=policy.version,
         )
 

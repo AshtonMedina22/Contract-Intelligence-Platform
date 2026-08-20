@@ -30,9 +30,8 @@ record(
 );
 record(
   "rules",
-  "HUMAN_VERIFIED requires actor+timestamp (enforced in Postgres CHECK)",
-  true,
-  "covered by test:phase2-rls",
+  "workbook cells are not silently treated as HUMAN_VERIFIED",
+  identityTarget("Pricing!B1", "workbook") !== "client",
 );
 
 const failed = results.filter((row) => !row.ok).length;

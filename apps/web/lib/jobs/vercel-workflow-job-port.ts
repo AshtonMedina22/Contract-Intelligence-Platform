@@ -1,8 +1,14 @@
 import { start } from "workflow/api";
-import type { JobPort, StartDocumentLifecycleInput, StartDocumentLifecycleResult } from "@lp/shared";
+import type {
+  EmbedFanOutInput,
+  JobPort,
+  StartDocumentLifecycleInput,
+  StartDocumentLifecycleResult,
+} from "@lp/shared";
 import { documentLifecycleWorkflow } from "@/workflows/document-lifecycle";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { InlineLifecycleJobPort } from "@/lib/jobs/inline-job-port";
+import { embedVerifiedChunk } from "@/lib/search/embed-chunk";
 
 export class VercelWorkflowJobPort implements JobPort {
   async startDocumentLifecycle(
@@ -32,5 +38,10 @@ export class VercelWorkflowJobPort implements JobPort {
         error instanceof Error ? error.message : "Vercel Workflow start failed.";
       return new InlineLifecycleJobPort(message.slice(0, 500)).startDocumentLifecycle(input);
     }
+  }
+
+  async enqueueEmbedFanOut(input: EmbedFanOutInput): Promise<void> {
+    // Queues = fan-out only. Until @vercel/queue is configured, run inline after verify.
+    await embedVerifiedChunk(input.sourceFactId);
   }
 }

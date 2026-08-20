@@ -49,8 +49,9 @@ async function ContentLibrary({
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Content intelligence</h1>
         <p className="text-sm text-muted-foreground">
-          Search HUMAN_VERIFIED chunks only. Citations point at Storage originals. Drafting retrieval excludes
-          DO_NOT_USE, SUPERSEDED, and non-current versions.
+          Verified historical proposal sections with source path/page, outcome context via linked facts, and reuse
+          state: APPROVED | REVIEW_REQUIRED | DO_NOT_USE | SUPERSEDED. Drafting retrieval excludes DO_NOT_USE,
+          SUPERSEDED, and non-current versions.
         </p>
       </div>
       <form className="flex flex-wrap items-end gap-3" method="get">

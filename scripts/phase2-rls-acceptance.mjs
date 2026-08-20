@@ -444,6 +444,7 @@ async function main() {
         sha256: createHash("sha256").update(`cross-version-${stamp}`).digest("hex"),
         storage_bucket: "evidence",
         storage_path: "x",
+        is_current: false,
       })
       .select("id");
     record(
@@ -642,6 +643,35 @@ async function main() {
       "path without org folder is rejected",
       Boolean(noSegment.error),
       noSegment.error?.message ?? "uploaded",
+    );
+
+    // Role permissions: has_org_role rejects wrong role; admin passes.
+    const { data: memA } = await admin
+      .from("memberships")
+      .select("role")
+      .eq("organization_id", orgA)
+      .eq("user_id", createdA.data.user.id)
+      .maybeSingle();
+    record("roles", "org A member has a membership role", Boolean(memA?.role), memA?.role ?? "");
+    const { data: adminOk, error: adminRoleErr } = await asA.rpc("has_org_role", {
+      org_id: orgA,
+      allowed: ["admin"],
+    });
+    record(
+      "roles",
+      "has_org_role allows admin for admin member",
+      adminOk === true && !adminRoleErr,
+      adminRoleErr?.message ?? String(adminOk),
+    );
+    const { data: bidderOnly, error: bidderErr } = await asA.rpc("has_org_role", {
+      org_id: orgA,
+      allowed: ["bidder"],
+    });
+    record(
+      "roles",
+      "has_org_role rejects admin when only bidder allowed",
+      bidderOnly === false && !bidderErr,
+      bidderErr?.message ?? String(bidderOnly),
     );
   } catch (error) {
     record("harness", "suite execution", false, error instanceof Error ? error.message : String(error));

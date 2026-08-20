@@ -1,0 +1,289 @@
+{
+  "generated_at": "2026-08-20T11:21:49.082Z",
+  "verdict": "PASS",
+  "passed": 26,
+  "failed": 0,
+  "total": 26,
+  "timings": [
+    {
+      "step": "parse:xlsx-fixture",
+      "ms": 21
+    },
+    {
+      "step": "parse:SRC-02",
+      "ms": 204
+    },
+    {
+      "step": "register:Allen_ISD_LP_security_agreement_excerpt.pdf",
+      "ms": 1460,
+      "bytes": 334504
+    },
+    {
+      "step": "register:12.pdf",
+      "ms": 500,
+      "bytes": 31322
+    },
+    {
+      "step": "register:1770_43.35658_Services_Contract_with_proposal_Final.pdf",
+      "ms": 6731,
+      "bytes": 4169850
+    },
+    {
+      "step": "register:5-21_AllenISD.pdf",
+      "ms": 50880,
+      "bytes": 32599851
+    },
+    {
+      "step": "register:bulk-12.pdf",
+      "ms": 519,
+      "bytes": 31346
+    },
+    {
+      "step": "processor:health",
+      "ms": 69
+    }
+  ],
+  "matrix": [
+    {
+      "domain": "corpus",
+      "name": "real pilot PDF available (SRC-02 Allen excerpt)",
+      "ok": true,
+      "detail": "334504 bytes sha_ok=true"
+    },
+    {
+      "domain": "corpus",
+      "name": "real pilot PDF available (SRC-08 Jefferson tab)",
+      "ok": true,
+      "detail": "31322 bytes"
+    },
+    {
+      "domain": "corpus",
+      "name": "real pilot scan available (SRC-19)",
+      "ok": true,
+      "detail": "1984573 bytes"
+    },
+    {
+      "domain": "docx",
+      "name": "DOCX not required by pilot corpus (coverage N/A)",
+      "ok": true,
+      "detail": "PILOT_CORPUS_MANIFEST: zero DOCX files; adapter wired for production but not pilot-required"
+    },
+    {
+      "domain": "xlsx",
+      "name": "XLSX parses via openpyxl without OCR",
+      "ok": true,
+      "detail": "parser=xlsx-openpyxl sheets=1 21ms (pilot has 0 XLSX; fixture proves path)",
+      "ms": 21
+    },
+    {
+      "domain": "pdf",
+      "name": "digital PDF parses (SRC-02)",
+      "ok": true,
+      "detail": "pages=13 204ms",
+      "ms": 204
+    },
+    {
+      "domain": "scans",
+      "name": "scanned PDF routes to OCR path (SRC-19)",
+      "ok": true,
+      "detail": "parser=ocr-mistral escalate=true wired=false ok=false err=Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate to OCR; do not accept empty native parse. pa"
+    },
+    {
+      "domain": "scans",
+      "name": "OCR credential dependency documented",
+      "ok": true,
+      "detail": "MISTRAL_API_KEY absent — escalate (no fake text) is correct"
+    },
+    {
+      "domain": "docx",
+      "name": "DOCX adapter functional (production wire; not pilot-required)",
+      "ok": true,
+      "detail": "8ms pages=1"
+    },
+    {
+      "domain": "pdf",
+      "name": "real pilot PDF registers in evidence vault (SRC-02)",
+      "ok": true,
+      "detail": "1460ms sha=44497b51d423…",
+      "ms": 1460
+    },
+    {
+      "domain": "package",
+      "name": "package grouping links multiple pilot docs",
+      "ok": true,
+      "detail": "package=1d9b03cd docs=2"
+    },
+    {
+      "domain": "dedupe",
+      "name": "identical SHA-256 does not create new version rows (count stays 1)",
+      "ok": true,
+      "detail": "versions_with_sha=1 upload_attempt_err=n/a"
+    },
+    {
+      "domain": "versions",
+      "name": "different pilot PDF creates separate version/document",
+      "ok": true,
+      "detail": "doc1=3e835598 doc2=f872c2f3"
+    },
+    {
+      "domain": "intake",
+      "name": "SRC-03 Allen packet within 50 MB intake limit",
+      "ok": true,
+      "detail": "31.1 MB / 50 MB"
+    },
+    {
+      "domain": "pdf",
+      "name": "large pilot PDF registers (SRC-03)",
+      "ok": true,
+      "detail": "50899ms 31.1MB"
+    },
+    {
+      "domain": "retry",
+      "name": "parser failures are retriable (FAILED → QUEUED)",
+      "ok": true,
+      "detail": "QUEUED"
+    },
+    {
+      "domain": "trust",
+      "name": "unverified fact cannot silently promote",
+      "ok": true,
+      "detail": "{\"ok\":false,\"action\":\"skipped\",\"message\":\"Only HUMAN_VERIFIED facts promote.\"}"
+    },
+    {
+      "domain": "provenance",
+      "name": "HUMAN_VERIFIED promote succeeds with source_page provenance",
+      "ok": true,
+      "detail": "{\"ok\":true,\"rate\":32.28,\"truth\":\"awarded\",\"action\":\"rate\",\"rate_type\":\"standard\",\"labor_category\":\"Armed officer\",\"pricing_line_id\":\"d0f279bc-2764-4e30-b4e2-a93593507a9d\"}"
+    },
+    {
+      "domain": "provenance",
+      "name": "provenance survives to canonical pricing_lines",
+      "ok": true,
+      "detail": "source_fact=51630405 page=3"
+    },
+    {
+      "domain": "trust",
+      "name": "unresolved rate conflict cannot silently promote overwrite",
+      "ok": true,
+      "detail": "{\"ok\":false,\"truth\":\"awarded\",\"action\":\"conflict\",\"existing\":32.28,\"incoming\":40,\"pricing_line_id\":\"d0f279bc-2764-4e30-b4e2-a93593507a9d\"}"
+    },
+    {
+      "domain": "trust",
+      "name": "canonical awarded_rate unchanged after conflict",
+      "ok": true,
+      "detail": "awarded_rate=32.28"
+    },
+    {
+      "domain": "audit",
+      "name": "verification audit survives (VERIFY + VIEW_SOURCE)",
+      "ok": true,
+      "detail": "VERIFY,VIEW_SOURCE"
+    },
+    {
+      "domain": "bulk",
+      "name": "create_migration_batch",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "domain": "bulk",
+      "name": "batch migration cannot bypass trust gates (not auto-VERIFIED)",
+      "ok": true,
+      "detail": "status=UPLOADED"
+    },
+    {
+      "domain": "tenancy",
+      "name": "tenant isolation remains intact",
+      "ok": true,
+      "detail": "docs=0 pkgs=0 hijack=new row violates row-level security policy for table \"documents\""
+    },
+    {
+      "domain": "ops",
+      "name": "processor health reachable (optional)",
+      "ok": true,
+      "detail": "status=200 url=http://127.0.0.1:8080"
+    }
+  ],
+  "domains": {
+    "corpus": {
+      "result": "PASS",
+      "pass": 3,
+      "fail": 0
+    },
+    "docx": {
+      "result": "PASS",
+      "pass": 2,
+      "fail": 0
+    },
+    "xlsx": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "pdf": {
+      "result": "PASS",
+      "pass": 3,
+      "fail": 0
+    },
+    "scans": {
+      "result": "PASS",
+      "pass": 2,
+      "fail": 0
+    },
+    "package": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "dedupe": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "versions": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "intake": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "retry": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "trust": {
+      "result": "PASS",
+      "pass": 3,
+      "fail": 0
+    },
+    "provenance": {
+      "result": "PASS",
+      "pass": 2,
+      "fail": 0
+    },
+    "audit": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "bulk": {
+      "result": "PASS",
+      "pass": 2,
+      "fail": 0
+    },
+    "tenancy": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    },
+    "ops": {
+      "result": "PASS",
+      "pass": 1,
+      "fail": 0
+    }
+  }
+}

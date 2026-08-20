@@ -39,5 +39,5 @@ def test_pdf_native_parser_extracts_page_text() -> None:
     joined = " ".join(page.text for page in parsed.pages)
     assert "Hello Phase 4 native parse" in joined
     drafts = HeuristicExtractor().extract(parsed)
-    assert drafts[0].source_page == 1
-    assert drafts[0].field == "page_1_text"
+    page_facts = [d for d in drafts if d.field == "page_1_text"]
+    assert page_facts and page_facts[0].source_page == 1

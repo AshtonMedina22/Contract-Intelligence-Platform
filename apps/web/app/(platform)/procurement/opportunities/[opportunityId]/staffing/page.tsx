@@ -1,7 +1,20 @@
+import { Suspense } from "react";
 import { StaffingRequirementsPanel, type StaffingRow } from "@/components/opportunity-workspace/staffing-panel";
 import { loadStaffingRequirements } from "@/lib/opportunity/load-workspace";
 
-export default async function OpportunityStaffingPage({
+export default function OpportunityStaffingPage({
+  params,
+}: {
+  params: Promise<{ opportunityId: string }>;
+}) {
+  return (
+    <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
+      <OpportunityStaffingContent params={params} />
+    </Suspense>
+  );
+}
+
+async function OpportunityStaffingContent({
   params,
 }: {
   params: Promise<{ opportunityId: string }>;

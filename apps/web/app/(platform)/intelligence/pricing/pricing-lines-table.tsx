@@ -17,6 +17,7 @@ export type PricingLineRow = {
   opportunity_title: string | null;
   opportunity_id: string;
   requested_rate: number | null;
+  internal_cost_rate: number | null;
   proposed_rate: number | null;
   awarded_rate: number | null;
   current_rate: number | null;
@@ -44,19 +45,23 @@ const columns = helper.columns([
     },
   }),
   helper.accessor("requested_rate", {
-    header: "requested_rate",
+    header: "requested",
+    cell: (ctx) => ctx.getValue() ?? "—",
+  }),
+  helper.accessor("internal_cost_rate", {
+    header: "internal_cost",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("proposed_rate", {
-    header: "proposed_rate",
+    header: "submitted",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("awarded_rate", {
-    header: "awarded_rate",
+    header: "awarded",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
   helper.accessor("current_rate", {
-    header: "current_rate",
+    header: "current",
     cell: (ctx) => ctx.getValue() ?? "—",
   }),
 ]);

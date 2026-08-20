@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { CONTRACT_TABS, SectionTabs } from "@/components/section-tabs";
+import { ContractsNav } from "@/components/section-tabs";
 import { RenewalsTable, type AlertRow } from "../contracts-table";
 
 async function RenewalsContent() {
@@ -33,9 +33,9 @@ async function RenewalsContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={CONTRACT_TABS} />
+      <ContractsNav />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Renewals</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Renewal queue</h1>
         <p className="text-sm text-muted-foreground">
           180 / 120 / 90 / 60 / 30 / EXPIRED from verified_end_on. Nested: 32 days lands in the 60-day
           bucket; 20 days lands in 30. Supabase Cron refreshes nightly; this page also refreshes on load.

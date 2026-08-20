@@ -1,0 +1,180 @@
+{
+  "audit": "VERIFY8",
+  "phase": "Canonical Phase 8 — Response / Submission / Result",
+  "stamp": "mt1flnqa",
+  "package": {
+    "key": "V8-ARLINGTON-LOTTERY-SHAPE",
+    "buyer": "City of Arlington (VERIFY8 fixture — buyer solicitation shape)",
+    "solicitationNumber": "RFP-22-0143-V8-mt1flnqa",
+    "title": "Armed Security Services — VERIFY8 mt1flnqa",
+    "requirement": "Offeror shall provide armed security coverage by building with a verified staffing plan and required forms.",
+    "formName": "HUB / References / Cost Sheet (Lottery IFB-style)"
+  },
+  "verdict": "PASS",
+  "total": 23,
+  "passed": 23,
+  "failed": 0,
+  "matrix": [
+    {
+      "step": 0,
+      "name": "Phase 8 Response/Submission/Result surfaces exist (not global Proposal app)",
+      "ok": true,
+      "detail": "pursuit tabs + tiptap",
+      "source": "apps/web"
+    },
+    {
+      "step": 1,
+      "name": "solicitation becomes a Pursuit",
+      "ok": true,
+      "detail": "{\"opportunityId\":\"aa4ca602-b2db-4a0f-8635-770aca5c4272\",\"solicitation\":\"RFP-22-0143-V8-mt1flnqa\",\"stage\":\"ANALYSIS\"}",
+      "source": "V8-ARLINGTON-LOTTERY-SHAPE"
+    },
+    {
+      "step": 2,
+      "name": "deadlines are visible",
+      "ok": true,
+      "detail": "{\"response_due_on\":\"2026-09-03\",\"due_at\":\"2026-09-03T11:22:49.755+00:00\",\"question_deadline_at\":\"2026-08-27T11:22:49.755+00:00\"}",
+      "source": "opportunities + submission_packets"
+    },
+    {
+      "step": 3,
+      "name": "Requirements matrix is source-backed",
+      "ok": true,
+      "detail": "{\"factId\":\"fe599410-5f99-48c3-bca1-977e6c002ffe\",\"section\":\"3.2\",\"page\":12}",
+      "source": "requirements.source_fact_id"
+    },
+    {
+      "step": 4,
+      "name": "required forms/attachments are tracked",
+      "ok": true,
+      "detail": "{\"form\":\"HUB / References / Cost Sheet (Lottery IFB-style)\",\"attachment_required\":true}",
+      "source": "required_forms + requirements.attachment_required"
+    },
+    {
+      "step": 5,
+      "name": "Pricing uses verified evidence",
+      "ok": true,
+      "detail": "{\"id\":\"dc1bfce0-2e07-478d-8c76-c7814df69d90\",\"requested_rate\":28.5,\"requested_source_fact_id\":\"f0511044-3a02-4510-a36f-92ad48da5302\",\"proposed_rate\":null}",
+      "source": "pricing_lines.requested_source_fact_id"
+    },
+    {
+      "step": 6,
+      "name": "final pricing requires a human",
+      "ok": true,
+      "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"decided_by\":\"b0a0db04-718f-4878-86f7-ec63383de064\"}",
+      "source": "pricing_decisions_require_human"
+    },
+    {
+      "step": 7,
+      "name": "Response uses requirement-level drafting",
+      "ok": true,
+      "detail": "{\"id\":\"9a7ce205-c329-4b25-a960-34be52fdd1c7\",\"requirement_id\":\"f487a40b-7bde-4189-a07a-dae20f82be94\",\"draft_status\":\"DRAFT\"}",
+      "source": "requirement_responses"
+    },
+    {
+      "step": 8,
+      "name": "approved/review/blocked reuse rules work",
+      "ok": true,
+      "detail": "{\"approvedState\":\"VERIFIED_DRAFT_AVAILABLE\",\"reviewState\":\"REVIEW_REQUIRED\",\"blockedState\":\"L_AND_P_INPUT_REQUIRED\"}",
+      "source": "classifyEvidenceFromHits"
+    },
+    {
+      "step": 9,
+      "name": "DO_NOT_USE cannot enter draft generation",
+      "ok": true,
+      "detail": "{\"draftingHits\":[\"APPROVED\"],\"lossHasDoNotUse\":true}",
+      "source": "search_verified_knowledge PROPOSAL_DRAFTING"
+    },
+    {
+      "step": 10,
+      "name": "missing L&P facts produce L&P INPUT REQUIRED",
+      "ok": true,
+      "detail": "{\"evidence_state\":\"L_AND_P_INPUT_REQUIRED\",\"missing_information\":\"L&P INPUT REQUIRED: staffing capacity, certifications\"}",
+      "source": "requirement_responses.evidence_state"
+    },
+    {
+      "step": 11,
+      "name": "generated response shows sources",
+      "ok": true,
+      "detail": "{\"n\":1,\"first\":{\"excerpt\":\"staffing_approach\\nVerified prior response narrative mt1flnqa: describe post coverage by building using only confirmed ro\",\"chunk_id\":\"1dfc1609-7609-4ae3-ad60-0a4505a04db0\",\"reuse_status\":\"APPROVED\",\"source_fact_id\":\"b9753912-944b-4baf-8775-3a04a2c3e694\"}}",
+      "source": "requirement_responses.sources_used"
+    },
+    {
+      "step": 12,
+      "name": "proposal progress is correct",
+      "ok": true,
+      "detail": "{\"totalRequirements\":1,\"verified\":1,\"drafted\":1,\"approved\":0,\"lpInputRequired\":0,\"mandatoryOutstanding\":0,\"requiredAttachmentsMissing\":1}",
+      "source": "computeResponseProgress"
+    },
+    {
+      "step": 13,
+      "name": "internal approvals are auditable",
+      "ok": true,
+      "detail": "{\"id\":\"dc61130f-199a-4d48-808f-6080e39f3139\",\"layer_key\":\"content\",\"status\":\"requested\",\"enabled\":true,\"created_at\":\"2026-08-20T11:22:58.274877+00:00\"}",
+      "source": "pursuit_approval_layers"
+    },
+    {
+      "step": 14,
+      "name": "changes-requested/rejected approval state works",
+      "ok": true,
+      "detail": "{\"changes\":\"changes_requested\",\"rejectedOk\":true}",
+      "source": "pursuit_approval_layers.status"
+    },
+    {
+      "step": 15,
+      "name": "submission checklist catches missing mandatory items",
+      "ok": true,
+      "detail": "{\"missing\":[\"required_forms\",\"signatures\"]}",
+      "source": "submission_checklist_items"
+    },
+    {
+      "step": 16,
+      "name": "submitted date/time is captured",
+      "ok": true,
+      "detail": "{\"submitted_at\":\"2026-08-20T11:22:58.783+00:00\"}",
+      "source": "submission_packets.submitted_at"
+    },
+    {
+      "step": 17,
+      "name": "submission confirmation is captured",
+      "ok": true,
+      "detail": "{\"confirmation_reference\":\"PORTAL-CONF-mt1flnqa\"}",
+      "source": "submission_packets.confirmation_reference"
+    },
+    {
+      "step": 18,
+      "name": "Result can remain Pending",
+      "ok": true,
+      "detail": "{\"id\":\"3e06de4c-0c56-4bb0-960b-cf171e5b2552\",\"outcome\":\"PENDING\"}",
+      "source": "win_loss_reviews.outcome"
+    },
+    {
+      "step": 19,
+      "name": "Win/Loss/No Bid/etc. can be recorded",
+      "ok": true,
+      "detail": "[{\"outcome\":\"NO_BID\",\"ok\":true},{\"outcome\":\"CANCELLED\",\"ok\":true},{\"outcome\":\"NO_AWARD\",\"ok\":true},{\"outcome\":\"LOST\",\"ok\":true},{\"outcome\":\"WON\",\"ok\":true}]",
+      "source": "opportunity_outcome enum"
+    },
+    {
+      "step": 20,
+      "name": "evaluator/competitor result data stays sourced",
+      "ok": true,
+      "detail": "{\"scoreFact\":\"a37b07b7-4257-45fb-91a5-8780a15bcd98\",\"bidFact\":\"b7c0655c-9d34-4a1d-934d-9c061febbbb9\"}",
+      "source": "evaluation_scores + competitor_bids source_fact_id"
+    },
+    {
+      "step": 21,
+      "name": "a win creates/links the Contract",
+      "ok": true,
+      "detail": "{\"id\":\"e7a3f6f1-bd8f-4a76-870e-56bfe2bb5d70\",\"opportunity_id\":\"aa4ca602-b2db-4a0f-8635-770aca5c4272\",\"title\":\"Awarded — Armed Security Services — VERIFY8 mt1flnqa\"}",
+      "source": "contracts.opportunity_id"
+    },
+    {
+      "step": 22,
+      "name": "outcome feeds the intelligence corpus",
+      "ok": true,
+      "detail": "{\"outcome\":\"WON\",\"contract\":\"e7a3f6f1-bd8f-4a76-870e-56bfe2bb5d70\",\"competitorBids\":1,\"pricingLines\":1,\"revalidateWired\":true}",
+      "source": "win_loss_reviews + contracts + intel routes"
+    }
+  ]
+}

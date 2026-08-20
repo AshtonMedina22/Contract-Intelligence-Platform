@@ -1,101 +1,163 @@
-# Tech stack
+# Tech stack — locked platform architecture
 
-Companion to [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Execute work from [BUILD_PLAN.md](BUILD_PLAN.md). Product phases: canonical 1–9 in BUILD_PLAN (legacy engineering 0–14 on migrations).
+This file owns **technology choices only**. Business/UX: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [UX_UI.md](UX_UI.md). Current maturity: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
 
-Locked at the platform/framework layer. Parser, OCR, and model IDs stay abstracted until the **Historical Pilot** (canonical Phase 2) on real L&P documents.
+Canonical IA is **not** defined here. Navigation = Home | Pursuits | Intelligence | Contracts | Data Ops.
 
-Prices below are a planning snapshot (August 2026). Recheck before bulk migration.
+Synced from the approved Canonical Product Pack (Prompt 0A).
 
-## Locked choices
+## Web / application
 
-| Layer | Choice | Rule |
-| --- | --- | --- |
-| Web app | Next.js App Router, React, TypeScript | Official `with-supabase` starter is the only cloned base |
-| Host | Vercel, Fluid Compute, Node 24 | No Edge runtime. `vercel.json` deploys **only** `apps/web`. Processor stays off Vercel until needed. Bulk jobs: Cloud Run **only if Historical Pilot proves need** |
-| UI | Tailwind CSS, shadcn/ui, Lucide, dashboard sidebar | One design system. Dense, desktop-first, audit-oriented |
-| Lists | TanStack Table + TanStack Query | Opportunities, documents, queues, contracts, intelligence |
-| Spreadsheets | Glide Data Grid | Dep in Foundation. No pricing grid UI until **canonical Phase 8** (legacy Phase 12) |
-| Forms | React Hook Form + Zod | Frontend validation mirrors processor schemas |
-| Proposal editor | Tiptap OSS; Novel UX patterns | **Canonical Phase 9** (legacy Phase 13). Novel is not a database |
-| PDF viewer | PDF.js / react-pdf + source-page overlay | Required for verification |
-| Database | Supabase-hosted PostgreSQL | Only structured system of record |
-| Auth / tenancy | Supabase Auth + Postgres RLS + org roles | Do not add Clerk |
-| Canonical file vault | Supabase Storage | Canonical **immutable-by-policy** ingested evidence vault. Not WORM by default — append-only via path layout, overwrite bans, RLS, and audit |
-| Drive | Import/source integration + human workspace | Copy into Storage. Retain Drive file ID + checksum. Do not delete Drive files. **Not** the permanent canonical vault |
-| Google Docs | Working proposal collaboration + export | Human workspace alongside in-app drafting. **Not** a competing canonical database |
-| Google Sheets | Controlled export/import/QA | **Not** bidirectionally editable with Supabase as a second DB |
-| Search | SQL filters + tsvector + pgvector | No Pinecone, Qdrant, or Azure AI Search |
-| Live status | Supabase Realtime | Queue/processing badges only, not co-editing |
-| Document lifecycle | Vercel Workflow | intake → parse → extract → validate → wait for human → promote |
-| Fan-out / independent jobs | Vercel Queues behind a JobPort abstraction | Buffering, embeddings, notifications, dispatch. Not the lifecycle coordinator |
-| Light compute | Vercel Functions (TS or Python) | Checksum, classify, short API calls |
-| Heavy parse | Python FastAPI + Pydantic in `services/processor` | Local for the pilot |
-| Bulk / long jobs | Google Cloud Run Jobs | Documented now; deploy only when the pilot proves it |
-| DB lifecycle jobs | Supabase Cron / pg_cron | Contract, renewal, compliance expiration checks |
-| App/external schedules | Vercel Cron | Nightly syncs, digests, research kickoff. Not canonical expiration logic |
-| AI app layer | Vercel AI SDK | Structured output, streaming, tools, evidence UI |
-| Model routing | Vercel AI Gateway (`provider/model` strings) | No hard-coded vendor in business logic |
-| Excel | openpyxl primary XLSX adapter; pandas only for dataframe work | Do not OCR clean workbooks |
-| Billing | Stripe later | Only when commercialized |
+- Next.js App Router  
+- React  
+- TypeScript  
+- Vercel hosting  
+- Node runtime appropriate to current Vercel-supported production baseline  
+- desktop-first information-dense application UX  
 
-## Repo layout
+## UI / client
+
+- Tailwind CSS  
+- shadcn/ui  
+- Lucide icons  
+- TanStack Table for record collections and requirement matrices  
+- TanStack Query for client/server query state where useful  
+- React Hook Form + Zod for forms/validation  
+- Glide Data Grid for serious spreadsheet-style pricing only  
+- Tiptap OSS with proven Novel-style UX patterns for Response editing  
+- PDF.js / react-pdf for evidence/source review  
+
+## Database / auth / tenancy
+
+- Supabase-hosted PostgreSQL = **only** canonical relational database  
+- Supabase Auth  
+- PostgreSQL Row Level Security  
+- organizations + memberships + tenant-owned `organization_id`  
+- same-organization relationship integrity  
+- no Clerk or second auth system unless a future migration is explicitly approved  
+
+## Canonical file evidence
+
+- Supabase Storage = canonical immutable-by-policy ingested evidence vault  
+- evidence handled as append-only by design/policy  
+- checksum/versioned object paths  
+- original evidence never casually overwritten  
+
+## Google Workspace
+
+**Google Drive:** import/source integration; retain source IDs/metadata; familiar human workspace; **never** the authoritative structured database.
+
+**Google Docs:** working proposal collaboration/handoff; final human editing where appropriate; output/export path; **not** canonical structured data.
+
+**Google Sheets:** controlled import/export/QA only; **never** a bidirectionally editable second database competing with Supabase.
+
+## Search / retrieval
+
+- structured SQL  
+- PostgreSQL full-text search / tsvector  
+- pgvector  
+- hybrid retrieval using structured + lexical + semantic evidence  
+- no Pinecone/Qdrant/Azure AI Search unless measured future scale proves Postgres insufficient  
+
+## Document orchestration
+
+**Primary lifecycle:** Vercel Workflow  
+
+Canonical lifecycle: intake → parse → extract → validate/reconcile → wait for human verification → resume → promote canonical.
+
+**Independent fan-out:** Vercel Queues behind JobPort abstraction only where useful (embeddings, notifications, dispatch/buffering).
+
+Do **not** use Queues as the business lifecycle coordinator.
+
+## Scheduled automation
+
+**Supabase Cron / pg_cron:** canonical contract/renewal/compliance date checks; SQL over verified canonical dates; 180/120/90/60/30/expired logic.
+
+**Vercel Cron:** optional application-level schedules (external syncs, digests, research/report refresh kickoff); idempotent jobs only; **not** the canonical expiration engine.
+
+## Processor
+
+- Python  
+- FastAPI  
+- Pydantic  
+- local/service execution during pilot  
+- Cloud Run Jobs later only when real pilot/bulk workloads justify it  
+
+## Parser adapter model
+
+`DocumentParser` abstraction, with routing chosen from pilot benchmark results.
+
+Potential adapters: digital PDF/native parser; Docling where useful; OCR adapter for scans; provider document extraction APIs where justified; DOCX parser; XLSX parser.
+
+Do not hard-code one OCR/model vendor as the product architecture.
+
+## XLSX
+
+- openpyxl primary  
+- preserve workbook, sheet, cell, formula/format/merged/hidden context where useful  
+- pandas only for dataframe analysis  
+- never OCR a normal clean workbook  
+
+## AI application layer
+
+- Vercel AI SDK  
+- Vercel AI Gateway / provider abstraction  
+- structured outputs  
+- streaming where UX benefits  
+- controlled tool access  
+- evidence display  
+- provider/model IDs not hard-coded into business logic  
+- batch APIs may be used for non-urgent historical processing when cheaper  
+
+## AI tooling concepts
+
+Controlled internal tools may include: `structured_query`, `locate_record`, `search_documents`, `semantic_search`, `retrieve_evidence`, `pricing_analysis`, `public_research`, `generate_report`.
+
+AI never receives unrestricted authority to mutate canonical truth.
+
+## Repo shape
 
 ```text
-apps/web                 Next.js (npm workspaces)
-services/processor       Python FastAPI (own pyproject.toml / venv)
-packages/shared          Cross-cutting TS utilities
-packages/schemas         Shared JSON Schema / OpenAPI contracts
-supabase/migrations      SQL, RLS, Cron jobs
-docs/
+apps/web
+services/processor
+packages/shared
+packages/schemas
+supabase/migrations
+docs
 ```
 
-pnpm manages JavaScript when available; npm workspaces are an acceptable substitute if pnpm is not installed. Python manages itself.
+## Package management
 
-## Orchestration
+Use the repository’s current supported workspace approach consistently. Do not churn package managers merely for preference.
 
-Vercel treats **Workflow** as the higher-level durable multi-step model and **Queues** as the lower-level event primitive. Workflow can suspend on a human-verification hook without burning compute. Queues redeliver whole messages and are better for fan-out.
+## Optional commercialization / extensions — not a core product phase
 
-Keep a `JobPort` so processor code is not hardcoded to Vercel APIs.
+- Stripe later for plans/seats/usage/billing (only if L&P commercializes)  
+- MCP later for approved external interoperability  
+- advanced agent orchestration later only when a proven business workflow requires it  
 
-Do **not** add LangGraph or eve for ingestion.
+These do **not** define the Phase 1–8 core build.
 
-## Parser / model policy
+## Do not add initially without evidence
 
-```text
-DocumentParser
-├── PdfParser
-├── DocxParser
-├── XlsxParser          openpyxl
-├── DoclingParser
-├── MistralOcrParser
-├── GoogleDocumentAiParser
-└── NativeMultimodalPdfParser
+- second relational DB  
+- second vector DB  
+- Google Sheets as a database  
+- generic chatbot template as the product shell  
+- another UI kit  
+- enterprise data grid when Glide/TanStack already satisfy the use case  
+- LangGraph/equivalent merely because “agents” are trendy  
+- heavy Cloud Run deployment before pilot proves the need  
 
-StructuredExtractor
-├── AI Gateway interactive model
-└── provider Batch API when cheaper
-```
+## Technical non-negotiables
 
-The **Historical Pilot** (canonical Phase 2; legacy Phase 6) — 20–30 complete L&P packages — selects the production routing policy. None is “the engine” until measured on real L&P files.
-
-## Cost notes that must stay visible
-
-- Commercial floor is still roughly Vercel Pro + Supabase Pro before variable OCR/model/compute.
-- **Workflow is not free.** Hobby currently includes 50,000 workflow events/month. Pro Workflow events are usage-based (currently about $20 per 1M events), plus workflow data written/retained. Pro is $20/month and includes **$20 of general infrastructure usage credit**, which can absorb some usage before additional charges. Recheck [Vercel Workflow pricing](https://vercel.com/docs/workflows/pricing) before bulk runs.
-- Vercel documents that Workflow uses Queues internally. **Do not claim separately billed Queue API operations are automatically incurred by every Workflow action** unless Vercel billing docs confirm that. Functions invoked by Workflow still bill as compute.
-- **Do not add `vercel.ts` unless needed.** Add only when configuration-as-code has concrete benefit.
-- Supabase Storage is the vault because of RLS and tenancy plus **append-only policy**, not because the product is magically WORM. Pro currently includes 100 GB with cheap overage; recheck [Supabase pricing](https://supabase.com/pricing) before the historical corpus.
-- Deduplicate by SHA-256 before OCR, extraction, or embeddings. Do not reprocess an unchanged version.
-- Escalate to managed OCR / stronger models only on difficult or low-confidence pages.
-- Use provider Batch APIs for non-urgent historical inference.
-- Do not pay Document AI Form Parser/Custom Extractor rates across the whole corpus unless the benchmark justifies it.
-
-## Do not add initially
-
-Liveblocks storage, Handsontable, AG Grid Enterprise, Pinecone, Qdrant, Azure AI Search, a second relational database, Google Sheets as a database, Redux/Zustand, another UI kit, Chatbot UI, AssistLoop, WeatherGPT, v0 demos, eve.
-
-## Cron split (verified)
-
-**Keep Supabase Cron** for contract/renewal/compliance checks. Those jobs are SQL over verified dates. Supabase Cron runs SQL/database functions in Postgres, records runs in `cron.job_run_details`, and avoids an extra network hop. Jobs should stay under the documented ~10 minute / modest concurrency guidance.
-
-**Do not use Vercel Cron as the canonical expiration scheduler.** Vercel’s docs state failed cron invocations are **not retried**, delivery is best-effort, and runs can be missed or duplicated. Vercel Cron remains available later for application-level jobs (external sync, email digest, research kickoff), which must be idempotent.
+- one canonical database  
+- tenant isolation  
+- evidence traceability  
+- AI/provider abstraction  
+- human verification gate  
+- human final-price decision  
+- source-aware proposal drafting  
+- no secret/API key in browser  
+- no unsafe destructive SQL/tooling through Ask GPT  
+- no architectural choice should undermine the proposal-centered procurement workflow  

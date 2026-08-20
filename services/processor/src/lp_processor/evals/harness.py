@@ -41,7 +41,7 @@ def run_benchmark() -> dict:
         "rows": rows,
         "notes": (
             "These scores are the locked fixture baseline. They do not replace a 20-30 package L&P pilot. "
-            "OCR/DOCX remain unwired because the fixture evidence does not justify paying those APIs yet."
+            "DOCX is wired via python-docx. OCR (ocr-mistral) is wired only when MISTRAL_API_KEY is set."
         ),
     }
 

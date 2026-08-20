@@ -2,7 +2,7 @@
 
 > **Legacy engineering Phase 7 → Canonical product Phase 3 (partial).** Schema/promotion RPCs exist; **not validated** without Historical Pilot corpus.
 
-Canonical four-truth schema. AI still never auto-promotes. Contracts/renewals UI is Phase 9. Bulk corpus is Phase 8.
+Canonical four-truth schema. AI still never auto-promotes. Contracts/renewals UI is **legacy Phase 9 / canonical Phase 4**. Bulk migration is **legacy Phase 8 / canonical Phase 3**.
 
 ## What landed
 

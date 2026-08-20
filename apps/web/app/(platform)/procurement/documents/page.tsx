@@ -1,6 +1,6 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { PROCUREMENT_TABS, SectionTabs } from "@/components/section-tabs";
 import { DataRegistryCallout } from "@/components/data-registry-callout";
 import { registryEntry } from "@/lib/data-model/registry";
 import { DocumentsTable, type DocumentRow } from "./documents-table";
@@ -51,12 +51,13 @@ async function DocumentsContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={PROCUREMENT_TABS} />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Documents</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Document registry</h1>
         <p className="text-sm text-muted-foreground">
-          Table <code className="text-xs">documents</code> — evidence vault registry. Staging facts live in{" "}
-          <code className="text-xs">extracted_facts</code> until verification promotes to canonical tables.
+          Evidence vault index — not a global app. Intake and verification live under Data Ops.{" "}
+          <Link className="underline" href="/ingestion/intake">
+            Intake
+          </Link>
         </p>
       </div>
       {entry ? <DataRegistryCallout entry={entry} /> : null}

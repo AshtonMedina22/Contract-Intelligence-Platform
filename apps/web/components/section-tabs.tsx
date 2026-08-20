@@ -23,7 +23,10 @@ export function SectionTabs({
       aria-label={sub ? "Sub-section navigation" : "Section navigation"}
     >
       {tabs.map((tab) => {
-        const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+        const exactOnly = tab.href === "/contracts" || tab.href === "/system/settings";
+        const active = exactOnly
+          ? pathname === tab.href
+          : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
         return (
           <Link
             key={tab.href}
@@ -42,25 +45,20 @@ export function SectionTabs({
   );
 }
 
-/** Sequential ingest pipeline — upload through verification. */
-export const INGESTION_TABS: SectionTab[] = [
-  { href: "/ingestion/intake", label: "1. Intake" },
-  { href: "/ingestion/processing", label: "2. Processing" },
-  { href: "/ingestion/verification", label: "3. Verification" },
+export const DATA_OPS_TABS: SectionTab[] = [
+  { href: "/ingestion/intake", label: "Intake" },
+  { href: "/ingestion/processing", label: "Processing" },
+  { href: "/ingestion/verification", label: "Verification" },
   { href: "/ingestion/exceptions", label: "Exceptions" },
-  { href: "/ingestion/bulk", label: "Bulk" },
+  { href: "/ingestion/bulk", label: "Historical Migration" },
 ];
 
-/** Package registry — browse grouped evidence after ingestion. */
-export const PROCUREMENT_TABS: SectionTab[] = [
-  { href: "/procurement/documents", label: "Documents" },
-  { href: "/procurement/opportunities", label: "Opportunities" },
-  { href: "/procurement/clients", label: "Clients" },
-  { href: "/procurement/requirements", label: "Requirements" },
-];
+/** @deprecated Use DATA_OPS_TABS */
+export const INGESTION_TABS = DATA_OPS_TABS;
 
 export const INTELLIGENCE_TABS: SectionTab[] = [
-  { href: "/intelligence/ask", label: "Ask" },
+  { href: "/intelligence/clients", label: "Buyers" },
+  { href: "/intelligence/competitors", label: "Competitors" },
   { href: "/intelligence/market", label: "Market" },
   { href: "/intelligence/pricing", label: "Pricing" },
   { href: "/intelligence/win-loss", label: "Win/Loss" },
@@ -68,36 +66,30 @@ export const INTELLIGENCE_TABS: SectionTab[] = [
   { href: "/intelligence/reports", label: "Reports" },
 ];
 
-/** Market drill-down — stays inside Intelligence, no cross-domain jumps. */
-export const MARKET_TABS: SectionTab[] = [
-  { href: "/intelligence/market", label: "Overview" },
-  { href: "/intelligence/competitors", label: "Competitors" },
-  { href: "/intelligence/clients", label: "Buyers & research" },
+export const SETTINGS_TABS: SectionTab[] = [
+  { href: "/system/settings", label: "Organization" },
+  { href: "/system/data-quality", label: "Data quality" },
+  { href: "/system/data-model", label: "Data model" },
 ];
 
-export const CONTRACT_TABS: SectionTab[] = [
+export const CONTRACTS_TABS: SectionTab[] = [
   { href: "/contracts", label: "Portfolio" },
   { href: "/contracts/renewals", label: "Renewals" },
   { href: "/contracts/compliance", label: "Compliance" },
 ];
 
-/** @deprecated Use INGESTION_TABS or PROCUREMENT_TABS */
-export const LIBRARY_TABS = INGESTION_TABS;
-
-export function isMarketSubPath(pathname: string) {
-  return (
-    pathname.startsWith("/intelligence/market") ||
-    pathname.startsWith("/intelligence/competitors") ||
-    pathname.startsWith("/intelligence/clients")
-  );
+export function IntelligenceNav() {
+  return <SectionTabs tabs={INTELLIGENCE_TABS} />;
 }
 
-export function IntelligenceNav() {
-  const pathname = usePathname();
-  return (
-    <>
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
-      {isMarketSubPath(pathname) ? <SectionTabs tabs={MARKET_TABS} sub /> : null}
-    </>
-  );
+export function DataOpsNav() {
+  return <SectionTabs tabs={DATA_OPS_TABS} />;
+}
+
+export function ContractsNav() {
+  return <SectionTabs tabs={CONTRACTS_TABS} />;
+}
+
+export function SettingsNav() {
+  return <SectionTabs tabs={SETTINGS_TABS} />;
 }

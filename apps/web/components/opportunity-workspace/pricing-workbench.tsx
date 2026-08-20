@@ -1,34 +1,53 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { PricingCostModelRow, PricingLineRow, PricingComparableRow } from "@/lib/opportunity/types";
-import { computePlannedRate, formatMoney, parseNum } from "@/lib/opportunity/pricing-math";
+import type {
+  PricingCostModelRow,
+  PricingLineRow,
+  PricingComparableRow,
+  PricingDecisionRow,
+} from "@/lib/opportunity/types";
+import { computePlannedRate, formatMoney, parseNum, buildDecisionSupport } from "@/lib/opportunity/pricing-math";
 import { saveCostModel } from "@/app/(platform)/procurement/opportunities/[opportunityId]/actions";
-import { FourTruthsTable } from "./four-truths-table";
 import { PricingComparablesPanel } from "./pricing-comparables";
+import { FinalBidPanel } from "./final-bid-panel";
 import { FulfillmentEconomicsPanel } from "./fulfillment-economics";
 import type { FulfillmentEconomics } from "@/lib/opportunity/proposal-packet";
+
+const PricingGlideGrid = dynamic(
+  () => import("./pricing-glide-grid").then((m) => m.PricingGlideGrid),
+  {
+    ssr: false,
+    loading: () => <p className="text-sm text-muted-foreground">Loading pricing matrix…</p>,
+  },
+);
 
 type Props = {
   opportunityId: string;
   pricingLines: PricingLineRow[];
   costModels: PricingCostModelRow[];
   comparables: PricingComparableRow[];
+  decisions: PricingDecisionRow[];
   factDocumentMap: Map<string, string>;
   economics: FulfillmentEconomics;
+  structureHints: readonly string[];
 };
 
 const DEFAULT_INPUTS = {
   base_wage: "",
   fringe: "",
+  health_welfare: "",
   burden_pct: "",
   workers_comp: "",
   insurance: "",
   supervision: "",
   equipment: "",
+  vehicles: "",
+  travel: "",
   overhead_pct: "",
   target_margin_pct: "",
 };
@@ -43,18 +62,20 @@ function CostModelEditor({
   existing?: PricingCostModelRow;
 }) {
   const [pending, startTransition] = useTransition();
-
   const defaults = existing ?? null;
   const preview = useMemo(() => {
     if (!defaults) return null;
     return computePlannedRate({
       baseWage: parseNum(defaults.base_wage),
       fringe: parseNum(defaults.fringe),
+      healthWelfare: parseNum(defaults.health_welfare),
       burdenPct: parseNum(defaults.burden_pct),
       workersComp: parseNum(defaults.workers_comp),
       insurance: parseNum(defaults.insurance),
       supervision: parseNum(defaults.supervision),
       equipment: parseNum(defaults.equipment),
+      vehicles: parseNum(defaults.vehicles),
+      travel: parseNum(defaults.travel),
       overheadPct: parseNum(defaults.overhead_pct),
       targetMarginPct: parseNum(defaults.target_margin_pct),
     });
@@ -77,11 +98,14 @@ function CostModelEditor({
             [
               ["base_wage", "Base wage"],
               ["fringe", "Fringe"],
-              ["burden_pct", "Burden %"],
+              ["health_welfare", "H&W / fringe"],
+              ["burden_pct", "Payroll burden %"],
               ["workers_comp", "Workers comp"],
               ["insurance", "Insurance"],
               ["supervision", "Supervision"],
               ["equipment", "Equipment"],
+              ["vehicles", "Vehicles"],
+              ["travel", "Travel"],
               ["overhead_pct", "Overhead %"],
               ["target_margin_pct", "Target margin %"],
             ] as const
@@ -102,12 +126,25 @@ function CostModelEditor({
               />
             </div>
           ))}
+          <div className="space-y-1 sm:col-span-2">
+            <Label htmlFor={`${laborCategory}-wd`} className="text-xs">
+              Wage determination ref
+            </Label>
+            <Input
+              id={`${laborCategory}-wd`}
+              name="wage_determination_ref"
+              defaultValue={defaults?.wage_determination_ref ?? ""}
+              className="h-8 text-sm"
+              placeholder="e.g. WD 2024-XXXX"
+            />
+          </div>
         </div>
         {preview ? (
           <p className="text-sm text-muted-foreground">
-            Saved plan: loaded cost {formatMoney(preview.loadedCost)} → planned rate{" "}
+            Cost floor {formatMoney(preview.costFloor)} → target-margin threshold{" "}
             <span className="font-medium text-foreground">{formatMoney(preview.plannedRate)}</span> (
-            {formatMoney(preview.marginDollars)} margin)
+            {formatMoney(preview.marginDollars)} margin). Syncs L&P internal cost on matching lines — does not
+            write submitted proposed_rate.
           </p>
         ) : null}
         <Button type="submit" size="sm" disabled={pending}>
@@ -123,8 +160,10 @@ export function PricingWorkbench({
   pricingLines,
   costModels,
   comparables,
+  decisions,
   factDocumentMap,
   economics,
+  structureHints,
 }: Props) {
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -134,27 +173,49 @@ export function PricingWorkbench({
   }, [pricingLines, costModels]);
 
   const modelByCategory = new Map(costModels.map((m) => [m.labor_category, m]));
+  const primaryModel = costModels[0] ?? null;
+  const support = buildDecisionSupport({
+    included: comparables.filter((c) => c.included),
+    excluded: comparables.filter((c) => !c.included),
+    costFloor: primaryModel?.cost_floor ?? null,
+    targetMarginPct: primaryModel?.target_margin_pct ?? null,
+  });
 
   return (
     <div className="space-y-6">
+      <div className="rounded-md border p-3 text-sm">
+        <p className="font-medium">Pursuit pricing workbench</p>
+        <p className="text-muted-foreground">
+          Five truths stay separate: Buyer requested · L&P internal cost · L&P submitted · Buyer awarded ·
+          Current/amended. Final bid is a human decision. Stay on this Pursuit — do not leave to price it.
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Structures supported: {structureHints.join(" · ")}
+        </p>
+      </div>
+
       <FulfillmentEconomicsPanel economics={economics} />
 
       <div className="space-y-2">
-        <h2 className="text-sm font-medium">Verified four-truth rates</h2>
+        <h2 className="text-sm font-medium">Pricing matrix (Glide)</h2>
         <p className="text-xs text-muted-foreground">
-          Canonical truth from HUMAN_VERIFIED promotion only. Customer requested ≠ L&P proposed ≠ awarded ≠
-          current.
+          Spreadsheet workbench over verified lines. Canonical rates come from HUMAN_VERIFIED promotion; internal
+          cost from the planning cost model.
         </p>
-        <FourTruthsTable lines={pricingLines} factDocumentMap={factDocumentMap} />
+        <PricingGlideGrid lines={pricingLines} factDocumentMap={factDocumentMap} />
       </div>
 
-      <PricingComparablesPanel comparables={comparables} factDocumentMap={factDocumentMap} />
+      <PricingComparablesPanel
+        opportunityId={opportunityId}
+        comparables={comparables}
+        factDocumentMap={factDocumentMap}
+      />
 
       <div className="space-y-3">
         <h2 className="text-sm font-medium">Internal cost model & margin (planning)</h2>
         <p className="text-xs text-muted-foreground">
-          Type wage/burden/overhead yourself. Blank fields are not filled with market averages. This does not
-          write canonical <code className="text-xs">proposed_rate</code>.
+          Wage, H&W, burden, workers comp, insurance, supervision, equipment, vehicles, travel, overhead, wage
+          determination, target margin. Blank fields stay blank — never filled with invented market averages.
         </p>
         {categories.length === 0 ? (
           <p className="text-sm text-muted-foreground">
@@ -172,6 +233,8 @@ export function PricingWorkbench({
         )}
         <AddLaborCategoryForm opportunityId={opportunityId} />
       </div>
+
+      <FinalBidPanel opportunityId={opportunityId} support={support} decisions={decisions} />
     </div>
   );
 }

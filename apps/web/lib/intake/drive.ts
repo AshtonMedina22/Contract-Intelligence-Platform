@@ -39,7 +39,9 @@ class GoogleDriveImportAdapter implements DriveImportPort {
 
     const size = meta.size ? Number(meta.size) : 0;
     if (size > MAX_INTAKE_BYTES) {
-      throw new Error("Drive file exceeds the 25 MB Phase 3 limit.");
+      throw new Error(
+        `Drive file exceeds the ${Math.floor(MAX_INTAKE_BYTES / (1024 * 1024))} MB intake limit.`,
+      );
     }
 
     const mediaUrl = new URL("https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(id));

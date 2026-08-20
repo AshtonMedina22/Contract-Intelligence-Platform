@@ -20,17 +20,18 @@ export function BulkMigrationForm({ organizations, clients, opportunities }: Pro
   const [result, setResult] = useState<BulkActionResult | null>(null);
   const [organizationId, setOrganizationId] = useState(organizations[0]?.id ?? "");
   const [batchLabel, setBatchLabel] = useState("");
+  const [packageKey, setPackageKey] = useState("");
   const [clientId, setClientId] = useState("");
   const [opportunityId, setOpportunityId] = useState("");
 
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Ingest many files into one batch with checksum dedupe. Processing is deferred until you start
-        the batch — verification stays the human bottleneck. No Cloud Run; local/Vercel processor only.
+        Ingest many files into one batch with checksum dedupe and optional package grouping. Processing is
+        deferred until you start the batch — verification stays the human bottleneck. No auto-VERIFIED.
       </p>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-1">
           <Label htmlFor="organization_id">Organization</Label>
           <select
@@ -54,6 +55,15 @@ export function BulkMigrationForm({ organizations, clients, opportunities }: Pro
             onChange={(event) => setBatchLabel(event.currentTarget.value)}
             placeholder="FY24 historical corpus"
             required
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="package_key">Package key (optional)</Label>
+          <Input
+            id="package_key"
+            value={packageKey}
+            onChange={(event) => setPackageKey(event.currentTarget.value)}
+            placeholder="PKG-01"
           />
         </div>
         <div className="space-y-1">
@@ -97,6 +107,7 @@ export function BulkMigrationForm({ organizations, clients, opportunities }: Pro
           const formData = new FormData(event.currentTarget);
           formData.set("organization_id", organizationId);
           formData.set("batch_label", batchLabel);
+          formData.set("package_key", packageKey);
           formData.set("client_id", clientId);
           formData.set("opportunity_id", opportunityId);
           startTransition(async () => {
@@ -104,8 +115,15 @@ export function BulkMigrationForm({ organizations, clients, opportunities }: Pro
           });
         }}
       >
-        <Label htmlFor="files">Files (PDF / XLSX)</Label>
-        <Input ref={fileInputRef} id="files" name="files" type="file" multiple accept=".pdf,.xlsx,.xls" />
+        <Label htmlFor="files">Files (PDF / XLSX / DOCX)</Label>
+        <Input
+          ref={fileInputRef}
+          id="files"
+          name="files"
+          type="file"
+          multiple
+          accept=".pdf,.xlsx,.xls,.docx"
+        />
         <Button type="submit" disabled={pending || !batchLabel.trim()}>
           {pending ? "Ingesting batch…" : "Ingest batch (defer processing)"}
         </Button>

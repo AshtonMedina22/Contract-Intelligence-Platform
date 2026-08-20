@@ -1,0 +1,492 @@
+{
+  "audit": "VERIFY7",
+  "phase": "Canonical Phase 7 — Pricing Intelligence",
+  "stamp": "mt1flfkh",
+  "verdict": "PASS",
+  "total": 29,
+  "passed": 29,
+  "failed": 0,
+  "matrix": [
+    {
+      "domain": "surface",
+      "name": "exists pricing-glide-grid.tsx",
+      "ok": true,
+      "detail": "apps/web/components/opportunity-workspace/pricing-glide-grid.tsx",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists pricing-workbench.tsx",
+      "ok": true,
+      "detail": "apps/web/components/opportunity-workspace/pricing-workbench.tsx",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists pricing-comparables.tsx",
+      "ok": true,
+      "detail": "apps/web/components/opportunity-workspace/pricing-comparables.tsx",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists final-bid-panel.tsx",
+      "ok": true,
+      "detail": "apps/web/components/opportunity-workspace/final-bid-panel.tsx",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists page.tsx",
+      "ok": true,
+      "detail": "apps/web/app/(platform)/procurement/opportunities/[opportunityId]/pricing/page.tsx",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists page.tsx",
+      "ok": true,
+      "detail": "apps/web/app/(platform)/intelligence/pricing/page.tsx",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists pricing-math.ts",
+      "ok": true,
+      "detail": "apps/web/lib/opportunity/pricing-math.ts",
+      "source": ""
+    },
+    {
+      "domain": "surface",
+      "name": "exists 20260820900000_phase7_pricing_intelligence.sql",
+      "ok": true,
+      "detail": "supabase/migrations/20260820900000_phase7_pricing_intelligence.sql",
+      "source": ""
+    },
+    {
+      "domain": "distinct",
+      "name": "Pursuit Pricing and Intelligence Pricing are distinct surfaces",
+      "ok": true,
+      "detail": "separate routes + copy",
+      "source": "pricing pages"
+    },
+    {
+      "domain": "human",
+      "name": "Final bid UI requires explicit human action",
+      "ok": true,
+      "detail": "FinalBidPanel + savePricingDecision",
+      "source": "final-bid-panel + actions"
+    },
+    {
+      "domain": "human",
+      "name": "No LLM/automation path sets HUMAN_APPROVED final bid",
+      "ok": true,
+      "detail": "ask/cron lack pricing_decisions writes; trigger + actions require human",
+      "source": "synthesize + cron + migration + actions"
+    },
+    {
+      "domain": "comps",
+      "name": "Comparables UI requires include/exclude rationale",
+      "ok": true,
+      "detail": "reason input + FactRef",
+      "source": "pricing-comparables.tsx"
+    },
+    {
+      "domain": "ranges",
+      "name": "Observed ranges computed from included comparable rows only",
+      "ok": true,
+      "detail": "summarizeComparableRates defaults onlyIncluded",
+      "source": "pricing-math.ts"
+    },
+    {
+      "domain": "truths",
+      "name": "buyer requested != submitted != awarded != current (+ internal cost distinct)",
+      "ok": true,
+      "detail": "{\"id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"5c7adcba-b2b6-443a-9a8b-f6568a6575e1\",\"proposed_source_fact_id\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"awarded_source_fact_id\":\"c48c464a-531d-48ba-a8ce-e72a85c97ae9\",\"current_source_fact_id\":\"0a863897-f595-4dec-bf39-cf04ba039a1d\"}",
+      "source": "pricing_lines five columns"
+    },
+    {
+      "domain": "formats",
+      "name": "Different pricing formats can coexist on one opportunity",
+      "ok": true,
+      "detail": "{\"inserted\":4,\"rateTypes\":[\"standard\",\"overtime\",\"holiday\",\"equipment\",\"extended_hours\"]}",
+      "source": "PKG-01/10-style grain"
+    },
+    {
+      "domain": "periods",
+      "name": "Base / options / escalation work as coexisting verified structures",
+      "ok": true,
+      "detail": "{\"sites\":[\"Base Year 1\",\"Option Year 1\",\"Year 2 CPI-W escalation\"],\"rates\":[[\"Base Year 1\",64000],[\"Option Year 1\",65280],[\"Year 2 CPI-W escalation\",66585.6]]}",
+      "source": "site_or_post grain + structure hints"
+    },
+    {
+      "domain": "periods",
+      "name": "Structure hints declare base/options and escalation",
+      "ok": true,
+      "detail": "PRICING_STRUCTURE_HINTS",
+      "source": "types.ts / workbench"
+    },
+    {
+      "domain": "cost",
+      "name": "Labor/component cost build-up works (cost model + internal cost != submitted)",
+      "ok": true,
+      "detail": "{\"direct\":25.55,\"loaded\":30.9053,\"planned\":36.3592,\"line\":{\"internal_cost_rate\":30.9053,\"proposed_rate\":null}}",
+      "source": "pricing_cost_models + internal_cost_rate"
+    },
+    {
+      "domain": "cost",
+      "name": "PKG-09-style cost_build_components stack persists with source linkage",
+      "ok": true,
+      "detail": "{\"n\":4,\"sum\":24.970000000000002}",
+      "source": "cost_build_components"
+    },
+    {
+      "domain": "missing",
+      "name": "Missing cost data remains missing (nulls not fabricated)",
+      "ok": true,
+      "detail": "{\"base_wage\":15,\"fringe\":null,\"health_welfare\":null,\"vehicles\":null,\"travel\":null,\"workers_comp\":null,\"insurance\":null,\"overhead_pct\":null}",
+      "source": "pricing_cost_models null columns"
+    },
+    {
+      "domain": "competitor",
+      "name": "Competitor pricing does not become L&P pricing_lines",
+      "ok": true,
+      "detail": "{\"compLine\":\"60a3e18c-df15-49e7-b5c8-aabd3ccc310f\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
+      "source": "competitor_pricing_lines isolation"
+    },
+    {
+      "domain": "comps",
+      "name": "Comparables show inclusion/exclusion rationale",
+      "ok": true,
+      "detail": "{\"judgments\":[{\"source_pricing_line_id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"included\":true,\"reason\":\"Same buyer class and armed category — include as comparable win\"},{\"source_pricing_line_id\":\"9e3936d3-1205-4eeb-ba15-9ff75dfd3d64\",\"included\":false,\"reason\":\"Outlier premium site — exclude from observed range\"}]}",
+      "source": "pricing_comparable_judgments"
+    },
+    {
+      "domain": "comps",
+      "name": "Empty comparable reason rejected at persistence layer",
+      "ok": true,
+      "detail": "new row for relation \"pricing_comparable_judgments\" violates check constraint \"pricing_comparable_judgments_reason_nonblank\"",
+      "source": "pricing_comparable_judgments.reason"
+    },
+    {
+      "domain": "ranges",
+      "name": "Observed ranges calculated from selected (included) verified records",
+      "ok": true,
+      "detail": "{\"awardedObs\":{\"n\":2,\"min\":29,\"max\":30.25,\"median\":29.625},\"proposedIncludedOnly\":[31.5,29.5],\"proposedAll\":[31.5,40,29.5]}",
+      "source": "include/exclude filter"
+    },
+    {
+      "domain": "source",
+      "name": "Source evidence is reachable (fact → document → verification UI)",
+      "ok": true,
+      "detail": "{\"factId\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"documentId\":\"26b84237-666b-44b4-a088-268bcb00fdad\",\"lineFact\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"uiFactRef\":true}",
+      "source": "pricing_lines.*_source_fact_id + FactRef"
+    },
+    {
+      "domain": "source",
+      "name": "Glide five-truth matrix exposes source fact links",
+      "ok": true,
+      "detail": "Glide links sources",
+      "source": "pricing-glide-grid.tsx"
+    },
+    {
+      "domain": "human",
+      "name": "Final price requires explicit human action (trigger + actor)",
+      "ok": true,
+      "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"noRateBlocked\":\"HUMAN_APPROVED pricing_decisions require final_bid_rate or final_bid_amount\",\"draft\":\"DRAFT\",\"approved\":\"HUMAN_APPROVED\"}",
+      "source": "pricing_decisions_require_human"
+    },
+    {
+      "domain": "distinct",
+      "name": "Pursuit pricing decisions stay opportunity-scoped; Intelligence sees cross-corpus lines",
+      "ok": true,
+      "detail": "{\"pursuitApproved\":1,\"distinctOppsInLines\":3}",
+      "source": "pricing_decisions vs pricing_lines aggregate"
+    },
+    {
+      "domain": "truths",
+      "name": "Internal cost planning does not collapse submitted/awarded truths",
+      "ok": true,
+      "detail": "{\"proposed_rate\":31.5,\"internal_cost_rate\":24.1,\"awarded_rate\":30.25}",
+      "source": "fiveTruth line unchanged"
+    }
+  ],
+  "byDomain": {
+    "surface": {
+      "pass": 8,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "surface",
+          "name": "exists pricing-glide-grid.tsx",
+          "ok": true,
+          "detail": "apps/web/components/opportunity-workspace/pricing-glide-grid.tsx",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists pricing-workbench.tsx",
+          "ok": true,
+          "detail": "apps/web/components/opportunity-workspace/pricing-workbench.tsx",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists pricing-comparables.tsx",
+          "ok": true,
+          "detail": "apps/web/components/opportunity-workspace/pricing-comparables.tsx",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists final-bid-panel.tsx",
+          "ok": true,
+          "detail": "apps/web/components/opportunity-workspace/final-bid-panel.tsx",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists page.tsx",
+          "ok": true,
+          "detail": "apps/web/app/(platform)/procurement/opportunities/[opportunityId]/pricing/page.tsx",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists page.tsx",
+          "ok": true,
+          "detail": "apps/web/app/(platform)/intelligence/pricing/page.tsx",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists pricing-math.ts",
+          "ok": true,
+          "detail": "apps/web/lib/opportunity/pricing-math.ts",
+          "source": ""
+        },
+        {
+          "domain": "surface",
+          "name": "exists 20260820900000_phase7_pricing_intelligence.sql",
+          "ok": true,
+          "detail": "supabase/migrations/20260820900000_phase7_pricing_intelligence.sql",
+          "source": ""
+        }
+      ]
+    },
+    "distinct": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "distinct",
+          "name": "Pursuit Pricing and Intelligence Pricing are distinct surfaces",
+          "ok": true,
+          "detail": "separate routes + copy",
+          "source": "pricing pages"
+        },
+        {
+          "domain": "distinct",
+          "name": "Pursuit pricing decisions stay opportunity-scoped; Intelligence sees cross-corpus lines",
+          "ok": true,
+          "detail": "{\"pursuitApproved\":1,\"distinctOppsInLines\":3}",
+          "source": "pricing_decisions vs pricing_lines aggregate"
+        }
+      ]
+    },
+    "human": {
+      "pass": 3,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "human",
+          "name": "Final bid UI requires explicit human action",
+          "ok": true,
+          "detail": "FinalBidPanel + savePricingDecision",
+          "source": "final-bid-panel + actions"
+        },
+        {
+          "domain": "human",
+          "name": "No LLM/automation path sets HUMAN_APPROVED final bid",
+          "ok": true,
+          "detail": "ask/cron lack pricing_decisions writes; trigger + actions require human",
+          "source": "synthesize + cron + migration + actions"
+        },
+        {
+          "domain": "human",
+          "name": "Final price requires explicit human action (trigger + actor)",
+          "ok": true,
+          "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"noRateBlocked\":\"HUMAN_APPROVED pricing_decisions require final_bid_rate or final_bid_amount\",\"draft\":\"DRAFT\",\"approved\":\"HUMAN_APPROVED\"}",
+          "source": "pricing_decisions_require_human"
+        }
+      ]
+    },
+    "comps": {
+      "pass": 3,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "comps",
+          "name": "Comparables UI requires include/exclude rationale",
+          "ok": true,
+          "detail": "reason input + FactRef",
+          "source": "pricing-comparables.tsx"
+        },
+        {
+          "domain": "comps",
+          "name": "Comparables show inclusion/exclusion rationale",
+          "ok": true,
+          "detail": "{\"judgments\":[{\"source_pricing_line_id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"included\":true,\"reason\":\"Same buyer class and armed category — include as comparable win\"},{\"source_pricing_line_id\":\"9e3936d3-1205-4eeb-ba15-9ff75dfd3d64\",\"included\":false,\"reason\":\"Outlier premium site — exclude from observed range\"}]}",
+          "source": "pricing_comparable_judgments"
+        },
+        {
+          "domain": "comps",
+          "name": "Empty comparable reason rejected at persistence layer",
+          "ok": true,
+          "detail": "new row for relation \"pricing_comparable_judgments\" violates check constraint \"pricing_comparable_judgments_reason_nonblank\"",
+          "source": "pricing_comparable_judgments.reason"
+        }
+      ]
+    },
+    "ranges": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "ranges",
+          "name": "Observed ranges computed from included comparable rows only",
+          "ok": true,
+          "detail": "summarizeComparableRates defaults onlyIncluded",
+          "source": "pricing-math.ts"
+        },
+        {
+          "domain": "ranges",
+          "name": "Observed ranges calculated from selected (included) verified records",
+          "ok": true,
+          "detail": "{\"awardedObs\":{\"n\":2,\"min\":29,\"max\":30.25,\"median\":29.625},\"proposedIncludedOnly\":[31.5,29.5],\"proposedAll\":[31.5,40,29.5]}",
+          "source": "include/exclude filter"
+        }
+      ]
+    },
+    "truths": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "truths",
+          "name": "buyer requested != submitted != awarded != current (+ internal cost distinct)",
+          "ok": true,
+          "detail": "{\"id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"5c7adcba-b2b6-443a-9a8b-f6568a6575e1\",\"proposed_source_fact_id\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"awarded_source_fact_id\":\"c48c464a-531d-48ba-a8ce-e72a85c97ae9\",\"current_source_fact_id\":\"0a863897-f595-4dec-bf39-cf04ba039a1d\"}",
+          "source": "pricing_lines five columns"
+        },
+        {
+          "domain": "truths",
+          "name": "Internal cost planning does not collapse submitted/awarded truths",
+          "ok": true,
+          "detail": "{\"proposed_rate\":31.5,\"internal_cost_rate\":24.1,\"awarded_rate\":30.25}",
+          "source": "fiveTruth line unchanged"
+        }
+      ]
+    },
+    "formats": {
+      "pass": 1,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "formats",
+          "name": "Different pricing formats can coexist on one opportunity",
+          "ok": true,
+          "detail": "{\"inserted\":4,\"rateTypes\":[\"standard\",\"overtime\",\"holiday\",\"equipment\",\"extended_hours\"]}",
+          "source": "PKG-01/10-style grain"
+        }
+      ]
+    },
+    "periods": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "periods",
+          "name": "Base / options / escalation work as coexisting verified structures",
+          "ok": true,
+          "detail": "{\"sites\":[\"Base Year 1\",\"Option Year 1\",\"Year 2 CPI-W escalation\"],\"rates\":[[\"Base Year 1\",64000],[\"Option Year 1\",65280],[\"Year 2 CPI-W escalation\",66585.6]]}",
+          "source": "site_or_post grain + structure hints"
+        },
+        {
+          "domain": "periods",
+          "name": "Structure hints declare base/options and escalation",
+          "ok": true,
+          "detail": "PRICING_STRUCTURE_HINTS",
+          "source": "types.ts / workbench"
+        }
+      ]
+    },
+    "cost": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "cost",
+          "name": "Labor/component cost build-up works (cost model + internal cost != submitted)",
+          "ok": true,
+          "detail": "{\"direct\":25.55,\"loaded\":30.9053,\"planned\":36.3592,\"line\":{\"internal_cost_rate\":30.9053,\"proposed_rate\":null}}",
+          "source": "pricing_cost_models + internal_cost_rate"
+        },
+        {
+          "domain": "cost",
+          "name": "PKG-09-style cost_build_components stack persists with source linkage",
+          "ok": true,
+          "detail": "{\"n\":4,\"sum\":24.970000000000002}",
+          "source": "cost_build_components"
+        }
+      ]
+    },
+    "missing": {
+      "pass": 1,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "missing",
+          "name": "Missing cost data remains missing (nulls not fabricated)",
+          "ok": true,
+          "detail": "{\"base_wage\":15,\"fringe\":null,\"health_welfare\":null,\"vehicles\":null,\"travel\":null,\"workers_comp\":null,\"insurance\":null,\"overhead_pct\":null}",
+          "source": "pricing_cost_models null columns"
+        }
+      ]
+    },
+    "competitor": {
+      "pass": 1,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "competitor",
+          "name": "Competitor pricing does not become L&P pricing_lines",
+          "ok": true,
+          "detail": "{\"compLine\":\"60a3e18c-df15-49e7-b5c8-aabd3ccc310f\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
+          "source": "competitor_pricing_lines isolation"
+        }
+      ]
+    },
+    "source": {
+      "pass": 2,
+      "fail": 0,
+      "rows": [
+        {
+          "domain": "source",
+          "name": "Source evidence is reachable (fact → document → verification UI)",
+          "ok": true,
+          "detail": "{\"factId\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"documentId\":\"26b84237-666b-44b4-a088-268bcb00fdad\",\"lineFact\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"uiFactRef\":true}",
+          "source": "pricing_lines.*_source_fact_id + FactRef"
+        },
+        {
+          "domain": "source",
+          "name": "Glide five-truth matrix exposes source fact links",
+          "ok": true,
+          "detail": "Glide links sources",
+          "source": "pricing-glide-grid.tsx"
+        }
+      ]
+    }
+  },
+  "note": "Live org corpus had 0 pricing_lines; fixtures mirror pilot PKG structures (OT/holiday/equipment, PKG-09 cost build, base/option/escalation grain)."
+}
