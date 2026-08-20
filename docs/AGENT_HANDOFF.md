@@ -1,12 +1,12 @@
 # Agent handoff (pick up here)
 
 **Repo:** https://github.com/AshtonMedina22/Contract-Intelligence-Platform  
-**Branch:** `main` (HEAD `02d8879` at last audit)  
+**Branch:** `main` — run `git log -1` for HEAD  
 **Do not redesign the architecture. Read [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) before implementing.**
 
 Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Ask the human for `apps/web/.env.local` values. Never commit `.env.local`.
 
-Canonical product: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Phases: [BUILD_PLAN.md](BUILD_PLAN.md). Stack: [TECH_STACK.md](TECH_STACK.md).
+**Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Phases: [BUILD_PLAN.md](BUILD_PLAN.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
 ---
 
@@ -14,65 +14,66 @@ Canonical product: [PRODUCT_SPEC.md](PRODUCT_SPEC.md). Phases: [BUILD_PLAN.md](B
 
 Proposal, Contract & Procurement Intelligence for **L&P Global Security** (later possible multi-tenant for **contracting companies**). Not a CRM, chatbot, client portal, or generic RFP tracker.
 
-Historical files → staging → human verification → canonical Postgres. Four commercial truths: requested / proposed / awarded / current. Six engines: see [PRODUCT_SPEC.md](PRODUCT_SPEC.md).
+Historical files → staging → human verification → canonical Postgres. Four commercial truths: requested / proposed / awarded / current. **Six engines:** see [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md) and [PRODUCT_SPEC.md](PRODUCT_SPEC.md).
 
 ---
 
-## Canonical vs legacy phase numbers
+## Phase status (original blueprint — use this language)
 
-| Term | Meaning |
+| Original phase | Status |
 | --- | --- |
-| **Canonical Phase 2 — Historical Pilot** | 20–30 complete L&P packages verified — **NOT STARTED** (0 packages) |
-| **Legacy engineering Phase 2** | RLS/tenancy in Postgres — **Foundation work**, not the Historical Pilot |
+| **1 Foundation** | Mostly complete — [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md) |
+| **2 Historical pilot** | **NOT STARTED** (0 L&P packages) — [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md) |
+| **3 Historical ingestion** | NOT STARTED |
+| **4–8** | Partial early code only; unvalidated |
 
-**Do not say "Phase 2 complete" for product maturity** when you mean RLS (48/48 isolation tests).
+**Wrong:** “Phase 2 complete because RLS 48/48.” RLS = **Original Phase 1**, not Historical Pilot.
 
-**Current product position:** Foundation mostly built → **Historical Pilot is next**. Intelligence UX (Ask, Market, Reports) is **KEEP + FREEZE**.
+**Next task:** Run Historical Pilot (Original Phase 2). Do **not** expand Intelligence UX or build proposal/pricing until pilot validates corpus.
 
 ---
 
-## Status (honest)
+## Status (engineering)
 
-| Canonical phase | Status |
+| Check | Result |
 | --- | --- |
-| 1 Foundation | Mostly built; lint fails; Vercel deploy not verified green |
-| 2 Historical Pilot | **NOT STARTED** |
-| 3–7 | Engineering code/UX exists early; **unvalidated** on L&P corpus |
-| 8–9 | Placeholders |
-
-Legacy engineering acceptance scripts (Phase 2–11) may pass without proving product maturity. See [BUILD_PLAN.md](BUILD_PLAN.md) mapping table.
+| `npm run lint` / `typecheck` / `build` | Pass locally (2026-08-19) |
+| Vercel | Verify after each push to `main` |
+| Legacy phases 3–11 | Code exists; **KEEP + FREEZE** Intelligence UX |
 
 ---
 
-## Locked architecture (do not change)
+## Six engines (navigation must map to these)
 
-- **Web:** Next.js App Router, React 19, TypeScript, Tailwind, shadcn, Lucide. Vercel, Node 24. npm workspaces.
-- **Data:** Supabase Postgres + Auth + RLS. No Prisma/Drizzle.
-- **Storage:** Supabase Storage = canonical evidence vault by policy. Drive = import + workspace. **Not** Drive-only vault.
-- **Orchestration:** Vercel **Workflow** = document lifecycle. Queues = fan-out only via JobPort. No LangGraph/eve for ingest.
-- **Cron:** Supabase Cron for contract SQL. Vercel Cron for later app jobs only.
-- **Search:** Postgres FTS + pgvector. No Pinecone/Qdrant.
-- **Buyers:** `clients` = buyer/agency — not CRM accounts.
+1. Opportunity / Solicitation  
+2. Contract & Compliance  
+3. Pricing Intelligence  
+4. Client / Competitor Intelligence  
+5. Proposal Intelligence  
+6. Executive Analytics  
 
-Full list: [TECH_STACK.md](TECH_STACK.md).
-
----
-
-## What you should do next (in order)
-
-1. Read [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md).
-2. After docs reconciliation: fix Foundation build/lint if asked (`/auth/login`, eslint).
-3. Confirm lint + typecheck + build + Vercel deploy green.
-4. **Begin Canonical Phase 2 — Historical Pilot:** 20–30 complete L&P packages through intake → verify.
-5. **Do not** expand Intelligence UX, Glide, or Tiptap until the pilot validates the model.
-6. Rotate Supabase secrets before importing real L&P data.
+Powered by verified historical database. Ingestion pipeline **feeds** all engines — it is not a seventh “product module.”
 
 ---
 
-## Explicit do-nots
+## Do not
 
-- Do not treat legacy "Phase 11 implemented" as product-ready Search/Ask.
-- Do not build CRM, client portal, lead management, or fake analytics.
-- Do not scaffold another Next.js template or add Prisma/Drizzle.
-- Do not commit secrets.
-- If a task is not on the current canonical phase in BUILD_PLAN, it is not this phase.
+- Treat RLS tests as Historical Pilot completion  
+- Build CRM, client portal, or fake analytics  
+- Reorder phases for demo screens  
+- Auto-promote AI extraction to canonical  
+- Collapse four commercial truths into one rate field  
+
+---
+
+## Useful commands
+
+```bash
+npm install
+npm run dev
+npm run build
+npm run test:phase2-rls
+npm run test:phase3-intake
+```
+
+Supabase project ref: `lhmurblikkcomdxcrymx` (Contract-Intelligence-Platform).
