@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
   );
 
   const { data } = await supabase.auth.getClaims();
-  let user = data?.claims;
+  const user = data?.claims;
 
   const isDev = process.env.NODE_ENV === "development";
   const operatorEmail = process.env.LP_OPERATOR_EMAIL?.trim();

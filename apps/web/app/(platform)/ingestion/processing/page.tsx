@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { LIBRARY_TABS, SectionTabs } from "@/components/section-tabs";
+import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
 import { ProcessingQueueTable, type QueueRow } from "./queue-table";
 
 async function ProcessingQueueContent() {
@@ -43,7 +43,7 @@ async function ProcessingQueueContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={LIBRARY_TABS} />
+      <SectionTabs tabs={INGESTION_TABS} />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Processing queue</h1>
         <p className="text-sm text-muted-foreground">

@@ -1,10 +1,10 @@
-import { INTELLIGENCE_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 import { PlaceholderPage } from "@/components/placeholder-page";
 
 export default function Page() {
   return (
     <div>
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
+      <IntelligenceNav />
       <PlaceholderPage
         title="Pricing intelligence"
         phase="Phase 12"

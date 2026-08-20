@@ -25,7 +25,7 @@ export default function PlatformLayout({
         <AppSidebar />
       </Suspense>
       <SidebarInset>
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b px-2">
+        <header className="flex min-h-12 shrink-0 items-center gap-2 border-b px-2 py-1.5">
           <Suspense fallback={<div className="h-8 flex-1" />}>
             <HeaderSlot />
           </Suspense>

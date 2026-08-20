@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 async function ContractDetail({ contractId }: { contractId: string }) {
@@ -30,9 +29,7 @@ async function ContractDetail({ contractId }: { contractId: string }) {
   return (
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground">
-        <Link className="underline" href="/contracts">
-          Contracts
-        </Link>
+        Use breadcrumbs above to navigate back. Phase 13 adds tabbed workspaces per solicitation.
       </p>
       <div>
         <h1 className="text-lg font-semibold tracking-tight">{contract.title}</h1>

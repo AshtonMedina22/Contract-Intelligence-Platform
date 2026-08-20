@@ -1,10 +1,10 @@
-import { LIBRARY_TABS, SectionTabs } from "@/components/section-tabs";
+import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
 import { PlaceholderPage } from "@/components/placeholder-page";
 
 export default function Page() {
   return (
     <div>
-      <SectionTabs tabs={LIBRARY_TABS} />
+      <SectionTabs tabs={INGESTION_TABS} />
       <PlaceholderPage
         title="Exceptions"
         phase="Phase 5"

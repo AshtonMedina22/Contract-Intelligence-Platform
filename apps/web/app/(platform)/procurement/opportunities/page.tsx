@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { PROCUREMENT_TABS, SectionTabs } from "@/components/section-tabs";
 
 async function OpportunitiesContent() {
   const supabase = await createClient();
@@ -18,6 +19,7 @@ async function OpportunitiesContent() {
 
   return (
     <div className="space-y-4">
+      <SectionTabs tabs={PROCUREMENT_TABS} />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Opportunities</h1>
         <p className="text-sm text-muted-foreground">

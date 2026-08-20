@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
-import { LIBRARY_TABS, SectionTabs } from "@/components/section-tabs";
+import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
 
 async function VerificationQueueContent() {
   const supabase = await createClient();
@@ -37,7 +37,7 @@ async function VerificationQueueContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={LIBRARY_TABS} />
+      <SectionTabs tabs={INGESTION_TABS} />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Verification queue</h1>
         <p className="text-sm text-muted-foreground">

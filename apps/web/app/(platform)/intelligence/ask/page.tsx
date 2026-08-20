@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { INTELLIGENCE_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 import { SearchHitsTable, type SearchHitRow } from "../content/search-hits-table";
 
 const EXAMPLE_QUERIES = [
@@ -56,7 +56,7 @@ async function AskIntelligence({
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
+      <IntelligenceNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Ask Intelligence</h1>
         <p className="text-sm text-muted-foreground">

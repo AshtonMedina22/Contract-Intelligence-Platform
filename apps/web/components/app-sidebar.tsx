@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ComponentType } from "react";
 import {
+  Briefcase,
   ChevronDown,
-  FileStack,
   FolderOpen,
   LayoutDashboard,
   LineChart,
@@ -13,6 +13,7 @@ import {
   Scale,
   Settings,
   ShieldCheck,
+  Upload,
 } from "lucide-react";
 import {
   Sidebar,
@@ -30,30 +31,34 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const PROPOSALS = [
-  { href: "/ingestion/intake", title: "New solicitation" },
-  { href: "/proposals", title: "Workspaces" },
-] as const;
-
-const INTELLIGENCE = [
-  { href: "/intelligence/ask", title: "Ask Intelligence" },
-  { href: "/intelligence/market", title: "Market & Competitors" },
-  { href: "/intelligence/pricing", title: "Pricing" },
-  { href: "/intelligence/win-loss", title: "Win/Loss" },
-  { href: "/intelligence/content", title: "Content" },
-  { href: "/intelligence/reports", title: "Reports" },
-] as const;
-
-const LIBRARY = [
-  { href: "/procurement/documents", title: "Packages & documents" },
+const INGESTION = [
   { href: "/ingestion/intake", title: "Intake" },
+  { href: "/ingestion/processing", title: "Processing" },
   { href: "/ingestion/verification", title: "Verification" },
+  { href: "/ingestion/exceptions", title: "Exceptions" },
+  { href: "/ingestion/bulk", title: "Bulk migration" },
+] as const;
+
+const PROCUREMENT = [
+  { href: "/procurement/documents", title: "Documents" },
+  { href: "/procurement/opportunities", title: "Opportunities" },
+  { href: "/procurement/clients", title: "Clients" },
+  { href: "/procurement/requirements", title: "Requirements" },
 ] as const;
 
 const CONTRACTS = [
   { href: "/contracts", title: "Portfolio" },
   { href: "/contracts/renewals", title: "Renewals" },
   { href: "/contracts/compliance", title: "Compliance" },
+] as const;
+
+const INTELLIGENCE = [
+  { href: "/intelligence/ask", title: "Ask Intelligence" },
+  { href: "/intelligence/market", title: "Market" },
+  { href: "/intelligence/pricing", title: "Pricing" },
+  { href: "/intelligence/win-loss", title: "Win/Loss" },
+  { href: "/intelligence/content", title: "Content" },
+  { href: "/intelligence/reports", title: "Reports" },
 ] as const;
 
 function pathActive(pathname: string, href: string) {
@@ -104,17 +109,14 @@ function ExpandableSection({
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const proposalsActive =
-    pathname.startsWith("/proposals") || pathname.startsWith("/ingestion/intake");
+  const ingestionActive = pathname.startsWith("/ingestion/");
+  const procurementActive = pathname.startsWith("/procurement/");
   const intelActive = pathname.startsWith("/intelligence");
-  const libraryActive =
-    pathname.startsWith("/procurement/documents") ||
-    pathname.startsWith("/ingestion/");
   const contractsActive = pathname.startsWith("/contracts");
-
-  const [proposalsOpen, setProposalsOpen] = useOpenSection(proposalsActive);
+  const proposalsActive = pathname.startsWith("/proposals");
+  const [ingestionOpen, setIngestionOpen] = useOpenSection(ingestionActive);
+  const [procurementOpen, setProcurementOpen] = useOpenSection(procurementActive);
   const [intelOpen, setIntelOpen] = useOpenSection(intelActive);
-  const [libraryOpen, setLibraryOpen] = useOpenSection(libraryActive);
   const [contractsOpen, setContractsOpen] = useOpenSection(contractsActive);
 
   return (
@@ -154,31 +156,14 @@ export function AppSidebar() {
               </SidebarMenuItem>
 
               <ExpandableSection
-                title="Proposals"
-                icon={PenLine}
-                tooltip="Proposals"
-                active={proposalsActive}
-                open={proposalsOpen}
-                onToggle={() => setProposalsOpen((v) => !v)}
+                title="Ingestion"
+                icon={Upload}
+                tooltip="Document ingestion pipeline"
+                active={ingestionActive}
+                open={ingestionOpen}
+                onToggle={() => setIngestionOpen((v) => !v)}
               >
-                {PROPOSALS.map((sub) => (
-                  <SidebarMenuSubItem key={`p-${sub.href}`}>
-                    <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
-                      <Link href={sub.href}>{sub.title}</Link>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                ))}
-              </ExpandableSection>
-
-              <ExpandableSection
-                title="Intelligence"
-                icon={LineChart}
-                tooltip="Intelligence"
-                active={intelActive}
-                open={intelOpen}
-                onToggle={() => setIntelOpen((v) => !v)}
-              >
-                {INTELLIGENCE.map((sub) => (
+                {INGESTION.map((sub) => (
                   <SidebarMenuSubItem key={sub.href}>
                     <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
                       <Link href={sub.href}>{sub.title}</Link>
@@ -188,15 +173,15 @@ export function AppSidebar() {
               </ExpandableSection>
 
               <ExpandableSection
-                title="Historical library"
-                icon={FileStack}
-                tooltip="Historical library"
-                active={libraryActive}
-                open={libraryOpen}
-                onToggle={() => setLibraryOpen((v) => !v)}
+                title="Procurement"
+                icon={Briefcase}
+                tooltip="Packages, opportunities, requirements"
+                active={procurementActive}
+                open={procurementOpen}
+                onToggle={() => setProcurementOpen((v) => !v)}
               >
-                {LIBRARY.map((sub) => (
-                  <SidebarMenuSubItem key={`l-${sub.href}`}>
+                {PROCUREMENT.map((sub) => (
+                  <SidebarMenuSubItem key={sub.href}>
                     <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
                       <Link href={sub.href}>{sub.title}</Link>
                     </SidebarMenuSubButton>
@@ -220,6 +205,37 @@ export function AppSidebar() {
                   </SidebarMenuSubItem>
                 ))}
               </ExpandableSection>
+
+              <ExpandableSection
+                title="Intelligence"
+                icon={LineChart}
+                tooltip="Search and analyze verified corpus"
+                active={intelActive}
+                open={intelOpen}
+                onToggle={() => setIntelOpen((v) => !v)}
+              >
+                {INTELLIGENCE.map((sub) => (
+                  <SidebarMenuSubItem key={sub.href}>
+                    <SidebarMenuSubButton asChild size="sm" isActive={pathActive(pathname, sub.href)}>
+                      <Link href={sub.href}>{sub.title}</Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ))}
+              </ExpandableSection>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  size="sm"
+                  isActive={proposalsActive}
+                  tooltip="Proposal workspaces (Phase 13)"
+                >
+                  <Link href="/proposals">
+                    <PenLine />
+                    <span>Proposals</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

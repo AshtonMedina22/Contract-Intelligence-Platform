@@ -8,11 +8,16 @@ export default function Page() {
       <PlaceholderPage
         title="Proposal workspaces"
         phase="Phase 13"
-        next="Each solicitation becomes a workspace: requirements, research, pricing, evidence, draft. Until then, start with Analyze solicitation (intake) and build the verified corpus."
+        next="Each active solicitation becomes a workspace: requirements, research, pricing, evidence, draft. Until then, start at Ingestion → Intake and link documents to an opportunity."
       />
-      <Button asChild size="sm">
-        <Link href="/ingestion/intake">Analyze new solicitation</Link>
-      </Button>
+      <div className="flex flex-wrap gap-2 text-sm">
+        <Button asChild size="sm">
+          <Link href="/ingestion/intake">Analyze new solicitation</Link>
+        </Button>
+        <Button asChild size="sm" variant="outline">
+          <Link href="/procurement/opportunities">View opportunities</Link>
+        </Button>
+      </div>
     </div>
   );
 }

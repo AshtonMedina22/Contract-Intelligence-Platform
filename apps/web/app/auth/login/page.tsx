@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/login-form";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function Page() {
+async function LoginContent() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -17,5 +18,19 @@ export default async function Page() {
         <LoginForm />
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

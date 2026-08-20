@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 
@@ -37,48 +38,163 @@ async function HomeContent() {
   const chunkCount = chunks.count ?? 0;
   const empty = docCount === 0;
 
+  const ingestNext =
+    reviewCount > 0
+      ? { href: "/ingestion/verification", label: "Continue verification" }
+      : docCount > 0
+        ? { href: "/ingestion/processing", label: "View processing" }
+        : { href: "/ingestion/intake", label: "Start intake" };
+
   return (
-    <div className="max-w-3xl space-y-5">
+    <div className="max-w-3xl space-y-6">
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Home</h1>
         <p className="text-sm text-muted-foreground">
-          Historical procurement intelligence for the next solicitation — not client relationship management.
+          Two connected workflows: digitize and verify historical evidence, then use that corpus to pursue and
+          price the next solicitation.
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Button asChild size="sm">
-          <Link href="/ingestion/intake">Analyze new solicitation</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href="/proposals">Proposal workspaces</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href="/intelligence/ask">Ask Intelligence</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href="/intelligence/market">Market</Link>
-        </Button>
-        <Button asChild size="sm" variant="outline">
-          <Link href="/intelligence/reports">Generate executive brief</Link>
-        </Button>
-      </div>
-
-      {empty ? (
-        <div className="space-y-3 border p-3 text-sm">
-          <p className="font-medium">No historical packages in the vault yet.</p>
-          <p className="text-muted-foreground">
-            Digitize and verify prior RFPs, proposals, pricing, awards, and contracts first. That verified corpus
-            is what powers pricing intelligence, win/loss, and grounded proposal drafts for the next bid.
+      <section className="space-y-3 border p-4">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Workflow A — Build the corpus
           </p>
+          <h2 className="text-base font-semibold">Digitize historical procurement</h2>
+          <p className="text-sm text-muted-foreground">
+            Upload → process → human verify → promote to canonical truth. Intelligence and proposals consume only
+            verified facts.
+          </p>
+        </div>
+        <ol className="flex flex-wrap items-center gap-1 text-sm">
+          <li>
+            <Link className="rounded-md bg-muted px-2 py-1 font-medium hover:underline" href="/ingestion/intake">
+              1. Intake
+            </Link>
+          </li>
+          <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
+          <li>
+            <Link
+              className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
+              href="/ingestion/processing"
+            >
+              2. Processing
+            </Link>
+          </li>
+          <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
+          <li>
+            <Link
+              className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
+              href="/ingestion/verification"
+            >
+              3. Verification
+            </Link>
+          </li>
+          <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
+          <li>
+            <Link
+              className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
+              href="/procurement/documents"
+            >
+              4. Documents & packages
+            </Link>
+          </li>
+        </ol>
+        {empty ? (
+          <p className="text-sm text-muted-foreground">
+            No packages in the vault yet. Start with intake — pricing intelligence, win/loss, and grounded drafts
+            all depend on verified history.
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            {docCount} document{docCount === 1 ? "" : "s"} ingested · {reviewCount} fact
+            {reviewCount === 1 ? "" : "s"} awaiting verification · {chunkCount} searchable chunk
+            {chunkCount === 1 ? "" : "s"}
+          </p>
+        )}
+        <Button asChild size="sm">
+          <Link href={ingestNext.href}>
+            {ingestNext.label}
+            <ArrowRight className="ml-1 size-3.5" />
+          </Link>
+        </Button>
+      </section>
+
+      <section className="space-y-3 border p-4">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Workflow B — Pursue a solicitation
+          </p>
+          <h2 className="text-base font-semibold">Analyze and respond to new RFP</h2>
+          <p className="text-sm text-muted-foreground">
+            Intake the solicitation → group into an opportunity → requirements, pricing, and proposal workspace
+            (Phase 13). Outcomes feed win/loss and contracts.
+          </p>
+        </div>
+        <ol className="flex flex-wrap items-center gap-1 text-sm">
+          <li>
+            <Link className="rounded-md bg-muted px-2 py-1 font-medium hover:underline" href="/ingestion/intake">
+              1. Analyze solicitation
+            </Link>
+          </li>
+          <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
+          <li>
+            <Link
+              className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
+              href="/procurement/opportunities"
+            >
+              2. Opportunity
+            </Link>
+          </li>
+          <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
+          <li>
+            <Link
+              className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
+              href="/proposals"
+            >
+              3. Proposal workspace
+            </Link>
+          </li>
+          <ChevronRight className="size-3.5 text-muted-foreground" aria-hidden />
+          <li>
+            <Link
+              className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:underline"
+              href="/intelligence/win-loss"
+            >
+              4. Win/Loss → Contract
+            </Link>
+          </li>
+        </ol>
+        <div className="flex flex-wrap gap-2">
           <Button asChild size="sm">
-            <Link href="/ingestion/intake">Start historical intake</Link>
+            <Link href="/ingestion/intake">Analyze new solicitation</Link>
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/procurement/opportunities">View opportunities</Link>
           </Button>
         </div>
-      ) : null}
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium">Use verified intelligence (anytime)</h2>
+        <p className="text-sm text-muted-foreground">
+          These surfaces search and summarize what you have already verified — they are not separate pipelines.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild size="sm" variant="outline">
+            <Link href="/intelligence/ask">Ask Intelligence</Link>
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/intelligence/market">Market overview</Link>
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/intelligence/reports">Reports catalog</Link>
+          </Button>
+        </div>
+      </section>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-medium">Historical intelligence</h2>
+        <h2 className="text-sm font-medium">Corpus status</h2>
         <dl className="grid grid-cols-2 gap-px border text-sm sm:grid-cols-3">
           <div className="bg-background p-3">
             <dt className="text-muted-foreground">Documents ingested</dt>
@@ -102,19 +218,6 @@ async function HomeContent() {
           </div>
         </dl>
       </section>
-
-      {reviewCount > 0 ? (
-        <section className="space-y-2 border p-3 text-sm">
-          <h2 className="font-medium">Needs attention</h2>
-          <p className="text-muted-foreground">
-            {reviewCount} extracted fact{reviewCount === 1 ? "" : "s"} still need human verification before they
-            become searchable intelligence.
-          </p>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/ingestion/verification">Open verification</Link>
-          </Button>
-        </section>
-      ) : null}
     </div>
   );
 }

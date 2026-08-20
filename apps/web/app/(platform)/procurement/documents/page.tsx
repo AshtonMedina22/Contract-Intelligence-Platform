@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { LIBRARY_TABS, SectionTabs } from "@/components/section-tabs";
+import { PROCUREMENT_TABS, SectionTabs } from "@/components/section-tabs";
 import { DocumentsTable, type DocumentRow } from "./documents-table";
 
 async function DocumentsContent() {
@@ -42,12 +42,11 @@ async function DocumentsContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={LIBRARY_TABS} />
+      <SectionTabs tabs={PROCUREMENT_TABS} />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Historical library</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Documents</h1>
         <p className="text-sm text-muted-foreground">
-          Procurement corpus of ingested evidence. Group into packages as packages grow; verification stays the
-          promotion gate.
+          Registry of ingested evidence files. Group into opportunities/packages as verification progresses.
         </p>
       </div>
       <DocumentsTable rows={rows} />

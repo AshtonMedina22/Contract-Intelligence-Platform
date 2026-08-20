@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { LIBRARY_TABS, SectionTabs } from "@/components/section-tabs";
+import { INGESTION_TABS, SectionTabs } from "@/components/section-tabs";
 import { IntakeForm } from "./intake-form";
 import { getIntakeContext } from "@/lib/org/intake-context";
 
@@ -10,12 +10,12 @@ async function IntakeContent() {
 
   return (
     <div className="space-y-6">
-      <SectionTabs tabs={LIBRARY_TABS} />
+      <SectionTabs tabs={INGESTION_TABS} />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Analyze solicitation / intake</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Intake — step 1</h1>
         <p className="text-sm text-muted-foreground">
-          Upload a new RFP/RFQ/IFB or historical package into the evidence vault. Full proposal workspace tabs
-          (requirements, research, draft) land in Phase 13 — this screen starts the durable ingest loop.
+          Upload a new RFP/RFQ/IFB or historical package. After upload, continue to Processing → Verification
+          before facts become searchable intelligence.
         </p>
       </div>
 

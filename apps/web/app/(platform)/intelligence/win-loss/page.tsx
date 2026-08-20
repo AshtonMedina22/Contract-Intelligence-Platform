@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { INTELLIGENCE_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 import { WinLossTable, type WinLossRow } from "./win-loss-table";
 
 async function WinLossContent() {
@@ -35,7 +35,7 @@ async function WinLossContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
+      <IntelligenceNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Win/Loss</h1>
         <p className="text-sm text-muted-foreground">

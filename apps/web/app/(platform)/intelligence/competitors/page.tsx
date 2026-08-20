@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { INTELLIGENCE_TABS, MARKET_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 import { CompetitorBidsTable, type CompetitorBidRow } from "./competitors-table";
 
 async function CompetitorsContent() {
@@ -37,8 +37,7 @@ async function CompetitorsContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
-      <SectionTabs tabs={MARKET_TABS} />
+      <IntelligenceNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Competitors</h1>
         <p className="text-sm text-muted-foreground">

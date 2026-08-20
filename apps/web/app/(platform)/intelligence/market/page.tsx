@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { INTELLIGENCE_TABS, MARKET_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 
 async function MarketOverview() {
   const supabase = await createClient();
@@ -40,15 +40,14 @@ async function MarketOverview() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
+      <IntelligenceNav />
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Market & Competitors</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Market overview</h1>
         <p className="text-sm text-muted-foreground">
           Evidence we actually possess. Counts are empty until historical packages are verified. This is not a
           corporate win-rate or TAM model.
         </p>
       </div>
-      <SectionTabs tabs={MARKET_TABS} />
       <dl className="grid grid-cols-2 gap-px border text-sm sm:grid-cols-3">
         {stats.map((row) => (
           <div key={row.label} className="bg-background p-3">

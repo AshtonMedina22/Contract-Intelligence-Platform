@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { INTELLIGENCE_TABS, SectionTabs } from "@/components/section-tabs";
+import { IntelligenceNav } from "@/components/section-tabs";
 
 const REPORT_TYPES = [
   {
@@ -56,7 +56,7 @@ async function ReportsContent() {
 
   return (
     <div className="space-y-4">
-      <SectionTabs tabs={INTELLIGENCE_TABS} />
+      <IntelligenceNav />
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Reports</h1>
         <p className="text-sm text-muted-foreground">
