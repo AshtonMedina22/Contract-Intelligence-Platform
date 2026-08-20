@@ -4,7 +4,7 @@
 **Baseline branch (do not delete):** `cursor-phase2-foundation` @ `8d2d031`  
 **Remote tag:** `phase-2-baseline` @ `7e02e9a` (RLS freeze)  
 **Audited HEAD:** `f1f16ea` on `main`  
-**Detailed explore:** [Audit agent phase claims](e3dff353-d9dc-42b5-971c-03b711346f38)
+**Detailed explores:** [Audit agent phase claims](e3dff353-d9dc-42b5-971c-03b711346f38), [Audit schema and RLS](d6557ffe-135e-45d5-a44e-7ef80b436030)
 
 ## Why this file exists
 
@@ -23,8 +23,23 @@ That split-brain poisons the next agent. This file is the reconciled product tru
 | Supabase SQL + RLS + Storage vault | OK |
 | Vercel deploys **web only** (`vercel.json`) | OK — processor not a Vercel service |
 | FastAPI processor local (openpyxl, DOCX, Mistral OCR key-gated; Docling stub) | OK |
-| Promote requires `HUMAN_VERIFIED` | OK in SQL/RPC + processor status guard |
-| AI auto-promote to canonical | **Not found** |
+| Promote requires `HUMAN_VERIFIED` | OK in promote RPCs; **gaps** on direct table writes (see Schema trust) |
+| AI auto-promote to canonical | **Not found** via promote path; direct writes were the hole |
+
+## Schema trust ([Audit schema and RLS](d6557ffe-135e-45d5-a44e-7ef80b436030))
+
+| Check | Verdict |
+| --- | --- |
+| Org RLS on new tables | **Pass** — no cross-tenant SELECT |
+| Evidence Storage append-only | **Pass** (select+insert only) |
+| `extracted_facts` default + actor CHECK | **Intact** |
+| Anon grants | **None new** |
+| Canonical tables `FOR ALL` | **High risk** — any member could insert `contracts` / `document_chunks` without a real verified fact |
+| `createContractFromWin` / `ensure_contract` | **High risk** — blank contract inserts (app + RPC) |
+
+**Mitigation landed in this follow-up:** migration `20260821090000_trust_require_verified_canonical_sources.sql` (chunks + contracts require HUMAN_VERIFIED `source_fact_id`; revoke private automation EXECUTE from public/anon/authenticated) and `createContractFromWin` refuses without a verified pursuit fact.
+
+**Still open (medium):** `document_versions` still `FOR ALL`; ops staffing/eval without mandatory source; authenticated `run_intelligence_automation` privilege model.
 
 ## Product maturity (honest)
 
@@ -53,7 +68,9 @@ Legacy migration filenames (`phase9_contracts`, `phase11_hybrid_rag`) are **engi
 2. Confirm Vercel env + apply any pending migrations on `lhmurblikkcomdxcrymx`.  
 3. Grow real public L&P packages through intake → verify → promote toward ~20–30.  
 4. Only then treat Intelligence / Ask / Pricing / Response as validated product.  
-5. Do not expand “complete” claims, invent metrics, or weaken `HUMAN_VERIFIED` gates.
+5. Do not expand “complete” claims, invent metrics, or weaken `HUMAN_VERIFIED` gates.  
+6. Apply `20260821090000_trust_require_verified_canonical_sources.sql` on the live project if not already pushed.  
+7. Later: tighten `document_versions` / ops-entered tables that still lack mandatory provenance.
 
 ## Rollback
 

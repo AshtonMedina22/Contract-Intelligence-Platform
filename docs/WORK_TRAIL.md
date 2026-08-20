@@ -60,7 +60,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
-| 2026-08-20 | Foundation machine audited `main` vs original lock; fixed split-brain entry docs | [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md); handoff/rules/README/DEVICE_SETUP reconciled; branch `cursor-phase2-foundation` | Grow pilot corpus; confirm prod |
+| 2026-08-20 | Schema/RLS audit follow-up | Trust migration + gate `createContractFromWin`; docs updated | Apply migration on live Supabase |
 | 2026-08-19 | Pass 3+4 ops UI | `547e16c` | Migrations |
 | 2026-08-19–20 | Pack sync + pack (1) accuracy | Phases 1–8; multi-tenant-ready | — |
 | 2026-08-20 | User: master context over-condensed | Human locked Storage/Workflow/1–8/pack IA; **rewrote MASTER_PRODUCT_CONTEXT** with full domains + table/Python map | Commit when asked; then pilot |

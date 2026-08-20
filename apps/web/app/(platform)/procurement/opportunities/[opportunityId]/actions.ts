@@ -642,6 +642,34 @@ export async function createContractFromWin(opportunityId: string, formData: For
     return existing.id;
   }
 
+  // Canonical contracts require a HUMAN_VERIFIED fact — never invent portfolio rows from a win click alone.
+  const { data: docs } = await supabase
+    .from("documents")
+    .select("id")
+    .eq("opportunity_id", opportunityId);
+  const docIds = (docs ?? []).map((d) => d.id);
+  if (docIds.length === 0) {
+    throw new Error(
+      "Cannot create a contract without pursuit documents. Ingest and verify an award/contract fact first.",
+    );
+  }
+
+  const { data: verifiedFact } = await supabase
+    .from("extracted_facts")
+    .select("id, document_id")
+    .eq("organization_id", organizationId)
+    .eq("verification_status", "HUMAN_VERIFIED")
+    .in("document_id", docIds)
+    .order("verified_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!verifiedFact?.id) {
+    throw new Error(
+      "Cannot create a contract without a HUMAN_VERIFIED fact on this pursuit. Verify an award/contract fact first.",
+    );
+  }
+
   const { data, error } = await supabase
     .from("contracts")
     .insert({
@@ -650,6 +678,8 @@ export async function createContractFromWin(opportunityId: string, formData: For
       client_id: opp?.client_id ?? null,
       title,
       contract_number: String(formData.get("contract_number") ?? "").trim() || null,
+      source_fact_id: verifiedFact.id,
+      source_document_id: verifiedFact.document_id,
     })
     .select("id")
     .single();
