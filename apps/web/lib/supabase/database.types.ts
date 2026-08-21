@@ -2370,6 +2370,18 @@ export type Database = {
         Args: { p_fact_id: string };
         Returns: Record<string, unknown>;
       };
+      promote_proposal_section_from_fact: {
+        Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
+      promote_required_form_from_fact: {
+        Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
+      promote_cost_component_from_fact: {
+        Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
       refresh_contract_alerts: {
         Args: Record<string, never>;
         Returns: number;
