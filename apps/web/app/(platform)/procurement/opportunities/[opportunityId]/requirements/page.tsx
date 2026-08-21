@@ -4,8 +4,10 @@ import { createClient } from "@/lib/supabase/server";
 import { EvaluationCriteriaPanel, type EvaluationCriterionRow } from "@/components/opportunity-workspace/evaluation-panel";
 import { StaffingRequirementsPanel, type StaffingRow } from "@/components/opportunity-workspace/staffing-panel";
 import { RequirementsMatrix } from "@/components/opportunity-workspace/requirements-matrix";
+import { ChangeImpactStrip } from "@/components/opportunity-workspace/change-impact-strip";
 import { loadFactDocumentMap, loadStaffingRequirements } from "@/lib/opportunity/load-workspace";
 import { loadRequirementMatrix } from "@/lib/opportunity/load-response";
+import { loadChangeImpactBundle } from "@/lib/solicitation/load-change-impact";
 
 export default function OpportunityRequirementsPage({
   params,
@@ -27,19 +29,21 @@ async function OpportunityRequirementsContent({
   const { opportunityId } = await params;
   const supabase = await createClient();
 
-  const [{ data: solicitations }, { data: evalRows }, staffing, matrix] = await Promise.all([
-    supabase
-      .from("solicitations")
-      .select("id, title, solicitation_number")
-      .eq("opportunity_id", opportunityId),
-    supabase
-      .from("evaluation_criteria")
-      .select("id, criterion, weight_pct, notes")
-      .eq("opportunity_id", opportunityId)
-      .order("created_at"),
-    loadStaffingRequirements(opportunityId),
-    loadRequirementMatrix(opportunityId),
-  ]);
+  const [{ data: solicitations }, { data: evalRows }, staffing, matrix, changeImpact] =
+    await Promise.all([
+      supabase
+        .from("solicitations")
+        .select("id, title, solicitation_number")
+        .eq("opportunity_id", opportunityId),
+      supabase
+        .from("evaluation_criteria")
+        .select("id, criterion, weight_pct, notes")
+        .eq("opportunity_id", opportunityId)
+        .order("created_at"),
+      loadStaffingRequirements(opportunityId),
+      loadRequirementMatrix(opportunityId),
+      loadChangeImpactBundle(opportunityId),
+    ]);
 
   const factIds = matrix.map((r) => r.source_fact_id).filter(Boolean) as string[];
   const factDocumentMap = await loadFactDocumentMap(factIds);
@@ -53,6 +57,15 @@ async function OpportunityRequirementsContent({
 
   return (
     <div className="space-y-8">
+      {changeImpact && changeImpact.summary.items > 0 ? (
+        <ChangeImpactStrip
+          opportunityId={opportunityId}
+          summary={changeImpact.summary}
+          items={changeImpact.items}
+          canVerify={changeImpact.canVerify}
+        />
+      ) : null}
+
       <EvaluationCriteriaPanel opportunityId={opportunityId} rows={criteria} />
 
       <div className="space-y-4">

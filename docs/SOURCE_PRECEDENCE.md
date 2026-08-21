@@ -86,10 +86,16 @@ Examples:
 
 ## Intended later (not fully implemented)
 
-- First-class `solicitation_addenda` table with explicit supersession chain
-- Automated "latest applicable addendum" selection for requirement facts
+- Automated "latest applicable addendum" selection for requirement facts across the full promote path
 - Package-completeness reconciliation (missing award doc when proposal exists)
 - Source precedence dashboard in verification workbench
+
+## Enforced for addenda / Q&A (F11, 2026-08-21)
+
+- `solicitation_addenda` supersession chain (`supersedes_addendum_id`, `is_latest` partial unique)
+- `solicitation_q_and_a` with verification + source links
+- Change-impact runs/items: AI draft after promote; material apply only after `HUMAN_VERIFIED` via `verify.promote`
+- Never silent overwrite of APPROVED responses / HUMAN_APPROVED prices — `stale_reason` flags only
 
 ## Retrieval filters (search / AI)
 

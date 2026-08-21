@@ -8,6 +8,7 @@ import { embedVerifiedChunk } from "@/lib/search/embed-chunk";
 import { getJobPort } from "@/lib/jobs/get-job-port";
 import { identityTarget } from "@/lib/verification/identity";
 import { requirePermission } from "@/lib/auth/permissions";
+import { createChangeRunAfterPromote } from "@/lib/solicitation/create-run";
 import type { FactVerificationStatus } from "@/lib/supabase/database.types";
 
 export type VerificationActionResult = { error?: string; ok?: true };
@@ -64,6 +65,56 @@ async function recordEvent(
     note: input.note ?? null,
   });
   if (error) throw new Error(error.message);
+}
+
+type PromoteJson = { ok?: boolean; action?: string; addendum_id?: string; qa_id?: string; solicitation_id?: string } | null;
+
+async function maybeCreateSolicitationChangeRun(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  actorId: string,
+  fact: { organization_id: string; document_id: string; verified_value: string | null; normalized_value: string | null; raw_value: string | null },
+  addendumResult: unknown,
+  qaResult: unknown,
+) {
+  const addendum = addendumResult as PromoteJson;
+  const qa = qaResult as PromoteJson;
+
+  if (addendum?.ok && addendum.action === "addendum" && addendum.solicitation_id && addendum.addendum_id) {
+    const { data: sol } = await supabase
+      .from("solicitations")
+      .select("opportunity_id")
+      .eq("id", addendum.solicitation_id)
+      .maybeSingle();
+    await createChangeRunAfterPromote(supabase, {
+      organizationId: fact.organization_id,
+      solicitationId: addendum.solicitation_id,
+      opportunityId: sol?.opportunity_id ?? null,
+      triggerKind: "ADDENDUM",
+      triggerAddendumId: addendum.addendum_id,
+      triggerDocumentId: fact.document_id,
+      createdBy: actorId,
+      titleOrNumber: fact.verified_value ?? fact.normalized_value ?? fact.raw_value,
+    });
+    return;
+  }
+
+  if (qa?.ok && qa.action === "q_and_a" && qa.solicitation_id && qa.qa_id) {
+    const { data: sol } = await supabase
+      .from("solicitations")
+      .select("opportunity_id")
+      .eq("id", qa.solicitation_id)
+      .maybeSingle();
+    await createChangeRunAfterPromote(supabase, {
+      organizationId: fact.organization_id,
+      solicitationId: qa.solicitation_id,
+      opportunityId: sol?.opportunity_id ?? null,
+      triggerKind: "Q_AND_A",
+      triggerQaId: qa.qa_id,
+      triggerDocumentId: fact.document_id,
+      createdBy: actorId,
+      questionText: fact.verified_value ?? fact.normalized_value ?? fact.raw_value,
+    });
+  }
 }
 
 async function promoteIdentity(
@@ -209,8 +260,22 @@ export async function applyFactDecision(input: {
       if (formPromoted.error) throw new Error(formPromoted.error.message);
       const costPromoted = await supabase.rpc("promote_cost_component_from_fact", { p_fact_id: fact.id });
       if (costPromoted.error) throw new Error(costPromoted.error.message);
+      const addendumPromoted = await supabase.rpc(
+        "promote_addendum_from_fact" as never,
+        { p_fact_id: fact.id } as never,
+      );
+      if (addendumPromoted.error) throw new Error(addendumPromoted.error.message);
+      const qaPromoted = await supabase.rpc(
+        "promote_qa_from_fact" as never,
+        { p_fact_id: fact.id } as never,
+      );
+      if (qaPromoted.error) throw new Error(qaPromoted.error.message);
       const chunkPromoted = await supabase.rpc("promote_knowledge_chunk_from_fact", { p_fact_id: fact.id });
       if (chunkPromoted.error) throw new Error(chunkPromoted.error.message);
+
+      // F11: after addendum/Q&A promote → AI draft change run (never auto-applied)
+      await maybeCreateSolicitationChangeRun(supabase, user.id, fact, addendumPromoted.data, qaPromoted.data);
+
       // Fan-out embeddings behind JobPort (never lifecycle). Falls back to inline if unset.
       try {
         const port = getJobPort();

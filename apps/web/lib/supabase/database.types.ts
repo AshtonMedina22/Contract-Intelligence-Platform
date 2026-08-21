@@ -654,6 +654,7 @@ export type Database = {
           decided_at: string | null;
           created_at: string;
           updated_at: string;
+          stale_reason: string | null;
         };
         Insert: {
           id?: string;
@@ -679,6 +680,7 @@ export type Database = {
           decided_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          stale_reason?: string | null;
         };
         Update: {
           id?: string;
@@ -704,6 +706,7 @@ export type Database = {
           decided_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          stale_reason?: string | null;
         };
         Relationships: [];
       };
@@ -1211,6 +1214,8 @@ export type Database = {
             | "APPROVED"
             | "L_AND_P_INPUT_REQUIRED";
           created_at: string;
+          superseded_by_id: string | null;
+          impact_from_change_item_id: string | null;
         };
         Insert: {
           id?: string;
@@ -1235,6 +1240,8 @@ export type Database = {
             | "APPROVED"
             | "L_AND_P_INPUT_REQUIRED";
           created_at?: string;
+          superseded_by_id?: string | null;
+          impact_from_change_item_id?: string | null;
         };
         Update: {
           id?: string;
@@ -1259,6 +1266,8 @@ export type Database = {
             | "APPROVED"
             | "L_AND_P_INPUT_REQUIRED";
           created_at?: string;
+          superseded_by_id?: string | null;
+          impact_from_change_item_id?: string | null;
         };
         Relationships: [];
       };
@@ -1280,6 +1289,7 @@ export type Database = {
           updated_by: string | null;
           created_at: string;
           updated_at: string;
+          stale_reason: string | null;
         };
         Insert: {
           id?: string;
@@ -1298,6 +1308,7 @@ export type Database = {
           updated_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          stale_reason?: string | null;
         };
         Update: {
           id?: string;
@@ -1316,6 +1327,7 @@ export type Database = {
           updated_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          stale_reason?: string | null;
         };
         Relationships: [];
       };
@@ -2045,6 +2057,11 @@ export type Database = {
           issued_on: string | null;
           notes: string | null;
           created_at: string;
+          supersedes_addendum_id: string | null;
+          source_document_version_id: string | null;
+          verification_status: FactVerificationStatus;
+          is_latest: boolean;
+          effective_on: string | null;
         };
         Insert: {
           id?: string;
@@ -2057,6 +2074,11 @@ export type Database = {
           issued_on?: string | null;
           notes?: string | null;
           created_at?: string;
+          supersedes_addendum_id?: string | null;
+          source_document_version_id?: string | null;
+          verification_status?: FactVerificationStatus;
+          is_latest?: boolean;
+          effective_on?: string | null;
         };
         Update: {
           id?: string;
@@ -2069,6 +2091,206 @@ export type Database = {
           issued_on?: string | null;
           notes?: string | null;
           created_at?: string;
+          supersedes_addendum_id?: string | null;
+          source_document_version_id?: string | null;
+          verification_status?: FactVerificationStatus;
+          is_latest?: boolean;
+          effective_on?: string | null;
+        };
+        Relationships: [];
+      };
+      solicitation_q_and_a: {
+        Row: {
+          id: string;
+          organization_id: string;
+          solicitation_id: string;
+          source_document_id: string | null;
+          source_document_version_id: string | null;
+          source_fact_id: string | null;
+          question_text: string;
+          answer_text: string | null;
+          issued_on: string | null;
+          section_ref: string | null;
+          verification_status: FactVerificationStatus;
+          supersedes_qa_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          solicitation_id: string;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_fact_id?: string | null;
+          question_text: string;
+          answer_text?: string | null;
+          issued_on?: string | null;
+          section_ref?: string | null;
+          verification_status?: FactVerificationStatus;
+          supersedes_qa_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          solicitation_id?: string;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_fact_id?: string | null;
+          question_text?: string;
+          answer_text?: string | null;
+          issued_on?: string | null;
+          section_ref?: string | null;
+          verification_status?: FactVerificationStatus;
+          supersedes_qa_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      solicitation_change_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          solicitation_id: string;
+          opportunity_id: string | null;
+          trigger_kind: "ADDENDUM" | "Q_AND_A" | "CLARIFICATION" | "BASELINE";
+          trigger_addendum_id: string | null;
+          trigger_qa_id: string | null;
+          trigger_document_id: string | null;
+          trigger_document_version_id: string | null;
+          base_document_id: string | null;
+          status:
+            | "AI_EXTRACTED"
+            | "NEEDS_REVIEW"
+            | "PARTIALLY_VERIFIED"
+            | "HUMAN_VERIFIED"
+            | "REJECTED"
+            | "APPLIED";
+          summary_json: Record<string, unknown>;
+          detector_version: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          solicitation_id: string;
+          opportunity_id?: string | null;
+          trigger_kind: "ADDENDUM" | "Q_AND_A" | "CLARIFICATION" | "BASELINE";
+          trigger_addendum_id?: string | null;
+          trigger_qa_id?: string | null;
+          trigger_document_id?: string | null;
+          trigger_document_version_id?: string | null;
+          base_document_id?: string | null;
+          status?:
+            | "AI_EXTRACTED"
+            | "NEEDS_REVIEW"
+            | "PARTIALLY_VERIFIED"
+            | "HUMAN_VERIFIED"
+            | "REJECTED"
+            | "APPLIED";
+          summary_json?: Record<string, unknown>;
+          detector_version?: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          solicitation_id?: string;
+          opportunity_id?: string | null;
+          trigger_kind?: "ADDENDUM" | "Q_AND_A" | "CLARIFICATION" | "BASELINE";
+          trigger_addendum_id?: string | null;
+          trigger_qa_id?: string | null;
+          trigger_document_id?: string | null;
+          trigger_document_version_id?: string | null;
+          base_document_id?: string | null;
+          status?:
+            | "AI_EXTRACTED"
+            | "NEEDS_REVIEW"
+            | "PARTIALLY_VERIFIED"
+            | "HUMAN_VERIFIED"
+            | "REJECTED"
+            | "APPLIED";
+          summary_json?: Record<string, unknown>;
+          detector_version?: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      solicitation_change_items: {
+        Row: {
+          id: string;
+          organization_id: string;
+          change_run_id: string;
+          change_type: string;
+          fingerprint: string;
+          target_table: string | null;
+          target_id: string | null;
+          before_text: string | null;
+          after_text: string | null;
+          before_json: Record<string, unknown> | null;
+          after_json: Record<string, unknown> | null;
+          confidence: string;
+          ambiguity_reason: string | null;
+          verification_status: FactVerificationStatus;
+          impact_flags: Record<string, unknown>;
+          applied_at: string | null;
+          applied_by: string | null;
+          rejection_reason: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          change_run_id: string;
+          change_type: string;
+          fingerprint: string;
+          target_table?: string | null;
+          target_id?: string | null;
+          before_text?: string | null;
+          after_text?: string | null;
+          before_json?: Record<string, unknown> | null;
+          after_json?: Record<string, unknown> | null;
+          confidence?: string;
+          ambiguity_reason?: string | null;
+          verification_status?: FactVerificationStatus;
+          impact_flags?: Record<string, unknown>;
+          applied_at?: string | null;
+          applied_by?: string | null;
+          rejection_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          change_run_id?: string;
+          change_type?: string;
+          fingerprint?: string;
+          target_table?: string | null;
+          target_id?: string | null;
+          before_text?: string | null;
+          after_text?: string | null;
+          before_json?: Record<string, unknown> | null;
+          after_json?: Record<string, unknown> | null;
+          confidence?: string;
+          ambiguity_reason?: string | null;
+          verification_status?: FactVerificationStatus;
+          impact_flags?: Record<string, unknown>;
+          applied_at?: string | null;
+          applied_by?: string | null;
+          rejection_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -3072,6 +3294,18 @@ export type Database = {
       };
       promote_required_form_from_fact: {
         Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
+      promote_addendum_from_fact: {
+        Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
+      promote_qa_from_fact: {
+        Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
+      apply_solicitation_change_item: {
+        Args: { p_item_id: string; p_actor_id?: string };
         Returns: Record<string, unknown>;
       };
       promote_cost_component_from_fact: {

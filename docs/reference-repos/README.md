@@ -19,6 +19,7 @@ Use these slugs when a note is needed:
 | `rfpilot` | RFPilot |
 | `auto-rfp` | AutoRFP |
 | `opencontracts` | OpenContracts |
+| `f11-change-detection` | F11 note — SemanticDiff rejected; OpenContracts pattern-only |
 | `docling` | Docling |
 | `unstructured` | Unstructured |
 | `tenderradar` | TenderRadar |

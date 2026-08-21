@@ -160,6 +160,13 @@ export type SubmissionReadinessInput = {
   pricingDecision?: ReadinessPricingInput | null;
   responseProgress?: ResponseProgress | null;
   packet?: ReadinessPacketInput | null;
+  /** F11 optional — honest addendum/Q&A impact advisory */
+  solicitationImpact?: {
+    unreviewedChangeItems: number;
+    addendumAcknowledgementCompleted: boolean | null;
+    staleResponseCount: number;
+    stalePricingCount: number;
+  } | null;
 };
 
 // -------------------------------------------------------------- classification
@@ -454,6 +461,40 @@ export function computeSubmissionReadiness(
   items.push(pricingItem(input.pricingDecision));
   items.push(responseItem(input.responseProgress));
   items.push(...logisticsItems(packet));
+
+  // F11 advisory: stale flags + pending addendum acknowledgement (cheap, non-blocking unless checklist required)
+  if (input.solicitationImpact) {
+    const impact = input.solicitationImpact;
+    if (
+      impact.unreviewedChangeItems > 0 ||
+      impact.staleResponseCount > 0 ||
+      impact.stalePricingCount > 0 ||
+      impact.addendumAcknowledgementCompleted === false
+    ) {
+      const parts: string[] = [];
+      if (impact.unreviewedChangeItems > 0) {
+        parts.push(`${impact.unreviewedChangeItems} unreviewed change item(s)`);
+      }
+      if (impact.staleResponseCount > 0) {
+        parts.push(`${impact.staleResponseCount} stale response flag(s) — APPROVED text preserved`);
+      }
+      if (impact.stalePricingCount > 0) {
+        parts.push(`${impact.stalePricingCount} stale pricing flag(s) — HUMAN_APPROVED preserved`);
+      }
+      if (impact.addendumAcknowledgementCompleted === false) {
+        parts.push("addendum acknowledgements incomplete");
+      }
+      items.push({
+        key: "logistics:addendum_impact",
+        label: "Addendum / Q&A impact",
+        group: "LOGISTICS",
+        required: false,
+        status: "UNKNOWN",
+        detail: `${parts.join("; ")}. Verify and apply changes before treating readiness as final.`,
+        fixOn: "requirements",
+      });
+    }
+  }
 
   const counts = {
     COMPLETE: 0,

@@ -4,7 +4,9 @@ import { OpportunityMetadataForm } from "@/components/opportunity-workspace/meta
 import { FulfillmentEconomicsPanel } from "@/components/opportunity-workspace/fulfillment-economics";
 import { OverviewSections } from "@/components/opportunity-workspace/overview-sections";
 import { FourTruthsTable } from "@/components/opportunity-workspace/four-truths-table";
+import { ChangeImpactStrip } from "@/components/opportunity-workspace/change-impact-strip";
 import { loadOverviewBundle } from "@/lib/opportunity/load-overview-bundle";
+import { loadChangeImpactBundle } from "@/lib/solicitation/load-change-impact";
 
 export default function OpportunityOverviewPage({
   params,
@@ -24,13 +26,25 @@ async function OpportunityOverviewContent({
   params: Promise<{ opportunityId: string }>;
 }) {
   const { opportunityId } = await params;
-  const bundle = await loadOverviewBundle(opportunityId);
+  const [bundle, changeImpact] = await Promise.all([
+    loadOverviewBundle(opportunityId),
+    loadChangeImpactBundle(opportunityId),
+  ]);
   if (!bundle) return null;
 
   const { opportunity, summary } = bundle;
 
   return (
     <div className="space-y-3">
+      {changeImpact && changeImpact.summary.items > 0 ? (
+        <ChangeImpactStrip
+          opportunityId={opportunityId}
+          summary={changeImpact.summary}
+          items={changeImpact.items}
+          canVerify={changeImpact.canVerify}
+        />
+      ) : null}
+
       <OverviewSections bundle={bundle} />
 
       <details className="rounded-md border" id="pricing-planning">

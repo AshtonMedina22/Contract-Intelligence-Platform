@@ -43,7 +43,7 @@ Never collapse these into one rate field.
 | Document kind | Truth | Promote RPCs | Target tables | Status |
 | --- | --- | --- | --- | --- |
 | Solicitation (RFP/RFQ/IFB) | requested | verified + chunk | solicitations, requirements, required_forms, pricing_lines | partial |
-| Addendum / Q&A | requested | verified + chunk | solicitation_addenda, requirements | schema_ready |
+| Addendum / Q&A | requested | verified + chunk + F11 change run | solicitation_addenda, solicitation_q_and_a, requirements, solicitation_change_runs/items | partial (F11) |
 | Proposal / quote | proposed | verified + contract + chunk | pricing_lines, proposal_sections, federal_identifiers | partial |
 | Award / board / staff report | awarded | verified + intel + chunk | awards, evaluation_scores, pricing_lines, win_loss_reviews | partial |
 | Bid tab / tabulation | awarded | verified + intel + chunk | pricing_lines (L&P), competitor_pricing_lines, competitor_bids | partial |
@@ -97,7 +97,7 @@ Every ingested pilot file must set `documents.procurement_package_id` → `procu
 | End-state concept | Live table? | Blocker |
 | --- | --- | --- |
 | Package as core unit | `procurement_packages` YES | Must be linked on intake (was 0 until backfill) |
-| Q&A clarifications | deferred | No discrete Q&A PDF in USABLE corpus |
+| Q&A clarifications | `solicitation_q_and_a` YES (F11) | Thin corpus — no discrete Q&A PDF in USABLE set yet; change runs AI_EXTRACTED until verify |
 | Wage determinations | deferred | No structured WD evidence acquired |
 | Standalone XLSX workbook | deferred | HUNT-06 unavailable |
 | proposals / proposal_versions | deferred | `proposal_sections` sufficient for SRC-01 |
