@@ -35,3 +35,11 @@ docs/pilot/drive-staging/**
 .ironbee/codex-threads.json
 .ironbee/vcs-cache.json
 .claude/settings.local.json
+
+# F23 corpus binaries (never commit)
+docs/corpus/downloads/**
+docs/pilot/acquired/**
+!docs/pilot/acquired/README.md
+!docs/corpus/*.md
+!docs/corpus/*.txt
+

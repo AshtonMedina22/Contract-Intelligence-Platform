@@ -37,6 +37,10 @@ dedupe/upsert. No upstream code, schema, or naming was copied.
 local addition beyond TenderRadar’s concept. Sync still only writes provider hits (or labeled
 fixtures) into `public_sources` — it does not adopt an upstream database, scoring, or fit rank.
 
+**F23 (2026-08-21):** Corpus acquisition reuses F2/F16 adapters for opportunity-shaped leads
+and keeps TenderRadar **REFERENCE ONLY**. Acquisition registry is local
+`acquisition_candidates` → F1 intake — not an upstream warehouse.
+
 # What we are explicitly NOT adopting
 
 - Any upstream database as our canonical store — `public_sources` is ours, RLS-scoped.

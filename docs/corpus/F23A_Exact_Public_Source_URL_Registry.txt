@@ -1,0 +1,302 @@
+F23A — EXACT PUBLIC SOURCE URL REGISTRY + SEED RECORDS
+USE THIS WITH F23 PUBLIC PROCUREMENT CORPUS ACQUISITION
+
+REPOSITORY:
+https://github.com/AshtonMedina22/Contract-Intelligence-Platform
+
+IMPORTANT:
+The prior F23 prompt named source systems but did not give enough exact public source URLs/endpoints.
+This addendum is authoritative for WHERE Cursor should begin looking.
+
+DO NOT ASK THE USER FOR MORE SOURCE LINKS.
+DO NOT STOP AFTER CHECKING THESE SEEDS.
+Use these as starting points, then recursively discover related official records.
+
+==================================================
+A. FEDERAL — OFFICIAL SOURCES
+==================================================
+
+SAM.gov Contract Opportunities human search:
+https://sam.gov/opportunities
+
+SAM.gov Public Opportunities API documentation:
+https://open.gsa.gov/api/get-opportunities-public-api/
+
+SAM.gov Public Opportunities API production endpoint:
+https://api.sam.gov/opportunities/v2/search
+
+SAM.gov Contracting / award search:
+https://sam.gov/contracting
+
+USAspending API root:
+https://api.usaspending.gov/
+
+USAspending endpoint documentation:
+https://api.usaspending.gov/docs/endpoints
+
+USAspending Advanced Award Search endpoint:
+https://api.usaspending.gov/api/v2/search/spending_by_award/
+
+USAspending Recipient Autocomplete:
+https://api.usaspending.gov/api/v2/autocomplete/recipient/
+
+USAspending NAICS Autocomplete:
+https://api.usaspending.gov/api/v2/autocomplete/naics/
+
+USAspending PSC Autocomplete:
+https://api.usaspending.gov/api/v2/autocomplete/psc/
+
+USAspending Contract Download endpoint:
+https://api.usaspending.gov/api/v2/download/contract/
+
+GSA eLibrary:
+https://www.gsaelibrary.gsa.gov/ElibMain/home.do
+
+For L&P seed federal searches use:
+Contract: 47QSWA22D008W
+SIN / service: 561612
+NAICS: 561612
+PSC: S206
+
+==================================================
+B. TEXAS — OFFICIAL PROCUREMENT / PERFORMANCE / LICENSE SOURCES
+==================================================
+
+Texas ESBD — statewide solicitation search:
+https://www.txsmartbuy.gov/esbd
+
+Texas VPTS — Vendor Performance Tracking System:
+https://www.txsmartbuy.gov/vpts
+
+Texas SmartBuy Purchase Order Lookup:
+https://www.txsmartbuy.gov/purchase-order-lookup
+
+Texas State Purchasing home:
+https://comptroller.texas.gov/purchasing/
+
+Texas Vendor Information Center:
+https://comptroller.texas.gov/purchasing/vendor/information.php
+
+Texas VPTS official program documentation:
+https://comptroller.texas.gov/purchasing/programs/vendor-performance-tracking/vendors.php
+
+Texas DPS TOPS public license search:
+https://tops.portal.texas.gov/psp-self-service/search/index
+
+L&P exact TOPS business result seed:
+https://tops.portal.texas.gov/psp-self-service/search/result/62670?type=business
+
+Texas Open Data — TxDOT Bid Tabulations:
+https://data.texas.gov/dataset/Bid-Tabulations/de7b-7dna
+
+Use Socrata/Open Data APIs where available instead of scraping rendered HTML.
+
+==================================================
+C. KNOWN HIGH-VALUE L&P PUBLIC SEED RECORDS
+==================================================
+
+These are SEEDS. Cursor must confirm current accessibility, source authority,
+checksum/download, procurement package identity, and classification before ingestion.
+
+1. TxDMV — L&P Purchase Order #0000016167
+https://ftp.txdmv.gov/pub/txdmv-info/fas/contract_reporting/60800%200000016167.pdf
+
+Use this to hunt:
+- linked TXMAS contract TXMAS-24-99003
+- proposal dated 06/23/2025
+- related TxDMV procurement/PO records
+- amendments, extensions, vendor performance if public
+
+2. Allen ISD — May 21, 2024 board packet
+https://swagit-attachments.granicus.com/uploads/video/agenda_file/306017/5-21_AllenISD.pdf
+
+3. Allen ISD — June 17, 2024 board packet/minutes
+https://swagit-attachments.granicus.com/uploads/video/agenda_file/308143/6-17_AllenISD.pdf
+
+4. Allen ISD — Contracted Vendors / Safety & Security
+https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3952/Aisd/c648f8bc-2683-439e-a28b-a74bb7a1ef0f/Contracted_Vendors_-_By_Commodity__Rev_11.10.2.pdf?disposition=inline
+
+5. Williamson County — L&P Security Services Contract + Proposal
+https://public.destinyhosted.com/wilcomindocs/2024/COM/20241126_1872/1770_43.35658_Services_Contract_with_proposal_Final.pdf
+
+Treat claims inside L&P's own proposal as L&P-proposed/internal-history evidence,
+NOT independently verified proof of all referenced past-performance claims.
+Use named buyers/contracts inside the proposal as DISCOVERY LEADS, then locate independent primary sources.
+
+6. Jefferson County — Preliminary Bid Tab
+https://jeffersoncountytx.gov/Purchasing/NoticesForBid/View/TAB/12
+
+7. Mesquite ISD — Sept. 1, 2023 Board Meeting
+https://swagit-attachments.granicus.com/uploads/video/agenda_file/270610/9-1_MesquiteISD.pdf
+
+8. Lancaster ISD — Aug. 27, 2025 Board Meeting
+https://lancasterisd.community.diligentoneplatform.com/document/9854/Regular%20Board%20Meeting%20-%20Wednesday%2C%20August%2027%2C%202.docx?handle=D92C05AA6E664FD9AEDBCB48347CE9F8
+
+9. Lancaster ISD — 2026 public voting record
+https://lancasterisd.community.diligentoneplatform.com/Portal/VotingRecords.aspx?ctl00_MainContent_VotingResultsGridChangePage=2_20&meetingTypeId=21&memberId=17&voting=1
+
+10. Texas DPS TOPS — L&P business license record
+https://tops.portal.texas.gov/psp-self-service/search/result/62670?type=business
+
+11. Texas DPS disciplinary-action archive seed
+https://www.dps.texas.gov/sites/default/files/documents/rsd/psb/finaldiscactions/company/202511pscodiscactions.pdf
+
+Do NOT infer current status from an old disciplinary report.
+Use current TOPS record for current license/insurance state.
+
+12. GSA eLibrary — L&P federal vehicle seed
+https://www.gsaelibrary.gsa.gov/ElibMain/home.do
+
+Search:
+L&P GLOBAL SECURITY, LLC
+47QSWA22D008W
+561612
+
+==================================================
+D. DISCOVERY LEADS FROM EXISTING L&P PUBLIC MATERIAL
+==================================================
+
+Search independent OFFICIAL sources for:
+
+Allen ISD
+Mesquite ISD
+Lancaster ISD
+McKinney ISD
+Wylie ISD
+Terrell ISD
+Williamson County
+Dallas County
+Travis County
+Texas Department of Transportation
+Texas Department of Motor Vehicles
+Texas A&M University / School of Law
+Employees Retirement System of Texas
+Texas Facilities Commission
+
+Do NOT treat an L&P proposal claim itself as independent verification.
+
+==================================================
+E. REQUIRED QUERY SEEDS
+==================================================
+
+Search identity variants:
+
+"L&P Global Security"
+"L & P Global Security"
+"L and P Global Security"
+
+Combine with:
+
+RFP
+RFQ
+IFB
+solicitation
+bid
+bid tab
+tabulation
+award
+contract
+agreement
+purchase order
+proposal
+pricing
+armed security
+unarmed security
+security guard
+guard services
+patrol
+board agenda
+minutes
+staff report
+renewal
+amendment
+extension
+option
+
+Verified identifier seeds after checking authoritative sources:
+
+B06267001
+47QSWA22D008W
+TXMAS-24-99003
+UEI/CAGE only after authoritative verification
+
+==================================================
+F. REQUIRED SEARCH BEHAVIOR
+==================================================
+
+Search engines are discovery tools only.
+
+For every discovery:
+1. identify original agency/buyer;
+2. locate primary official source;
+3. locate related procurement package documents;
+4. acquire official evidence;
+5. preserve source URL;
+6. checksum;
+7. Supabase Storage;
+8. normal extraction;
+9. human verification queue.
+
+When a seed gives only an agenda approval:
+hunt the actual contract.
+
+When a seed gives only a bid tab:
+hunt the solicitation and final award.
+
+When a seed gives only a contract:
+hunt the solicitation, bid tab, award, amendments and renewal.
+
+The goal is PROCUREMENT PACKAGE RECONSTRUCTION.
+
+==================================================
+G. SOURCE-SPECIFIC RULES
+==================================================
+
+SAM.gov:
+- Public Opportunities API requires a public API key.
+- Use pagination and archived/active windows.
+- Acquire public attachments where available.
+
+USAspending:
+- Public API endpoints currently require no authorization.
+- Use recipient autocomplete, spending_by_award, NAICS/PSC filters.
+- Preserve award IDs and retrieval metadata.
+
+Texas ESBD:
+- Public solicitation search does not require sign-in.
+- Search agency, status, class/item, keyword, solicitation ID, date range.
+- CSV export exists.
+- Monitor Addendum Posted / updates.
+
+VPTS:
+- Prefer authoritative vendor ID or PO when known.
+- Search also supports vendor name.
+- Recent published records only; older records may require open records.
+- Mark unavailable older items OPEN_RECORDS_REQUIRED / MANUAL_IMPORT.
+
+TOPS:
+- Public business-license search is available.
+- Current TOPS result controls current license/insurance state.
+- Historical disciplinary reports remain historical.
+
+Texas Open Data:
+- Prefer API/OData/Socrata access.
+- Preserve dataset ID, filter/query and retrieved_at.
+
+==================================================
+H. ACCEPTANCE ADDITION
+==================================================
+
+F23 may not PASS unless the acceptance report includes:
+
+- exact source URLs searched;
+- exact URLs successfully acquired;
+- exact URLs inaccessible/manual-only;
+- records/documents per source;
+- procurement packages reconstructed;
+- unresolved package gaps;
+- search saturation by high-priority buyer/entity.
+
+Never expose API keys.
+
+END F23A ADDENDUM

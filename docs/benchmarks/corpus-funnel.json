@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T18:16:41.359Z",
+  "generated_at": "2026-08-21T21:12:56.178Z",
   "stage_order": [
     "discovered",
     "acquired",
@@ -18,12 +18,12 @@
       "manifest_usable": 18
     },
     "acquired": {
-      "files": 33,
-      "bytes": 54245546
+      "files": 40,
+      "bytes": 136399712
     },
     "ingested": {
-      "documents": 34,
-      "document_versions": 34
+      "documents": 37,
+      "document_versions": 37
     },
     "parsed": {
       "runs_with_normalized_document": 71,
@@ -46,6 +46,7 @@
       "needs_review": 0,
       "status_mix": {
         "VERIFIED": 33,
+        "UPLOADED": 3,
         "FAILED": 1
       }
     },
@@ -60,10 +61,10 @@
     "canonical_promoted": {
       "pricing_lines_with_source_fact": 34,
       "pricing_lines_total": 34,
-      "procurement_packages": 22
+      "procurement_packages": 25
     },
     "ab_complete": {
-      "ab_packages": 15,
+      "ab_packages": 17,
       "ab_documents_verified": 23,
       "ab_packages_fully_verified": 15,
       "ab_package_keys_fully_verified": [

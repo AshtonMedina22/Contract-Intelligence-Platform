@@ -42,6 +42,10 @@ No upstream server code was copied into this repository.
 - Filter/pagination conventions and normalized citation fields (id, recipient, agency, amount, dates, NAICS/PSC, PoP, source URL, retrieved_at)
 - MCP-inspired **tool names/shapes** for Ask (search / get / recipient) without running MCP
 
+**F23 (2026-08-21):** Acquisition run calls `spending_by_award` for L&P / NAICS 561612 and stores
+hits as **REFERENCE_DATA** / LINK_ONLY candidates — never fabricated procurement packages, never
+canonical `awards` rows from this path alone.
+
 # What we are explicitly NOT adopting
 
 - Writing USAspending rows into canonical `awards` or `pricing_lines`
