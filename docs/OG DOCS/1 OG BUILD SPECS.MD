@@ -979,3 +979,518 @@ At any point the user can open Ask Intelligence and ask GPT a question in plain 
 That is the finished product.
 The current MASTER_BLUEPRINT.md is directionally correct, but this is the fuller canonical version because it explicitly restores the conversational GPT/Ask Intelligence experience, reports, detailed real-solicitation extraction, purpose-aware AI retrieval, market research, the final locked technical architecture, and the realistic public-document pilot strategy.
 
+
+Yes — this original prompt matters. It is not just a throwaway demo prompt. It contains several operational requirements that my last “final blueprint” did not state explicitly enough.
+The right interpretation is:
+588-page LP SETUP DRAFT = full product/business architecture
+this __prompts__.md = detailed live user-workflow requirements
+current repo TECH_STACK = current technical implementation authority
+Those three need to be merged.
+What this original adds that must be in the final blueprint
+Requirement from this original
+Final blueprint treatment
+Live RFP/RFQ upload → Analyze Solicitation
+REQUIRED. User must actually be able to drop in a real solicitation and process it.
+Very detailed solicitation extraction schema
+REQUIRED. Metadata, procurement fields, scope, personnel/compliance, pricing structure, evaluation criteria, individual requirements, and required forms/signatures/notarization.
+AI Extraction → Human Verification → Approve & Create Opportunity
+REQUIRED. This needs to remain the actual operational intake workflow.
+Automatically analyze the new opportunity after approval
+REQUIRED. Prior buyer history, wins, losses, pricing, evaluator evidence, similar opportunities, compliance readiness, missing information.
+Three requirement-response evidence states
+I missed this explicitly. REQUIRED: VERIFIED_DRAFT_AVAILABLE, REVIEW_REQUIRED, L&P_INPUT_REQUIRED.
+Grounded GPT response-generation contract
+REQUIRED. GPT output needs draft_response, sources_used, assumptions, missing_information, confidence — not merely prose.
+Proposal completion tracking
+I missed this explicitly. REQUIRED: Total Requirements, Verified, Drafted, Approved, L&P Input Required, Mandatory Outstanding, Required Attachments Missing.
+Visible trust/status badges
+REQUIRED: VERIFIED PUBLIC, ILLUSTRATIVE DEMO, AI EXTRACTED, HUMAN VERIFIED, WON, LOST, REVIEW REQUIRED, DO NOT USE, L&P INPUT REQUIRED.
+End-to-end live workflow acceptance test
+REQUIRED product acceptance journey, not just interview theater. Upload → extract → sources → verify → opportunity → intelligence → pricing → proposal → grounded GPT response → missing-data warning → contract lifecycle.
+Fail safely when PDF/AI fails
+REQUIRED engineering rule. No silent partial extraction/hallucination.
+
+Another important thing I omitted: data classification
+This original also preserves the four data classifications:
+verified_public
+illustrative_demo
+internal_unverified
+verified_internal
+Those should absolutely be in the production blueprint because verification status and data classification are not the same thing.
+Example:
+verified_public + HUMAN_VERIFIED
+verified_internal + HUMAN_VERIFIED
+internal_unverified + NEEDS_REVIEW
+illustrative_demo
+That distinction is important.
+What from this file should NOT control the final PaaS blueprint
+Some parts were explicitly written for the interview POC, so they should not become permanent product limitations.
+For example, the original said not to build bulk Drive crawling, production OCR, autonomous public research, billing, or large-scale vector migration yet.
+Those are phase restrictions, not end-state exclusions.
+Same with the old sidebar:
+Dashboard / Opportunities / RFP Intake / Requirements / Proposal Workspace / Pricing / Clients / Competitors / Win-Loss / Contracts / etc.
+That is the old bloated IA we already corrected. It should not come back.
+And client should now consistently mean Buyer / Agency / Procurement Customer, not CRM.
+
+So the final product model is now this
+The previous blueprint I gave you is still structurally right, but it needs these additions inserted:
+NEW RFP
+↓
+UPLOAD / ANALYZE
+↓
+STRICT STRUCTURED EXTRACTION
+↓
+AI_EXTRACTED
+↓
+HUMAN REVIEW
+Verify / Edit / Reject
+↓
+APPROVE & CREATE OPPORTUNITY
+↓
+AUTO-ANALYZE
+Buyer history
+L&P history
+Wins / losses
+Competitors
+Pricing evidence
+Compliance readiness
+Missing information
+↓
+BID STRATEGY
+↓
+REQUIREMENT WORKSPACE
+
+For each requirement:
+VERIFIED_DRAFT_AVAILABLE
+or
+REVIEW_REQUIRED
+or
+L&P_INPUT_REQUIRED
+↓
+GPT GENERATION
+returns:
+draft_response
+sources_used
+assumptions
+missing_information
+confidence
+↓
+HUMAN EDIT / APPROVE
+↓
+PROPOSAL PROGRESS
+Total
+Verified
+Drafted
+Approved
+Input Required
+Mandatory Outstanding
+Attachments Missing
+↓
+FINAL APPROVALS
+↓
+SUBMIT
+↓
+WIN / LOSS
+↓
+CONTRACT
+↓
+INTELLIGENCE IMPROVES
+And Ask Intelligence/GPT remains available across the entire application, separately from that proposal-generation workflow.
+So yes: this original file found real omissions in the blueprint I just gave you. The biggest ones were the explicit three-state evidence decision, structured GPT response contract, proposal progress/completeness tracking, data classifications, and the detailed live-RFP extraction/approval sequence.
+Those need to be part of the actual final MASTER_BLUEPRINT.md, not lost as “old demo prompt” details.
+
+
+
+
+
+ Build Live RFP Upload, Extraction & Drafting Demo
+Extend the existing L&P Proposal & Contract Intelligence proof-of-concept with a REAL live RFP ingestion workflow.
+Do not redesign the existing application or database architecture.
+The objective is to allow me during a live demonstration to upload a new RFP PDF and have the application:
+read the document;
+extract structured procurement information;
+create a staging record;
+show source-backed extracted requirements;
+allow human verification;
+create the new opportunity;
+analyze available historical evidence;
+create requirement-by-requirement draft responses where sufficient evidence exists;
+explicitly identify where L&P information is missing.
+Accuracy and provenance are more important than completing every field.
+
+1. NEW RFP INTAKE
+Build route:
+/intake
+Create a professional upload interface:
+New RFP / RFQ Intake
+Fields:
+PDF upload
+optional internal opportunity name
+Button:
+Analyze Solicitation
+Accept PDF files for this proof-of-concept.
+The uploaded document must be processed server-side.
+Do not expose AI API credentials to the browser.
+
+2. DOCUMENT PROCESSING
+Create a server-side document-analysis service.
+Use a document-capable AI model that supports:
+PDF/document understanding;
+structured JSON output;
+long document analysis.
+Configure credentials only through server environment variables.
+Do not put API keys in client components.
+For this POC, optimize for digitally generated PDFs.
+If extraction fails because a document is scanned/image-only, return a clear status:
+OCR REQUIRED — This document requires the production OCR pipeline.
+Do not silently hallucinate missing text.
+
+3. STRICT EXTRACTION SCHEMA
+The model must return structured JSON conforming to an explicit schema.
+Extract:
+Solicitation Metadata
+client_name
+solicitation_number
+solicitation_title
+solicitation_type
+issue_date
+questions_due_date
+proposal_due_date
+anticipated_award_date
+contract_start_date
+contract_end_date
+base_term
+option_years
+submission_method
+procurement_portal
+estimated_value if explicitly stated
+Procurement Data
+client_type
+NAICS codes
+PSC codes
+set_aside
+purchasing_vehicle
+federal/state/local designation
+Scope
+service_types
+armed/unarmed
+PPO/off-duty police if applicable
+locations
+number_of_posts
+guard_count if stated
+schedules
+hours
+coverage requirements
+vehicles/equipment
+supervisor requirements
+special operational requirements
+Personnel / Compliance
+licenses
+certifications
+background requirements
+fingerprinting
+drug screening
+firearm qualifications
+experience requirements
+security clearance requirements
+training requirements
+insurance requirements
+Pricing
+Extract:
+pricing_type
+pricing_instructions
+required labor categories
+requested pricing rows
+requested pricing columns
+overtime treatment
+holiday treatment
+equipment/vehicle pricing
+base year
+option-year pricing
+wage determination references
+not-to-exceed constraints
+other pricing instructions
+Do NOT generate prices.
+Only extract what the client is requesting.
+Evaluation
+Extract:
+evaluation categories
+points or percentages
+pass/fail criteria
+price weight
+technical weight
+experience weight
+staffing weight
+other scored categories
+Requirements
+Every distinct requirement must become its own structured object containing:
+requirement_text
+normalized_title
+requirement_type
+mandatory boolean
+evaluation_points if stated
+source_page
+source_section
+source_excerpt
+confidence
+response_required
+attachment_required
+Possible requirement types:
+administrative
+technical
+operational
+staffing
+pricing
+compliance
+legal
+insurance
+past_performance
+reference
+personnel
+transition
+technology
+other
+Required Documents / Forms
+Extract:
+form name
+mandatory
+source page
+due with proposal?
+signature required?
+notarization required if stated
+
+4. NEVER ALLOW UNSOURCED EXTRACTION
+Each extracted requirement and important field must retain:
+source_page;
+source_section when available;
+source_excerpt where feasible;
+confidence;
+verification_status.
+Initial verification status:
+ai_extracted
+AI extraction is not automatically trusted.
+
+5. STAGING REVIEW SCREEN
+After analysis, route user to:
+/intake/[id]/review
+Create a review interface.
+Header:
+AI Extraction — Human Verification Required
+Show:
+Solicitation Summary
+Client
+Solicitation
+Due Date
+Contract Term
+Services
+Pricing Format
+Requirements Matrix
+Columns:
+Requirement
+Type
+Mandatory
+Weight
+Source
+Confidence
+Verification
+Actions:
+Verify
+Edit
+Reject
+Allow batch verification where appropriate.
+Clicking source should display available source evidence.
+Clearly explain:
+AI-extracted data remains staging data until verified.
+
+6. CREATE OPPORTUNITY
+Add button:
+Approve & Create Opportunity
+Only after review.
+Move/copy verified information into the canonical:
+clients;
+opportunities;
+requirements;
+documents;
+and related pricing-structure records supported by the current schema.
+Preserve provenance.
+
+7. OPPORTUNITY ANALYSIS
+Once created, automatically analyze available database information.
+Display:
+L&P History With This Client
+previous opportunities
+wins
+losses
+pricing
+evaluation data
+Similar Historical Opportunities
+Rank using currently available structured attributes:
+client type
+service type
+geography
+contract characteristics
+Do not implement embeddings if they are not already implemented.
+Win/Loss Risks
+Surface:
+previous losses;
+documented evaluator weaknesses;
+weak proposal sections;
+unavailable information.
+Do not claim causality without evidence.
+Compliance Readiness
+Compare current RFP requirements against available compliance records.
+Statuses:
+Verified Available
+Expiring
+Missing
+Unknown
+
+8. REQUIREMENT RESPONSE WORKSPACE
+For each requirement, determine one of these evidence states:
+VERIFIED_DRAFT_AVAILABLE
+Sufficient verified source information exists to build a grounded draft.
+REVIEW_REQUIRED
+Potentially useful source information exists but is not approved/fully verified.
+L&P_INPUT_REQUIRED
+No sufficient verified evidence exists.
+This classification must occur BEFORE generating a response.
+
+9. DRAFT GENERATION
+Add action:
+Generate Draft Response
+Only generate a response when evidence status is:
+VERIFIED_DRAFT_AVAILABLE
+or
+REVIEW_REQUIRED.
+The generation prompt must include ONLY:
+the current RFP requirement;
+verified L&P data;
+approved proposal sections;
+explicitly selected review-required sections;
+verified public L&P information;
+relevant verified client research already present in the database.
+Do not send all historical proposals blindly.
+The generated draft must return:
+draft_response
+sources_used
+assumptions
+missing_information
+confidence
+Every factual assertion should be grounded in supplied evidence.
+Never invent:
+employee counts;
+turnover metrics;
+staffing capacity;
+response times;
+certifications;
+contract values;
+years of experience;
+customer references;
+prices;
+margins;
+performance statistics.
+If support does not exist, explicitly state:
+L&P INPUT REQUIRED
+and identify the specific information needed.
+
+10. REQUIREMENT WORKSPACE UX
+Inside /workspace/[id], enhance Proposal Builder.
+For selected requirement show:
+LEFT SIDE:
+exact requirement
+page/section
+evaluation weight
+mandatory status
+client instructions
+relevant previous L&P history
+RIGHT SIDE:
+Evidence Status
+Suggested Sources
+Draft Response
+Sources Used
+Missing Information
+Human Review Status
+Actions:
+Generate Draft
+Edit
+Approve
+Request L&P Input
+View Sources
+Approved response should update requirement response status.
+
+11. RFP COMPLETION DASHBOARD
+Add proposal-progress indicators:
+Total Requirements
+Verified Requirements
+Drafted
+Approved
+L&P Input Required
+Mandatory Requirements Outstanding
+Required Attachments Missing
+Example:
+84 Total Requirements
+72 Verified
+51 Drafted
+38 Approved
+7 L&P Input Required
+3 Mandatory Items Outstanding
+
+12. DEMO SAFETY REQUIREMENTS
+This is critical.
+The application must visibly distinguish:
+VERIFIED PUBLIC DATA
+ILLUSTRATIVE DEMO DATA
+AI EXTRACTED — NOT VERIFIED
+HUMAN VERIFIED
+L&P INPUT REQUIRED
+Do not silently upgrade AI extraction to verified status.
+Do not fabricate data merely to create a complete-looking proposal.
+
+13. DEMO EXPERIENCE
+The live demo should support this sequence:
+Open /intake.
+Upload a real RFP PDF.
+Click Analyze Solicitation.
+Show extracted solicitation metadata.
+Show extracted pricing format.
+Show evaluation/scoring criteria.
+Show requirement matrix with source pages.
+Verify several requirements.
+Create the opportunity.
+Open the Proposal Workspace.
+Select a requirement for which verified evidence exists.
+Generate a grounded draft.
+Show exact sources used.
+Select a requirement for which evidence does NOT exist.
+Show "L&P INPUT REQUIRED" rather than invented content.
+Show proposal completion/gap status.
+That is the target proof-of-concept.
+
+14. DO NOT BUILD YET
+Do not implement:
+bulk historical Drive crawling;
+production OCR pipeline;
+automatic web crawling;
+autonomous proposal submission;
+autonomous final pricing;
+large-scale vector migration;
+Google Docs final export;
+billing/subscriptions.
+Those remain future-state capabilities.
+
+15. QUALITY CHECK
+Before completion:
+ensure document upload works;
+ensure PDF analysis works server-side;
+ensure structured extraction validates against the schema;
+ensure errors fail safely;
+ensure requirements retain source information;
+ensure extracted records start unverified;
+ensure canonical creation requires approval;
+ensure L&P Input Required works;
+ensure pricing is never invented;
+run typecheck/lint/build;
+fix all build errors;
+provide a concise summary of what is live versus future-state.
+
+

@@ -1,0 +1,504 @@
+Yes. Looking at the repo + the full product context, the right mental model is much broader than “AI RFP tool.”
+Your master document defines a Proposal, Contract & Procurement Intelligence Platform . In practical terms, it is trying to combine GovWin/Deltek-style procurement intelligence + Loopio/Responsive-style proposal response management + contract/compliance management + evidence-backed pricing + document intelligence/verification + a grounded GPT analyst, all powered by the contractor’s verified historical records.
+What you're actually building
+The complete product loop is:
+SOURCE DOCUMENTS / PUBLIC PROCUREMENT DATA
+        ↓
+INGEST / PARSE / EXTRACT
+        ↓
+HUMAN VERIFY + PROVENANCE
+        ↓
+CANONICAL PROCUREMENT INTELLIGENCE
+        ↓
+NEW PURSUIT / RFP
+        ↓
+REQUIREMENTS
+        ↓
+BUYER + COMPETITOR + MARKET RESEARCH
+        ↓
+BID STRATEGY
+        ↓
+PRICING INTELLIGENCE
+        ↓
+RESPONSE / PROPOSAL AUTHORING
+        ↓
+SUBMISSION
+        ↓
+WIN / LOSS / EVALUATION
+        ↓
+CONTRACT / SERVICE PLAN / TERMS
+        ↓
+CHANGES / RENEWAL / REBID
+        ↓
+RESULT BECOMES NEW HISTORICAL INTELLIGENCE
+Your end-state explicitly requires the system to ingest a large solicitation, extract its requirements/evaluation/pricing/forms, require human verification, research the buyer, analyze historical wins/losses and competitors, support pricing, generate grounded responses, manage submission, capture the result, then manage the resulting contract and renewals.
+And your data model isn't merely “documents + chat.” It encompasses pricing, competitors, outcomes, contracts, compliance, experience, public research, and AI run/citation/report history.
+Your repo is already substantially beyond a skeleton
+You already have real implementation for the major workspaces.
+Your pursuit area contains actual routes for pricing, requirements, response, submission, result, intelligence, staffing, documents and contract creation. The component layer already includes competitor briefs, evaluation panels, final-bid handling, four-truth pricing, comparables, a Glide pricing grid, proposal packet gaps, and pursuit intelligence summaries.
+Your contract side isn't generic CRUD either: the contract workspace already separates Service Plan, Commercial Terms, Changes and Renewal, which matches the final product model.
+Your Python processor already has separate parsers, extractors, evaluation, jobs, PDF quality handling, routing policy and storage logic.
+So the goal is not to find another repo and rebuild your app on top of it. The efficient approach is to use several public projects as reference implementations for individual engines.
+Public repos actually relevant to the whole platform
+Your subsystem
+Public repo worth studying
+What it saves you from reinventing
+Recommendation
+Overall RFP / proposal workflow
+RFPilot
+RFP repository, requirement extraction, proposal intelligence, capability matching, audit/admin, DOCX proposal generation
+HIGH PRIORITY
+Pursuit / response workspace
+AutoRFP
+Multi-tenant RFP projects, upload → question extraction → evidence search → response generation → source attribution/editing
+HIGH PRIORITY
+Human verification / source evidence
+OpenContracts / cite
+PDF-coordinate source mapping, annotations, human-as-ground-truth workflow, extraction jobs, corpuses, versioning, full-text/vector search
+VERY HIGH PRIORITY
+Document parsing / normalization
+Docling
+PDF/DOCX/XLSX parsing, page/layout/table structures, OCR, normalized document representation
+ALREADY ALIGNED — DEEPEN USE
+Alternate ingestion/parser patterns
+Unstructured
+File-type routing, partitioning, chunking, ingestion pipelines and preprocessing
+BENCHMARK / REFERENCE
+Public RFP discovery
+TenderRadar
+SAM/TED/UK/etc. source adapters, normalization, sync jobs, opportunity filtering/matching, deadline tracking
+HIGH PRIORITY FOR RESEARCH ENGINE
+Federal opportunity intelligence
+OpenSAM
+SAM.gov adapter, NAICS/search UX, opportunity discovery, semantic matching
+USE PARTS
+Public procurement data model
+Open Contracting / OCDS
+Mature tender → award → contract → implementation/amendment lifecycle data vocabulary
+VERY HIGH VALUE AS SCHEMA REFERENCE
+Federal award/competitor intelligence
+USAspending API
+Production federal award/recipient/agency/spending search architecture and public data
+USE DATA/API PATTERNS
+Agent/tool access to federal awards
+USAspending MCP Server
+Already-normalized tools for award search, award detail, recipients, agencies, analytics
+USEFUL PUBLIC-RESEARCH TOOL
+Contract lifecycle architecture
+Public-Sector CLM
+Contract workspace, obligations, amendments, renewals, audit logs, RBAC, approval workflows
+DESIGN REFERENCE
+Modern CLM UX
+Whereas
+Intake → repository → review → approvals → document history → remediation workflow
+REFERENCE ONLY / AGPL
+Document/contract authoring lifecycle
+Wraft
+Structured document creation, collaboration, lifecycle, templates and document automation
+REFERENCE ONLY / AGPL
+Pricing spreadsheet UX
+Glide Data Grid
+Production-grade spreadsheet behaviors, custom cells, editing, frozen areas, selection, large datasets
+YOU ALREADY USE IT — MINE ITS EXAMPLES
+Response editor
+Novel
+Tiptap/Notion-style editing, contextual AI commands, slash menus and rich editor UX
+YOU ALREADY CHOSE IT — BORROW PATTERNS
+Ask / public research presentation
+Morphic
+Cited search answers, search-provider abstraction, source cards, streaming generative UI, model switching
+HIGH PRIORITY
+Deep buyer/competitor research
+Open Deep Research
+Search planning, multi-source research, parallel research, compression, final sourced reports, MCP tooling
+REFERENCE THE ORCHESTRATION
+Natural-language analytics / BI
+WrenAI
+Semantic business layer, governed NL→SQL, relationships/metrics definitions, validation and reproducible queries
+VERY HIGH PRIORITY FOR ASK-THE-DATA
+
+The repos I would study first
+1. RFPilot — closest direct product analog
+RFPilot GitHub
+This is probably the single closest repo to your pre-award workflow.
+It already has:
+RFP repository
+requirement/deadline/evaluation/compliance extraction
+proposal intelligence
+company capability matching
+gap identification
+proposal response generation
+structured Word proposal output
+user management
+audit log
+(GitHub)
+Its backend is also separated into services for extraction, AI, matching, DOCX and email, rather than dumping everything into route handlers.
+License: MIT, so code can be adapted commercially as long as you preserve the required copyright/license notices.
+Do not clone its product architecture wholesale. Your four-truth model, evidence verification and downstream contract intelligence are materially more sophisticated.
+
+2. AutoRFP — extremely relevant to your Pursuit → Response workflow
+AutoRFP GitHub
+This is useful because it is already Next.js + React + TypeScript + Supabase Auth + PostgreSQL, so many implementation patterns are close to yours.
+It has:
+organizations / multi-tenancy
+RFP projects
+document uploads
+automatic RFP question extraction
+project knowledge sources
+multi-step answer generation
+citations
+response editing
+source relevance display
+(GitHub)
+That maps well to:
+Your Pursuit
+→ Requirements
+→ Evidence
+→ Response
+License: MIT.
+I would inspect this specifically before continuing to invent more Response UX.
+
+3. OpenContracts / cite — probably the most valuable repo for Data Ops
+OpenContracts / cite GitHub
+This one is very aligned with the philosophy of your platform.
+It treats:
+human annotation as ground truth
+and supplies:
+exact source-document annotations
+page/layout coordinates
+human review
+document corpus management
+version history
+structured extraction
+full-text search
+vector search
+extraction pipelines
+APIs
+MCP access
+relationships between documents
+(GitHub)
+Its PDF layer preserves exact token coordinates and maps extracted text back to the source PDF—very relevant to your source_page / excerpt / View Source requirement. (GitHub)
+This is where I would look before building more custom:
+PDF source viewer
+↕
+highlighted evidence
+↕
+fact extraction
+↕
+human verify/reject
+↕
+annotation/provenance
+And importantly: MIT license, including commercial use. (GitHub)
+
+4. TenderRadar — directly relevant to your public procurement engine
+TenderRadar GitHub
+This is not an AI toy. It is a public procurement aggregation application.
+It already implements adapters for:
+SAM.gov
+TED Europe
+UK Find a Tender
+Swiss procurement
+and normalizes them into a single tender feed with filters, matching and tracking. (GitHub)
+The particularly useful code for you is probably:
+lib/sam.ts
+lib/ted.ts
+lib/fts.ts
+↓
+normalize external procurement records
+↓
+common internal representation
+That's exactly the kind of pattern you need for:
+public_sources
+research_runs
+research_facts
+buyer_intelligence
+Your master specification requires public solicitations, awards, contracts, bid tabs, budgets, procurement plans, evaluator reports, incumbents, expirations and sourced research facts.
+I would inspect its adapters, not adopt its DB.
+
+5. Open Contracting Data Standard — major schema reference
+Open Contracting Data Standard GitHub
+You should absolutely study OCDS before continuing to invent every external-procurement entity yourself.
+It models a contracting lifecycle that can include:
+planning
+→ tender
+→ award
+→ contract
+→ implementation
+→ contract amendments
+and maintains change history over that process. (GitHub)
+I would not replace your internal L&P schema with OCDS.
+Instead:
+PUBLIC PROCUREMENT SOURCE
+        ↓
+OCDS-ish normalized external structure
+        ↓
+your staging / provenance layer
+        ↓
+verified research facts
+        ↓
+your own canonical L&P intelligence schema
+That can save you from inventing the public procurement vocabulary from scratch.
+
+6. USAspending API — use actual federal award infrastructure
+USAspending API GitHub
+This is the actual open-source backend for USAspending.gov.
+It gives you real patterns and endpoints around:
+federal awards
+recipients/contractors
+agencies
+NAICS
+award amounts
+dates
+spending searches
+award filtering
+recipient profiles
+(GitHub)
+License: CC0-1.0. (GitHub)
+For federal buyer/competitor intelligence, there is no reason for you to reinvent this data collection.
+There is even an existing:
+USAspending MCP Server
+with 18 normalized tools for searching awards, agencies, recipients and spending analytics. It is Apache-2.0 and its tool handlers explicitly normalize public API responses rather than fabricating missing fields. (GitHub)
+That could eventually plug directly into your public_research tool interface.
+
+7. Public-sector CLM — excellent blueprint for Contracts
+Public-Sector Contract Lifecycle Management repo
+It models:
+Request
+→ Draft
+→ Review
+→ Approvals
+→ Signature
+→ Active
+→ Obligations
+→ Amendments
+→ Renewals
+→ Closeout
+with 28 documented entities, audit logging, document versions, obligations, amendments and renewals. (GitHub)
+This is very useful against your existing:
+Contract
+├── Overview
+├── Service Plan
+├── Commercial Terms
+├── Changes
+└── Renewal
+Your repo already has those workspace routes.
+But: this repo does not provide a normal permissive OSS code license; its documentation says it is for reference/demo purposes. (GitHub)
+So use it as schema/workflow design documentation, not code you copy.
+
+8. Whereas — useful CLM workflow/UX reference
+Whereas GitHub
+Good ideas here include:
+guided intake
+inbox/triage
+request → repository conversion
+record workspace
+document history
+approval surfaces
+clause/playbook findings
+deterministic remediation
+organization-scoped RLS
+explicit human review for machine extraction
+(GitHub)
+That human-review principle is very consistent with your architecture.
+But AGPL-3.0 means I would treat it as a UX/design reference, not casually copy its implementation into a proprietary future PaaS. (GitHub)
+Same warning for:
+Wraft GitHub
+Wraft is useful for document lifecycle, authoring, structured content and contract/document workflows, but it is also AGPLv3. (GitHub)
+
+9. Glide Data Grid — stop reinventing spreadsheet behavior
+Glide Data Grid GitHub
+You already chose the right foundation.
+The repo includes real patterns for:
+editable cells
+custom cell renderers
+large datasets
+merged cells
+row/column selection
+frozen regions
+update invalidation
+keyboard interactions
+Next.js integration
+(GitHub)
+MIT licensed.
+Your business-specific pricing math still belongs in your own backend. But before Cursor writes custom grid behavior, it should inspect Glide's Storybook/examples.
+
+10. Novel — reference implementation for your Response editor
+Novel GitHub
+You already use Tiptap, and your master spec explicitly calls for Novel-style interaction patterns.
+Novel supplies:
+Tiptap composition
+Notion-like editor
+slash interactions
+command menus
+contextual AI operations
+rich-content editor patterns
+(GitHub)
+Apache-2.0.
+You don't need to invent that editor experience yourself.
+What you add around it is the important part:
+Requirement | Response Editor | Evidence/Sources
+
+11. Morphic — relevant to both Ask and Public Research
+Morphic GitHub
+Morphic already implements:
+grounded cited answers
+multiple search providers
+quick/adaptive research modes
+streamed results
+rich generated UI
+search history
+provider/model abstraction
+Ollama
+Vercel AI Gateway
+Supabase authentication
+(GitHub)
+Apache-2.0.
+Your application shouldn't become Morphic. But your:
+Find or Ask GPT
+Public Research
+Buyer Intelligence Brief
+Competitor Research
+Sources
+Research Inspector
+can borrow heavily from it.
+
+12. Open Deep Research — public buyer/competitor research engine
+Open Deep Research GitHub
+This is worth studying for your research layer because it already handles:
+research planning
+search-tool abstraction
+multiple search providers
+MCP
+source summarization
+evidence compression
+final report synthesis
+parallel research
+evaluation
+(GitHub)
+MIT license.
+Your current blueprint says not to add LangGraph just because AI exists. I agree with that.
+So I would copy the patterns and interfaces, not necessarily install its entire LangGraph runtime immediately.
+
+13. WrenAI — much better reference for “Ask the Data”
+WrenAI GitHub
+This is one I would add to your master reference set.
+It gives AI a semantic/business context layer over SQL, so it understands:
+models
+relationships
+business definitions
+trusted metrics
+approved joins
+stored NL→SQL examples
+validation
+governance
+rather than simply exposing raw Postgres tables to an LLM. (GitHub)
+This directly addresses eventual questions such as:
+“What was our observed win rate for Texas ISD armed-security bids over the last three years?”
+That is not a RAG question. It is structured business analytics.
+WrenAI is Apache-2.0 and currently supports PostgreSQL among its data sources. (GitHub)
+
+14. Docling + Unstructured — use as parser benchmarks, not application architecture
+Your own blueprint already correctly requires provider abstraction here.
+Docling is appropriate for:
+PDF structure
+reading order
+tables
+DOCX
+XLSX
+OCR
+unified document representation
+And:
+Unstructured GitHub
+is worth keeping as the alternate parser/ETL benchmark because it has mature file-type routing and document partitioning across many formats. (GitHub)
+Unstructured's core repo is Apache-2.0. (GitHub)
+What I would put in your reference set
+If I were giving Cursor a “do not reinvent existing patterns” reference pack, these would be the primary projects:
+Priority
+Repo
+Mainly reference for
+1
+RFPilot
+Overall RFP/response lifecycle
+2
+AutoRFP
+Pursuit + requirement + response UX
+3
+OpenContracts / cite
+Data Ops, evidence, verification, source mapping
+4
+TenderRadar
+Public procurement ingestion/adapters
+5
+OCDS
+Procurement lifecycle/data modeling
+6
+USAspending API/MCP
+Federal buyer/award/competitor intelligence
+7
+Public-Sector CLM
+Contracts/renewals/compliance schema/workflow
+8
+Glide Data Grid
+Pricing workbench
+9
+Novel
+Response editor
+10
+Morphic
+Ask + citations + public research UX
+11
+Open Deep Research
+Buyer/competitor research orchestration
+12
+WrenAI
+Natural-language structured analytics
+13
+Docling
+Primary parser benchmark
+14
+Unstructured
+Alternate ingestion/parser benchmark
+
+The key architectural point
+You should not merge 14 codebases into yours.
+Your repo should remain the product shell and source of truth:
+YOUR REPO
+│
+├── Pursuit engine
+├── Contract engine
+├── Intelligence engine
+├── Pricing engine
+├── Response engine
+├── Data Ops / verification
+├── Supabase canonical data
+└── provenance / four-truth business rules
+Then selectively borrow:
+RFPilot
+    → RFP workflow patterns
+
+AutoRFP
+    → question/response interaction patterns
+
+OpenContracts
+    → evidence + verification architecture
+
+TenderRadar/OCDS/USAspending
+    → public procurement ingestion
+
+CLM references
+    → contract workflows
+
+Glide
+    → spreadsheet UI
+
+Novel
+    → rich response editor
+
+Morphic/Open Deep Research
+    → research + source UX
+
+WrenAI
+    → structured business analytics
+That is the path that prevents you from rebuilding established mechanics without throwing away the genuinely specialized procurement architecture you've already built.
+One licensing rule is important: MIT/Apache/CC0 projects are the easiest ones to adapt directly; AGPL repos such as Whereas and Wraft should be treated as design/reference material unless you deliberately accept their copyleft obligations.
+
