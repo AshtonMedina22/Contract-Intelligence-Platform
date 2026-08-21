@@ -21,6 +21,7 @@ export type ReportKind =
 
 export type IntelligenceReport = {
   kind: ReportKind;
+  purpose: RetrievalPurpose;
   title: string;
   answer: string;
   sections: { heading: string; bullets: string[] }[];
@@ -29,6 +30,7 @@ export type IntelligenceReport = {
   limitations: string;
   insufficient: boolean;
   evidenceHits: KnowledgeHit[];
+  reportRunId: string | null;
 };
 
 const INSUFFICIENT = "Insufficient verified evidence to answer this reliably.";
@@ -91,7 +93,12 @@ export const REPORT_CATALOG: {
 
 export async function generateIntelligenceReport(
   kind: ReportKind,
-  opts?: { opportunityId?: string | null; query?: string },
+  opts?: {
+    opportunityId?: string | null;
+    query?: string;
+    persist?: boolean;
+    parentReportRunId?: string | null;
+  },
 ): Promise<IntelligenceReport> {
   const meta = REPORT_CATALOG.find((r) => r.kind === kind)!;
   const supabase = await createClient();
@@ -373,8 +380,9 @@ export async function generateIntelligenceReport(
     ? INSUFFICIENT
     : `${meta.title} assembled from verified canonical records only. See sections and sources. Unsupported conclusions withheld.`;
 
-  return {
+  const report: IntelligenceReport = {
     kind,
+    purpose: meta.purpose,
     title: meta.title,
     answer,
     sections,
@@ -387,5 +395,15 @@ export async function generateIntelligenceReport(
       : `Observed records only. Not market share. Final pricing and submission remain human decisions. DO_NOT_USE excluded unless retrospective purpose. ${eligibilityLimitation(meta.purpose)}`,
     insufficient,
     evidenceHits: hits,
+    reportRunId: null,
   };
+  if (opts?.persist !== false) {
+    const { persistReportRun } = await import("@/lib/reports/persist-run");
+    report.reportRunId = await persistReportRun(report, {
+      query: opts?.query ?? null,
+      opportunityId: opts?.opportunityId ?? null,
+      parentReportRunId: opts?.parentReportRunId ?? null,
+    });
+  }
+  return report;
 }

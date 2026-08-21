@@ -357,6 +357,7 @@ export function createAskTools(ctx: AskToolContext) {
         const evidence = (report.evidenceHits ?? []).map(fromKnowledgeHit);
         pushEvidence(ctx, evidence);
         return {
+          reportRunId: report.reportRunId,
           title: report.title,
           answer: report.answer,
           sections: report.sections,
@@ -397,7 +398,7 @@ export function createAskTools(ctx: AskToolContext) {
 
     search_verified_research_facts: tool({
       description:
-        "DURABLE research rail: search org research_facts with verification_status=HUMAN_VERIFIED only. Prefer this over live search_public_research when verified research exists. Never returns AI_EXTRACTED as verified. Public ≠ L&P truth until verified.",
+        "DURABLE research rail: search org HUMAN_VERIFIED research_facts only (verification_status=HUMAN_VERIFIED). Prefer this over live search_public_research when verified research exists. Never returns AI_EXTRACTED as verified. Public ≠ L&P truth until verified.",
       inputSchema: z.object({
         query: z.string().min(1),
         limit: z.number().int().min(1).max(30).optional(),
@@ -408,7 +409,7 @@ export function createAskTools(ctx: AskToolContext) {
         const { data, error } = await supabase
           .from("research_facts")
           .select(
-            "id, title, claim, excerpt, source_url, source_document_id, verification_status, published_on, retrieved_at, provider",
+            "id, title, claim, excerpt, source_url, source_document_id, verification_status, published_on, retrieved_at, provider, research_run_id",
           )
           .eq("verification_status", "HUMAN_VERIFIED")
           .or(
@@ -465,6 +466,8 @@ export function createAskTools(ctx: AskToolContext) {
           entity: null,
           topic: row.provider ?? "research_fact",
           data_classification: classification,
+          research_run_id: row.research_run_id,
+          research_fact_id: row.id,
         };
         });
         pushEvidence(ctx, evidence);
@@ -809,6 +812,11 @@ export function createAskTools(ctx: AskToolContext) {
                 verification_status: "STRUCTURED_RECORD",
                 entity: result.metricId,
                 topic: "structured_analytics",
+                analytical_run_id: result.runId,
+                structured_ref: {
+                  metric_id: result.metricId,
+                  plan_fingerprint: result.planFingerprint,
+                },
               },
             ]
           : [];

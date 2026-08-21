@@ -9,6 +9,12 @@ import { selectAskModelId, resolveChatModel } from "@/lib/ask/model";
 import { createAskTools, type AskToolContext } from "@/lib/ask/tools";
 import { purposeRequiresDraftingGates, type RetrievalPurpose } from "@/lib/retrieval/purpose";
 import type { NormalizedEvidence } from "@/lib/ask/evidence";
+import {
+  collectResultRefs,
+  traceLinksFromOutput,
+  type PendingToolTrace,
+} from "@/lib/ask/persist-run";
+import { sanitizeAuditText, sanitizeToolParams } from "@/lib/ask/sanitize-tool-params";
 
 export type StreamAskChatOpts = {
   messages: UIMessage[];
@@ -50,6 +56,7 @@ ${drafting ? "- For PROPOSAL_DRAFTING / drafting purposes: public/unverified sou
 }
 
 export async function streamAskChat(opts: StreamAskChatOpts) {
+  const startedAtMs = Date.now();
   const modelId = selectAskModelId();
   if (!modelId) {
     throw new Error(
@@ -65,6 +72,11 @@ export async function streamAskChat(opts: StreamAskChatOpts) {
   const tools = createAskTools(ctx);
   const model = resolveChatModel(modelId);
   const modelMessages = await convertToModelMessages(opts.messages);
+  const activeTools = new Map<
+    string,
+    { startedAtMs: number; toolName: string; input: Record<string, unknown> }
+  >();
+  const traces: PendingToolTrace[] = [];
 
   const result = streamText({
     model,
@@ -72,11 +84,41 @@ export async function streamAskChat(opts: StreamAskChatOpts) {
     messages: modelMessages,
     tools,
     stopWhen: stepCountIs(8),
+    onToolExecutionStart({ toolCall }) {
+      activeTools.set(toolCall.toolCallId, {
+        startedAtMs: Date.now(),
+        toolName: toolCall.toolName,
+        input: sanitizeToolParams(toolCall.input),
+      });
+    },
+    onToolExecutionEnd({ toolCall, toolExecutionMs, toolOutput }) {
+      const active = activeTools.get(toolCall.toolCallId);
+      const finishedAtMs = Date.now();
+      const started = active?.startedAtMs ?? finishedAtMs - toolExecutionMs;
+      const failed = toolOutput.type === "tool-error";
+      const output = failed ? null : toolOutput.output;
+      const links = traceLinksFromOutput(output);
+      traces.push({
+        toolCallId: toolCall.toolCallId,
+        toolName: active?.toolName ?? toolCall.toolName,
+        safeParams: active?.input ?? sanitizeToolParams(toolCall.input),
+        resultRefs: collectResultRefs(output),
+        startedAt: new Date(started).toISOString(),
+        finishedAt: new Date(finishedAtMs).toISOString(),
+        latencyMs: Math.max(0, Math.round(toolExecutionMs)),
+        status: failed ? "FAILED" : "SUCCEEDED",
+        errorMessage: failed ? sanitizeAuditText(toolOutput.error) : null,
+        ...links,
+      });
+      activeTools.delete(toolCall.toolCallId);
+    },
   });
 
   return {
     result,
     modelId,
     getEvidence: () => ctx.evidenceBag,
+    getTraces: () => traces,
+    startedAtMs,
   };
 }

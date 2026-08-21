@@ -41,6 +41,13 @@ export type NormalizedEvidence = {
   topic: string | null;
   /** Trust authority axis; independent from verification_status. */
   data_classification?: DataClassification | null;
+  /** Optional F20 lineage. F4/F6 records remain separate and are linked, never merged. */
+  document_version_id?: string | null;
+  extracted_fact_id?: string | null;
+  research_run_id?: string | null;
+  research_fact_id?: string | null;
+  analytical_run_id?: string | null;
+  structured_ref?: Record<string, unknown> | null;
 };
 
 export function makeEvidenceId(prefix: string, key: string): string {
@@ -94,6 +101,7 @@ export function normalizeStructuredRow(opts: {
   published_date?: string | null;
   verification_status?: string;
   data_classification?: DataClassification | null;
+  structured_ref?: Record<string, unknown> | null;
 }): NormalizedEvidence {
   const classification = opts.data_classification ?? null;
   const evidenceClass: EvidenceClass =
@@ -120,6 +128,7 @@ export function normalizeStructuredRow(opts: {
     entity: opts.entity ?? null,
     topic: opts.topic ?? null,
     data_classification: classification,
+    structured_ref: opts.structured_ref ?? null,
   };
 }
 

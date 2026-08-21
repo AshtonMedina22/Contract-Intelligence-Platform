@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
+import type { UIMessage } from "ai";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { EvidenceClass, NormalizedEvidence } from "@/lib/ask/evidence";
 import { mergeEvidenceBags, sortByAuthority } from "@/lib/ask/evidence";
 import type { RetrievalPurpose } from "@/lib/retrieval/purpose";
-
-function storageKey(purpose: string, opportunityId: string | null) {
-  return `ask-chat:${purpose}:${opportunityId || "org"}`;
-}
 
 const CLASS_ORDER: EvidenceClass[] = [
   "INTERNAL_VERIFIED",
@@ -124,8 +122,13 @@ export function AskChatClient(props: {
   opportunityId: string | null;
   dataScope: string;
   initialQuery?: string;
+  conversationId: string | null;
+  initialMessages?: UIMessage[];
 }) {
+  const router = useRouter();
   const [input, setInput] = useState("");
+  const [conversationId, setConversationId] = useState(props.conversationId ?? "");
+  const seededInitialQuery = useRef(false);
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
@@ -134,53 +137,60 @@ export function AskChatClient(props: {
           purpose: props.purpose,
           opportunityId: props.opportunityId,
           mode: "ask",
+          conversationId,
         },
       }),
-    [props.purpose, props.opportunityId],
+    [props.purpose, props.opportunityId, conversationId],
   );
 
   const { messages, sendMessage, status, error, setMessages } = useChat({ transport });
 
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(storageKey(props.purpose, props.opportunityId));
-      if (raw) {
-        const parsed = JSON.parse(raw) as typeof messages;
-        if (Array.isArray(parsed) && parsed.length) setMessages(parsed);
-      }
-    } catch {
-      /* ignore */
-    }
+    setConversationId(props.conversationId ?? crypto.randomUUID());
+    setMessages(props.initialMessages ?? []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.purpose, props.opportunityId]);
+  }, [props.conversationId, props.initialMessages]);
 
   useEffect(() => {
-    try {
-      sessionStorage.setItem(
-        storageKey(props.purpose, props.opportunityId),
-        JSON.stringify(messages),
-      );
-    } catch {
-      /* ignore */
+    if (
+      !seededInitialQuery.current &&
+      conversationId &&
+      props.initialQuery?.trim() &&
+      messages.length === 0 &&
+      status === "ready"
+    ) {
+      seededInitialQuery.current = true;
+      const params = new URLSearchParams(window.location.search);
+      params.set("mode", "ask");
+      params.set("purpose", props.purpose);
+      params.set("conversation", conversationId);
+      void sendMessage({ text: props.initialQuery.trim() }).then(() => {
+        router.replace(`/intelligence/ask?${params.toString()}`, { scroll: false });
+      });
     }
-  }, [messages, props.purpose, props.opportunityId]);
-
-  useEffect(() => {
-    if (props.initialQuery?.trim() && messages.length === 0 && status === "ready") {
-      void sendMessage({ text: props.initialQuery.trim() });
-    }
-    // one-shot seed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    conversationId,
+    messages.length,
+    props.initialQuery,
+    props.purpose,
+    router,
+    sendMessage,
+    status,
+  ]);
 
   const evidence = useMemo(() => extractEvidenceFromMessages(messages), [messages]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const text = input.trim();
-    if (!text || status === "streaming" || status === "submitted") return;
+    if (!text || !conversationId || status === "streaming" || status === "submitted") return;
     setInput("");
+    const params = new URLSearchParams(window.location.search);
+    params.set("mode", "ask");
+    params.set("purpose", props.purpose);
+    params.set("conversation", conversationId);
     await sendMessage({ text });
+    router.replace(`/intelligence/ask?${params.toString()}`, { scroll: false });
   }
 
   return (
@@ -189,6 +199,7 @@ export function AskChatClient(props: {
         <Badge variant="outline">mode=ask</Badge>
         <Badge variant="outline">purpose={props.purpose}</Badge>
         <Badge variant="outline">dual-rail agent</Badge>
+        <Badge variant="outline">history={conversationId ? conversationId.slice(0, 8) : "draft"}</Badge>
         <Badge variant="outline">status={status}</Badge>
       </div>
 
@@ -234,18 +245,25 @@ export function AskChatClient(props: {
           placeholder="Ask GPT…"
           disabled={status === "streaming" || status === "submitted"}
         />
-        <Button type="submit" disabled={status === "streaming" || status === "submitted"}>
+        <Button
+          type="submit"
+          disabled={!conversationId || status === "streaming" || status === "submitted"}
+        >
           Send
         </Button>
         <Button
           type="button"
           variant="outline"
           onClick={() => {
+            const nextId = crypto.randomUUID();
+            setConversationId(nextId);
             setMessages([]);
-            sessionStorage.removeItem(storageKey(props.purpose, props.opportunityId));
+            const params = new URLSearchParams(window.location.search);
+            params.delete("conversation");
+            router.replace(`/intelligence/ask?${params.toString()}`, { scroll: false });
           }}
         >
-          Clear
+          New conversation
         </Button>
       </form>
 

@@ -21,7 +21,7 @@ The system must distinguish **source evidence**, **extracted staging data**, and
 | Proposal collaboration/output | Google Docs — working proposal handoff; not canonical structured data |
 | Controlled spreadsheet export/QA | Google Sheets — import/export/QA where useful; not a bidirectional second database |
 | AI/extraction working truth | Staging tables — AI-extracted facts, confidence, and source coordinates await verification |
-| Audit | verification events, extraction runs, checksums, workflow events, validation exceptions |
+| Audit | verification events, extraction runs, checksums, workflow events, validation exceptions, durable Ask/report/tool/citation history |
 
 ## Canonical document lifecycle
 
@@ -178,7 +178,19 @@ licenses, insurance_policies/COIs, certifications, company_documents, personnel_
 
 ### Search / AI
 
-document_chunks/eligible embeddings, Ask/report audit records as needed
+`document_chunks` / eligible embeddings; `ask_conversations`; append-only
+`ask_messages`; immutable completed `ai_runs`; sanitized `ai_tool_traces`;
+`ai_citations`; immutable `report_runs`; retention configuration.
+
+F20 preserves subsystem boundaries: `ai_runs.analytical_run_id` links the
+governed F6 `analytical_runs` record, and `ai_runs.research_run_id` links the F4
+`research_runs` record. Those tables are not merged. Tool traces may carry the
+same links when a multi-tool turn invokes either subsystem.
+
+Report reruns never update a prior body. Each generation inserts a new
+`report_runs` row; `parent_report_run_id` records rerun lineage. Authenticated
+members have no DELETE path on the F20 audit tables. Retention is a per-org
+configuration value only — there is no arbitrary wipe cron.
 
 ### Federal / vehicle identifiers (when relationally justified)
 

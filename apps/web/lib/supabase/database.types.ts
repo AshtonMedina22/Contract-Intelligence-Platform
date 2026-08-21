@@ -141,6 +141,11 @@ export type ResearchRunStatus =
   | "REJECTED"
   | "FAILED";
 
+export type AiRunMode = "LOCATE" | "ASK_ANALYZE" | "REPORT";
+export type AiRunStatus = "RUNNING" | "SUCCEEDED" | "FAILED" | "INSUFFICIENT";
+export type AiToolTraceStatus = "SUCCEEDED" | "FAILED";
+export type AskMessageRole = "user" | "assistant" | "system" | "tool";
+
 export type PublicSourceStatus =
   | "NEW"
   | "WATCHING"
@@ -3500,6 +3505,292 @@ export type Database = {
         };
         Relationships: [];
       };
+      ask_conversations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          created_by: string;
+          title: string;
+          purpose: string;
+          opportunity_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          created_by: string;
+          title?: string;
+          purpose: string;
+          opportunity_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          created_by?: string;
+          title?: string;
+          purpose?: string;
+          opportunity_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      report_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          created_by: string | null;
+          parent_report_run_id: string | null;
+          report_kind: string;
+          purpose: string;
+          title: string;
+          query: string | null;
+          opportunity_id: string | null;
+          body: Record<string, unknown>;
+          data_cutoff: string;
+          status: AiRunStatus;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          created_by?: string | null;
+          parent_report_run_id?: string | null;
+          report_kind: string;
+          purpose: string;
+          title: string;
+          query?: string | null;
+          opportunity_id?: string | null;
+          body: Record<string, unknown>;
+          data_cutoff?: string;
+          status: AiRunStatus;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          created_by?: string | null;
+          parent_report_run_id?: string | null;
+          report_kind?: string;
+          purpose?: string;
+          title?: string;
+          query?: string | null;
+          opportunity_id?: string | null;
+          body?: Record<string, unknown>;
+          data_cutoff?: string;
+          status?: AiRunStatus;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          conversation_id: string | null;
+          created_by: string | null;
+          mode: AiRunMode;
+          purpose: string;
+          model: string | null;
+          question: string | null;
+          answer: string | null;
+          latency_ms: number | null;
+          data_cutoff: string;
+          status: AiRunStatus;
+          error_message: string | null;
+          analytical_run_id: string | null;
+          research_run_id: string | null;
+          report_run_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          conversation_id?: string | null;
+          created_by?: string | null;
+          mode: AiRunMode;
+          purpose: string;
+          model?: string | null;
+          question?: string | null;
+          answer?: string | null;
+          latency_ms?: number | null;
+          data_cutoff?: string;
+          status: AiRunStatus;
+          error_message?: string | null;
+          analytical_run_id?: string | null;
+          research_run_id?: string | null;
+          report_run_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          conversation_id?: string | null;
+          created_by?: string | null;
+          mode?: AiRunMode;
+          purpose?: string;
+          model?: string | null;
+          question?: string | null;
+          answer?: string | null;
+          latency_ms?: number | null;
+          data_cutoff?: string;
+          status?: AiRunStatus;
+          error_message?: string | null;
+          analytical_run_id?: string | null;
+          research_run_id?: string | null;
+          report_run_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ask_messages: {
+        Row: {
+          id: string;
+          organization_id: string;
+          conversation_id: string;
+          ai_run_id: string | null;
+          created_by: string | null;
+          client_message_id: string | null;
+          role: AskMessageRole;
+          content: string | null;
+          parts: unknown;
+          sequence: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          conversation_id: string;
+          ai_run_id?: string | null;
+          created_by?: string | null;
+          client_message_id?: string | null;
+          role: AskMessageRole;
+          content?: string | null;
+          parts?: unknown;
+          sequence: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          conversation_id?: string;
+          ai_run_id?: string | null;
+          created_by?: string | null;
+          client_message_id?: string | null;
+          role?: AskMessageRole;
+          content?: string | null;
+          parts?: unknown;
+          sequence?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_tool_traces: {
+        Row: {
+          id: string;
+          organization_id: string;
+          ai_run_id: string;
+          tool_call_id: string | null;
+          tool_name: string;
+          safe_params: Record<string, unknown>;
+          result_refs: unknown;
+          started_at: string;
+          finished_at: string;
+          latency_ms: number;
+          status: AiToolTraceStatus;
+          error_message: string | null;
+          analytical_run_id: string | null;
+          research_run_id: string | null;
+          report_run_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          ai_run_id: string;
+          tool_call_id?: string | null;
+          tool_name: string;
+          safe_params?: Record<string, unknown>;
+          result_refs?: unknown;
+          started_at: string;
+          finished_at: string;
+          latency_ms: number;
+          status: AiToolTraceStatus;
+          error_message?: string | null;
+          analytical_run_id?: string | null;
+          research_run_id?: string | null;
+          report_run_id?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["ai_tool_traces"]["Insert"]>;
+        Relationships: [];
+      };
+      ai_citations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          ai_run_id: string;
+          citation_index: number;
+          title: string | null;
+          excerpt: string | null;
+          source_url: string | null;
+          internal_ref: string | null;
+          document_id: string | null;
+          document_version_id: string | null;
+          extracted_fact_id: string | null;
+          chunk_id: string | null;
+          research_run_id: string | null;
+          research_fact_id: string | null;
+          analytical_run_id: string | null;
+          structured_ref: Record<string, unknown> | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          ai_run_id: string;
+          citation_index: number;
+          title?: string | null;
+          excerpt?: string | null;
+          source_url?: string | null;
+          internal_ref?: string | null;
+          document_id?: string | null;
+          document_version_id?: string | null;
+          extracted_fact_id?: string | null;
+          chunk_id?: string | null;
+          research_run_id?: string | null;
+          research_fact_id?: string | null;
+          analytical_run_id?: string | null;
+          structured_ref?: Record<string, unknown> | null;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["ai_citations"]["Insert"]>;
+        Relationships: [];
+      };
+      ai_audit_retention_config: {
+        Row: {
+          organization_id: string;
+          retention_days: number;
+          updated_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          organization_id: string;
+          retention_days?: number;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          organization_id?: string;
+          retention_days?: number;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       analytical_runs: {
         Row: {
           id: string;
@@ -4129,6 +4420,10 @@ export type Database = {
       reuse_status: ReuseStatus;
       research_type: ResearchType;
       research_run_status: ResearchRunStatus;
+      ai_run_mode: AiRunMode;
+      ai_run_status: AiRunStatus;
+      ai_tool_trace_status: AiToolTraceStatus;
+      ask_message_role: AskMessageRole;
     };
     CompositeTypes: Record<string, never>;
   };

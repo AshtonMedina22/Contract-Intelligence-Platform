@@ -18,6 +18,13 @@ import { locateRecords, searchVerifiedKnowledge } from "@/lib/retrieval/search";
 import { INSUFFICIENT } from "@/lib/ask/synthesize";
 import { generateIntelligenceReport, REPORT_CATALOG, type ReportKind } from "@/lib/reports/generate";
 import {
+  listConversations,
+  loadConversationMessages,
+  persistedMessagesToUi,
+} from "@/lib/ask/conversations";
+import { normalizeInternalHit, normalizeStructuredRow } from "@/lib/ask/evidence";
+import { persistAiRun, type PendingToolTrace } from "@/lib/ask/persist-run";
+import {
   askLaunchViewFromParam,
   askLaunchViewLabel,
   buildAskHref,
@@ -41,6 +48,7 @@ type AskSearchParams = {
   from?: string;
   /** The filters that view had applied. Displayed, never used to narrow retrieval. */
   context?: string;
+  conversation?: string;
 };
 
 function parseMode(raw: string | undefined): AskMode {
@@ -68,6 +76,28 @@ async function AskIntelligence({
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return <p className="text-sm">Sign in to use Find or Ask GPT.</p>;
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("organization_id")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
+  if (!membership?.organization_id) return <p className="text-sm">No organization.</p>;
+
+  const [conversations, recentRuns] = await Promise.all([
+    listConversations(supabase),
+    supabase
+      .from("ai_runs")
+      .select("id, mode, purpose, question, status, conversation_id, report_run_id, created_at")
+      .order("created_at", { ascending: false })
+      .limit(12),
+  ]);
+  const selectedConversationId = params.conversation?.trim() || null;
+  const initialMessages = selectedConversationId
+    ? persistedMessagesToUi(
+        await loadConversationMessages(supabase, selectedConversationId),
+      )
+    : [];
 
   let opportunityTitle: string | null = null;
   if (opportunityId) {
@@ -114,6 +144,13 @@ async function AskIntelligence({
           opportunityId={opportunityId || null}
           dataScope={dataScope}
           initialQuery={query || undefined}
+          conversationId={selectedConversationId}
+          initialMessages={initialMessages}
+        />
+        <AskHistory
+          conversations={conversations}
+          runs={recentRuns.data ?? []}
+          selectedConversationId={selectedConversationId}
         />
       </div>
     );
@@ -127,6 +164,7 @@ async function AskIntelligence({
   let limitations = "";
   const modelUsed: string | null = null;
 
+  const startedAt = Date.now();
   if (query && mode === "locate") {
     const { hits: knowledgeHits, error } = await searchVerifiedKnowledge({
       query,
@@ -156,6 +194,68 @@ async function AskIntelligence({
     insufficient = report.insufficient;
     limitations = report.limitations;
     hits = report.evidenceHits;
+  }
+
+  if ((query && mode === "locate") || (mode === "report" && report)) {
+    const now = new Date().toISOString();
+    const traces: PendingToolTrace[] = [
+      {
+        toolCallId: null,
+        toolName: mode === "locate" ? "locate_records_and_passages" : "generate_intelligence_report",
+        safeParams:
+          mode === "locate"
+            ? { query, purpose, opportunityId: opportunityId || null }
+            : { reportKind, query: query || null, opportunityId: opportunityId || null },
+        resultRefs:
+          mode === "locate"
+            ? [
+                ...locate.map((row) => ({ id: row.id, kind: row.kind, internal_ref: row.href })),
+                ...hits.map((hit) => ({
+                  document_id: hit.document_id,
+                  chunk_id: hit.chunk_id,
+                })),
+              ]
+            : report?.reportRunId
+              ? [{ report_run_id: report.reportRunId }]
+              : [],
+        startedAt: new Date(startedAt).toISOString(),
+        finishedAt: now,
+        latencyMs: Math.max(0, Date.now() - startedAt),
+        status: "SUCCEEDED",
+        errorMessage: null,
+        analyticalRunId: null,
+        researchRunId: null,
+        reportRunId: report?.reportRunId ?? null,
+      },
+    ];
+    const evidence = [
+      ...hits.map(normalizeInternalHit),
+      ...locate.map((row) =>
+        normalizeStructuredRow({
+          prefix: "locate",
+          key: `${row.kind}:${row.id}`,
+          title: row.title,
+          excerpt: row.detail || row.title,
+          internal_ref: row.href,
+          entity: row.kind,
+          data_classification: "verified_internal",
+          structured_ref: { kind: row.kind, id: row.id },
+        }),
+      ),
+    ];
+    await persistAiRun(supabase, {
+      organizationId: membership.organization_id,
+      userId: user.id,
+      mode: mode === "locate" ? "LOCATE" : "REPORT",
+      purpose: mode === "report" && report ? report.purpose : purpose,
+      question: query || (mode === "report" ? reportKind : null),
+      answer,
+      latencyMs: Date.now() - startedAt,
+      status: insufficient ? "INSUFFICIENT" : "SUCCEEDED",
+      traces,
+      evidence,
+      reportRunId: report?.reportRunId ?? null,
+    });
   }
 
   return (
@@ -239,6 +339,11 @@ async function AskIntelligence({
           </div>
         </section>
       ) : null}
+      <AskHistory
+        conversations={conversations}
+        runs={recentRuns.data ?? []}
+        selectedConversationId={selectedConversationId}
+      />
 
       {query && mode !== "locate" && hits.length > 0 ? (
         <section className="space-y-2">
@@ -247,6 +352,83 @@ async function AskIntelligence({
         </section>
       ) : null}
     </div>
+  );
+}
+
+function AskHistory(props: {
+  conversations: Array<{
+    id: string;
+    title: string;
+    purpose: string;
+    updated_at: string;
+  }>;
+  runs: Array<{
+    id: string;
+    mode: string;
+    purpose: string;
+    question: string | null;
+    status: string;
+    conversation_id: string | null;
+    report_run_id: string | null;
+    created_at: string;
+  }>;
+  selectedConversationId: string | null;
+}) {
+  return (
+    <section className="max-w-3xl space-y-2 border-t pt-3" data-testid="ask-audit-history">
+      <h2 className="text-sm font-medium">Ask & report history</h2>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <p className="text-xs font-medium text-muted-foreground">Conversations</p>
+          <ul className="mt-1 space-y-1 text-xs">
+            {props.conversations.length ? (
+              props.conversations.slice(0, 10).map((conversation) => (
+                <li key={conversation.id}>
+                  <Link
+                    className={
+                      conversation.id === props.selectedConversationId
+                        ? "font-medium underline"
+                        : "underline"
+                    }
+                    href={`/intelligence/ask?mode=ask&purpose=${conversation.purpose}&conversation=${conversation.id}`}
+                  >
+                    {conversation.title}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="text-muted-foreground">No durable conversations yet.</li>
+            )}
+          </ul>
+        </div>
+        <div>
+          <p className="text-xs font-medium text-muted-foreground">Recent runs</p>
+          <ul className="mt-1 space-y-1 text-xs">
+            {props.runs.length ? (
+              props.runs.map((run) => (
+                <li key={run.id}>
+                  {run.conversation_id ? (
+                    <Link
+                      className="underline"
+                      href={`/intelligence/ask?mode=ask&purpose=${run.purpose}&conversation=${run.conversation_id}`}
+                    >
+                      {run.mode}: {run.question || run.id.slice(0, 8)}
+                    </Link>
+                  ) : (
+                    <span>
+                      {run.mode}: {run.question || run.id.slice(0, 8)}
+                    </span>
+                  )}{" "}
+                  <span className="text-muted-foreground">· {run.status}</span>
+                </li>
+              ))
+            ) : (
+              <li className="text-muted-foreground">No audited runs yet.</li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
 

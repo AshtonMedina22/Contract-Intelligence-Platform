@@ -4,6 +4,13 @@ import { purposeFromParam, type RetrievalPurpose } from "@/lib/retrieval/purpose
 import type { UIMessage } from "ai";
 import { ASK_CHAT_RATE, checkRateLimit } from "@/lib/auth/rate-limit";
 import { requirePermission } from "@/lib/auth/permissions";
+import { ensureConversation } from "@/lib/ask/conversations";
+import {
+  latestAssistantAnswer,
+  latestUserQuestion,
+  persistAiRun,
+} from "@/lib/ask/persist-run";
+import { sanitizeAuditText } from "@/lib/ask/sanitize-tool-params";
 
 export const maxDuration = 120;
 
@@ -55,6 +62,7 @@ export async function POST(req: Request) {
     purpose?: string;
     opportunityId?: string | null;
     mode?: string;
+    conversationId?: string;
   };
 
   if (body.mode === "locate" || body.mode === "report") {
@@ -71,6 +79,7 @@ export async function POST(req: Request) {
 
   const purpose: RetrievalPurpose = purposeFromParam(body.purpose) ?? "GENERAL_QA";
   const opportunityId = body.opportunityId?.trim() || null;
+  const conversationId = body.conversationId?.trim() || crypto.randomUUID();
   const dataScope = [
     "organization (RLS)",
     "INTERNAL_VERIFIED + optional PUBLIC research",
@@ -79,15 +88,63 @@ export async function POST(req: Request) {
   ].join(" · ");
 
   try {
-    const { result } = await streamAskChat({
+    await ensureConversation(supabase, {
+      id: conversationId,
+      organizationId: membership.organization_id,
+      userId: user.id,
+      purpose,
+      opportunityId,
+      messages,
+    });
+    const stream = await streamAskChat({
       messages,
       purpose,
       opportunityId,
       dataScope,
     });
-    return result.toUIMessageStreamResponse();
+    return stream.result.toUIMessageStreamResponse({
+      originalMessages: messages,
+      onFinish: async ({ messages: finishedMessages, isAborted }) => {
+        const answer = latestAssistantAnswer(finishedMessages);
+        await persistAiRun(supabase, {
+          organizationId: membership.organization_id,
+          userId: user.id,
+          conversationId,
+          mode: "ASK_ANALYZE",
+          purpose,
+          model: stream.modelId,
+          question: latestUserQuestion(messages),
+          answer,
+          latencyMs: Date.now() - stream.startedAtMs,
+          status: isAborted
+            ? "FAILED"
+            : answer === "Insufficient verified evidence to answer this reliably."
+              ? "INSUFFICIENT"
+              : "SUCCEEDED",
+          errorMessage: isAborted ? "Client aborted Ask stream." : null,
+          messages: finishedMessages,
+          traces: stream.getTraces(),
+          evidence: stream.getEvidence(),
+        });
+      },
+    });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Ask stream failed";
+    try {
+      await persistAiRun(supabase, {
+        organizationId: membership.organization_id,
+        userId: user.id,
+        conversationId,
+        mode: "ASK_ANALYZE",
+        purpose,
+        question: latestUserQuestion(messages),
+        status: "FAILED",
+        errorMessage: sanitizeAuditText(message),
+        messages,
+      });
+    } catch {
+      // The original failure remains the response; persistence failure is not exposed.
+    }
     return Response.json({ error: message }, { status: 503 });
   }
 }
