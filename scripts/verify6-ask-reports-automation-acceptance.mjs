@@ -547,7 +547,7 @@ async function main() {
       .from("automation_events")
       .select("id, kind, acknowledged_at")
       .eq("organization_id", orgA)
-      .eq("kind", "approval_reminder")
+      .eq("kind", "response_approval_pending")
       .eq("entity_id", oppA.id)
       .is("acknowledged_at", null);
     const firedWhilePending = Array.isArray(pendingApproval) && pendingApproval.length === 1;
@@ -558,7 +558,7 @@ async function main() {
       .from("automation_events")
       .select("id, acknowledged_at")
       .eq("organization_id", orgA)
-      .eq("kind", "approval_reminder")
+      .eq("kind", "response_approval_pending")
       .eq("entity_id", oppA.id)
       .is("acknowledged_at", null);
     const clearedAfterGo = Array.isArray(afterGo) && afterGo.length === 0;
@@ -575,7 +575,7 @@ async function main() {
         pendingOpen: pendingApproval?.length ?? null,
         openAfterGo: afterGo?.length ?? null,
       }),
-      "approval_reminder + go_no_go",
+      "response_approval_pending + go_no_go",
     );
 
     // Idempotent re-run

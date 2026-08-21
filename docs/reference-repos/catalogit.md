@@ -68,3 +68,8 @@ obligation arises.
 # Status
 
 ADOPTED PATTERN · F5 (2026-08-21) re-confirmed — still no Gmail/Slack renewal reminders
+
+**F9 (2026-08-21):** Operational automation delivers **in-app + digest** renewal_notice /
+contract_review_window reminders via the existing `intelligence-automation-daily` /
+`/api/cron/intelligence-digest` rails. CatalogIT’s Gmail/Slack/Telegram webhook spam stack
+remains **explicitly not adopted**.

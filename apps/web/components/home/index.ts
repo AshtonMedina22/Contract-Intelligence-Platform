@@ -1,4 +1,5 @@
 export { ActionCenter } from "./action-center";
+export { NotificationsPanel } from "./notifications-panel";
 export { KpiStrip } from "./kpi-strip";
 export { NeedsAttentionQueue } from "./needs-attention-queue";
 export { PipelineTable } from "./pipeline-table";

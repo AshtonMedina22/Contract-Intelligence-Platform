@@ -9,6 +9,7 @@ import { PipelineTable } from "./pipeline-table";
 import { WinLossSnapshotCard } from "./win-loss-snapshot";
 import { ContractAlertSnapshot } from "./contract-alert-snapshot";
 import { MarketSnapshotCard } from "./market-snapshot";
+import { NotificationsPanel } from "./notifications-panel";
 import type { ActionCenterData } from "@/lib/home/types";
 
 type Props = {
@@ -46,6 +47,7 @@ function Section({
 
 export function ActionCenter({ data }: Props) {
   const hasNeedsAttention = data.attentionItems.length > 0;
+  const hasNotifications = (data.notifications?.length ?? 0) > 0;
 
   return (
     <div className="space-y-6">
@@ -58,6 +60,13 @@ export function ActionCenter({ data }: Props) {
       {hasNeedsAttention && (
         <Section title="Needs attention">
           <NeedsAttentionQueue items={data.attentionItems} />
+        </Section>
+      )}
+
+      {/* F9 persisted notifications (same Home — not a second app) */}
+      {hasNotifications && (
+        <Section title="Notifications">
+          <NotificationsPanel items={data.notifications} />
         </Section>
       )}
 

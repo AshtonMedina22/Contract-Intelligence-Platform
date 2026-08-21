@@ -82,6 +82,18 @@ export type MarketSnapshot = {
   competitorCount: number;
 };
 
+/** Persisted open notifications / automation mirrors for Home. */
+export type HomeNotification = {
+  id: string;
+  title: string;
+  body: string | null;
+  deepLink: string | null;
+  severity: string;
+  channel: string;
+  status: string;
+  createdAt: string;
+};
+
 // Full action center data
 export type ActionCenterData = {
   kpi: HomeKpi;
@@ -90,4 +102,5 @@ export type ActionCenterData = {
   winLoss: WinLossSnapshot;
   contractAlerts: ContractAlertBuckets;
   market: MarketSnapshot;
+  notifications: HomeNotification[];
 };

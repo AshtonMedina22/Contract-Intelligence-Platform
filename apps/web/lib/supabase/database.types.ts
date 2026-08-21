@@ -131,18 +131,21 @@ export type Database = {
           name: string;
           created_at: string;
           updated_at: string;
+          automation_research_refresh_enabled?: boolean;
         };
         Insert: {
           id?: string;
           name: string;
           created_at?: string;
           updated_at?: string;
+          automation_research_refresh_enabled?: boolean;
         };
         Update: {
           id?: string;
           name?: string;
           created_at?: string;
           updated_at?: string;
+          automation_research_refresh_enabled?: boolean;
         };
         Relationships: [];
       };
@@ -2560,6 +2563,12 @@ export type Database = {
           source: string;
           acknowledged_at: string | null;
           created_at: string;
+          dedupe_key: string | null;
+          deep_link: string | null;
+          owner_user_id: string | null;
+          first_triggered_at: string | null;
+          last_triggered_at: string | null;
+          resolved_at: string | null;
         };
         Insert: {
           id?: string;
@@ -2574,6 +2583,12 @@ export type Database = {
           source?: string;
           acknowledged_at?: string | null;
           created_at?: string;
+          dedupe_key?: string | null;
+          deep_link?: string | null;
+          owner_user_id?: string | null;
+          first_triggered_at?: string | null;
+          last_triggered_at?: string | null;
+          resolved_at?: string | null;
         };
         Update: {
           id?: string;
@@ -2587,6 +2602,63 @@ export type Database = {
           due_on?: string | null;
           source?: string;
           acknowledged_at?: string | null;
+          created_at?: string;
+          dedupe_key?: string | null;
+          deep_link?: string | null;
+          owner_user_id?: string | null;
+          first_triggered_at?: string | null;
+          last_triggered_at?: string | null;
+          resolved_at?: string | null;
+        };
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          organization_id: string;
+          user_id: string | null;
+          automation_event_id: string | null;
+          channel: string;
+          title: string;
+          body: string | null;
+          deep_link: string | null;
+          severity: string;
+          status: string;
+          read_at: string | null;
+          resolved_at: string | null;
+          dedupe_key: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          user_id?: string | null;
+          automation_event_id?: string | null;
+          channel?: string;
+          title: string;
+          body?: string | null;
+          deep_link?: string | null;
+          severity?: string;
+          status?: string;
+          read_at?: string | null;
+          resolved_at?: string | null;
+          dedupe_key?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          user_id?: string | null;
+          automation_event_id?: string | null;
+          channel?: string;
+          title?: string;
+          body?: string | null;
+          deep_link?: string | null;
+          severity?: string;
+          status?: string;
+          read_at?: string | null;
+          resolved_at?: string | null;
+          dedupe_key?: string | null;
           created_at?: string;
         };
         Relationships: [];

@@ -7,6 +7,7 @@ import type {
   WinLossSnapshot,
   ContractAlertBuckets,
   MarketSnapshot,
+  HomeNotification,
 } from "./types";
 
 /**
@@ -46,6 +47,8 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
     competitorsRes,
     // Due pursuits for attention queue
     duePursuitsRes,
+    // Persisted notifications (F9)
+    notificationsRes,
   ] = await Promise.all([
     // Active pursuits: stage NOT IN ('CLOSED', 'AWARDED')
     supabase
@@ -151,6 +154,14 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
       .gte("response_due_on", new Date().toISOString().slice(0, 10))
       .order("response_due_on", { ascending: true })
       .limit(10),
+
+    // Open notifications (org broadcast + own user)
+    supabase
+      .from("notifications")
+      .select("id, title, body, deep_link, severity, channel, status, created_at")
+      .eq("status", "open")
+      .order("created_at", { ascending: false })
+      .limit(25),
   ]);
 
   // Calculate KPI values
@@ -258,6 +269,17 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
     competitorCount: competitorsRes.count ?? 0,
   };
 
+  const notifications: HomeNotification[] = (notificationsRes.data ?? []).map((row) => ({
+    id: row.id,
+    title: row.title,
+    body: row.body,
+    deepLink: row.deep_link,
+    severity: row.severity ?? "info",
+    channel: row.channel ?? "in_app",
+    status: row.status ?? "open",
+    createdAt: row.created_at,
+  }));
+
   return {
     kpi,
     attentionItems,
@@ -265,6 +287,7 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
     winLoss,
     contractAlerts: alertBuckets,
     market,
+    notifications,
   };
 }
 

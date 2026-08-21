@@ -16,7 +16,7 @@ Purpose: distinguish what exists in code from what has been proven as a product.
 | **3 — Historical Ingestion & Migration** | **PASS** — Prompt 3 + **VERIFY 3 PASS 26/26** ([VERIFY3_ACCEPTANCE.md](pilot/VERIFY3_ACCEPTANCE.md)) + **F1 37/37** ([F1_PRODUCTION_INGESTION_ACCEPTANCE.md](functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md)). DOCX wired; OCR live only with `MISTRAL_API_KEY` and never yet run on real evidence. |
 | **4 — Contracts / Compliance** | Prompt 4 exit proven in app + acceptance, plus **P10 portfolio / renewal-rebid command center**; still thin vs a real awarded corpus — 12 contracts, **3** with a verified end date, **0** with an NTE or PO |
 | **5 — Buyer / Competitor / Market / Win-Loss** | **Prompt 5 exit proven** — still corpus-thin; no fabricated market share |
-| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** + **F6 governed structured analytics** + **F7 proposal content reuse** (`proposal_sections` taxonomy; promote `REVIEW_REQUIRED`; purpose-aware drafting match) |
+| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** + **F6 governed structured analytics** + **F7 proposal content reuse** (`proposal_sections` taxonomy; promote `REVIEW_REQUIRED`; purpose-aware drafting match) + **F9 automation notifications** (same `intelligence-automation-daily` + digest cron; `notifications` table; never auto-verify/price/approve/submit/renew) |
 | **7 — Pricing Intelligence** | Prompt 7 exit + **P7 workbench polish**; **VERIFY 7's committed 29/29 is stale** (19/22 at clean `HEAD` — outdated fixtures/grep, not a behaviour regression) |
 | **8 — Response Builder / Submission / Result** | **PASS** (Prompt 8 + VERIFY 8 **23/23**) + **P8** + **F8** native DOCX / portal export / Google Docs provider / versioned artifacts |
 
@@ -54,7 +54,7 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 
 ### Phase 6 — Search / Ask / Reports / Automation
 
-**Canonical Phase 6 exit (Prompt 6):** Header `[Find or Ask GPT...]` with LOCATE | ASK/ANALYZE | REPORT. Purpose-aware hybrid retrieval (SQL/FTS/pgvector); eight report generators; Answer/Sources/Data Scope/Limitations/View Source contract; `automation_events` via Supabase pg_cron + Vercel Cron digest; human gates never bypassed. See [PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md](PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md). Still corpus-thin — insufficient evidence returns the canonical refusal sentence.
+**Canonical Phase 6 exit (Prompt 6):** Header `[Find or Ask GPT...]` with LOCATE | ASK/ANALYZE | REPORT. Purpose-aware hybrid retrieval (SQL/FTS/pgvector); eight report generators; Answer/Sources/Data Scope/Limitations/View Source contract; `automation_events` via Supabase pg_cron + Vercel Cron digest; human gates never bypassed. **F9 (2026-08-21):** extends the **same** `run_intelligence_automation` / `intelligence-automation-daily` / `/api/cron/intelligence-digest` rails with `notifications`, richer digest buckets, and Home Action Center panel — no second scheduler; never verify/price/approve/submit/renew/exercise. See [PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md](PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md) · [F9_AUTOMATION_NOTIFICATIONS_ACCEPTANCE.md](functionality/F9_AUTOMATION_NOTIFICATIONS_ACCEPTANCE.md). Still corpus-thin — insufficient evidence returns the canonical refusal sentence.
 
 ### Phase 7 — Pricing
 
