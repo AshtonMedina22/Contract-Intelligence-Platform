@@ -1,12 +1,53 @@
 # Release readiness report — Prompt 9 final production acceptance
 
-**Audit date:** 2026-08-20  
+**Audit date:** 2026-08-20 · **Superseded in part 2026-08-21** — see the addendum at the top of this document.  
 **Scope:** End-to-end hardening only. No new product scope.  
 **Authority:** Canonical pack + [BUILD_PLAN.md](BUILD_PLAN.md) (phases **1–8**), [WORK_TRAIL.md](WORK_TRAIL.md), [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md), all PHASE\* / VERIFY\* acceptance reports, live regression + browser IA smoke this session.
 
 ---
 
-## Executive verdict
+## Addendum — 2026-08-21, after productization P1–P10
+
+**The verdict below is no longer current. The platform is NOT production-ready.**
+
+The 2026-08-20 verdict of *READY WITH NONBLOCKING LIMITATIONS* was recorded when VERIFY 5 / 6 / 7 all
+read PASS. On a full regression run on 2026-08-21 (see
+[productization/PRODUCTIZATION_P1_P10_FINAL_AUDIT.md](productization/PRODUCTIZATION_P1_P10_FINAL_AUDIT.md)),
+**three VERIFY suites return verdict FAIL**:
+
+| Suite | This report (2026-08-20) | Actual (2026-08-21) |
+| --- | --- | --- |
+| `verify5` | 24/24 PASS | **22/24 — verdict FAIL** |
+| `verify6` | 24/24 PASS | **23/24 — verdict FAIL** |
+| `verify7` | 29/29 PASS | **19/22 — verdict FAIL** |
+| `verify2c` | 66/66 PASS | **55/56** |
+| `phase5-intelligence` | 25/25 | **24/25** |
+| `phase7-pricing` | 17/17 | **12/13** |
+| `phase4-contracts` | 46/46 | **47/48** (suite grew; P10 fixed the stale `ContractsNav` grep) |
+
+**No behaviour regressed.** Phase 9 added `*_require_verified_fact` trust triggers that require a
+`HUMAN_VERIFIED` source fact before a row may be written to `awards`, `contracts`, `document_chunks`
+or `pricing_lines.awarded_rate`. Several older fixtures still do bare inserts; the trigger correctly
+rejects them. That is the database working as designed against stale test data — but **a red
+independent audit cannot support a release claim**, whatever its cause.
+
+Two further corrections to the tables below:
+
+- **Contracts:** the live org now has **12 contracts**, not 0. Of those, **3 carry a
+  `verified_end_on`** and **0 carry an award NTE or a purchase order**, so the renewal queue and
+  Active Contract Value remain unexercised against real data. P10 shipped the portfolio and
+  renewal/rebid command center over them.
+- **Corpus:** **15** A/B packages are fully `VERIFIED` against a Historical Pilot exit of ~20–30.
+  **Canonical Phase 2 has not exited.**
+
+**Revised verdict: NOT PRODUCTION-READY.** Blockers, in order: repair the fixtures and re-earn
+VERIFY 5 / 6 / 7 through verified promotion (never by weakening a trust trigger); fix the promoter
+grain mapping; grow the Historical Pilot; prove the production runtime; wire `ASK_MODEL`.
+**Commercialization (Stripe / MCP / agents) is not started and is not a core product phase.**
+
+---
+
+## Executive verdict (2026-08-20 — superseded, see addendum above)
 
 ### Is the platform production-ready for live L&P daily use?
 

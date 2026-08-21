@@ -986,11 +986,16 @@ async function main() {
     );
     record(
       "ui",
+      // P10 renamed these sections ("Rebid pursuit", "Compliance readiness for rebid") and moved the
+      // bucket list into the shared RenewalBucketStrip, whose labels come from RENEWAL_BUCKETS in
+      // lib/contracts/portfolio-model.ts. The surface being asserted is unchanged.
       "Renewal UI surfaces rebid + eligibility + buckets",
       loader.includes("rebid_from_contract_id") &&
-        renewalPage.includes("Rebid date / status") &&
-        renewalPage.includes("Compliance eligibility") &&
-        renewalPage.includes("180 / 120 / 90 / 60 / 30 / EXPIRED"),
+        renewalPage.includes("Rebid pursuit") &&
+        renewalPage.includes("RebidButton") &&
+        renewalPage.includes("Compliance readiness for rebid") &&
+        renewalPage.includes("assessRebidReadiness") &&
+        renewalPage.includes("RenewalBucketStrip"),
       "workspace loader + renewal page",
       "apps/web",
     );

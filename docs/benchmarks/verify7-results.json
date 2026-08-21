@@ -1,11 +1,11 @@
 {
   "audit": "VERIFY7",
   "phase": "Canonical Phase 7 — Pricing Intelligence",
-  "stamp": "mt1flfkh",
-  "verdict": "PASS",
-  "total": 29,
-  "passed": 29,
-  "failed": 0,
+  "stamp": "mt2ysq16",
+  "verdict": "FAIL",
+  "total": 22,
+  "passed": 19,
+  "failed": 3,
   "matrix": [
     {
       "domain": "surface",
@@ -73,7 +73,7 @@
     {
       "domain": "human",
       "name": "Final bid UI requires explicit human action",
-      "ok": true,
+      "ok": false,
       "detail": "FinalBidPanel + savePricingDecision",
       "source": "final-bid-panel + actions"
     },
@@ -102,7 +102,7 @@
       "domain": "truths",
       "name": "buyer requested != submitted != awarded != current (+ internal cost distinct)",
       "ok": true,
-      "detail": "{\"id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"5c7adcba-b2b6-443a-9a8b-f6568a6575e1\",\"proposed_source_fact_id\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"awarded_source_fact_id\":\"c48c464a-531d-48ba-a8ce-e72a85c97ae9\",\"current_source_fact_id\":\"0a863897-f595-4dec-bf39-cf04ba039a1d\"}",
+      "detail": "{\"id\":\"e7cfdff6-66b0-42bd-a55e-62d65d3aeb7d\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"2a6639c5-594d-472e-91ad-fd45d7caea31\",\"proposed_source_fact_id\":\"8816709a-ef48-40d2-9579-d9abba634f64\",\"awarded_source_fact_id\":\"c3c67f4a-29e9-4259-99a2-5b1eb47dc520\",\"current_source_fact_id\":\"8ef0efae-1ccf-452e-9f1a-c1ac2efb40ec\"}",
       "source": "pricing_lines five columns"
     },
     {
@@ -115,8 +115,8 @@
     {
       "domain": "periods",
       "name": "Base / options / escalation work as coexisting verified structures",
-      "ok": true,
-      "detail": "{\"sites\":[\"Base Year 1\",\"Option Year 1\",\"Year 2 CPI-W escalation\"],\"rates\":[[\"Base Year 1\",64000],[\"Option Year 1\",65280],[\"Year 2 CPI-W escalation\",66585.6]]}",
+      "ok": false,
+      "detail": "{\"sites\":[],\"err\":\"pricing_lines.awarded_rate requires HUMAN_VERIFIED awarded_source_fact_id\"}",
       "source": "site_or_post grain + structure hints"
     },
     {
@@ -151,64 +151,15 @@
       "domain": "competitor",
       "name": "Competitor pricing does not become L&P pricing_lines",
       "ok": true,
-      "detail": "{\"compLine\":\"60a3e18c-df15-49e7-b5c8-aabd3ccc310f\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
+      "detail": "{\"compLine\":\"58200355-89bc-4a76-b61b-3578476d446a\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
       "source": "competitor_pricing_lines isolation"
     },
     {
-      "domain": "comps",
-      "name": "Comparables show inclusion/exclusion rationale",
-      "ok": true,
-      "detail": "{\"judgments\":[{\"source_pricing_line_id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"included\":true,\"reason\":\"Same buyer class and armed category — include as comparable win\"},{\"source_pricing_line_id\":\"9e3936d3-1205-4eeb-ba15-9ff75dfd3d64\",\"included\":false,\"reason\":\"Outlier premium site — exclude from observed range\"}]}",
-      "source": "pricing_comparable_judgments"
-    },
-    {
-      "domain": "comps",
-      "name": "Empty comparable reason rejected at persistence layer",
-      "ok": true,
-      "detail": "new row for relation \"pricing_comparable_judgments\" violates check constraint \"pricing_comparable_judgments_reason_nonblank\"",
-      "source": "pricing_comparable_judgments.reason"
-    },
-    {
-      "domain": "ranges",
-      "name": "Observed ranges calculated from selected (included) verified records",
-      "ok": true,
-      "detail": "{\"awardedObs\":{\"n\":2,\"min\":29,\"max\":30.25,\"median\":29.625},\"proposedIncludedOnly\":[31.5,29.5],\"proposedAll\":[31.5,40,29.5]}",
-      "source": "include/exclude filter"
-    },
-    {
-      "domain": "source",
-      "name": "Source evidence is reachable (fact → document → verification UI)",
-      "ok": true,
-      "detail": "{\"factId\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"documentId\":\"26b84237-666b-44b4-a088-268bcb00fdad\",\"lineFact\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"uiFactRef\":true}",
-      "source": "pricing_lines.*_source_fact_id + FactRef"
-    },
-    {
-      "domain": "source",
-      "name": "Glide five-truth matrix exposes source fact links",
-      "ok": true,
-      "detail": "Glide links sources",
-      "source": "pricing-glide-grid.tsx"
-    },
-    {
-      "domain": "human",
-      "name": "Final price requires explicit human action (trigger + actor)",
-      "ok": true,
-      "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"noRateBlocked\":\"HUMAN_APPROVED pricing_decisions require final_bid_rate or final_bid_amount\",\"draft\":\"DRAFT\",\"approved\":\"HUMAN_APPROVED\"}",
-      "source": "pricing_decisions_require_human"
-    },
-    {
-      "domain": "distinct",
-      "name": "Pursuit pricing decisions stay opportunity-scoped; Intelligence sees cross-corpus lines",
-      "ok": true,
-      "detail": "{\"pursuitApproved\":1,\"distinctOppsInLines\":3}",
-      "source": "pricing_decisions vs pricing_lines aggregate"
-    },
-    {
-      "domain": "truths",
-      "name": "Internal cost planning does not collapse submitted/awarded truths",
-      "ok": true,
-      "detail": "{\"proposed_rate\":31.5,\"internal_cost_rate\":24.1,\"awarded_rate\":30.25}",
-      "source": "fiveTruth line unchanged"
+      "domain": "fatal",
+      "name": "suite error",
+      "ok": false,
+      "detail": "Cannot read properties of null (reading 'id')",
+      "source": ""
     }
   ],
   "byDomain": {
@@ -275,7 +226,7 @@
       ]
     },
     "distinct": {
-      "pass": 2,
+      "pass": 1,
       "fail": 0,
       "rows": [
         {
@@ -284,24 +235,17 @@
           "ok": true,
           "detail": "separate routes + copy",
           "source": "pricing pages"
-        },
-        {
-          "domain": "distinct",
-          "name": "Pursuit pricing decisions stay opportunity-scoped; Intelligence sees cross-corpus lines",
-          "ok": true,
-          "detail": "{\"pursuitApproved\":1,\"distinctOppsInLines\":3}",
-          "source": "pricing_decisions vs pricing_lines aggregate"
         }
       ]
     },
     "human": {
-      "pass": 3,
-      "fail": 0,
+      "pass": 1,
+      "fail": 1,
       "rows": [
         {
           "domain": "human",
           "name": "Final bid UI requires explicit human action",
-          "ok": true,
+          "ok": false,
           "detail": "FinalBidPanel + savePricingDecision",
           "source": "final-bid-panel + actions"
         },
@@ -311,18 +255,11 @@
           "ok": true,
           "detail": "ask/cron lack pricing_decisions writes; trigger + actions require human",
           "source": "synthesize + cron + migration + actions"
-        },
-        {
-          "domain": "human",
-          "name": "Final price requires explicit human action (trigger + actor)",
-          "ok": true,
-          "detail": "{\"autoBlocked\":\"HUMAN_APPROVED pricing_decisions require decided_by\",\"noRateBlocked\":\"HUMAN_APPROVED pricing_decisions require final_bid_rate or final_bid_amount\",\"draft\":\"DRAFT\",\"approved\":\"HUMAN_APPROVED\"}",
-          "source": "pricing_decisions_require_human"
         }
       ]
     },
     "comps": {
-      "pass": 3,
+      "pass": 1,
       "fail": 0,
       "rows": [
         {
@@ -331,25 +268,11 @@
           "ok": true,
           "detail": "reason input + FactRef",
           "source": "pricing-comparables.tsx"
-        },
-        {
-          "domain": "comps",
-          "name": "Comparables show inclusion/exclusion rationale",
-          "ok": true,
-          "detail": "{\"judgments\":[{\"source_pricing_line_id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"included\":true,\"reason\":\"Same buyer class and armed category — include as comparable win\"},{\"source_pricing_line_id\":\"9e3936d3-1205-4eeb-ba15-9ff75dfd3d64\",\"included\":false,\"reason\":\"Outlier premium site — exclude from observed range\"}]}",
-          "source": "pricing_comparable_judgments"
-        },
-        {
-          "domain": "comps",
-          "name": "Empty comparable reason rejected at persistence layer",
-          "ok": true,
-          "detail": "new row for relation \"pricing_comparable_judgments\" violates check constraint \"pricing_comparable_judgments_reason_nonblank\"",
-          "source": "pricing_comparable_judgments.reason"
         }
       ]
     },
     "ranges": {
-      "pass": 2,
+      "pass": 1,
       "fail": 0,
       "rows": [
         {
@@ -358,33 +281,19 @@
           "ok": true,
           "detail": "summarizeComparableRates defaults onlyIncluded",
           "source": "pricing-math.ts"
-        },
-        {
-          "domain": "ranges",
-          "name": "Observed ranges calculated from selected (included) verified records",
-          "ok": true,
-          "detail": "{\"awardedObs\":{\"n\":2,\"min\":29,\"max\":30.25,\"median\":29.625},\"proposedIncludedOnly\":[31.5,29.5],\"proposedAll\":[31.5,40,29.5]}",
-          "source": "include/exclude filter"
         }
       ]
     },
     "truths": {
-      "pass": 2,
+      "pass": 1,
       "fail": 0,
       "rows": [
         {
           "domain": "truths",
           "name": "buyer requested != submitted != awarded != current (+ internal cost distinct)",
           "ok": true,
-          "detail": "{\"id\":\"4813cde2-a035-44ec-a7de-b69cd6fdb521\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"5c7adcba-b2b6-443a-9a8b-f6568a6575e1\",\"proposed_source_fact_id\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"awarded_source_fact_id\":\"c48c464a-531d-48ba-a8ce-e72a85c97ae9\",\"current_source_fact_id\":\"0a863897-f595-4dec-bf39-cf04ba039a1d\"}",
+          "detail": "{\"id\":\"e7cfdff6-66b0-42bd-a55e-62d65d3aeb7d\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"2a6639c5-594d-472e-91ad-fd45d7caea31\",\"proposed_source_fact_id\":\"8816709a-ef48-40d2-9579-d9abba634f64\",\"awarded_source_fact_id\":\"c3c67f4a-29e9-4259-99a2-5b1eb47dc520\",\"current_source_fact_id\":\"8ef0efae-1ccf-452e-9f1a-c1ac2efb40ec\"}",
           "source": "pricing_lines five columns"
-        },
-        {
-          "domain": "truths",
-          "name": "Internal cost planning does not collapse submitted/awarded truths",
-          "ok": true,
-          "detail": "{\"proposed_rate\":31.5,\"internal_cost_rate\":24.1,\"awarded_rate\":30.25}",
-          "source": "fiveTruth line unchanged"
         }
       ]
     },
@@ -402,14 +311,14 @@
       ]
     },
     "periods": {
-      "pass": 2,
-      "fail": 0,
+      "pass": 1,
+      "fail": 1,
       "rows": [
         {
           "domain": "periods",
           "name": "Base / options / escalation work as coexisting verified structures",
-          "ok": true,
-          "detail": "{\"sites\":[\"Base Year 1\",\"Option Year 1\",\"Year 2 CPI-W escalation\"],\"rates\":[[\"Base Year 1\",64000],[\"Option Year 1\",65280],[\"Year 2 CPI-W escalation\",66585.6]]}",
+          "ok": false,
+          "detail": "{\"sites\":[],\"err\":\"pricing_lines.awarded_rate requires HUMAN_VERIFIED awarded_source_fact_id\"}",
           "source": "site_or_post grain + structure hints"
         },
         {
@@ -462,28 +371,21 @@
           "domain": "competitor",
           "name": "Competitor pricing does not become L&P pricing_lines",
           "ok": true,
-          "detail": "{\"compLine\":\"60a3e18c-df15-49e7-b5c8-aabd3ccc310f\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
+          "detail": "{\"compLine\":\"58200355-89bc-4a76-b61b-3578476d446a\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
           "source": "competitor_pricing_lines isolation"
         }
       ]
     },
-    "source": {
-      "pass": 2,
-      "fail": 0,
+    "fatal": {
+      "pass": 0,
+      "fail": 1,
       "rows": [
         {
-          "domain": "source",
-          "name": "Source evidence is reachable (fact → document → verification UI)",
-          "ok": true,
-          "detail": "{\"factId\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"documentId\":\"26b84237-666b-44b4-a088-268bcb00fdad\",\"lineFact\":\"5f964a97-ab70-407b-90b1-0e37f0824784\",\"uiFactRef\":true}",
-          "source": "pricing_lines.*_source_fact_id + FactRef"
-        },
-        {
-          "domain": "source",
-          "name": "Glide five-truth matrix exposes source fact links",
-          "ok": true,
-          "detail": "Glide links sources",
-          "source": "pricing-glide-grid.tsx"
+          "domain": "fatal",
+          "name": "suite error",
+          "ok": false,
+          "detail": "Cannot read properties of null (reading 'id')",
+          "source": ""
         }
       ]
     }

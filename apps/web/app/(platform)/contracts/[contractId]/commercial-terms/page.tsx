@@ -3,6 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { FourTruthsTable } from "@/components/opportunity-workspace/four-truths-table";
 import { collectFactIdsFromPricingLines, loadFactDocumentMap, loadPricingLines } from "@/lib/opportunity/load-workspace";
 import { loadContractCommercial } from "@/lib/contracts/load-workspace";
+import {
+  COMMERCIAL_PRECEDENCE,
+  COMMERCIAL_PRECEDENCE_NOTE,
+  CONTRACT_VALUE_ABSENT_NOTE,
+  CONTRACT_VALUE_KIND_LABELS,
+  FOUR_COMMERCIAL_TRUTHS,
+  FOUR_TRUTHS_NOTE,
+} from "@/lib/contracts/portfolio-model";
 
 function dash(v: string | number | null | undefined): string {
   if (v === null || v === undefined || v === "") return "—";
@@ -27,6 +35,11 @@ export default async function ContractCommercialTermsPage({
   const factDocumentMap =
     pricingLines.length > 0 ? await loadFactDocumentMap(collectFactIdsFromPricingLines(pricingLines)) : new Map();
 
+  const obligated = commercial.purchaseOrders
+    .map((po) => (typeof po.total_amount === "number" ? po.total_amount : null))
+    .filter((n): n is number => n != null);
+  const currentAmended = obligated.length > 0 ? obligated.reduce((sum, n) => sum + n, 0) : null;
+
   return (
     <div className="space-y-6">
       <section className="space-y-2">
@@ -43,11 +56,25 @@ export default async function ContractCommercialTermsPage({
             </dd>
           </div>
           <div>
-            <dt className="text-muted-foreground">Award / NTE</dt>
-            <dd>
+            <dt className="text-muted-foreground">Original — {CONTRACT_VALUE_KIND_LABELS.NTE_CEILING}</dt>
+            <dd
+              className="tabular-nums"
+              title="awards.amount_nte on the linked award — a ceiling, not a spend"
+            >
               {commercial.award?.amount_nte != null
                 ? `$${Number(commercial.award.amount_nte).toLocaleString()}`
                 : "—"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">
+              Current / amended — {CONTRACT_VALUE_KIND_LABELS.PO_OBLIGATED}
+            </dt>
+            <dd
+              className="tabular-nums"
+              title="Sum of purchase_orders.total_amount. Amendments record no amount, so this never defaults to the original."
+            >
+              {currentAmended != null ? `$${currentAmended.toLocaleString()}` : "—"}
             </dd>
           </div>
           <div>
@@ -55,6 +82,17 @@ export default async function ContractCommercialTermsPage({
             <dd>{dash(commercial.award?.notice)}</dd>
           </div>
         </dl>
+        <p className="text-xs text-muted-foreground">{CONTRACT_VALUE_ABSENT_NOTE}</p>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="text-sm font-medium">Instrument precedence</h2>
+        <ol className="list-decimal pl-5 text-sm" data-testid="commercial-precedence">
+          {COMMERCIAL_PRECEDENCE.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+        <p className="text-xs text-muted-foreground">{COMMERCIAL_PRECEDENCE_NOTE}</p>
       </section>
 
       <section className="space-y-2">
@@ -149,7 +187,10 @@ export default async function ContractCommercialTermsPage({
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-medium">Rates (linked pursuit — reference)</h2>
+        <h2 className="text-sm font-medium">
+          Rates — the four commercial truths ({FOUR_COMMERCIAL_TRUTHS.join(" · ")})
+        </h2>
+        <p className="text-xs text-muted-foreground">{FOUR_TRUTHS_NOTE}</p>
         {contract?.opportunity_id ? (
           <>
             <FourTruthsTable lines={pricingLines} factDocumentMap={factDocumentMap} />

@@ -20,7 +20,18 @@ async function requireUserOrg() {
   return { supabase, organizationId: membership.organization_id };
 }
 
-/** Clone a rebid workspace from an expiring contract's linked opportunity. */
+/**
+ * Start a rebid pursuit from an expiring contract.
+ *
+ * This clones *context*, never commercial terms: the buyer, the service type and a provenance note
+ * that names the contract and the prior pursuit. No pricing line, no rate and no award amount is
+ * copied forward, because prior rates were priced against a prior solicitation, a prior wage
+ * determination and a prior scope. The new pursuit starts in INTAKE with go/no-go PENDING so the
+ * decision to bid is still a human one.
+ *
+ * The lineage columns `rebid_from_contract_id` and `rebid_from_opportunity_id` are what make the
+ * rebid discoverable from the contract's Renewal tab.
+ */
 export async function cloneRebidFromContract(contractId: string) {
   const { supabase, organizationId } = await requireUserOrg();
 
@@ -43,8 +54,15 @@ export async function cloneRebidFromContract(contractId: string) {
     serviceType = prior?.service_type ?? null;
   }
 
-  const endNote = contract.verified_end_on ? `Contract ends ${contract.verified_end_on}.` : "";
-  const notes = [`Rebid from contract ${contract.title}.`, endNote, contract.opportunity_id ? `Prior pursuit ${contract.opportunity_id}.` : ""]
+  const endNote = contract.verified_end_on
+    ? `Contract ends ${contract.verified_end_on} (verified).`
+    : "Contract has no verified end date on file.";
+  const notes = [
+    `Rebid from contract ${contract.title}.`,
+    endNote,
+    contract.opportunity_id ? `Prior pursuit ${contract.opportunity_id}.` : "",
+    "No pricing copied: prior rates were priced against a prior solicitation and must be re-verified against the new one.",
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -68,6 +86,8 @@ export async function cloneRebidFromContract(contractId: string) {
 
   revalidatePath("/proposals");
   revalidatePath("/procurement/opportunities");
+  revalidatePath("/contracts");
   revalidatePath("/contracts/renewals");
+  revalidatePath(`/contracts/${contract.id}/renewal`);
   redirect(`/procurement/opportunities/${created.id}`);
 }

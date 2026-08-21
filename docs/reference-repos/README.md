@@ -36,6 +36,7 @@ Use these slugs when a note is needed:
 | `open-deep-research` | Open Deep Research |
 | `wrenai` | WrenAI |
 | `rival` | Rival |
+| `catalogit` | CatalogIT |
 
 ## Note template
 

@@ -1,7 +1,7 @@
 {
   "audit": "VERIFY6",
   "phase": "Canonical Phase 6 — Ask / Reports / Automation",
-  "stamp": "mt2u5yse",
+  "stamp": "mt2ysfww",
   "verdict": "FAIL",
   "total": 24,
   "passed": 23,
@@ -53,21 +53,21 @@
       "domain": "locate",
       "name": "LOCATE finds records directly",
       "ok": true,
-      "detail": "[\"V6 Locate Target mt2u5yse\"]",
+      "detail": "[\"V6 Locate Target mt2ysfww\"]",
       "source": "opportunities.ilike"
     },
     {
       "domain": "ask",
       "name": "ASK answers from verified sources",
       "ok": true,
-      "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"e09be04d-c12f-4732-923e-5c5d424cc698/4ed70a21-1a\"}",
+      "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"91060474-b541-49d9-b6c4-8b03f4ed6095/48a6db89-fd\"}",
       "source": "search_verified_knowledge"
     },
     {
       "domain": "ask",
       "name": "ASK cites evidence (storage path + fact linkage)",
       "ok": true,
-      "detail": "{\"storage_path\":\"e09be04d-c12f-4732-923e-5c5d424cc698/4ed70a21-1aa4-41c2-8ab1-ad75178e03bf/v/5503487b0cd60242cf169661b3fece95885eb77afb597aacd823665c09514c3b/original.pdf\",\"source_fact_id\":\"4cae08b2-09e7-4533-8684-af47c402ffbb\",\"document_id\":\"4ed70a21-1aa4-41c2-8ab1-ad75178e03bf\"}",
+      "detail": "{\"storage_path\":\"91060474-b541-49d9-b6c4-8b03f4ed6095/48a6db89-fd1c-45dc-bf8b-41a91077ce1b/v/af16064701f3191d80a87dc1402f5ff5c6ef5d4716322946ae72abfa1f9fb5c7/original.pdf\",\"source_fact_id\":\"c396f45f-ec76-4d5c-9a76-40ead76dc199\",\"document_id\":\"48a6db89-fd1c-45dc-bf8b-41a91077ce1b\"}",
       "source": "search_verified_knowledge"
     },
     {
@@ -144,7 +144,7 @@
       "domain": "automation",
       "name": "Duplicate execution is idempotent",
       "ok": true,
-      "detail": "{\"before\":[\"aaae0832-87a1-46d4-8a70-d8bfbd878e7b\"],\"after\":[\"aaae0832-87a1-46d4-8a70-d8bfbd878e7b\"]}",
+      "detail": "{\"before\":[\"359715a3-f6fe-4ceb-95bc-fd2b353ac224\"],\"after\":[\"359715a3-f6fe-4ceb-95bc-fd2b353ac224\"]}",
       "source": "ensure_automation_event"
     },
     {
@@ -158,14 +158,14 @@
       "domain": "automation",
       "name": "Compliance expiration automation uses expires_on",
       "ok": true,
-      "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-31\",\"entity_id\":\"51cfb313-ebe2-4a24-8d46-7baa0ca48987\"}]",
+      "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-31\",\"entity_id\":\"44c517f9-1148-4142-ad07-ebe49f8ff0b4\"}]",
       "source": "compliance_expiration"
     },
     {
       "domain": "automation",
       "name": "Processing failure is visible/retriable",
       "ok": true,
-      "detail": "{\"failed\":{\"id\":\"a3065b09-5f2a-4701-a7bc-c0ff7ba17853\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
+      "detail": "{\"failed\":{\"id\":\"7d1eb437-ddda-4893-b891-c2b261bdc35b\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
       "source": "documents FAILED → QUEUED + processing UI"
     },
     {
@@ -199,7 +199,7 @@
           "domain": "locate",
           "name": "LOCATE finds records directly",
           "ok": true,
-          "detail": "[\"V6 Locate Target mt2u5yse\"]",
+          "detail": "[\"V6 Locate Target mt2ysfww\"]",
           "source": "opportunities.ilike"
         }
       ]
@@ -226,14 +226,14 @@
           "domain": "ask",
           "name": "ASK answers from verified sources",
           "ok": true,
-          "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"e09be04d-c12f-4732-923e-5c5d424cc698/4ed70a21-1a\"}",
+          "detail": "{\"n\":1,\"reuse\":\"APPROVED\",\"path\":\"91060474-b541-49d9-b6c4-8b03f4ed6095/48a6db89-fd\"}",
           "source": "search_verified_knowledge"
         },
         {
           "domain": "ask",
           "name": "ASK cites evidence (storage path + fact linkage)",
           "ok": true,
-          "detail": "{\"storage_path\":\"e09be04d-c12f-4732-923e-5c5d424cc698/4ed70a21-1aa4-41c2-8ab1-ad75178e03bf/v/5503487b0cd60242cf169661b3fece95885eb77afb597aacd823665c09514c3b/original.pdf\",\"source_fact_id\":\"4cae08b2-09e7-4533-8684-af47c402ffbb\",\"document_id\":\"4ed70a21-1aa4-41c2-8ab1-ad75178e03bf\"}",
+          "detail": "{\"storage_path\":\"91060474-b541-49d9-b6c4-8b03f4ed6095/48a6db89-fd1c-45dc-bf8b-41a91077ce1b/v/af16064701f3191d80a87dc1402f5ff5c6ef5d4716322946ae72abfa1f9fb5c7/original.pdf\",\"source_fact_id\":\"c396f45f-ec76-4d5c-9a76-40ead76dc199\",\"document_id\":\"48a6db89-fd1c-45dc-bf8b-41a91077ce1b\"}",
           "source": "search_verified_knowledge"
         },
         {
@@ -308,7 +308,7 @@
           "domain": "automation",
           "name": "Duplicate execution is idempotent",
           "ok": true,
-          "detail": "{\"before\":[\"aaae0832-87a1-46d4-8a70-d8bfbd878e7b\"],\"after\":[\"aaae0832-87a1-46d4-8a70-d8bfbd878e7b\"]}",
+          "detail": "{\"before\":[\"359715a3-f6fe-4ceb-95bc-fd2b353ac224\"],\"after\":[\"359715a3-f6fe-4ceb-95bc-fd2b353ac224\"]}",
           "source": "ensure_automation_event"
         },
         {
@@ -322,14 +322,14 @@
           "domain": "automation",
           "name": "Compliance expiration automation uses expires_on",
           "ok": true,
-          "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-31\",\"entity_id\":\"51cfb313-ebe2-4a24-8d46-7baa0ca48987\"}]",
+          "detail": "[{\"kind\":\"compliance_expiration\",\"due_on\":\"2026-08-31\",\"entity_id\":\"44c517f9-1148-4142-ad07-ebe49f8ff0b4\"}]",
           "source": "compliance_expiration"
         },
         {
           "domain": "automation",
           "name": "Processing failure is visible/retriable",
           "ok": true,
-          "detail": "{\"failed\":{\"id\":\"a3065b09-5f2a-4701-a7bc-c0ff7ba17853\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
+          "detail": "{\"failed\":{\"id\":\"7d1eb437-ddda-4893-b891-c2b261bdc35b\",\"processing_status\":\"FAILED\",\"lifecycle_error\":\"parser boom\"},\"retried\":{\"processing_status\":\"QUEUED\"}}",
           "source": "documents FAILED → QUEUED + processing UI"
         },
         {

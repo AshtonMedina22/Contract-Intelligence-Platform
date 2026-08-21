@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T04:54:48.572Z",
+  "generated_at": "2026-08-21T13:22:43.692Z",
   "verdict": "PASS",
   "passed": 26,
   "failed": 0,
@@ -7,40 +7,40 @@
   "timings": [
     {
       "step": "parse:xlsx-fixture",
-      "ms": 8
+      "ms": 17
     },
     {
       "step": "parse:SRC-02",
-      "ms": 179
+      "ms": 163
     },
     {
       "step": "register:Allen_ISD_LP_security_agreement_excerpt.pdf",
-      "ms": 1242,
+      "ms": 3658,
       "bytes": 334504
     },
     {
       "step": "register:12.pdf",
-      "ms": 529,
+      "ms": 981,
       "bytes": 31322
     },
     {
       "step": "register:1770_43.35658_Services_Contract_with_proposal_Final.pdf",
-      "ms": 6913,
+      "ms": 37419,
       "bytes": 4169850
     },
     {
       "step": "register:5-21_AllenISD.pdf",
-      "ms": 47820,
+      "ms": 298892,
       "bytes": 32599851
     },
     {
       "step": "register:bulk-12.pdf",
-      "ms": 519,
+      "ms": 753,
       "bytes": 31346
     },
     {
       "step": "processor:health",
-      "ms": 91
+      "ms": 41
     }
   ],
   "matrix": [
@@ -72,15 +72,15 @@
       "domain": "xlsx",
       "name": "XLSX parses via openpyxl without OCR",
       "ok": true,
-      "detail": "parser=xlsx-openpyxl sheets=1 8ms (pilot has 0 XLSX; fixture proves path)",
-      "ms": 8
+      "detail": "parser=xlsx-openpyxl sheets=1 17ms (pilot has 0 XLSX; fixture proves path)",
+      "ms": 17
     },
     {
       "domain": "pdf",
       "name": "digital PDF parses (SRC-02)",
       "ok": true,
-      "detail": "pages=13 179ms",
-      "ms": 179
+      "detail": "pages=13 163ms",
+      "ms": 163
     },
     {
       "domain": "scans",
@@ -98,20 +98,20 @@
       "domain": "docx",
       "name": "DOCX adapter functional (production wire; not pilot-required)",
       "ok": true,
-      "detail": "7ms pages=1"
+      "detail": "6ms pages=1"
     },
     {
       "domain": "pdf",
       "name": "real pilot PDF registers in evidence vault (SRC-02)",
       "ok": true,
-      "detail": "1242ms sha=44497b51d423…",
-      "ms": 1242
+      "detail": "3658ms sha=44497b51d423…",
+      "ms": 3658
     },
     {
       "domain": "package",
       "name": "package grouping links multiple pilot docs",
       "ok": true,
-      "detail": "package=1d081a23 docs=2"
+      "detail": "package=d6c90c26 docs=2"
     },
     {
       "domain": "dedupe",
@@ -123,7 +123,7 @@
       "domain": "versions",
       "name": "different pilot PDF creates separate version/document",
       "ok": true,
-      "detail": "doc1=009c41ed doc2=d3cdf7b3"
+      "detail": "doc1=89c629e9 doc2=528b600e"
     },
     {
       "domain": "intake",
@@ -135,7 +135,7 @@
       "domain": "pdf",
       "name": "large pilot PDF registers (SRC-03)",
       "ok": true,
-      "detail": "47839ms 31.1MB"
+      "detail": "298919ms 31.1MB"
     },
     {
       "domain": "retry",
@@ -153,19 +153,19 @@
       "domain": "provenance",
       "name": "HUMAN_VERIFIED promote succeeds with source_page provenance",
       "ok": true,
-      "detail": "{\"ok\":true,\"rate\":32.28,\"truth\":\"awarded\",\"action\":\"rate\",\"rate_type\":\"standard\",\"labor_category\":\"Armed officer\",\"pricing_line_id\":\"92d95397-f661-44a7-a01f-25dfef97d6b1\"}"
+      "detail": "{\"ok\":true,\"rate\":32.28,\"truth\":\"awarded\",\"action\":\"rate\",\"rate_type\":\"standard\",\"labor_category\":\"Armed officer\",\"pricing_line_id\":\"9207b911-eaa7-4e15-a6b9-423afdd16f6c\"}"
     },
     {
       "domain": "provenance",
       "name": "provenance survives to canonical pricing_lines",
       "ok": true,
-      "detail": "source_fact=0a45622a page=3"
+      "detail": "source_fact=f828f788 page=3"
     },
     {
       "domain": "trust",
       "name": "unresolved rate conflict cannot silently promote overwrite",
       "ok": true,
-      "detail": "{\"ok\":false,\"truth\":\"awarded\",\"action\":\"conflict\",\"existing\":32.28,\"incoming\":40,\"pricing_line_id\":\"92d95397-f661-44a7-a01f-25dfef97d6b1\"}"
+      "detail": "{\"ok\":false,\"truth\":\"awarded\",\"action\":\"conflict\",\"existing\":32.28,\"incoming\":40,\"pricing_line_id\":\"9207b911-eaa7-4e15-a6b9-423afdd16f6c\"}"
     },
     {
       "domain": "trust",

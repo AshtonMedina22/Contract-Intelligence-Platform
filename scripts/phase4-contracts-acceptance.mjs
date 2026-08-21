@@ -122,14 +122,30 @@ function assertUiSurface() {
     record("ui", `route exists ${rel}`, existsSync(join(root, rel)));
   }
 
+  // P1 deliberately demoted Renewals and Compliance out of CONTRACTS_TABS (its own gate A3 asserts
+  // "Portfolio only"), so this no longer greps for three sidebar-level tabs. The requirement it was
+  // really protecting — that all three portfolio-level routes stay reachable from each other — is
+  // now asserted on the pages themselves. See P10_CONTRACT_RENEWAL_REBID_ACCEPTANCE.md.
   const tabs = read("apps/web/components/section-tabs.tsx");
   record(
     "ui",
-    "ContractsNav Portfolio | Renewals | Compliance",
-    tabs.includes('href: "/contracts"') &&
-      tabs.includes('href: "/contracts/renewals"') &&
-      tabs.includes('href: "/contracts/compliance"') &&
-      tabs.includes("ContractsNav"),
+    "ContractsNav is Portfolio only (P1 demotion), section identity intact",
+    tabs.includes('href: "/contracts"') && tabs.includes("ContractsNav"),
+  );
+
+  const portfolioPage = read("apps/web/app/(platform)/contracts/page.tsx");
+  const renewalsPage = read("apps/web/app/(platform)/contracts/renewals/page.tsx");
+  const compliancePage = read("apps/web/app/(platform)/contracts/compliance/page.tsx");
+  record(
+    "ui",
+    "Portfolio <-> Renewals <-> Compliance cross-linked on every contracts page",
+    portfolioPage.includes("RENEWALS_ROUTE") &&
+      portfolioPage.includes("COMPLIANCE_ROUTE") &&
+      renewalsPage.includes("PORTFOLIO_ROUTE") &&
+      renewalsPage.includes("COMPLIANCE_ROUTE") &&
+      compliancePage.includes("PORTFOLIO_ROUTE") &&
+      compliancePage.includes("RENEWALS_ROUTE") &&
+      [portfolioPage, renewalsPage, compliancePage].every((src) => src.includes("ContractsNav")),
   );
 
   const shared = read("apps/web/components/opportunity-workspace/shared.tsx");
@@ -158,14 +174,14 @@ function assertUiSurface() {
   const overview = read("apps/web/app/(platform)/contracts/[contractId]/page.tsx");
   record(
     "ui",
-    "Overview shows buyer / NTE / vehicle / option / next action without fabricating",
+    "Overview shows buyer / value / vehicle / option / next action / risk without fabricating",
     overview.includes("Buyer") &&
       overview.includes("Original value") &&
       overview.includes("Current value") &&
-      overview.includes(">NTE<") &&
       overview.includes("Vehicle") &&
-      overview.includes("Current option state") &&
-      overview.includes("Next action / risk") &&
+      overview.includes("Options on file") &&
+      overview.includes("Next action") &&
+      overview.includes("Risk") &&
       overview.includes('return "—"'),
   );
 
@@ -191,15 +207,22 @@ function assertUiSurface() {
     "Changes shows amendments + option exercises",
     changes.includes("amendment_number") && changes.includes("Option exercises"),
   );
+  record(
+    "ui",
+    "Changes renders an append-only Original -> Amendment -> Mod -> Option -> Renewal timeline",
+    changes.includes("buildChangeTimeline") &&
+      changes.includes("CHANGE_HISTORY_APPEND_ONLY_NOTE") &&
+      changes.includes('data-testid="change-timeline"'),
+  );
 
   const renewal = read("apps/web/app/(platform)/contracts/[contractId]/renewal/page.tsx");
   record(
     "ui",
-    "Renewal shows buckets + eligibility + rebid + internal review",
-    renewal.includes("180 / 120 / 90 / 60 / 30 / EXPIRED") &&
-      renewal.includes("Compliance eligibility") &&
+    "Renewal shows buckets + readiness + rebid + internal review",
+    renewal.includes("RenewalBucketStrip") &&
+      renewal.includes("Compliance readiness for rebid") &&
       renewal.includes("Internal review") &&
-      renewal.includes("Rebid date / status") &&
+      renewal.includes("Rebid pursuit") &&
       renewal.includes("RebidButton"),
   );
 }

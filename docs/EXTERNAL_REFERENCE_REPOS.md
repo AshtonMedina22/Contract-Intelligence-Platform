@@ -47,7 +47,7 @@ A registered repo existing does **not** mean we must adopt its approach.
 | PDF / DOCX / XLSX parser | **Docling** first; **Unstructured** as benchmark/alternate |
 | Public procurement ingestion / external opportunity sources | **TenderRadar** + **OpenSAM** + **OCDS** (**RFP Map** only for bulk-CSV acquisition; its map UX is declined) |
 | Federal awards / federal competitors / federal buyer history | **USAspending API**; optionally **USAspending MCP** for tool architecture |
-| Contract domain / changes / renewal / obligations | **Public-Sector CLM**; **Whereas** for UX |
+| Contract domain / changes / renewal / obligations | **Public-Sector CLM**; **Whereas** for UX; **CatalogIT** for renewal-queue mechanics |
 | Document / proposal output | **RFPilot** DOCX patterns; **Wraft** where useful |
 | Pricing grid mechanics | **Glide Data Grid** |
 | Response editor mechanics | **Novel** |
@@ -372,8 +372,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/benjaminbellman/contract-lifecycle-management |
 | **Reference category** | Government / public-sector CLM domain design |
 | **Usage mode** | ARCHITECTURE / SCHEMA REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | **Do not copy code** unless current license is explicitly verified as compatible. Use to check missing standard CLM mechanics. |
+| **Analysis status** | INSPECTED FOR TASK (P10) — see [reference-repos/public-sector-clm.md](reference-repos/public-sector-clm.md) |
+| **License / copy caution** | **No license file** (verified 2026-08-21). REFERENCE ONLY — do not copy code, schema DDL or documentation text. Use to check missing standard CLM mechanics. |
 
 **Why it matters:** Checklist of standard CLM mechanics (obligations, amendments, approvals, renewals, events, audit, RBAC) against our contract workspace.
 
@@ -396,8 +396,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/zgbrenner/whereas |
 | **Reference category** | Modern contract repository / CLM UX |
 | **Usage mode** | UX REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | **REFERENCE ONLY** unless current license obligations have been explicitly reviewed and approved. Do not copy source. |
+| **Analysis status** | ADOPTED PATTERN (P10) — see [reference-repos/whereas.md](reference-repos/whereas.md) |
+| **License / copy caution** | **GPL-3.0** (verified 2026-08-21 — previously recorded here as AGPL). **REFERENCE ONLY**; copyleft, not approved for copy. Do not copy source. |
 
 **Why it matters:** Guided intake, triage, workspace, findings, approvals, and version-timeline UX for contracts.
 
@@ -615,9 +615,39 @@ competitor scans, change-diff summaries, or any competitor score / rank / threat
 
 ---
 
+### 21. CatalogIT
+
+| Field | Value |
+| --- | --- |
+| **URL** | https://github.com/jonymaster/catalogIT |
+| **Reference category** | Renewal-date risk, renewal queue and scheduled-reminder mechanics |
+| **Usage mode** | SELECTIVE REFERENCE — queue / exposure-summary pattern only |
+| **Analysis status** | ADOPTED PATTERN (P10 Contract Portfolio + Renewal/Rebid, 2026-08-21) — README + license metadata only; see [reference-repos/catalogit.md](reference-repos/catalogit.md) |
+| **License / copy caution** | **MIT** (verified 2026-08-21) — permissive, copy-eligible with attribution. Nothing was copied, so nothing is owed. |
+
+**Why it matters:** The clearest public implementation of the date-risk layer — renewal dates as a
+first-class field, an exposure summary above the individual records, and reminders fired by a daily
+scheduled job rather than computed at render.
+
+**Consult when:** Renewal queue shape; expiry bucket / exposure summary; surfacing when a scheduled
+recompute last ran.
+
+**Inspect:** the renewal calendar / queue composition and the scheduled reminder-dispatch split.
+Nothing else.
+
+**Maps to our platform:** `/contracts` exposure strip, `/contracts/renewals` action queue,
+`contract_alerts` + the `refresh-contract-alerts` Supabase cron.
+
+**Do not:** adopt its **notification dispatch** (Gmail / Slack / Telegram / webhooks) — P10 sends
+nothing and renews nothing. **Do not** adopt its SaaS/seat/vendor cost model or per-seat spend
+analysis; our schema records an award NTE ceiling and obligated purchase orders and refuses to
+synthesise a single "contract value" from them.
+
+---
+
 ## Registry completeness
 
-Registered (20/20):
+Registered (21/21):
 
 1. RFPilot  
 2. AutoRFP  
@@ -639,5 +669,6 @@ Registered (20/20):
 18. WrenAI  
 19. RFP Map  
 20. Rival  
+21. CatalogIT  
 
 Adding a new reference: append an entry with the same fields, add a routing-table row, keep status **REGISTERED ONLY** until a task inspects it, and do not create a `docs/reference-repos/<slug>.md` until that inspection happens.

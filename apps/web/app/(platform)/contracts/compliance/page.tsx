@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { ContractsNav } from "@/components/section-tabs";
+import { ContractHonestyStrip } from "@/components/contract-workspace/portfolio-strips";
+import { PORTFOLIO_ROUTE, RENEWALS_ROUTE } from "@/lib/contracts/portfolio-model";
 import { PageHeader } from "@/components/shell";
 import { EmptyState } from "@/components/shell";
 import { Button } from "@/components/ui/button";
@@ -22,8 +25,9 @@ async function ComplianceContent() {
 
   return (
     <div className="space-y-3">
+      <ContractsNav />
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/contracts" className="flex items-center gap-1 hover:text-foreground">
+        <Link href={PORTFOLIO_ROUTE} className="flex items-center gap-1 hover:text-foreground">
           <ArrowLeft className="size-3.5" />
           Portfolio
         </Link>
@@ -34,10 +38,18 @@ async function ComplianceContent() {
         title="Company compliance"
         description="Licenses, COIs/insurance, SAM/GSA/TXMAS, certifications, and personnel qualification evidence — never invented."
         actions={
-          <Button asChild size="sm" variant="outline">
-            <Link href="/contracts">View portfolio</Link>
-          </Button>
+          <>
+            <Button asChild size="sm" variant="outline">
+              <Link href={PORTFOLIO_ROUTE}>Portfolio</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline">
+              <Link href={RENEWALS_ROUTE}>Renewal & rebid center</Link>
+            </Button>
+          </>
         }
+      />
+      <ContractHonestyStrip
+        extra="Compliance evidence here is advisory context for a rebid decision. It does not certify eligibility and it does not gate any action."
       />
       {(data ?? []).length > 0 ? (
         <ul className="space-y-1.5 text-sm">

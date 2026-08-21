@@ -62,7 +62,8 @@ export default async function ContractServicePlanPage({
                   <th className="py-2 pr-3 font-medium">Classification</th>
                   <th className="py-2 pr-3 font-medium">Hours/wk</th>
                   <th className="py-2 pr-3 font-medium">Schedule</th>
-                  <th className="py-2 font-medium">Notes</th>
+                  <th className="py-2 pr-3 font-medium">Notes</th>
+                  <th className="py-2 font-medium">Source</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,7 +74,20 @@ export default async function ContractServicePlanPage({
                     <td className="py-2 pr-3">{dash(row.guard_classification)}</td>
                     <td className="py-2 pr-3">{dash(row.hours_per_week)}</td>
                     <td className="py-2 pr-3">{dash(row.schedule_note)}</td>
-                    <td className="py-2">{dash(row.notes)}</td>
+                    <td className="py-2 pr-3">{dash(row.notes)}</td>
+                    <td className="py-2">
+                      {row.source_document_id ? (
+                        <Link className="underline" href={`/ingestion/verification/${row.source_document_id}`}>
+                          document {row.source_document_id.slice(0, 8)}
+                        </Link>
+                      ) : row.source_fact_id ? (
+                        <span className="text-muted-foreground">fact {row.source_fact_id.slice(0, 8)}</span>
+                      ) : (
+                        <span className="text-muted-foreground" title="Not recorded: source_fact_id">
+                          —
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
