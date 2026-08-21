@@ -87,7 +87,13 @@ async function main() {
   const nextConfig = readFileSync("apps/web/next.config.ts", "utf8");
   record("intake", "Server Actions bodySizeLimit is 50mb", /bodySizeLimit:\s*"50mb"/.test(nextConfig));
   const intakeForm = readFileSync("apps/web/app/(platform)/ingestion/intake/intake-form.tsx", "utf8");
-  record("intake", "Intake UI states Max 50 MB", /Max 50 MB per file/.test(intakeForm));
+  record(
+    "intake",
+    "Intake preflight derives its limit from MAX_INTAKE_BYTES (cannot drift from the server)",
+    /MAX_INTAKE_BYTES/.test(intakeForm) &&
+      /MAX_FILE_SIZE_BYTES = MAX_INTAKE_BYTES/.test(intakeForm) &&
+      /Max \$\{MAX_FILE_SIZE_MB\} MB per file/.test(intakeForm),
+  );
   const rolesSrc = readFileSync("apps/web/lib/org/roles.ts", "utf8");
   record(
     "roles",

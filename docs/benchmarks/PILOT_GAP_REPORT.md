@@ -19,15 +19,16 @@
 | Class C canonical promotions | **0** |
 | Precedence conflict exercised | YES |
 
-**Verdict:** Representative A/B digital PDFs complete intake → structured extract → evidence-bound VERIFY → canonical promotion with page provenance. SRC-03 (25 MB) and SRC-19 (OCR) remain deferred. Phase 2 exit (~20–30 packages) is **not** met by count alone.
+**Verdict:** Representative A/B digital PDFs complete intake → structured extract → evidence-bound VERIFY → canonical promotion with page provenance. SRC-03 ingests fine (the 25 MB gate never existed); SRC-19 (OCR) remains deferred. Phase 2 exit (~20–30 packages) is **not** met by count alone — and per F1 the VERIFY step on this corpus was a harness stamp, not human review.
 
 ### Remaining gaps
 
 | Gap | Severity | UX placement |
 | --- | --- | --- |
 | Full domain coverage (staffing matrix, cost-build rows, OT/holiday, evaluator scores as entities) | blocking for Phase 2 exit | Pricing; Requirements; Result |
-| 25 MB intake gate blocks Allen full board packet (SRC-03) | deferred | Data Ops → Intake |
-| OCR unwired — scanned PDFs fail routing (SRC-19) | deferred | Data Ops → Processing |
+| ~~25 MB intake gate blocks Allen full board packet (SRC-03)~~ | **CLOSED — was never real.** No 25 MB gate exists in code; intake is 50 MB and SRC-03 measures 31.1 MB and ingests (VERIFY 3, F1) | Data Ops → Intake |
+| OCR key-gated — scanned PDFs fail closed as `OCR_REQUIRED` (SRC-19) | deferred; contract proven by F1, but no real scan has been OCR'd (`MISTRAL_API_KEY` unset) | Data Ops → Processing |
+| 195 of 204 `HUMAN_VERIFIED` facts are harness stamps; 0 workbench-attributed; 0 `NEEDS_REVIEW` | **blocking for Phase 2 exit** (F1) | Data Ops → Verification |
 | Corpus depth ~13 packages vs ~20–30 exit | deferred | Data Ops |
 | Standalone XLSX pricing workbook missing | deferred | Pricing |
 
@@ -168,7 +169,7 @@ Classification: **A/B** | Expected outcome: Win | Primary UX: **Contract Service
 
 | Type | Detail | Severity | UX placement |
 | --- | --- | --- | --- |
-| intake_blocked | exceeds 25MB intake limit | blocking | Data Ops |
+| ~~intake_blocked~~ | ~~exceeds 25MB intake limit~~ — **stale, never real**; 50 MB gate, file is 31.1 MB | closed | Data Ops |
 
 #### File detail
 

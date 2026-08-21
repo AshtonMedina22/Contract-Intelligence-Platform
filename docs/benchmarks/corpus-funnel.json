@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-08-21T14:26:22.949Z",
+  "stage_order": [
+    "discovered",
+    "acquired",
+    "ingested",
+    "parsed",
+    "extracted",
+    "blocked",
+    "review_ready",
+    "human_verified",
+    "canonical_promoted",
+    "ab_complete"
+  ],
+  "stages": {
+    "discovered": {
+      "src_ids": 20,
+      "manifest_usable": 18
+    },
+    "acquired": {
+      "files": 33,
+      "bytes": 54245546
+    },
+    "ingested": {
+      "documents": 34,
+      "document_versions": 34
+    },
+    "parsed": {
+      "runs_with_normalized_document": 71,
+      "distinct_documents": 32,
+      "parser_mix": {
+        "pdf-native": 71
+      }
+    },
+    "extracted": {
+      "distinct_documents": 33,
+      "total_facts": 1374,
+      "parsed_but_zero_facts": 0
+    },
+    "blocked": {
+      "failed": 1,
+      "ocr_required": 1,
+      "other": 0
+    },
+    "review_ready": {
+      "needs_review": 0,
+      "status_mix": {
+        "VERIFIED": 33,
+        "FAILED": 1
+      }
+    },
+    "human_verified": {
+      "verified_documents": 33,
+      "human_verified_facts": 204,
+      "ai_extracted_facts": 574,
+      "script_stamped_facts": 195,
+      "workbench_attributed_facts": 0,
+      "unattributed_facts": 9
+    },
+    "canonical_promoted": {
+      "pricing_lines_with_source_fact": 34,
+      "pricing_lines_total": 34,
+      "procurement_packages": 22
+    },
+    "ab_complete": {
+      "ab_packages": 15,
+      "ab_documents_verified": 23,
+      "ab_packages_fully_verified": 15,
+      "ab_package_keys_fully_verified": [
+        "PKG-01",
+        "PKG-02",
+        "PKG-04",
+        "PKG-03",
+        "PKG-06",
+        "PKG-05",
+        "PKG-14",
+        "PKG-15",
+        "PKG-16",
+        "PKG-17",
+        "PKG-18",
+        "PKG-19",
+        "PKG-20",
+        "PKG-21",
+        "PKG-22"
+      ]
+    }
+  }
+}

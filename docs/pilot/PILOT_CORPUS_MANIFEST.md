@@ -21,6 +21,8 @@ A **URL without a retrievable file is UNAVAILABLE and is not counted.**
 
 ## Acquisition totals (countable)
 
+> **STALE as of 2026-08-21 (F1).** This table still counts the Prompt 2A acquisition round. `docs/pilot/acquired/` now holds **33 files (51.7 MB)** and the live org holds **34 documents** — SRC-20 … SRC-30 were acquired without updating these totals, so DISCOVERED **understates** the corpus. Current stage counts come from `npm run report:corpus-funnel`; see [F1_PRODUCTION_INGESTION_ACCEPTANCE.md](../functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md). Refreshing this table is open follow-up work.
+
 | | Count |
 | --- | --- |
 | **USABLE source files (counted)** | **18** |

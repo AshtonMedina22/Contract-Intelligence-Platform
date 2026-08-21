@@ -9,9 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MAX_INTAKE_BYTES } from "@/lib/intake/allowed-files";
 
-const MAX_FILE_SIZE_MB = 50;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+// Preflight must reject exactly what the server rejects, so both read one constant.
+// The processor imposes no byte limit of its own — it downloads from the vault.
+const MAX_FILE_SIZE_BYTES = MAX_INTAKE_BYTES;
+const MAX_FILE_SIZE_MB = Math.floor(MAX_INTAKE_BYTES / (1024 * 1024));
 const ALLOWED_EXTENSIONS = [".pdf", ".xlsx", ".xls", ".docx"];
 
 type FileStatus = "pending" | "uploading" | "ok" | "duplicate" | "error";

@@ -1,0 +1,453 @@
+{
+  "generated_at": "2026-08-21T14:25:40.304Z",
+  "verdict": "PASS",
+  "passed": 37,
+  "failed": 0,
+  "total": 37,
+  "ocr_key_present": false,
+  "processor_url": "http://127.0.0.1:8080",
+  "matrix": [
+    {
+      "domain": "routing",
+      "name": "DIGITAL_PDF -> pdf-native, parsed natively with text",
+      "ok": true,
+      "detail": "class=digital_pdf chars=143"
+    },
+    {
+      "domain": "routing",
+      "name": "SCANNED_PDF -> ocr-mistral and fails closed without a key",
+      "ok": true,
+      "detail": "class=scanned_pdf escalate=true"
+    },
+    {
+      "domain": "routing",
+      "name": "DOCX -> docx-native, wired (not OCR, not treated as PDF)",
+      "ok": true,
+      "detail": "class=docx pages=1"
+    },
+    {
+      "domain": "routing",
+      "name": "XLSX -> xlsx-openpyxl, never OCR, sheet/cell provenance on every cell",
+      "ok": true,
+      "detail": "cells=8 provenance=true"
+    },
+    {
+      "domain": "routing",
+      "name": "UNSUPPORTED -> unknown, fails closed and is NOT mislabelled as an OCR problem",
+      "ok": true,
+      "detail": "class=unknown err=No routing rule for mime='text/plain' filename='notes.txt'. parser_id="
+    },
+    {
+      "domain": "ocr",
+      "name": "health reports ocr_ready=false and escalates ocr-mistral when no key is set",
+      "ok": true,
+      "detail": "ocr_ready=false wired=xlsx-openpyxl|pdf-native|docx-native"
+    },
+    {
+      "domain": "ocr",
+      "name": "setting MISTRAL_API_KEY wires ocr-mistral (no network call, no invented parse)",
+      "ok": true,
+      "detail": "ocr_ready=true selected=ocr-mistral"
+    },
+    {
+      "domain": "ocr",
+      "name": "scanned PDF without a key never fabricates text or reaches NEEDS_REVIEW",
+      "ok": true,
+      "detail": "normalized_saved=0 needs_review=false"
+    },
+    {
+      "domain": "ocr",
+      "name": "DOCX and XLSX are wired independently of OCR credentials",
+      "ok": true,
+      "detail": "xlsx-openpyxl|pdf-native|docx-native"
+    },
+    {
+      "domain": "lifecycle",
+      "name": "parse-and-extract keeps OCR_REQUIRED on EVERY FAILED write (badge cannot be blanked)",
+      "ok": true,
+      "detail": "failed_writes=2 unprefixed=0"
+    },
+    {
+      "domain": "lifecycle",
+      "name": "prefix application is idempotent and stays inside the 500-char column budget",
+      "ok": true,
+      "detail": "prefix_count=1 long_ok=true"
+    },
+    {
+      "domain": "lifecycle",
+      "name": "failed parse records an error class plus a human reason that says how to unblock",
+      "ok": true,
+      "detail": "codes=ocr_required"
+    },
+    {
+      "domain": "lifecycle",
+      "name": "non-OCR failures keep their own error class and are not labelled OCR_REQUIRED",
+      "ok": true,
+      "detail": "codes=parse_failed"
+    },
+    {
+      "domain": "trust",
+      "name": "processor Store refuses to write VERIFIED",
+      "ok": true,
+      "detail": "ValueError: Processor must never mark documents VERIFIED or write canonical status."
+    },
+    {
+      "domain": "trust",
+      "name": "no parse/extract path reached a VERIFIED or out-of-band status",
+      "ok": true,
+      "detail": "violation=none"
+    },
+    {
+      "domain": "trust",
+      "name": "processor jobs never write HUMAN_VERIFIED",
+      "ok": true,
+      "detail": "jobs.py stages facts as AI_EXTRACTED only"
+    },
+    {
+      "domain": "trust",
+      "name": "processor writes staging facts as AI_EXTRACTED and preserves HUMAN_VERIFIED rows on re-extract",
+      "ok": true,
+      "detail": "upsert_facts skips keys already HUMAN_VERIFIED"
+    },
+    {
+      "domain": "size",
+      "name": "server intake gate is a single MAX_INTAKE_BYTES constant (50 MB)",
+      "ok": true,
+      "detail": "apps/web/lib/intake/allowed-files.ts"
+    },
+    {
+      "domain": "size",
+      "name": "client preflight derives from MAX_INTAKE_BYTES so it cannot drift from the server",
+      "ok": true,
+      "detail": "intake-form.tsx imports the server constant"
+    },
+    {
+      "domain": "size",
+      "name": "Server Action body limit matches the intake gate",
+      "ok": true,
+      "detail": "next.config.ts bodySizeLimit=50mb"
+    },
+    {
+      "domain": "size",
+      "name": "processor declares no competing byte limit (it downloads from the vault)",
+      "ok": true,
+      "detail": "no 25 MB gate exists anywhere in code; 50 MB intake is the only gate"
+    },
+    {
+      "domain": "integrity",
+      "name": "real acquired corpus bytes available for the integrity probe",
+      "ok": true,
+      "detail": "3 pdf(s) from docs/pilot/acquired"
+    },
+    {
+      "domain": "integrity",
+      "name": "distinct bytes create distinct documents and versions",
+      "ok": true,
+      "detail": "doc1=429a52bb doc2=0fb7e9aa"
+    },
+    {
+      "domain": "integrity",
+      "name": "one package holds multiple documents (multi-doc association)",
+      "ok": true,
+      "detail": "package_docs=2"
+    },
+    {
+      "domain": "integrity",
+      "name": "identical SHA-256 is deduped: flagged duplicate and no second version row",
+      "ok": true,
+      "detail": "duplicate=true versions_with_sha=1"
+    },
+    {
+      "domain": "integrity",
+      "name": "dedupe returns the original document instead of orphaning the upload",
+      "ok": true,
+      "detail": "returned=429a52bb original=429a52bb"
+    },
+    {
+      "domain": "integrity",
+      "name": "every ingested version is retained (nothing overwritten in the vault)",
+      "ok": true,
+      "detail": "versions=2 for 2 distinct SHAs"
+    },
+    {
+      "domain": "trust",
+      "name": "HUMAN_VERIFIED without a verifying actor is rejected by the database",
+      "ok": true,
+      "detail": "new row for relation \"extracted_facts\" violates check constraint \"extracted_facts_verified_requires_actor\""
+    },
+    {
+      "domain": "trust",
+      "name": "a freshly staged fact defaults to AI_EXTRACTED, never to verified",
+      "ok": true,
+      "detail": "status=AI_EXTRACTED"
+    },
+    {
+      "domain": "health",
+      "name": "live processor /health reports wired parsers and never claims canonical writes",
+      "ok": true,
+      "detail": "parsers=xlsx-openpyxl|pdf-native|docx-native ocr_ready=false"
+    },
+    {
+      "domain": "health",
+      "name": "live ocr_ready matches whether MISTRAL_API_KEY is actually set",
+      "ok": true,
+      "detail": "ocr_ready=false key_present=false"
+    },
+    {
+      "domain": "health",
+      "name": "MISTRAL_API_KEY absent — OCR is unproven against real scanned L&P evidence",
+      "ok": true,
+      "detail": "scanned PDFs correctly fail closed as OCR_REQUIRED; do not claim OCR coverage",
+      "informational": true
+    },
+    {
+      "domain": "funnel",
+      "name": "corpus funnel report runs clean",
+      "ok": true,
+      "detail": "exit 0"
+    },
+    {
+      "domain": "funnel",
+      "name": "every pipeline stage is reported separately",
+      "ok": true,
+      "detail": "discovered,acquired,ingested,parsed,extracted,blocked,review_ready,human_verified,canonical_promoted,ab_complete"
+    },
+    {
+      "domain": "funnel",
+      "name": "PARSED and EXTRACTED are distinct measures, not one number",
+      "ok": true,
+      "detail": "parsed=32 extracted=33"
+    },
+    {
+      "domain": "funnel",
+      "name": "HUMAN_VERIFIED documents and facts are never collapsed into one count",
+      "ok": true,
+      "detail": "docs=33 facts=204"
+    },
+    {
+      "domain": "funnel",
+      "name": "funnel attributes HUMAN_VERIFIED facts to script stamps vs workbench review",
+      "ok": true,
+      "detail": "script_stamped=195 workbench=0"
+    },
+    {
+      "domain": "funnel",
+      "name": "blocked documents are broken out by error class including OCR_REQUIRED",
+      "ok": true,
+      "detail": "failed=1 ocr_required=1"
+    },
+    {
+      "domain": "funnel",
+      "name": "script-stamped HUMAN_VERIFIED facts exist and must not be counted as human verification",
+      "ok": true,
+      "detail": "195 facts carry a harness marker in verification_events.note",
+      "informational": true
+    }
+  ],
+  "probe": {
+    "ocr_required_prefix": "OCR_REQUIRED:",
+    "routes": {
+      "DIGITAL_PDF": {
+        "document_class": "digital_pdf",
+        "parser_id": "pdf-native",
+        "wired": true,
+        "escalate": false,
+        "selected": "pdf-native",
+        "parsed": true,
+        "page_count": 1,
+        "sheet_count": null,
+        "text_chars": 143,
+        "cell_count": 0,
+        "cell_provenance": true
+      },
+      "SCANNED_PDF": {
+        "document_class": "scanned_pdf",
+        "parser_id": "ocr-mistral",
+        "wired": false,
+        "escalate": true,
+        "parsed": false,
+        "error_type": "ParserNotWiredError",
+        "error": "Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate to OCR; do not accept empty native parse. parser_id=ocr-mistral class=scanned_pdf policy=1.0.0 mime='application/pdf' filename='scan.pdf'.",
+        "lifecycle_error": "OCR_REQUIRED: Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate to OCR; do not accept empty native parse. parser_id=ocr-mistral class=scanned_pdf policy=1.0.0 mime='application/pdf' filename='scan.pdf'."
+      },
+      "DOCX": {
+        "document_class": "docx",
+        "parser_id": "docx-native",
+        "wired": true,
+        "escalate": false,
+        "selected": "docx-native",
+        "parsed": true,
+        "page_count": 1,
+        "sheet_count": null,
+        "text_chars": 94,
+        "cell_count": 0,
+        "cell_provenance": true
+      },
+      "XLSX": {
+        "document_class": "xlsx",
+        "parser_id": "xlsx-openpyxl",
+        "wired": true,
+        "escalate": false,
+        "selected": "xlsx-openpyxl",
+        "parsed": true,
+        "page_count": null,
+        "sheet_count": 1,
+        "text_chars": 0,
+        "cell_count": 8,
+        "cell_provenance": true
+      },
+      "UNSUPPORTED": {
+        "document_class": "unknown",
+        "parser_id": "unknown",
+        "wired": false,
+        "escalate": true,
+        "parsed": false,
+        "error_type": "ParserNotWiredError",
+        "error": "No routing rule for mime='text/plain' filename='notes.txt'. parser_id=unknown class=unknown policy=1.0.0 mime='text/plain' filename='notes.txt'.",
+        "lifecycle_error": "No routing rule for mime='text/plain' filename='notes.txt'. parser_id=unknown class=unknown policy=1.0.0 mime='text/plain' filename='notes.txt'."
+      }
+    },
+    "health_no_key": {
+      "version": "1.0.0",
+      "locked_at": "2026-08-19",
+      "cloud_run_required": false,
+      "wired": [
+        "xlsx-openpyxl",
+        "pdf-native",
+        "docx-native"
+      ],
+      "escalate_unwired": [
+        "pdf-docling",
+        "ocr-document-ai",
+        "pdf-multimodal",
+        "ocr-mistral"
+      ],
+      "ocr_ready": false
+    },
+    "lifecycle": {
+      "once": "OCR_REQUIRED: scan needs OCR",
+      "idempotent": true,
+      "prefix_count": 1,
+      "long_prefixed": true,
+      "long_within_budget": true
+    },
+    "scanned_job": {
+      "failed_writes": 2,
+      "all_prefixed": true,
+      "unprefixed": [],
+      "exception_codes": [
+        "ocr_required"
+      ],
+      "reasons": [
+        "This document needs OCR before facts can be extracted. Set MISTRAL_API_KEY on the processor and re-run parse. Router said: Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate t"
+      ],
+      "normalized_saved": 0,
+      "reached_needs_review": false,
+      "guard_violation": null,
+      "ocr_code": "ocr_required"
+    },
+    "unsupported_job": {
+      "failed_writes": 2,
+      "any_prefixed": false,
+      "exception_codes": [
+        "parse_failed"
+      ]
+    },
+    "verified_guard": {
+      "raised": true,
+      "error_type": "ValueError",
+      "message": "Processor must never mark documents VERIFIED or write canonical status."
+    },
+    "health_with_key": {
+      "version": "1.0.0",
+      "locked_at": "2026-08-19",
+      "cloud_run_required": false,
+      "wired": [
+        "xlsx-openpyxl",
+        "pdf-native",
+        "docx-native",
+        "ocr-mistral"
+      ],
+      "escalate_unwired": [
+        "pdf-docling",
+        "ocr-document-ai",
+        "pdf-multimodal"
+      ],
+      "ocr_ready": true
+    },
+    "scanned_with_key_parser": "ocr-mistral"
+  },
+  "funnel_stages": {
+    "discovered": {
+      "src_ids": 20,
+      "manifest_usable": 18
+    },
+    "acquired": {
+      "files": 33,
+      "bytes": 54245546
+    },
+    "ingested": {
+      "documents": 34,
+      "document_versions": 34
+    },
+    "parsed": {
+      "runs_with_normalized_document": 71,
+      "distinct_documents": 32,
+      "parser_mix": {
+        "pdf-native": 71
+      }
+    },
+    "extracted": {
+      "distinct_documents": 33,
+      "total_facts": 1374,
+      "parsed_but_zero_facts": 0
+    },
+    "blocked": {
+      "failed": 1,
+      "ocr_required": 1,
+      "other": 0
+    },
+    "review_ready": {
+      "needs_review": 0,
+      "status_mix": {
+        "VERIFIED": 33,
+        "FAILED": 1
+      }
+    },
+    "human_verified": {
+      "verified_documents": 33,
+      "human_verified_facts": 204,
+      "ai_extracted_facts": 574,
+      "script_stamped_facts": 195,
+      "workbench_attributed_facts": 0,
+      "unattributed_facts": 9
+    },
+    "canonical_promoted": {
+      "pricing_lines_with_source_fact": 34,
+      "pricing_lines_total": 34,
+      "procurement_packages": 22
+    },
+    "ab_complete": {
+      "ab_packages": 15,
+      "ab_documents_verified": 23,
+      "ab_packages_fully_verified": 15,
+      "ab_package_keys_fully_verified": [
+        "PKG-01",
+        "PKG-02",
+        "PKG-04",
+        "PKG-03",
+        "PKG-06",
+        "PKG-05",
+        "PKG-14",
+        "PKG-15",
+        "PKG-16",
+        "PKG-17",
+        "PKG-18",
+        "PKG-19",
+        "PKG-20",
+        "PKG-21",
+        "PKG-22"
+      ]
+    }
+  }
+}

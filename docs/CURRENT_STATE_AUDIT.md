@@ -12,8 +12,8 @@ Purpose: distinguish what exists in code from what has been proven as a product.
 | Phase | Status |
 | --- | --- |
 | **1 — Foundation** | **LOCAL EXIT GATE PROVEN (2026-08-20)** — production env still an ops blocker for live intake |
-| **2 — Real-Document Historical Pilot** | VERIFY 2B PASS WITH NONBLOCKING GAPS + Prompt 2C schema + **VERIFY 2C PASS** ([VERIFY2C_ACCEPTANCE.md](pilot/VERIFY2C_ACCEPTANCE.md)). OCR/25MB/corpus-count deferred. |
-| **3 — Historical Ingestion & Migration** | **PASS** — Prompt 3 + **VERIFY 3 PASS 26/26** ([VERIFY3_ACCEPTANCE.md](pilot/VERIFY3_ACCEPTANCE.md)). OCR live only with `MISTRAL_API_KEY`. |
+| **2 — Real-Document Historical Pilot** | VERIFY 2B PASS WITH NONBLOCKING GAPS + Prompt 2C schema + **VERIFY 2C PASS** ([VERIFY2C_ACCEPTANCE.md](pilot/VERIFY2C_ACCEPTANCE.md)). **Exit UNMET:** F1 shows 0 workbench-verified facts and 0 `NEEDS_REVIEW`. OCR + corpus depth still open; the 25 MB gate never existed. |
+| **3 — Historical Ingestion & Migration** | **PASS** — Prompt 3 + **VERIFY 3 PASS 26/26** ([VERIFY3_ACCEPTANCE.md](pilot/VERIFY3_ACCEPTANCE.md)) + **F1 37/37** ([F1_PRODUCTION_INGESTION_ACCEPTANCE.md](functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md)). DOCX wired; OCR live only with `MISTRAL_API_KEY` and never yet run on real evidence. |
 | **4 — Contracts / Compliance** | Prompt 4 exit proven in app + acceptance, plus **P10 portfolio / renewal-rebid command center**; still thin vs a real awarded corpus — 12 contracts, **3** with a verified end date, **0** with an NTE or PO |
 | **5 — Buyer / Competitor / Market / Win-Loss** | **Prompt 5 exit proven** — still corpus-thin; no fabricated market share |
 | **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL |
@@ -72,9 +72,12 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 
 ## Current correct next work
 
-1. Grow verified historical corpus (~20–30 packages) — live org now **22 packages / 15 A/B harness-complete**; lower bound met.  
-2. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed.  
-3. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+1. Grow verified historical corpus (~20–30 packages) — live org now **22 packages / 15 A/B harness-complete**. **F1 audit: 195 of 204 `HUMAN_VERIFIED` facts are harness stamps and 0 are workbench-attributed, so the count is automation output, not human verification. The lower bound is NOT met in trust terms.**  
+2. Route a real reviewer through the verification workbench — `NEEDS_REVIEW` is currently **0**, so nothing is queued for a human.  
+3. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed. OCR has never run on real scanned evidence.  
+4. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+
+**F1 functional build (2026-08-21):** Production ingestion / OCR / real-corpus hardening. Fixed the `OCR_REQUIRED:` overwrite bug (the parse-and-extract catch-all was blanking the Data Ops OCR badge — it had already mislabelled the live SRC-19 row), added error class + human reason on failed jobs, fixed the corpus funnel `extracted` count and expanded it to 10 separately reported stages with script-stamp attribution on `HUMAN_VERIFIED`, and aligned routing/README/env docs to the wired DOCX + key-gated OCR reality. `test:f1-ingestion` 37/37, processor pytest 45, VERIFY 3 26/26, VERIFY 2A 132/132, foundation + phase3 suites PASS, lint/typecheck/build clean. **There is no 25 MB gate anywhere in code** — intake is 50 MB end to end and the processor imposes no byte limit. See [F1_PRODUCTION_INGESTION_ACCEPTANCE.md](functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md).
 
 **P2 productization (2026-08-21):** Data Ops hardening complete. Intake UX preflight validation, processing queue lifecycle_error badges/filters, OCR_REQUIRED semantics, re-extract guard for HUMAN_VERIFIED facts, verification workbench keyboard/optimistic/auto-advance, exceptions disposition notes, corpus funnel report script. See [P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md](productization/P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md).
 
@@ -143,7 +146,9 @@ Any older navigation that exposes Ingestion, Proposals, Data Quality, Requiremen
 
 1. Confirm Vercel env + signed-in org for real intake.  
 2. Processor running for parse → `extracted_facts`.  
-3. Allen full board packet (~32 MB) is within the **50 MB** intake limit when the local file is present; re-ingest when Downloads corpus is restored. 
+3. Allen full board packet measures **31.1 MB / 50 MB** and ingests successfully (VERIFY 3). The old "25 MB blocked SRC-03" claim was stale — **no 25 MB gate has ever existed in code**.  
+4. `MISTRAL_API_KEY` unset, so `ocr_ready` is false and scanned PDFs fail closed as `OCR_REQUIRED`. SRC-19 has never been OCR'd.  
+5. The local processor has no `--reload`; restart it from `services/processor` after processor changes or it silently serves stale code (observed 2026-08-21, leaving a document stuck in `PARSING`). 
 
 Opportunity migrations `20260820300000` / `310000` / `320000` plus VERIFY 1 hardening `20260820400000` were applied to remote Postgres on 2026-08-20. Migrations `20260821160000`, `20260821170000`, P4 `20260821180000_p4_public_opportunity_discovery`, and P8 `20260821200000_p8_submission_authorization` were applied on 2026-08-21 — the latter confirmed live with `submission_packets_submitted_requires_actor` present and `convalidated = f` (enforced on new writes, not retro-validated).  
 

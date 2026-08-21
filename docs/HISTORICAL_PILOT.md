@@ -60,7 +60,7 @@ Priority order (not yet ingested):
 | # | Buyer | Why it belongs | Grade now | Prep / hunt |
 | --- | --- | --- | --- | --- |
 | 1 | **Williamson County** — **Services Contract with Proposal** (19 pp) + #202569 lifecycle | **Grade A primary found.** Proposal **November 7, 2024**; sections (Exec Summary, EAP, Pricing, …); **Unarmed $31.45/hr**; **Golf Cart $500/month**; GSA **47QSWA22D008W**; TXMAS **TXMAS-24-99003**. Award: #202569 Lake Creek Annex NTE **$300k**. Later disbursements cite 202569. Strongest first package for proposal + pricing + award + payment **facts** + attribution. | **A** | Ingest proposal/contract PDF first; attach minutes + one funding report as same package |
-| 2 | **Allen ISD** security agreement in board packet | **$32.28/hr**, POP **8/1/2024–7/31/2025**, **30-day** termination; board probable cost **$584,138** (verify on packet page). | **A** | Full PDF ~32 MB — needs excerpt or intake limit > 25 MB |
+| 2 | **Allen ISD** security agreement in board packet | **$32.28/hr**, POP **8/1/2024–7/31/2025**, **30-day** termination; board probable cost **$584,138** (verify on packet page). | **A** | Full PDF 31.1 MB — **within the 50 MB intake limit and ingested**; the old "> 25 MB" note was stale |
 | 3 | **Arlington RFP 22-0143** invitation + staff report | Bid invitation (~35 pp) + eval: L&P **70.48** vs Vets **90.46**, award **$960,343**. Documented criteria only — do not invent loss reason. | **A** | Both PDFs ready in Downloads |
 | 4 | **TxDMV PO #0000016167** | **Armed Security Guard = 72 HR × $33.25 = $2,394.00**; separate **Extended Hours = $445.55**; **Total PO = $2,839.55**. TXMAS-24-99003; site/dates. | **A** | Ready |
 | 5 | **Jefferson County IFB 18-009** + bid tab | Competitor hourly rates (L&P **$18.75/hr**); **all bids rejected** — outcome model stress test. | **A** / **B** | Tab ready (`12.pdf`); keep IFB URL |
@@ -100,7 +100,7 @@ cd services/processor && pytest && python -m lp_processor.evals.harness
 | # | Buyer / agency | Opportunity | Outcome | Doc types present | Verified | Scored | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Williamson County | Lake Creek / #202569 | Win | **19-pp proposal+contract PDF found**; minutes; funding reports | Pilot (page_text) | No | P01 Grade A; SRC-01 through pipeline |
-| 2 | Allen ISD | Security services 2024–25 | Win | Board packet w/ embedded contract (~32 MB) | Pilot excerpt only | No | P02; SRC-03 blocked 25MB |
+| 2 | Allen ISD | Security services 2024–25 | Win | Board packet w/ embedded contract (31.1 MB) | Pilot (page_text) | No | P02; SRC-03 ingests — 25MB block was stale |
 | 3 | Arlington | RFP 22-0143 | **Loss** | Bid invitation + staff eval/award | Pilot (page_text) | No | P03; scores not structured |
 | 4 | TxDMV | PO 0000016167 | Win (PO) | PO: 72×$33.25=$2,394 + Extended Hours $445.55 = **$2,839.55** total | Pilot (page_text) | No | P04 |
 | 5 | Jefferson County | IFB 18-009/YS | All bids rejected | Bid tab (+ IFB) | Pilot (page_text) | No | P05 |
