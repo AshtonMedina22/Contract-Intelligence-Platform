@@ -179,6 +179,15 @@ async function main() {
     );
     record(
       "ask-agent",
+      "Tools expose USAspending federal award research (OFFICIAL_PUBLIC, never HUMAN_VERIFIED)",
+      /search_federal_awards/.test(tools) &&
+        /get_federal_award/.test(tools) &&
+        /lookup_federal_recipient/.test(tools) &&
+        /usaspending|USAspending/.test(tools) &&
+        !/evidence_class:\s*"HUMAN_VERIFIED"/.test(tools),
+    );
+    record(
+      "ask-agent",
       "Public research never labeled HUMAN_VERIFIED in tools",
       !/evidence_class:\s*"HUMAN_VERIFIED"/.test(tools) && /PUBLIC rail/.test(tools),
     );

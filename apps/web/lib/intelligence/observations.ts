@@ -17,6 +17,10 @@ export const HONESTY_STRIP_TEXT =
 
 export const NO_MARKET_SHARE_NOTE = "Counts are observations in this corpus, not market share.";
 
+/** Federal award research (USAspending) is public observation — never market share or L&P pricing truth. */
+export const FEDERAL_AWARD_RESEARCH_NOTE =
+  "Federal award observations may appear from the USAspending.gov public API or research_facts with provider=usa_spending (AI_EXTRACTED until a human verifies). They are not market share and are never mixed into L&P proposed / buyer awarded / current pricing_lines.";
+
 export const OBSERVED_LABEL = "Observed";
 export const INFERENCE_LABEL = "Inference";
 

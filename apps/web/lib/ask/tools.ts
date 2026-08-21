@@ -9,6 +9,12 @@ import {
 } from "@/lib/ask/evidence";
 import { embedQuery } from "@/lib/ask/model";
 import { fetchPublicSource, getPublicResearchProvider, toPublicEvidence } from "@/lib/ask/research/provider";
+import {
+  createUsaSpendingProvider,
+  federalAwardToEvidence,
+  reconcileFederalRecipient,
+  type FederalAwardQuery,
+} from "@/lib/ask/research/usaspending";
 import { purposeRequiresDraftingGates, type RetrievalPurpose } from "@/lib/retrieval/purpose";
 import { locateRecords, searchVerifiedKnowledge, type KnowledgeHit } from "@/lib/retrieval/search";
 import { generateIntelligenceReport, type ReportKind } from "@/lib/reports/generate";
@@ -317,6 +323,264 @@ export function createAskTools(ctx: AskToolContext) {
         const evidence = await fetchPublicSource(url);
         pushEvidence(ctx, [evidence]);
         return { evidence };
+      },
+    }),
+
+    search_federal_awards: tool({
+      description:
+        "PUBLIC rail: search USAspending.gov federal awards (agency, recipient, NAICS, PSC, dates, amount, award type). Results are OFFICIAL_PUBLIC / PUBLIC_UNVERIFIED — never HUMAN_VERIFIED, never market share, never mixed into L&P proposed/awarded/current pricing_lines, and never written to canonical awards. Does not auto-persist.",
+      inputSchema: z.object({
+        keywords: z.string().optional(),
+        agency: z.string().optional(),
+        recipient: z.string().optional(),
+        recipient_uei: z.string().optional(),
+        naics: z.string().optional(),
+        psc: z.string().optional(),
+        award_id: z.string().optional(),
+        award_type_codes: z.array(z.string()).optional(),
+        amount_lower: z.number().optional(),
+        amount_upper: z.number().optional(),
+        date_from: z.string().optional(),
+        date_to: z.string().optional(),
+        place_of_performance_state: z.string().optional(),
+        place_of_performance_city: z.string().optional(),
+        limit: z.number().int().min(1).max(50).optional(),
+        page: z.number().int().min(1).max(100).optional(),
+      }),
+      execute: async (input) => {
+        const provider = createUsaSpendingProvider();
+        const query: FederalAwardQuery = {
+          keywords: input.keywords,
+          agency: input.agency,
+          recipient: input.recipient,
+          recipientUei: input.recipient_uei,
+          naics: input.naics,
+          psc: input.psc,
+          awardId: input.award_id,
+          awardTypeCodes: input.award_type_codes,
+          amountLower: input.amount_lower,
+          amountUpper: input.amount_upper,
+          dateFrom: input.date_from,
+          dateTo: input.date_to,
+          placeOfPerformanceState: input.place_of_performance_state,
+          placeOfPerformanceCity: input.place_of_performance_city,
+          limit: input.limit ?? 10,
+          page: input.page ?? 1,
+        };
+        const result = await provider.searchAwards(query);
+        if (!result.ok) {
+          return {
+            ok: false,
+            mode: result.mode,
+            fixture: result.fixture,
+            error: result.error,
+            message:
+              result.error ??
+              "USAspending search failed. Do not invent federal award amounts or market share.",
+            count: 0,
+            awards: [],
+            evidence: [] as NormalizedEvidence[],
+            honesty:
+              "Federal award observations are public research only — not L&P four-truth pricing and not canonical awards.",
+          };
+        }
+        const evidence = result.results.map(federalAwardToEvidence);
+        pushEvidence(ctx, evidence);
+        return {
+          ok: true,
+          mode: result.mode,
+          fixture: result.fixture,
+          error: null,
+          page: result.page,
+          hasNext: result.hasNext,
+          count: result.results.length,
+          awards: result.results.map((a) => ({
+            award_id: a.award_id,
+            piid: a.piid,
+            recipient_name: a.recipient_name,
+            recipient_uei: a.recipient_uei,
+            agency: a.agency,
+            amount: a.amount,
+            start_date: a.start_date,
+            end_date: a.end_date,
+            award_date: a.award_date,
+            naics: a.naics,
+            psc: a.psc,
+            place_of_performance: a.place_of_performance,
+            award_type: a.award_type,
+            source_url: a.source_url,
+            retrieved_at: a.retrieved_at,
+            provider: a.provider,
+          })),
+          evidence,
+          honesty:
+            "OFFICIAL_PUBLIC / PUBLIC_UNVERIFIED from USAspending. Never treat amounts as L&P proposed/awarded/current rates. Never invent market share.",
+        };
+      },
+    }),
+
+    get_federal_award: tool({
+      description:
+        "PUBLIC rail: fetch one USAspending.gov award by Award ID / generated unique id. Cite-only; never promote to HUMAN_VERIFIED or canonical awards.",
+      inputSchema: z.object({
+        award_id: z.string().min(1),
+      }),
+      execute: async ({ award_id }) => {
+        const provider = createUsaSpendingProvider();
+        const award = await provider.getAward(award_id);
+        if (!award) {
+          return {
+            ok: false,
+            error: `No USAspending award found for id=${award_id}. Do not invent the award.`,
+            award: null,
+            evidence: [] as NormalizedEvidence[],
+            recipient_match: null,
+          };
+        }
+        const evidence = federalAwardToEvidence(award);
+        pushEvidence(ctx, [evidence]);
+
+        // Soft identity check against org clients/competitors — never invent a link.
+        let recipient_match: {
+          client: ReturnType<typeof reconcileFederalRecipient>["client"];
+          competitor: ReturnType<typeof reconcileFederalRecipient>["competitor"];
+        } | null = null;
+        try {
+          const supabase = await createClient();
+          const [clientsRes, competitorsRes] = await Promise.all([
+            supabase.from("clients").select("id, name").limit(500),
+            supabase.from("competitors").select("id, name").limit(500),
+          ]);
+          const reconciled = reconcileFederalRecipient(award, {
+            clients: clientsRes.data ?? [],
+            competitors: competitorsRes.data ?? [],
+          });
+          recipient_match = {
+            client: reconciled.client,
+            competitor: reconciled.competitor,
+          };
+        } catch {
+          recipient_match = {
+            client: { match: null, ambiguity: false, candidates: [] },
+            competitor: { match: null, ambiguity: false, candidates: [] },
+          };
+        }
+
+        return {
+          ok: true,
+          award: {
+            award_id: award.award_id,
+            external_id: award.external_id,
+            piid: award.piid,
+            recipient_name: award.recipient_name,
+            recipient_uei: award.recipient_uei,
+            agency: award.agency,
+            amount: award.amount,
+            start_date: award.start_date,
+            end_date: award.end_date,
+            award_date: award.award_date,
+            naics: award.naics,
+            psc: award.psc,
+            description: award.description,
+            place_of_performance: award.place_of_performance,
+            award_type: award.award_type,
+            source_url: award.source_url,
+            retrieved_at: award.retrieved_at,
+            provider: award.provider,
+          },
+          evidence: [evidence],
+          recipient_match,
+          honesty:
+            "Public federal award observation. Ambiguous recipient matches are returned as candidates — never auto-linked. Not L&P pricing truth.",
+        };
+      },
+    }),
+
+    lookup_federal_recipient: tool({
+      description:
+        "PUBLIC rail: search USAspending awards by recipient name (optional soft-match to existing competitors/clients by exact normalized name or UEI — never invents CRM buyers).",
+      inputSchema: z.object({
+        recipient: z.string().min(1),
+        limit: z.number().int().min(1).max(25).optional(),
+        page: z.number().int().min(1).max(50).optional(),
+      }),
+      execute: async ({ recipient, limit, page }) => {
+        const provider = createUsaSpendingProvider();
+        const result = await provider.searchByRecipient(recipient, { limit: limit ?? 10, page: page ?? 1 });
+        if (!result.ok) {
+          return {
+            ok: false,
+            error: result.error,
+            count: 0,
+            awards: [],
+            evidence: [] as NormalizedEvidence[],
+            recipient_match: { match: null, ambiguity: false, candidates: [] },
+          };
+        }
+        const evidence = result.results.map(federalAwardToEvidence);
+        pushEvidence(ctx, evidence);
+
+        let recipient_match: {
+          match: { id: string; name: string } | null;
+          ambiguity: boolean;
+          candidates: Array<{
+            status: "queued_identity";
+            suggested_name: string;
+            uei: string | null;
+            party_id?: string;
+            reason: string;
+          }>;
+        } = { match: null, ambiguity: false, candidates: [] };
+        try {
+          const supabase = await createClient();
+          const [clientsRes, competitorsRes] = await Promise.all([
+            supabase.from("clients").select("id, name").limit(500),
+            supabase.from("competitors").select("id, name").limit(500),
+          ]);
+          const sample = result.results[0];
+          if (sample) {
+            const reconciled = reconcileFederalRecipient(sample, {
+              clients: clientsRes.data ?? [],
+              competitors: competitorsRes.data ?? [],
+            });
+            const pick = reconciled.competitor.match
+              ? reconciled.competitor
+              : reconciled.client.match
+                ? reconciled.client
+                : reconciled.competitor.ambiguity
+                  ? reconciled.competitor
+                  : reconciled.client;
+            recipient_match = {
+              match: pick.match ? { id: pick.match.id, name: pick.match.name } : null,
+              ambiguity: pick.ambiguity,
+              candidates: pick.candidates,
+            };
+          }
+        } catch {
+          recipient_match = { match: null, ambiguity: false, candidates: [] };
+        }
+
+        return {
+          ok: true,
+          fixture: result.fixture,
+          count: result.results.length,
+          page: result.page,
+          hasNext: result.hasNext,
+          awards: result.results.map((a) => ({
+            award_id: a.award_id,
+            recipient_name: a.recipient_name,
+            recipient_uei: a.recipient_uei,
+            agency: a.agency,
+            amount: a.amount,
+            source_url: a.source_url,
+            retrieved_at: a.retrieved_at,
+            provider: a.provider,
+          })),
+          evidence,
+          recipient_match,
+          honesty:
+            "Recipient observations from USAspending. Exact name/UEI match only — ambiguous → candidates, never invent clients/competitors.",
+        };
       },
     }),
 

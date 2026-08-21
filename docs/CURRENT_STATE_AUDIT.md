@@ -16,7 +16,7 @@ Purpose: distinguish what exists in code from what has been proven as a product.
 | **3 — Historical Ingestion & Migration** | **PASS** — Prompt 3 + **VERIFY 3 PASS 26/26** ([VERIFY3_ACCEPTANCE.md](pilot/VERIFY3_ACCEPTANCE.md)) + **F1 37/37** ([F1_PRODUCTION_INGESTION_ACCEPTANCE.md](functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md)). DOCX wired; OCR live only with `MISTRAL_API_KEY` and never yet run on real evidence. |
 | **4 — Contracts / Compliance** | Prompt 4 exit proven in app + acceptance, plus **P10 portfolio / renewal-rebid command center**; still thin vs a real awarded corpus — 12 contracts, **3** with a verified end date, **0** with an NTE or PO |
 | **5 — Buyer / Competitor / Market / Win-Loss** | **Prompt 5 exit proven** — still corpus-thin; no fabricated market share |
-| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL |
+| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending federal award tools** (public rail only) |
 | **7 — Pricing Intelligence** | Prompt 7 exit + **P7 workbench polish**; **VERIFY 7's committed 29/29 is stale** (19/22 at clean `HEAD` — outdated fixtures/grep, not a behaviour regression) |
 | **8 — Response Builder / Submission / Result** | **PASS** (Prompt 8 + VERIFY 8 **23/23, re-earned 2026-08-21** after its unsourced-contract fixture was replaced) + **P8 submission / outcome / handoff polish** |
 
@@ -76,6 +76,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 2. Route a real reviewer through the verification workbench — `NEEDS_REVIEW` is currently **0**, so nothing is queued for a human.  
 3. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed. OCR has never run on real scanned evidence.  
 4. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+
+**F3 functional build (2026-08-21):** Federal Award / Buyer / Competitor Data Engine — **Ask research plane only** (`lib/ask/research/usaspending.ts` + `normalize-party.ts`), **not** a `PublicProcurementProvider`. Tools: `search_federal_awards` / `get_federal_award` / `lookup_federal_recipient` (OFFICIAL_PUBLIC / PUBLIC_UNVERIFIED). Optional persist helper builds `research_facts` as `AI_EXTRACTED` + `provider=usa_spending` only; fixtures `FIXTURE-USA-*` refused. No market share, no invented CRM buyers, no canonical `awards` from USAspending, no mix into four-truth `pricing_lines`. Intelligence Market/Buyers/Competitors honesty note + Ask chips. `test:f3-federal-awards`. See [F3_FEDERAL_AWARD_INTELLIGENCE_ACCEPTANCE.md](functionality/F3_FEDERAL_AWARD_INTELLIGENCE_ACCEPTANCE.md).
 
 **F2 functional build (2026-08-21):** Public Procurement Opportunity Discovery Engine — extends P4 provider abstraction (no duplicate). `getOpportunity` / `getDocuments` / `healthCheck`; `public_sources.status` + `content_hash`; org-scoped `opportunity_search_profiles` + daily CRON_SECRET sync that upserts **live** provider hits only (fixture/sample mode skipped / fail closed; never invents, never `HUMAN_VERIFIED`); Discover manual paste + profiles UI; Start Pursuit trust unchanged. `test:f2-opportunity-engine` 16/16. Live SAM.gov still unproven against a real response. See [F2_PUBLIC_OPPORTUNITY_ENGINE_ACCEPTANCE.md](functionality/F2_PUBLIC_OPPORTUNITY_ENGINE_ACCEPTANCE.md).
 

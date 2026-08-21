@@ -12,7 +12,7 @@ import {
   ObservationTiles,
 } from "@/components/intelligence/honesty-strip";
 import { askChip } from "@/lib/intelligence/ask-launch";
-import { observationTile } from "@/lib/intelligence/observations";
+import { FEDERAL_AWARD_RESEARCH_NOTE, observationTile } from "@/lib/intelligence/observations";
 import { loadBuyerPortfolio } from "@/lib/intelligence/load-corpus";
 import { BuyerPortfolioTable } from "./buyers-portfolio-table";
 import { ResearchFactsTable, type ResearchFactRow } from "./research-facts-table";
@@ -111,6 +111,16 @@ async function ClientsContent({ searchParams }: { searchParams: Promise<BuyerSea
       q: nameQuery || "solicitation",
       from: "clients",
     }),
+    askChip({
+      label: "Federal awards (USAspending)",
+      mode: "ask",
+      purpose: "COMPETITOR_ANALYSIS",
+      q: nameQuery
+        ? `Search USAspending federal awards related to buyer or agency ${nameQuery}`
+        : "Search USAspending federal awards for relevant agencies and recipients",
+      from: "clients",
+      filters: { source: "usaspending.gov", ...(nameQuery ? { agency: nameQuery } : {}) },
+    }),
   ];
 
   return (
@@ -128,7 +138,7 @@ async function ClientsContent({ searchParams }: { searchParams: Promise<BuyerSea
           </>
         }
       />
-      <IntelligenceHonestyStrip extra="A buyer row counts records joined to that agency. It says nothing about relationship strength or likelihood of award." />
+      <IntelligenceHonestyStrip extra={`A buyer row counts records joined to that agency. It says nothing about relationship strength or likelihood of award. ${FEDERAL_AWARD_RESEARCH_NOTE}`} />
       <AskAboutThis chips={chips} />
 
       <ObservationTiles tiles={tiles} />

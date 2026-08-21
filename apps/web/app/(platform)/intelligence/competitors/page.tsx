@@ -8,7 +8,12 @@ import {
   ObservationTiles,
 } from "@/components/intelligence/honesty-strip";
 import { askChip } from "@/lib/intelligence/ask-launch";
-import { INFERENCE_LABEL, OBSERVED_LABEL, observationTile } from "@/lib/intelligence/observations";
+import {
+  FEDERAL_AWARD_RESEARCH_NOTE,
+  INFERENCE_LABEL,
+  OBSERVED_LABEL,
+  observationTile,
+} from "@/lib/intelligence/observations";
 import {
   CompetitorBidsTable,
   CompetitorPricingLinesTable,
@@ -139,6 +144,14 @@ async function CompetitorsContent() {
       filters: { bids: bidRows.length },
     }),
     askChip({ label: "Locate a competitor by name", mode: "locate", q: "competitor", from: "competitors" }),
+    askChip({
+      label: "Federal awards by recipient",
+      mode: "ask",
+      purpose: "COMPETITOR_ANALYSIS",
+      q: "Look up USAspending federal awards for named competitors as recipients — cite only, no market share",
+      from: "competitors",
+      filters: { source: "usaspending.gov", competitors: competitorsRes.count ?? 0 },
+    }),
   ];
 
   return (
@@ -149,7 +162,7 @@ async function CompetitorsContent() {
         description="Observed bids, pricing lines, and evaluation scores only — sourced from documents, verified facts, or URLs. Not a corporate win rate. Geography/services appear only when those fields exist on evidence."
       />
       <IntelligenceHonestyStrip
-        extra={`${OBSERVED_LABEL} means the value is in the cited source. ${INFERENCE_LABEL} means we joined records to get it — the join is named and the conclusion is not in any single source.`}
+        extra={`${OBSERVED_LABEL} means the value is in the cited source. ${INFERENCE_LABEL} means we joined records to get it — the join is named and the conclusion is not in any single source. ${FEDERAL_AWARD_RESEARCH_NOTE}`}
       />
       <AskAboutThis chips={chips} />
 

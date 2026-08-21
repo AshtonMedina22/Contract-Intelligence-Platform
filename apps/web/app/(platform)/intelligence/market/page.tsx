@@ -13,7 +13,7 @@ import {
   ObservationTiles,
 } from "@/components/intelligence/honesty-strip";
 import { askChip } from "@/lib/intelligence/ask-launch";
-import { NO_MARKET_SHARE_NOTE, observationTile } from "@/lib/intelligence/observations";
+import { FEDERAL_AWARD_RESEARCH_NOTE, NO_MARKET_SHARE_NOTE, observationTile } from "@/lib/intelligence/observations";
 import {
   LP_RENEWALS_LABEL,
   LP_RENEWALS_ROUTE,
@@ -194,6 +194,14 @@ async function MarketOverview({
       q: "award notice",
       from: "market",
     }),
+    askChip({
+      label: "Federal awards (USAspending)",
+      mode: "ask",
+      purpose: "GENERAL_QA",
+      q: "Search USAspending federal awards relevant to this market — cite public observations only, no market share",
+      from: "market",
+      filters: { source: "usaspending.gov" },
+    }),
   ];
 
   return (
@@ -209,7 +217,7 @@ async function MarketOverview({
         }
       />
       <IntelligenceHonestyStrip
-        extra={`${NO_MARKET_SHARE_NOTE} ${RADAR_NO_PREDICTION_NOTE}`}
+        extra={`${NO_MARKET_SHARE_NOTE} ${RADAR_NO_PREDICTION_NOTE} ${FEDERAL_AWARD_RESEARCH_NOTE}`}
       />
       <AskAboutThis chips={chips} />
 

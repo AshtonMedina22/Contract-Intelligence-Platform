@@ -20,6 +20,8 @@ const OFFICIAL_HOST_HINTS = [
   "esbd",
   "sam.gov",
   "gsa.gov",
+  "usaspending.gov",
+  "api.usaspending.gov",
   "txsmartbuy",
   "hhsc.",
   "tea.texas.gov",

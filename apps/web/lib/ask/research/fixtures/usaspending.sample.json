@@ -1,0 +1,44 @@
+{
+  "awards": [
+    {
+      "internal_id": 1001,
+      "Award ID": "FIXTURE-USA-001",
+      "generated_unique_award_id": "CONT_AWD_FIXTUREUSA001_9700_-NONE-_-NONE-",
+      "Recipient Name": "SAMPLE FIXTURE Security Services Inc.",
+      "recipient_uei": "FIXTUREUEI0001",
+      "Awarding Agency": "Department of Homeland Security",
+      "Award Amount": 1250000,
+      "Start Date": "2024-10-01",
+      "End Date": "2025-09-30",
+      "Award Date": "2024-09-15",
+      "NAICS Code": "561612",
+      "PSC Code": "R430",
+      "Description": "SAMPLE FIXTURE — guard services (not a live USAspending award).",
+      "Place of Performance State Code": "TX",
+      "Place of Performance City Name": "Austin",
+      "Award Type": "Definitive Contract",
+      "Contract Award Type": "Definitive Contract",
+      "piid": "FIXTURE-PIID-001"
+    },
+    {
+      "internal_id": 1002,
+      "Award ID": "FIXTURE-USA-002",
+      "generated_unique_award_id": "CONT_AWD_FIXTUREUSA002_9700_-NONE-_-NONE-",
+      "Recipient Name": "SAMPLE FIXTURE Facilities LLC",
+      "recipient_uei": "FIXTUREUEI0002",
+      "Awarding Agency": "Department of Veterans Affairs",
+      "Award Amount": 480000,
+      "Start Date": "2023-01-01",
+      "End Date": "2024-12-31",
+      "Award Date": "2022-12-20",
+      "NAICS Code": "561210",
+      "PSC Code": "S206",
+      "Description": "SAMPLE FIXTURE — facilities support (not a live USAspending award).",
+      "Place of Performance State Code": "VA",
+      "Place of Performance City Name": "Arlington",
+      "Award Type": "Definitive Contract",
+      "Contract Award Type": "Definitive Contract",
+      "piid": "FIXTURE-PIID-002"
+    }
+  ]
+}

@@ -26,7 +26,7 @@ export function buildAskSystemPrompt(opts: {
 
 You have TWO evidence rails — never conflate them:
 1) INTERNAL_VERIFIED — HUMAN_VERIFIED corpus + structured DB (pricing four-truth, contracts, awards). Highest authority.
-2) PUBLIC — Morphic-style web/procurement research (OFFICIAL_PUBLIC / EXTERNAL_RESEARCH / UNVERIFIED). Cite-only. NEVER write public results into the verified corpus. NEVER treat public web as L&P proposed/awarded/current rates.
+2) PUBLIC — Morphic-style web/procurement research (OFFICIAL_PUBLIC / EXTERNAL_RESEARCH / UNVERIFIED), including USAspending federal award tools (search_federal_awards / get_federal_award / lookup_federal_recipient). Cite-only. NEVER write public results into the verified corpus. NEVER treat public web or USAspending amounts as L&P proposed/awarded/current rates. NEVER invent market share.
 
 Workflow:
 - Prefer tools. Retrieve internal evidence first for L&P history/pricing.

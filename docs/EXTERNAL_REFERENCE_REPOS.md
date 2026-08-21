@@ -326,7 +326,7 @@ PublicProcurementProvider
 | **URL** | https://github.com/fedspendingtransparency/usaspending-api |
 | **Reference category** | Federal award / recipient / agency / spending intelligence |
 | **Usage mode** | DATA/API SOURCE |
-| **Analysis status** | REGISTERED ONLY |
+| **Analysis status** | **INSPECTED + ADOPTED API CLIENT (F3, 2026-08-21)** — see [reference-repos/usaspending-api.md](reference-repos/usaspending-api.md) |
 | **License / copy caution** | Prefer calling the **public API/dataset**, not copying the service. Inspect LICENSE/terms before copying server code. |
 
 **Why it matters:** Authoritative public federal awards, recipients, agencies, NAICS/PSC, amounts, dates. Prefer using the actual public data/API over recreating the dataset.
@@ -337,7 +337,7 @@ PublicProcurementProvider
 
 **Maps to our platform:** Buyer Intelligence; Competitor Intelligence; Federal Market Intelligence; Public Research.
 
-**Local landing zones:** Future `UsaSpendingProvider`; Intelligence Buyers / Competitors / Market; Ask public-research tools. Persist only as `research_sources` / `research_facts` with provenance — never as unverified canonical L&P truth.
+**Local landing zones (built in F3, 2026-08-21):** `apps/web/lib/ask/research/usaspending.ts` + `normalize-party.ts` (Ask research plane — **not** `PublicProcurementProvider`); Ask tools `search_federal_awards` / `get_federal_award` / `lookup_federal_recipient`; Intelligence honesty note + Ask chips. Persist optional observations only as `research_facts` with `provider=usa_spending` and `AI_EXTRACTED` — never canonical `awards`, never market share, never auto `HUMAN_VERIFIED`.
 
 ---
 
@@ -348,7 +348,7 @@ PublicProcurementProvider
 | **URL** | https://github.com/cyanheads/usaspending-mcp-server |
 | **Reference category** | Tool interface around USAspending data |
 | **Usage mode** | ADAPT/REUSE TOOL PATTERNS |
-| **Analysis status** | REGISTERED ONLY |
+| **Analysis status** | **INSPECTED FOR TOOL SHAPE (F3, 2026-08-21)** — reference-only; see [reference-repos/usaspending-api.md](reference-repos/usaspending-api.md) (MCP note) |
 | **License / copy caution** | Inspect current LICENSE before copying. MCP is optional; a direct provider adapter may be simpler. |
 
 **Why it matters:** Normalized tool inputs/outputs for award search, recipient, agency, and spending aggregation — useful for Ask GPT tool design.
@@ -357,9 +357,9 @@ PublicProcurementProvider
 
 **Inspect:** Award search tool; award detail tool; recipient search; agency lookup; spending aggregation; normalized tool inputs/outputs; MCP/API abstraction patterns.
 
-**Maps to our platform:** Future `public_research` tool layer; Ask GPT controlled tools.
+**Maps to our platform:** Ask GPT controlled tools (F3 wired direct HTTP; MCP not a runtime dependency).
 
-**Local landing zones:** `apps/web/lib/ask/tools.ts`; `apps/web/lib/ask/research/provider.ts`. TECH_STACK: MCP is later/optional, not a core Phase 1–8 dependency.
+**Local landing zones:** `apps/web/lib/ask/tools.ts`; `apps/web/lib/ask/research/provider.ts`; `apps/web/lib/ask/research/usaspending.ts`. TECH_STACK: MCP remains later/optional — F3 used a direct adapter.
 
 **Do not:** make MCP an initial hard dependency if a direct provider adapter is simpler.
 
