@@ -22,7 +22,8 @@ export type PromoteRpc =
   | "promote_contract_from_fact"
   | "promote_intelligence_from_fact"
   | "promote_knowledge_chunk_from_fact"
-  | "promote_experience_from_contract";
+  | "promote_experience_from_contract"
+  | "promote_obligation_candidate";
 
 export type FillStatus = "live" | "partial" | "schema_ready" | "deferred";
 
@@ -224,15 +225,17 @@ export const DOCUMENT_TABLE_MAP: DocumentTypeMapEntry[] = [
     filenameHints: ["contract", "agreement"],
     commercialTruth: "awarded",
     corpusClasses: ["A", "C"],
-    productSurface: "Contracts workspace (Overview / Service Plan / Commercial)",
+    productSurface: "Contracts workspace (Overview / Service Plan / Obligations / Commercial)",
     promoteRpcs: [
       "promote_verified_fact",
       "promote_contract_from_fact",
       "promote_knowledge_chunk_from_fact",
+      "promote_obligation_candidate",
     ],
     targetTables: [
       "contracts",
       "contract_service_plans",
+      "contract_obligations",
       "federal_identifiers",
       "compliance_items",
       "pricing_lines",
@@ -245,9 +248,11 @@ export const DOCUMENT_TABLE_MAP: DocumentTypeMapEntry[] = [
       "site_name",
       "guard_classification",
       "awarded_rate",
+      "obligation_type",
+      "source_clause_ref",
     ],
     status: "partial",
-    notes: "Class C contracts verify for schema coverage; do not label as L&P history. F12: compliance_items carry verification_status, coverage_json, holder_name; org SAM/UEI/CAGE live on organization_registrations (mirrored to kind=registration for F9). F14: promote_experience_from_contract → L_AND_P_CORPORATE only; Class C rejected.",
+    notes: "Class C contracts verify for schema coverage; do not label as L&P history. F12: compliance_items carry verification_status, coverage_json, holder_name; org SAM/UEI/CAGE live on organization_registrations (mirrored to kind=registration for F9). F14: promote_experience_from_contract → L_AND_P_CORPORATE only; Class C rejected. F15: contract_obligations with lazy recurrence; AI cannot auto-verify/complete; supersede via new row.",
   },
   {
     documentTypes: ["resume", "personnel resume", "key personnel", "past performance", "reference letter"],

@@ -12,6 +12,8 @@ import {
   type ContractValue,
 } from "@/lib/contracts/portfolio-model";
 import { ContractHonestyStrip } from "@/components/contract-workspace/portfolio-strips";
+import { loadContractObligations } from "@/lib/obligations/load";
+import { formatRiskStripLabel, RISK_STRIP_NOTE } from "@/lib/obligations/risk-strip";
 
 function dash(v: string | number | null | undefined): string {
   if (v === null || v === undefined || v === "") return "—";
@@ -52,6 +54,7 @@ export default async function ContractOverviewPage({
     ? contract.opportunities[0]
     : contract.opportunities;
   const extras = await loadContractOverviewExtras(contractId, contract.opportunity_id);
+  const obligationBundle = await loadContractObligations(contractId);
 
   // The same pure model that builds the portfolio row builds this header, so a contract can never
   // read one way on `/contracts` and another way on its own page.
@@ -85,6 +88,21 @@ export default async function ContractOverviewPage({
   return (
     <div className="space-y-5">
       <ContractHonestyStrip />
+
+      <div
+        className="flex flex-wrap items-baseline gap-3 rounded-md border px-3 py-2 text-sm"
+        data-testid="overview-obligations-strip"
+        title={RISK_STRIP_NOTE}
+      >
+        <span className="font-medium">Obligations</span>
+        <span className="tabular-nums">{formatRiskStripLabel(obligationBundle.risk)}</span>
+        <span className="text-xs text-muted-foreground">
+          HUMAN_VERIFIED only · n={obligationBundle.risk.verifiedOpen}
+        </span>
+        <Link className="text-xs underline" href={`/contracts/${contractId}/obligations`}>
+          Open Obligations
+        </Link>
+      </div>
 
       <dl className="grid gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
         <div>

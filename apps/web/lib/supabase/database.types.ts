@@ -57,6 +57,36 @@ export type ExperienceType =
   | "KEY_PERSONNEL_EXPERIENCE"
   | "SUBCONTRACTOR_EXPERIENCE";
 
+export type ObligationType =
+  | "STAFFING"
+  | "SCHEDULE"
+  | "TRAINING"
+  | "REPORTING"
+  | "INCIDENT_REPORTING"
+  | "INSURANCE"
+  | "LICENSE"
+  | "EQUIPMENT"
+  | "INVOICE"
+  | "SERVICE_LEVEL"
+  | "MEETING"
+  | "AUDIT"
+  | "DELIVERABLE"
+  | "NOTICE"
+  | "OPTION"
+  | "RENEWAL"
+  | "OTHER";
+
+export type ObligationStatus =
+  | "NOT_STARTED"
+  | "UPCOMING"
+  | "DUE"
+  | "COMPLETED"
+  | "OVERDUE"
+  | "WAIVED"
+  | "SUPERSEDED";
+
+export type ObligationCriticality = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+
 export type BatchMigrationStatus =
   | "OPEN"
   | "INGESTING"
@@ -1794,6 +1824,105 @@ export type Database = {
           label?: string;
           exercise_by?: string | null;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      contract_obligations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          contract_id: string;
+          obligation_type: ObligationType;
+          title: string;
+          description: string | null;
+          source_clause_ref: string | null;
+          source_document_id: string | null;
+          source_document_version_id: string | null;
+          source_page: number | null;
+          source_fact_id: string | null;
+          owner_user_id: string | null;
+          effective_on: string | null;
+          due_on: string | null;
+          recurrence_rule: string | null;
+          next_due_on: string | null;
+          status: ObligationStatus;
+          criticality: ObligationCriticality;
+          evidence_requirement_text: string | null;
+          completion_evidence_document_id: string | null;
+          completed_at: string | null;
+          completed_by: string | null;
+          waive_reason: string | null;
+          superseded_by_id: string | null;
+          amendment_id: string | null;
+          verification_status: ComplianceVerificationStatus;
+          verified_by: string | null;
+          verified_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          contract_id: string;
+          obligation_type?: ObligationType;
+          title: string;
+          description?: string | null;
+          source_clause_ref?: string | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_page?: number | null;
+          source_fact_id?: string | null;
+          owner_user_id?: string | null;
+          effective_on?: string | null;
+          due_on?: string | null;
+          recurrence_rule?: string | null;
+          next_due_on?: string | null;
+          status?: ObligationStatus;
+          criticality?: ObligationCriticality;
+          evidence_requirement_text?: string | null;
+          completion_evidence_document_id?: string | null;
+          completed_at?: string | null;
+          completed_by?: string | null;
+          waive_reason?: string | null;
+          superseded_by_id?: string | null;
+          amendment_id?: string | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          contract_id?: string;
+          obligation_type?: ObligationType;
+          title?: string;
+          description?: string | null;
+          source_clause_ref?: string | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_page?: number | null;
+          source_fact_id?: string | null;
+          owner_user_id?: string | null;
+          effective_on?: string | null;
+          due_on?: string | null;
+          recurrence_rule?: string | null;
+          next_due_on?: string | null;
+          status?: ObligationStatus;
+          criticality?: ObligationCriticality;
+          evidence_requirement_text?: string | null;
+          completion_evidence_document_id?: string | null;
+          completed_at?: string | null;
+          completed_by?: string | null;
+          waive_reason?: string | null;
+          superseded_by_id?: string | null;
+          amendment_id?: string | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -3801,6 +3930,49 @@ export type Database = {
         Args: { p_contract_id: string };
         Returns: Record<string, unknown>;
       };
+      promote_obligation_candidate: {
+        Args: {
+          p_contract_id: string;
+          p_obligation_type: ObligationType;
+          p_title: string;
+          p_description?: string | null;
+          p_source_clause_ref?: string | null;
+          p_source_document_id?: string | null;
+          p_source_page?: number | null;
+          p_source_fact_id?: string | null;
+          p_due_on?: string | null;
+          p_effective_on?: string | null;
+          p_recurrence_rule?: string | null;
+          p_criticality?: ObligationCriticality;
+          p_evidence_requirement_text?: string | null;
+          p_owner_user_id?: string | null;
+        };
+        Returns: Record<string, unknown>;
+      };
+      verify_contract_obligation: {
+        Args: { p_obligation_id: string };
+        Returns: Record<string, unknown>;
+      };
+      complete_contract_obligation: {
+        Args: { p_obligation_id: string; p_evidence_document_id: string };
+        Returns: Record<string, unknown>;
+      };
+      waive_contract_obligation: {
+        Args: { p_obligation_id: string; p_waive_reason: string };
+        Returns: Record<string, unknown>;
+      };
+      supersede_obligation_from_amendment: {
+        Args: {
+          p_obligation_id: string;
+          p_amendment_id: string;
+          p_title?: string | null;
+          p_description?: string | null;
+          p_due_on?: string | null;
+          p_obligation_type?: ObligationType | null;
+          p_source_clause_ref?: string | null;
+        };
+        Returns: Record<string, unknown>;
+      };
     };
     Enums: {
       membership_role: MembershipRole;
@@ -3816,6 +3988,9 @@ export type Database = {
       compliance_verification_status: ComplianceVerificationStatus;
       requirement_compliance_match_status: RequirementComplianceMatchStatus;
       experience_type: ExperienceType;
+      obligation_type: ObligationType;
+      obligation_status: ObligationStatus;
+      obligation_criticality: ObligationCriticality;
       opportunity_outcome: OpportunityOutcome;
       reuse_status: ReuseStatus;
       research_type: ResearchType;

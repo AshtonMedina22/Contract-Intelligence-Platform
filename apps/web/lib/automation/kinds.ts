@@ -22,6 +22,8 @@ export const AUTOMATION_KINDS = [
   "rebid_planning",
   "option_decision",
   "research_refresh",
+  "obligation_due",
+  "obligation_overdue",
   "daily_digest",
 ] as const;
 

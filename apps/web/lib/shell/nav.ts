@@ -85,11 +85,12 @@ function findPage(pathname: string) {
   }
 
   const contractTab = pathname.match(
-    /^\/contracts\/[^/]+\/(service-plan|commercial-terms|changes|renewal)$/,
+    /^\/contracts\/[^/]+\/(service-plan|obligations|commercial-terms|changes|renewal)$/,
   );
   if (contractTab) {
     const labels: Record<string, string> = {
       "service-plan": "Service Plan",
+      obligations: "Obligations",
       "commercial-terms": "Commercial Terms",
       changes: "Changes",
       renewal: "Renewal",

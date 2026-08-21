@@ -20,6 +20,7 @@ export function contractWorkspaceTabs(contractId: string) {
   return [
     { href: base, label: "Overview" },
     { href: `${base}/service-plan`, label: "Service Plan" },
+    { href: `${base}/obligations`, label: "Obligations" },
     { href: `${base}/commercial-terms`, label: "Commercial Terms" },
     { href: `${base}/changes`, label: "Changes" },
     { href: `${base}/renewal`, label: "Renewal" },

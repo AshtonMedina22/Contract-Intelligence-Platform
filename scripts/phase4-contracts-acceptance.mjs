@@ -151,9 +151,10 @@ function assertUiSurface() {
   const shared = read("apps/web/components/opportunity-workspace/shared.tsx");
   record(
     "ui",
-    "Contract workspace tabs Overview|Service Plan|Commercial|Changes|Renewal",
+    "Contract workspace tabs Overview|Service Plan|Obligations|Commercial|Changes|Renewal",
     shared.includes('"Overview"') &&
       shared.includes('"Service Plan"') &&
+      shared.includes('"Obligations"') &&
       shared.includes('"Commercial Terms"') &&
       shared.includes('"Changes"') &&
       shared.includes('"Renewal"'),
