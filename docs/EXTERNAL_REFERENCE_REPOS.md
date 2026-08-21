@@ -45,7 +45,7 @@ A registered repo existing does **not** mean we must adopt its approach.
 | RFP intake / requirements / response / submission | **RFPilot** + **AutoRFP** |
 | PDF evidence / annotations / human verification / provenance | **OpenContracts** |
 | PDF / DOCX / XLSX parser | **Docling** first; **Unstructured** as benchmark/alternate |
-| Public procurement ingestion / external opportunity sources | **TenderRadar** + **OpenSAM** + **OCDS** |
+| Public procurement ingestion / external opportunity sources | **TenderRadar** + **OpenSAM** + **OCDS** (**RFP Map** only for bulk-CSV acquisition; its map UX is declined) |
 | Federal awards / federal competitors / federal buyer history | **USAspending API**; optionally **USAspending MCP** for tool architecture |
 | Contract domain / changes / renewal / obligations | **Public-Sector CLM**; **Whereas** for UX |
 | Document / proposal output | **RFPilot** DOCX patterns; **Wraft** where useful |
@@ -229,8 +229,8 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/d4d0h/tenderradar |
 | **Reference category** | Public procurement source-adapter architecture |
 | **Usage mode** | ADAPT ARCHITECTURE/CODE WHERE APPROPRIATE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. Adapter patterns only; do not import its database. |
+| **Analysis status** | INSPECTED (P4 Discovery, 2026-08-21) — metadata + license only; see [reference-repos/tenderradar.md](reference-repos/tenderradar.md) |
+| **License / copy caution** | **UNLICENSED** — GitHub reports no license file (verified 2026-08-21). **REFERENCE ONLY**; do not copy source. Adapter concept adopted, no upstream code. Do not import its database. |
 
 **Why it matters:** One-adapter-per-source model for public RFP discovery, sync, normalize, dedupe/upsert.
 
@@ -252,7 +252,7 @@ PublicProcurementProvider
 └── FutureProvider
 ```
 
-**Local landing zones:** `apps/web/lib/ask/research/provider.ts` (current public-research abstraction); Intelligence Buyers / Market; future opportunity-sync jobs. Do not make TenderRadar’s DB our canonical DB.
+**Local landing zones (built in P4, 2026-08-21):** `apps/web/lib/procurement/providers/` — `types.ts` (`PublicProcurementProvider`, `NormalizedPublicOpportunity`), `sam-gov.ts`, `manual.ts`, `index.ts`; `public_sources` table; Pursuits → Discover / Watchlist. `apps/web/lib/ask/research/provider.ts` remains the separate Ask/Tavily/Brave research rail. Do not make TenderRadar’s DB our canonical DB.
 
 **Do not:** adopt TenderRadar’s database as our canonical database.
 
@@ -265,8 +265,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/akshayakula/OpenSAM |
 | **Reference category** | SAM.gov opportunity discovery / search concepts |
 | **Usage mode** | SELECTIVE REFERENCE / ADAPTATION |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. Concepts/API patterns only. |
+| **Analysis status** | INSPECTED (P4 Discovery, 2026-08-21) — metadata + license only; see [reference-repos/opensam.md](reference-repos/opensam.md) |
+| **License / copy caution** | **UNLICENSED** — GitHub reports no license file (verified 2026-08-21). **REFERENCE ONLY**; do not copy source. Only public SAM.gov API parameter/response conventions were used. |
 
 **Why it matters:** Federal opportunity search UX and SAM.gov request/normalization ideas.
 
@@ -276,9 +276,9 @@ PublicProcurementProvider
 
 **Maps to our platform:** Government procurement research; Public Research; Buyer / Market Intelligence.
 
-**Local landing zones:** Future `SamGovProvider`; Intelligence Market / Buyers; Ask `search_public_research` tools.
+**Local landing zones (built in P4, 2026-08-21):** `apps/web/lib/procurement/providers/sam-gov.ts` — live when `SAM_GOV_API_KEY` / `SAM_API_KEY` is set, otherwise clearly labeled `FIXTURE-SAM-*` sample data. Live path is **unvalidated against a real response**. Ask `search_public_research` tools remain separate.
 
-**Do not:** make OpenSAM our federal system of record.
+**Do not:** make OpenSAM our federal system of record. **Do not** add AI fit scoring or semantic ranking of public notices — a public listing is not a bid decision.
 
 ---
 
@@ -559,9 +559,36 @@ PublicProcurementProvider
 
 ---
 
+### 19. RFP Map
+
+| Field | Value |
+| --- | --- |
+| **URL** | https://github.com/EthanHNguyen/rfp-map |
+| **Reference category** | SAM.gov bulk-data acquisition (map UX declined) |
+| **Usage mode** | SELECTIVE REFERENCE — acquisition strategy only |
+| **Analysis status** | INSPECTED (P4 Discovery, 2026-08-21) — README + license only; see [reference-repos/rfp-map.md](reference-repos/rfp-map.md) |
+| **License / copy caution** | **MIT** (verified 2026-08-21) — permissive, copy-eligible with attribution. Nothing was copied, so nothing is owed. |
+
+**Why it matters:** It acquires SAM.gov opportunities from the **public bulk CSV** on a schedule and
+precomputes compact payloads, instead of calling the v2 search API per request. That is a real
+alternative if per-request search proves rate-limited or slow.
+
+**Consult when:** SAM.gov bulk-feed ingestion; scheduled refresh of a public notice corpus.
+
+**Inspect:** its ingest script's normalization of the bulk CSV columns. Nothing else.
+
+**Maps to our platform:** a possible future acquisition mode for
+`apps/web/lib/procurement/providers/sam-gov.ts`.
+
+**Do not:** adopt its **map / radar UX** — our discovery chrome is desktop-first and table-centric
+(P4 shipped a dense notice table). **Do not** adopt its "market-gravity" approximate dollar values;
+we populate `estimated_value` only when the provider supplies an amount.
+
+---
+
 ## Registry completeness
 
-Registered (18/18):
+Registered (19/19):
 
 1. RFPilot  
 2. AutoRFP  
@@ -581,5 +608,6 @@ Registered (18/18):
 16. Morphic  
 17. Open Deep Research  
 18. WrenAI  
+19. RFP Map  
 
 Adding a new reference: append an entry with the same fields, add a routing-table row, keep status **REGISTERED ONLY** until a task inspects it, and do not create a `docs/reference-repos/<slug>.md` until that inspection happens.

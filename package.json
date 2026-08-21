@@ -43,6 +43,8 @@
     "test:phase5-intelligence": "node --env-file=apps/web/.env.local scripts/phase5-intelligence-acceptance.mjs",
     "test:phase6-ask": "node --env-file=apps/web/.env.local scripts/phase6-ask-reports-automation-acceptance.mjs",
     "test:phase10-win-loss": "node --env-file=apps/web/.env.local scripts/phase10-win-loss-acceptance.mjs",
-    "test:phase11-hybrid-rag": "node --env-file=apps/web/.env.local scripts/phase11-hybrid-rag-acceptance.mjs"
+    "test:phase11-hybrid-rag": "node --env-file=apps/web/.env.local scripts/phase11-hybrid-rag-acceptance.mjs",
+    "test:p4-discovery": "node scripts/p4-public-discovery-acceptance.mjs",
+    "test:p4-discovery-rls": "node --env-file=apps/web/.env.local scripts/p4-public-sources-rls.mjs"
   }
 }

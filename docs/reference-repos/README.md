@@ -23,6 +23,7 @@ Use these slugs when a note is needed:
 | `unstructured` | Unstructured |
 | `tenderradar` | TenderRadar |
 | `opensam` | OpenSAM |
+| `rfp-map` | RFP Map |
 | `ocds` | Open Contracting Data Standard |
 | `usaspending-api` | USAspending API |
 | `usaspending-mcp-server` | USAspending MCP Server |

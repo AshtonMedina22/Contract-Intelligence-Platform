@@ -76,6 +76,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 
 **P2 productization (2026-08-21):** Data Ops hardening complete. Intake UX preflight validation, processing queue lifecycle_error badges/filters, OCR_REQUIRED semantics, re-extract guard for HUMAN_VERIFIED facts, verification workbench keyboard/optimistic/auto-advance, exceptions disposition notes, corpus funnel report script. See [P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md](productization/P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md).
 
+**P4 productization (2026-08-21):** Public opportunity discovery complete. Pursuits gained Discover | Watchlist | Active | Submitted | Closed tabs; `public_sources` table with RLS; SAM.gov adapter (live with `SAM_GOV_API_KEY`, otherwise clearly labeled `FIXTURE-SAM-*` sample data with an honesty banner); Watch / Dismiss / Start pursuit. Discovery results are **not persisted on view**, public notice facts land **`AI_EXTRACTED`** only, and there is **no AI fit score**. Starting a pursuit does not ingest the solicitation — documents and verified truth still come from Data Ops. **The live SAM.gov request path has never been exercised against a real response.** Fixture notices are sample data and count toward nothing in the Historical Pilot. See [P4_OPPORTUNITY_DISCOVERY_ACCEPTANCE.md](productization/P4_OPPORTUNITY_DISCOVERY_ACCEPTANCE.md).
+
 **P3 productization (2026-08-21):** Executive Home + Action Center complete. Replaced `/overview` with owner command center: KPI strip (10 real metrics), Needs Attention queue, Pipeline table, Win/Loss snapshot, Contract alerts by bucket, Market intelligence. All RLS-scoped queries; no fake metrics; honest empty states. See [P3_EXECUTIVE_HOME_ACCEPTANCE.md](productization/P3_EXECUTIVE_HOME_ACCEPTANCE.md).
 
 **Prompt 9 / VERIFY 9 (2026-08-20):** Fix pass → **READY WITH NONBLOCKING LIMITATIONS**. Deferred: corpus acquisition ~20–30, Vercel login + prod processor, `ASK_MODEL`. See [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md).
@@ -129,6 +131,6 @@ Any older navigation that exposes Ingestion, Proposals, Data Quality, Requiremen
 2. Processor running for parse → `extracted_facts`.  
 3. Allen full board packet (~32 MB) is within the **50 MB** intake limit when the local file is present; re-ingest when Downloads corpus is restored. 
 
-Opportunity migrations `20260820300000` / `310000` / `320000` plus VERIFY 1 hardening `20260820400000` were applied to remote Postgres on 2026-08-20.  
+Opportunity migrations `20260820300000` / `310000` / `320000` plus VERIFY 1 hardening `20260820400000` were applied to remote Postgres on 2026-08-20. Migrations `20260821160000`, `20260821170000`, and P4 `20260821180000_p4_public_opportunity_discovery` were applied on 2026-08-21.  
 
 Detail: [WORK_TRAIL.md](WORK_TRAIL.md).

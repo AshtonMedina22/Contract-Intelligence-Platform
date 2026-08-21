@@ -36,6 +36,14 @@ export type BatchItemOutcome = "INGESTED" | "DUPLICATE" | "FAILED";
 
 export type CommercialTruth = "requested" | "proposed" | "awarded" | "current";
 
+export type PublicSourceProvider =
+  | "sam_gov"
+  | "fixture"
+  | "manual"
+  | "usa_spending"
+  | "state"
+  | "local";
+
 export type CorpusClass = "A_LP_ORIGINATED" | "B_LP_TIED" | "C_COMPETITOR_TEST";
 
 export type PricingRateType =
@@ -165,6 +173,10 @@ export type Database = {
           submission_method: string | null;
           coverage_start_on: string | null;
           vehicle_ref: string | null;
+          external_provider: PublicSourceProvider | null;
+          external_source_id: string | null;
+          source_url: string | null;
+          public_source_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -186,6 +198,10 @@ export type Database = {
           submission_method?: string | null;
           coverage_start_on?: string | null;
           vehicle_ref?: string | null;
+          external_provider?: PublicSourceProvider | null;
+          external_source_id?: string | null;
+          source_url?: string | null;
+          public_source_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -207,6 +223,88 @@ export type Database = {
           submission_method?: string | null;
           coverage_start_on?: string | null;
           vehicle_ref?: string | null;
+          external_provider?: PublicSourceProvider | null;
+          external_source_id?: string | null;
+          source_url?: string | null;
+          public_source_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      public_sources: {
+        Row: {
+          id: string;
+          organization_id: string;
+          provider: PublicSourceProvider;
+          external_id: string;
+          source_url: string | null;
+          title: string;
+          buyer_name: string | null;
+          solicitation_number: string | null;
+          procurement_type: string | null;
+          posted_on: string | null;
+          due_on: string | null;
+          naics: string | null;
+          psc: string | null;
+          set_aside: string | null;
+          geography: string | null;
+          estimated_value: number | null;
+          raw_payload: Record<string, unknown> | null;
+          retrieved_at: string;
+          watchlisted_at: string | null;
+          dismissed_at: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          provider: PublicSourceProvider;
+          external_id: string;
+          source_url?: string | null;
+          title: string;
+          buyer_name?: string | null;
+          solicitation_number?: string | null;
+          procurement_type?: string | null;
+          posted_on?: string | null;
+          due_on?: string | null;
+          naics?: string | null;
+          psc?: string | null;
+          set_aside?: string | null;
+          geography?: string | null;
+          estimated_value?: number | null;
+          raw_payload?: Record<string, unknown> | null;
+          retrieved_at?: string;
+          watchlisted_at?: string | null;
+          dismissed_at?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          provider?: PublicSourceProvider;
+          external_id?: string;
+          source_url?: string | null;
+          title?: string;
+          buyer_name?: string | null;
+          solicitation_number?: string | null;
+          procurement_type?: string | null;
+          posted_on?: string | null;
+          due_on?: string | null;
+          naics?: string | null;
+          psc?: string | null;
+          set_aside?: string | null;
+          geography?: string | null;
+          estimated_value?: number | null;
+          raw_payload?: Record<string, unknown> | null;
+          retrieved_at?: string;
+          watchlisted_at?: string | null;
+          dismissed_at?: string | null;
+          created_by?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -2214,6 +2312,8 @@ export type Database = {
           verification_status: FactVerificationStatus;
           verified_by: string | null;
           verified_at: string | null;
+          provider: PublicSourceProvider | null;
+          external_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -2231,6 +2331,8 @@ export type Database = {
           verification_status?: FactVerificationStatus;
           verified_by?: string | null;
           verified_at?: string | null;
+          provider?: PublicSourceProvider | null;
+          external_id?: string | null;
           created_at?: string;
         };
         Update: {
@@ -2248,6 +2350,8 @@ export type Database = {
           verification_status?: FactVerificationStatus;
           verified_by?: string | null;
           verified_at?: string | null;
+          provider?: PublicSourceProvider | null;
+          external_id?: string | null;
           created_at?: string;
         };
         Relationships: [];

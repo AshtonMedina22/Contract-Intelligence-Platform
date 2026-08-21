@@ -89,6 +89,9 @@ export function AppShellHeader({
             <Link href="/ingestion/intake">New solicitation</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link href="/procurement/opportunities/discover">Discover opportunities</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link href="/ingestion/bulk">Import historical package</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

@@ -1,0 +1,80 @@
+{
+  "_disclaimer": "SAMPLE DATA ONLY. These are not live SAM.gov notices. Every id is prefixed FIXTURE-SAM- and every url uses the reserved .invalid TLD so a fixture row can never be mistaken for a real public notice. Set SAM_GOV_API_KEY to search live SAM.gov instead.",
+  "notices": [
+    {
+      "noticeId": "FIXTURE-SAM-001",
+      "title": "SAMPLE FIXTURE — Unarmed Security Guard Services, Federal Office Building",
+      "solicitationNumber": "FIXTURE-RFP-24-0001",
+      "fullParentPathName": "SAMPLE AGENCY (FIXTURE) / Facilities Division",
+      "type": "Solicitation",
+      "postedDate": "2026-08-04",
+      "responseDeadLine": "2026-09-18",
+      "naicsCode": "561612",
+      "classificationCode": "S206",
+      "typeOfSetAside": "Total Small Business Set-Aside",
+      "placeOfPerformance": "Dallas, TX",
+      "uiLink": "https://fixture.invalid/sam-gov/FIXTURE-SAM-001",
+      "estimatedValue": null
+    },
+    {
+      "noticeId": "FIXTURE-SAM-002",
+      "title": "SAMPLE FIXTURE — Armed Security Officer Services, Regional Courthouse",
+      "solicitationNumber": "FIXTURE-RFQ-24-0114",
+      "fullParentPathName": "SAMPLE AGENCY (FIXTURE) / Protective Services",
+      "type": "Combined Synopsis/Solicitation",
+      "postedDate": "2026-08-11",
+      "responseDeadLine": "2026-09-02",
+      "naicsCode": "561612",
+      "classificationCode": "S206",
+      "typeOfSetAside": null,
+      "placeOfPerformance": "Fort Worth, TX",
+      "uiLink": "https://fixture.invalid/sam-gov/FIXTURE-SAM-002",
+      "estimatedValue": null
+    },
+    {
+      "noticeId": "FIXTURE-SAM-003",
+      "title": "SAMPLE FIXTURE — Access Control and Visitor Screening Support Services",
+      "solicitationNumber": "FIXTURE-RFP-24-0207",
+      "fullParentPathName": "SAMPLE AGENCY (FIXTURE) / Security Operations",
+      "type": "Presolicitation",
+      "postedDate": "2026-08-15",
+      "responseDeadLine": "2026-10-06",
+      "naicsCode": "561621",
+      "classificationCode": "S299",
+      "typeOfSetAside": "Service-Disabled Veteran-Owned Small Business",
+      "placeOfPerformance": "Austin, TX",
+      "uiLink": "https://fixture.invalid/sam-gov/FIXTURE-SAM-003",
+      "estimatedValue": null
+    },
+    {
+      "noticeId": "FIXTURE-SAM-004",
+      "title": "SAMPLE FIXTURE — Mobile Patrol and Alarm Response, Multi-Site Campus",
+      "solicitationNumber": "FIXTURE-IFB-24-0033",
+      "fullParentPathName": "SAMPLE MUNICIPAL BUYER (FIXTURE) / Purchasing",
+      "type": "Solicitation",
+      "postedDate": "2026-07-28",
+      "responseDeadLine": "2026-08-29",
+      "naicsCode": "561612",
+      "classificationCode": "S206",
+      "typeOfSetAside": null,
+      "placeOfPerformance": "San Antonio, TX",
+      "uiLink": "https://fixture.invalid/sam-gov/FIXTURE-SAM-004",
+      "estimatedValue": null
+    },
+    {
+      "noticeId": "FIXTURE-SAM-005",
+      "title": "SAMPLE FIXTURE — Security Guard Services Recompete, Distribution Center",
+      "solicitationNumber": "FIXTURE-RFP-24-0298",
+      "fullParentPathName": "SAMPLE AGENCY (FIXTURE) / Logistics Command",
+      "type": "Solicitation",
+      "postedDate": "2026-08-18",
+      "responseDeadLine": "2026-09-25",
+      "naicsCode": "561612",
+      "classificationCode": "S206",
+      "typeOfSetAside": "Total Small Business Set-Aside",
+      "placeOfPerformance": "Houston, TX",
+      "uiLink": "https://fixture.invalid/sam-gov/FIXTURE-SAM-005",
+      "estimatedValue": null
+    }
+  ]
+}

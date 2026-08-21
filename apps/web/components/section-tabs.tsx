@@ -23,7 +23,10 @@ export function SectionTabs({
       aria-label={sub ? "Sub-section navigation" : "Section navigation"}
     >
       {tabs.map((tab) => {
-        const exactOnly = tab.href === "/contracts" || tab.href === "/system/settings";
+        const exactOnly =
+          tab.href === "/contracts" ||
+          tab.href === "/system/settings" ||
+          tab.href === "/procurement/opportunities";
         const active = exactOnly
           ? pathname === tab.href
           : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
@@ -76,6 +79,14 @@ export const CONTRACTS_TABS: SectionTab[] = [
   { href: "/contracts", label: "Portfolio" },
 ];
 
+export const PURSUITS_TABS: SectionTab[] = [
+  { href: "/procurement/opportunities/discover", label: "Discover" },
+  { href: "/procurement/opportunities/watchlist", label: "Watchlist" },
+  { href: "/procurement/opportunities", label: "Active" },
+  { href: "/procurement/opportunities/submitted", label: "Submitted" },
+  { href: "/procurement/opportunities/closed", label: "Closed" },
+];
+
 export function IntelligenceNav() {
   return <SectionTabs tabs={INTELLIGENCE_TABS} />;
 }
@@ -86,6 +97,10 @@ export function DataOpsNav() {
 
 export function ContractsNav() {
   return <SectionTabs tabs={CONTRACTS_TABS} />;
+}
+
+export function PursuitsNav() {
+  return <SectionTabs tabs={PURSUITS_TABS} />;
 }
 
 export function SettingsNav() {

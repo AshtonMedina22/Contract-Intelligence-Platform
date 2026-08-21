@@ -60,7 +60,20 @@ const PURSUIT_TAB_LABELS: Record<string, string> = {
   contract: "Result",
 };
 
+/** Static Pursuits tabs share the `/procurement/opportunities/*` shape with pursuit ids. */
+const PURSUIT_SECTION_TABS: Record<string, string> = {
+  discover: "Discover",
+  watchlist: "Watchlist",
+  submitted: "Submitted",
+  closed: "Closed",
+};
+
 function findPage(pathname: string) {
+  const sectionTab = pathname.match(/^\/procurement\/opportunities\/([^/]+)$/);
+  if (sectionTab && PURSUIT_SECTION_TABS[sectionTab[1]!]) {
+    return { prefix: pathname, label: PURSUIT_SECTION_TABS[sectionTab[1]!]! };
+  }
+
   const workspaceTab = pathname.match(
     /^\/procurement\/opportunities\/[^/]+\/(requirements|staffing|pricing|documents|submission|response|intelligence|result|contract)$/,
   );
