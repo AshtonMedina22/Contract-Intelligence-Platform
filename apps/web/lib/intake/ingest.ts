@@ -61,6 +61,8 @@ export async function ingestSourceBytes(
     batchId?: string | null;
     batchLabel?: string | null;
     sourceDriveFileId?: string | null;
+    /** Append changed bytes to this existing logical document. */
+    existingDocumentId?: string | null;
     deferLifecycle?: boolean;
     packageKey?: string | null;
     packageTitle?: string | null;
@@ -106,7 +108,7 @@ export async function ingestSourceBytes(
     };
   }
 
-  const documentId = crypto.randomUUID();
+  const documentId = input.existingDocumentId ?? crypto.randomUUID();
   const versionId = crypto.randomUUID();
   const extension = evidenceFileExtension(input.filename, mimeType);
   const storagePath = evidenceStoragePath({
@@ -130,31 +132,41 @@ export async function ingestSourceBytes(
     throw new Error(upload.error.message);
   }
 
-  const { data: registered, error: registerError } = await supabase.rpc(
-    "register_ingested_document_classified",
-    {
-      p_organization_id: input.organizationId,
-      p_document_id: documentId,
-      p_version_id: versionId,
-      p_batch_id: input.batchId ?? null,
-      p_batch_label: input.batchLabel ?? null,
-      p_client_id: input.clientId ?? null,
-      p_opportunity_id: input.opportunityId ?? null,
-      p_original_filename: input.filename,
-      p_mime_type: mimeType,
-      p_sha256: sha256,
-      p_storage_path: storagePath,
-      p_byte_size: input.bytes.byteLength,
-      p_source_drive_file_id: input.sourceDriveFileId ?? null,
-      p_data_classification: input.dataClassification ?? "internal_unverified",
-    },
-  );
+  const appendToExisting = Boolean(input.existingDocumentId);
+  const rpcResult = appendToExisting
+    ? await supabase.rpc("append_document_version", {
+        p_organization_id: input.organizationId,
+        p_document_id: documentId,
+        p_version_id: versionId,
+        p_sha256: sha256,
+        p_storage_path: storagePath,
+        p_byte_size: input.bytes.byteLength,
+        p_source_drive_file_id: input.sourceDriveFileId ?? null,
+      })
+    : await supabase.rpc("register_ingested_document_classified", {
+        p_organization_id: input.organizationId,
+        p_document_id: documentId,
+        p_version_id: versionId,
+        p_batch_id: input.batchId ?? null,
+        p_batch_label: input.batchLabel ?? null,
+        p_client_id: input.clientId ?? null,
+        p_opportunity_id: input.opportunityId ?? null,
+        p_original_filename: input.filename,
+        p_mime_type: mimeType,
+        p_sha256: sha256,
+        p_storage_path: storagePath,
+        p_byte_size: input.bytes.byteLength,
+        p_source_drive_file_id: input.sourceDriveFileId ?? null,
+        p_data_classification: input.dataClassification ?? "internal_unverified",
+      });
+  const { data: registered, error: registerError } = rpcResult;
 
   if (registerError) {
     throw new Error(registerError.message);
   }
 
-  const row = parseRegisterRow(registered);
+  const parsed = parseRegisterRow(registered);
+  const row = appendToExisting ? { ...parsed, batch_id: input.batchId ?? null } : parsed;
   if (row.duplicate) {
     return {
       duplicate: true,
@@ -165,6 +177,21 @@ export async function ingestSourceBytes(
       batchId: row.batch_id,
       filename: input.filename,
     };
+  }
+
+  if (appendToExisting) {
+    const { error: documentError } = await supabase
+      .from("documents")
+      .update({
+        original_filename: input.filename,
+        mime_type: mimeType,
+        processing_status: "UPLOADED",
+        lifecycle_error: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", row.document_id)
+      .eq("organization_id", input.organizationId);
+    if (documentError) throw new Error(documentError.message);
   }
 
   const packageKey = input.packageKey?.trim();

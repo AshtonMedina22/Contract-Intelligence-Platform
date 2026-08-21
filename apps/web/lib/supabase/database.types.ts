@@ -998,6 +998,63 @@ export type Database = {
         };
         Relationships: [];
       };
+      document_source_links: {
+        Row: {
+          id: string;
+          organization_id: string;
+          document_id: string;
+          provider: string;
+          direction: "SOURCE_INGEST";
+          upstream_file_id: string;
+          mime: string | null;
+          modified: string | null;
+          availability: "AVAILABLE" | "UNAVAILABLE" | "ERROR";
+          last_synced_at: string;
+          last_sha256: string | null;
+          folder_id: string | null;
+          export_format: "pdf" | "docx" | "xlsx" | null;
+          metadata: Record<string, unknown>;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          document_id: string;
+          provider: string;
+          direction?: "SOURCE_INGEST";
+          upstream_file_id: string;
+          mime?: string | null;
+          modified?: string | null;
+          availability?: "AVAILABLE" | "UNAVAILABLE" | "ERROR";
+          last_synced_at?: string;
+          last_sha256?: string | null;
+          folder_id?: string | null;
+          export_format?: "pdf" | "docx" | "xlsx" | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          document_id?: string;
+          provider?: string;
+          direction?: "SOURCE_INGEST";
+          upstream_file_id?: string;
+          mime?: string | null;
+          modified?: string | null;
+          availability?: "AVAILABLE" | "UNAVAILABLE" | "ERROR";
+          last_synced_at?: string;
+          last_sha256?: string | null;
+          folder_id?: string | null;
+          export_format?: "pdf" | "docx" | "xlsx" | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       document_versions: {
         Row: {
           id: string;

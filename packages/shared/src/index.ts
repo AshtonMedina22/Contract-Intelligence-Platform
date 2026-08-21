@@ -16,4 +16,17 @@ export {
   type DriveImportedFile,
   type DriveImportPort,
 } from "./drive-import-port";
+export {
+  SOURCE_INGEST_DIRECTION,
+  DocumentSourceError,
+  type DocumentSourceDirection,
+  type DocumentSourceErrorCode,
+  type DocumentSourceExportFormat,
+  type DocumentSourceItem,
+  type DocumentSourceProvider,
+  type DocumentSourceProviderId,
+  type FetchedSourceBytes,
+  type FetchSourceBytesInput,
+  type ListScopedSourceInput,
+} from "./document-source-provider";
 export { verificationHookToken } from "./verification-hook";

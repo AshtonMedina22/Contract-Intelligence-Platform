@@ -63,7 +63,7 @@ function ResultList({ result, fileEntries }: { result: IntakeActionResult; fileE
   if (result.error) {
     return <p className="text-sm text-red-600">{result.error}</p>;
   }
-  if (!result.results?.length && fileEntries.length === 0) return null;
+  if (!result.results?.length && !result.driveSync?.results.length && fileEntries.length === 0) return null;
   
   const successResults = result.results?.filter(r => !r.duplicate) ?? [];
   const hasSuccess = successResults.length > 0;
@@ -99,6 +99,39 @@ function ResultList({ result, fileEntries }: { result: IntakeActionResult; fileE
           </table>
         </div>
       )}
+
+      {result.driveSync?.results.length ? (
+        <div className="rounded-md border text-sm">
+          <div className="border-b bg-muted/40 px-3 py-2 font-medium">
+            Google Drive SOURCE sync · {result.driveSync.selected} selected
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="p-2 text-left font-medium">File</th>
+                <th className="p-2 text-left font-medium">Status</th>
+                <th className="p-2 text-left font-medium">Evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {result.driveSync.results.map((row) => (
+                <tr key={`${row.upstreamFileId}:${row.status}`} className="border-b last:border-0">
+                  <td className="p-2 text-xs">{row.filename}</td>
+                  <td className="p-2"><Badge variant="outline">{row.status}</Badge></td>
+                  <td className="p-2 text-xs text-muted-foreground">
+                    {row.message ?? "Copied to the Supabase evidence vault."}
+                    {row.documentId ? (
+                      <Link className="ml-2 underline" href={`/ingestion/verification/${row.documentId}`}>
+                        Verify →
+                      </Link>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
 
       {hasSuccess && (
         <div className="flex flex-wrap gap-2 text-sm">
@@ -356,10 +389,12 @@ export function IntakeForm({
           <CardHeader>
             <CardTitle>Import from Google Drive</CardTitle>
             <CardDescription>
-              Copies bytes into Storage and keeps the Drive file ID. Drive files are not deleted.
+              Selective SOURCE ingestion only: copy chosen files into the Supabase Storage evidence
+              vault. Drive remains a human workspace, never the canonical database. Folder imports
+              are one level only and bounded by max items.
               {!driveConfigured
-                ? " Set GOOGLE_DRIVE_ACCESS_TOKEN to enable this adapter."
-                : " Paste a Drive file ID."}
+                ? " Live sync blocked: GOOGLE_DRIVE_ACCESS_TOKEN is unset on the server."
+                : " Google Docs export to DOCX/PDF; Sheets export to XLSX."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -375,16 +410,59 @@ export function IntakeForm({
               }}
             >
               <div className="space-y-1">
-                <Label htmlFor="drive_file_id">Drive file ID</Label>
-                <Input
-                  id="drive_file_id"
-                  name="drive_file_id"
-                  placeholder="1Abc…"
+                <Label htmlFor="drive_file_ids">Drive file IDs (optional)</Label>
+                <textarea
+                  id="drive_file_ids"
+                  name="drive_file_ids"
+                  rows={3}
+                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm"
+                  placeholder="One ID per line, or comma-separated"
                   disabled={!driveConfigured}
                 />
               </div>
+              <div className="space-y-1">
+                <Label htmlFor="drive_folder_id">Scoped folder ID (optional, non-recursive)</Label>
+                <Input
+                  id="drive_folder_id"
+                  name="drive_folder_id"
+                  placeholder="1_I4Kt4uKTSX0934q6mJEErNLKz8yxYvF"
+                  disabled={!driveConfigured}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label htmlFor="drive_max_items">Max items</Label>
+                  <Input
+                    id="drive_max_items"
+                    name="drive_max_items"
+                    type="number"
+                    min={1}
+                    max={100}
+                    defaultValue={25}
+                    disabled={!driveConfigured}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="drive_doc_export_format">Google Docs export</Label>
+                  <select
+                    id="drive_doc_export_format"
+                    name="drive_doc_export_format"
+                    defaultValue="docx"
+                    disabled={!driveConfigured}
+                    className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+                  >
+                    <option value="docx">DOCX</option>
+                    <option value="pdf">PDF</option>
+                  </select>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Staging folders: Platform <span className="font-mono">1_I4…yxYvF</span> · Test
+                Documents <span className="font-mono">16OA…qtGfc</span>. Upstream deletion marks the
+                link unavailable; vault evidence is never deleted.
+              </p>
               <Button type="submit" variant="secondary" disabled={pending || !driveConfigured}>
-                {pending ? "Importing…" : "Copy into vault"}
+                {pending ? "Syncing…" : "Sync selected sources"}
               </Button>
             </form>
           </CardContent>
