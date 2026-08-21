@@ -104,3 +104,10 @@ No clone. Pattern only: RFPilot’s useful **section taxonomy** (staffing, manag
 **Rejected:** ungrounded LLM scores, invented win tips, auto-promoting AI prose to reusable library, dumping full proposals into the model. Local reuse stays purpose-aware (`APPROVED` / `REVIEW_REQUIRED` / `DO_NOT_USE` / `SUPERSEDED`) with human verification gates — Won ≠ APPROVED, Lost ≠ DO_NOT_USE.
 
 Also pattern-noted (no copy): AutoRFP requirement↔evidence matching shape; OpenContracts provenance/verify discipline (already in local notes).
+
+# F8 addendum — proposal output / Docs pipeline (2026-08-21)
+
+Reference-only. RFPilot’s DOCX / working-doc habits informed honesty labels and assembly-before-export —
+**not** its LLM cover-letter dumps. Local F8: deterministic APPROVED assembly, native `docx` OOXML,
+Google Docs provider when token set, versioned immutable `submission_artifacts`. See
+[F8_PROPOSAL_OUTPUT_ACCEPTANCE.md](../functionality/F8_PROPOSAL_OUTPUT_ACCEPTANCE.md).

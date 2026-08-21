@@ -602,8 +602,11 @@ export function evaluateMarkSubmittedGate(input: {
 export type SubmissionOutputKind =
   | "HTML_PRINT"
   | "WORD_HTML"
+  | "NATIVE_DOCX"
+  | "PORTAL_ANSWERS"
   | "PLAIN_TEXT"
   | "GOOGLE_DOCS"
+  | "PDF_PRINT"
   | "PRICING_WORKBOOK"
   | "RESPONSE_TAB";
 
@@ -618,34 +621,56 @@ export type SubmissionOutput = {
 };
 
 /**
- * Describes the outputs the Submission tab can honestly produce. There is no DOCX/OOXML
- * writer and no Google Docs integration in this codebase, so neither is offered as one.
+ * Describes the outputs the Submission tab can honestly produce (F8).
+ * Native DOCX is real OOXML. PDF has no server converter — print path only.
+ * Google Docs create/sync runs only when a server token is configured.
  */
 export function describeSubmissionOutputs(input: {
   hasResponseContent: boolean;
+  hasApprovedContent?: boolean;
   googleDocsUrl: string | null | undefined;
-  googleDocsIntegration?: boolean;
+  googleDocsConfigured?: boolean;
 }): SubmissionOutput[] {
   const noContent = "No response draft content exists yet — the export would be an empty file.";
+  const noApproved =
+    "No APPROVED requirement responses yet — working proposal exports include approved answers only.";
   const hasContent = input.hasResponseContent;
+  const hasApproved = input.hasApprovedContent ?? hasContent;
   const docsUrl = input.googleDocsUrl?.trim() ?? "";
+  const gdocsConfigured = Boolean(input.googleDocsConfigured);
 
   return [
     {
       kind: "HTML_PRINT",
       label: "Download HTML (print to PDF)",
       honestNote:
-        "A single HTML file of the saved requirement drafts. Use the browser print dialog to produce a PDF; the app does not render PDFs.",
-      available: hasContent,
-      unavailableReason: hasContent ? null : noContent,
+        "Assembled HTML of APPROVED requirement responses (org template order). Use the browser print dialog for PDF; the app does not render PDF bytes.",
+      available: hasApproved,
+      unavailableReason: hasApproved ? null : noApproved,
+    },
+    {
+      kind: "NATIVE_DOCX",
+      label: "Download native DOCX (.docx)",
+      honestNote:
+        "Real OOXML produced by the docx package (ZIP signature PK). Not HTML renamed to .docx.",
+      available: hasApproved,
+      unavailableReason: hasApproved ? null : noApproved,
     },
     {
       kind: "WORD_HTML",
       label: "Download Word-compatible HTML (.doc)",
       honestNote:
-        "HTML in a .doc wrapper that Microsoft Word and Google Docs will open. This is not a native DOCX/OOXML file and no DOCX writer exists in this codebase.",
+        "Legacy HTML-in-.doc wrapper for older paste paths. Prefer native DOCX when Word/Google Docs need a real file.",
       available: hasContent,
       unavailableReason: hasContent ? null : noContent,
+    },
+    {
+      kind: "PORTAL_ANSWERS",
+      label: "Download portal answers (CSV / JSON)",
+      honestNote:
+        "Structured requirement → approved answer export for buyer portal paste. Draft-only responses are excluded.",
+      available: hasApproved,
+      unavailableReason: hasApproved ? null : noApproved,
     },
     {
       kind: "PLAIN_TEXT",
@@ -657,14 +682,30 @@ export function describeSubmissionOutputs(input: {
     },
     {
       kind: "GOOGLE_DOCS",
-      label: "Open Google Docs working copy",
-      honestNote: input.googleDocsIntegration
-        ? "Opens the linked Google Docs document."
-        : "Opens a URL an operator pasted. There is no Google Docs integration: nothing is created, pushed, or synced.",
-      available: Boolean(docsUrl),
-      unavailableReason: docsUrl
-        ? null
-        : "No Google Docs URL recorded on this packet. Paste one in Submission details to link an existing document.",
+      label: gdocsConfigured
+        ? "Create / sync Google Docs working copy"
+        : "Google Docs working copy",
+      honestNote: gdocsConfigured
+        ? "Server creates or updates a Google Doc from the assembled working proposal when GOOGLE_DRIVE_ACCESS_TOKEN (or GOOGLE_DOCS_ACCESS_TOKEN) is set. Idempotent per content hash."
+        : docsUrl
+          ? "Opens a URL recorded on the packet. Server create/sync is blocked until GOOGLE_DRIVE_ACCESS_TOKEN (or GOOGLE_DOCS_ACCESS_TOKEN) is set."
+          : "Blocked: no Google access token on the server. Set GOOGLE_DRIVE_ACCESS_TOKEN or GOOGLE_DOCS_ACCESS_TOKEN to create/sync. You may still paste an existing Docs URL in Submission details.",
+      available: gdocsConfigured ? hasApproved : Boolean(docsUrl),
+      unavailableReason: gdocsConfigured
+        ? hasApproved
+          ? null
+          : noApproved
+        : docsUrl
+          ? null
+          : "Google Docs create/sync unavailable (no server token). Paste an existing URL in Submission details, or configure GOOGLE_DRIVE_ACCESS_TOKEN.",
+    },
+    {
+      kind: "PDF_PRINT",
+      label: "PDF (print only)",
+      honestNote:
+        "No server-side PDF converter is configured. Download HTML and use browser Print → Save as PDF. The app never ships fake PDF bytes.",
+      available: hasApproved,
+      unavailableReason: hasApproved ? null : noApproved,
     },
     {
       kind: "PRICING_WORKBOOK",

@@ -27,10 +27,15 @@ From [docs.wraft.app](https://docs.wraft.app/users) document creation / lifecycl
 - Optional internal Review → Approval before Final; Final maps to frozen submission packet.
 - Do not replace Tiptap + Google Docs working proposal with Wraft’s Markdown/Pandoc stack.
 
+# F8 addendum (2026-08-21)
+
+Reference-only for versioned generate → freeze. We ship native OOXML via `docx`, Google Docs
+provider when token set, and `submission_artifacts` immutability — **no Wraft dependency** (AGPL).
+
 # What we are NOT adopting
 
 - Elixir/Phoenix app, their template/variant engine, AGPL code, or auto-distribution as our submit path.
 
 # Status
 
-INSPECTED FOR TASK — AGPL confirmed; UX reference only
+INSPECTED FOR TASK — AGPL confirmed; UX reference only; F8 noted

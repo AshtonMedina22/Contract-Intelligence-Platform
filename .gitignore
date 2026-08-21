@@ -24,6 +24,9 @@ apps/web/app/.well-known
 # Pilot binary acquisitions (large public PDFs — keep README only)
 docs/pilot/acquired/**
 !docs/pilot/acquired/README.md
+docs/pilot/drive-staging/**
+!docs/pilot/drive-staging/README.md
+!docs/pilot/drive-staging/*.md
 
 # IronBee runtime artifacts
 .ironbee/sessions/

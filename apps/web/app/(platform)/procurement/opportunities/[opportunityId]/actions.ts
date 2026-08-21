@@ -651,6 +651,23 @@ export async function markSubmissionSubmitted(opportunityId: string, formData: F
 
   await supabase.from("opportunities").update({ stage: "SUBMITTED" }).eq("id", opportunityId);
 
+  // Freeze the latest non-submitted artifact as an immutable submitted snapshot (F8).
+  const { data: latestArtifact } = await supabase
+    .from("submission_artifacts")
+    .select("id, immutable, approval_state")
+    .eq("opportunity_id", opportunityId)
+    .eq("organization_id", organizationId)
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (latestArtifact && !latestArtifact.immutable && latestArtifact.approval_state !== "SUBMITTED") {
+    await supabase
+      .from("submission_artifacts")
+      .update({ approval_state: "SUBMITTED", immutable: true, updated_at: new Date().toISOString() })
+      .eq("id", latestArtifact.id)
+      .eq("organization_id", organizationId);
+  }
+
   revalidatePath(`${workspacePath(opportunityId)}/submission`);
   revalidatePath(workspacePath(opportunityId));
   revalidatePath("/procurement/opportunities/submitted");
@@ -864,4 +881,289 @@ export async function createContractFromWin(opportunityId: string, formData: For
   revalidatePath(`/contracts/${data.id}`);
   revalidatePath("/contracts");
   return data.id;
+}
+
+// ---------------------------------------------------------------------------
+// F8 — working proposal assembly / DOCX / portal / Google Docs
+// ---------------------------------------------------------------------------
+
+async function loadAssemblySource(opportunityId: string, organizationId: string, supabase: Awaited<ReturnType<typeof createClient>>) {
+  const { data: sols } = await supabase.from("solicitations").select("id").eq("opportunity_id", opportunityId);
+  const solIds = (sols ?? []).map((s) => s.id);
+
+  const [
+    { data: requirements },
+    { data: responses },
+    { data: documents },
+    { data: opportunity },
+    { data: packet },
+  ] = await Promise.all([
+    solIds.length
+      ? supabase.from("requirements").select("id, statement, section_ref").in("solicitation_id", solIds)
+      : Promise.resolve({ data: [] as { id: string; statement: string; section_ref: string | null }[] }),
+    supabase
+      .from("requirement_responses")
+      .select("requirement_id, draft_html, draft_status")
+      .eq("opportunity_id", opportunityId),
+    supabase
+      .from("documents")
+      .select("id, original_filename, document_type")
+      .eq("opportunity_id", opportunityId),
+    supabase
+      .from("opportunities")
+      .select("id, title, response_due_on, service_type, clients(name)")
+      .eq("id", opportunityId)
+      .maybeSingle(),
+    supabase
+      .from("submission_packets")
+      .select("id, google_docs_url")
+      .eq("opportunity_id", opportunityId)
+      .eq("organization_id", organizationId)
+      .maybeSingle(),
+  ]);
+
+  const client = opportunity
+    ? Array.isArray(opportunity.clients)
+      ? opportunity.clients[0]
+      : opportunity.clients
+    : null;
+
+  const buyerName =
+    client && typeof client === "object" && client && "name" in client
+      ? String((client as { name?: string | null }).name ?? "")
+      : null;
+
+  return {
+    requirements: (requirements ?? []).map((r) => ({
+      id: r.id,
+      statement: r.statement,
+      section_ref: r.section_ref ?? null,
+    })),
+    responses: (responses ?? []).map((r) => ({
+      requirement_id: r.requirement_id,
+      draft_html: r.draft_html ?? "",
+      draft_status: r.draft_status,
+    })),
+    attachments: (documents ?? []).map((d) => ({
+      id: d.id,
+      filename: d.original_filename,
+      document_type: d.document_type,
+    })),
+    cover: {
+      title: opportunity?.title?.trim() || (buyerName ? `${buyerName} — Working proposal` : "Working proposal"),
+      buyerName,
+      solicitationRef: opportunity?.service_type ?? null,
+      dueOn: opportunity?.response_due_on ?? null,
+    },
+    pricingHref: `${workspacePath(opportunityId)}/pricing`,
+    packetId: packet?.id ?? null,
+    googleDocsUrl: packet?.google_docs_url ?? null,
+  };
+}
+
+export type GenerateWorkingProposalResult = {
+  artifactId: string;
+  version: number;
+  contentHash: string;
+  approvedCount: number;
+  excludedDraftOnly: number;
+  googleDocsConfigured: boolean;
+  googleDocUrl: string | null;
+  googleBlocker: string | null;
+};
+
+/** Assemble APPROVED responses into a versioned submission_artifacts row. */
+export async function generateWorkingProposalArtifact(
+  opportunityId: string,
+  opts?: { syncGoogleDoc?: boolean; forceNewGoogleDoc?: boolean },
+): Promise<GenerateWorkingProposalResult> {
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  const { buildWorkingProposal, computeNextVersion } = await import(
+    "@/lib/opportunity/generate-working-proposal"
+  );
+  const { getGoogleDocsProvider, workingDocIdempotencyKey } = await import("@/lib/google/google-docs");
+
+  const source = await loadAssemblySource(opportunityId, organizationId, supabase);
+  const { assembled, portal } = buildWorkingProposal(source);
+
+  if (assembled.sources.requirementIds.length === 0) {
+    throw new Error(
+      "No APPROVED requirement responses to assemble. Approve responses on the Response tab first.",
+    );
+  }
+
+  const { data: existingVersions } = await supabase
+    .from("submission_artifacts")
+    .select("version")
+    .eq("opportunity_id", opportunityId)
+    .eq("organization_id", organizationId);
+  const version = computeNextVersion(existingVersions ?? []);
+
+  let googleDocId: string | null = null;
+  let googleDocUrl: string | null = source.googleDocsUrl;
+  let googleSync: Record<string, unknown> = {};
+  let googleBlocker: string | null = null;
+  const provider = getGoogleDocsProvider();
+  const googleDocsConfigured = provider.isConfigured();
+
+  if (opts?.syncGoogleDoc) {
+    if (!googleDocsConfigured) {
+      googleBlocker =
+        "Google Docs create/sync blocked: set GOOGLE_DRIVE_ACCESS_TOKEN or GOOGLE_DOCS_ACCESS_TOKEN on the server.";
+    } else {
+      // Prefer existing doc id from latest artifact when not forcing new.
+      let existingDocId: string | null = null;
+      if (!opts.forceNewGoogleDoc) {
+        const { data: prior } = await supabase
+          .from("submission_artifacts")
+          .select("google_doc_id")
+          .eq("opportunity_id", opportunityId)
+          .eq("organization_id", organizationId)
+          .not("google_doc_id", "is", null)
+          .order("version", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        existingDocId = prior?.google_doc_id ?? null;
+      }
+      const result = await provider.createOrUpdateWorkingDoc({
+        title: assembled.title,
+        content: assembled.plainDocument,
+        idempotencyKey: workingDocIdempotencyKey({
+          organizationId,
+          opportunityId,
+          contentHash: assembled.contentHash,
+          forceNew: opts.forceNewGoogleDoc,
+        }),
+        existingDocId,
+        forceNew: opts.forceNewGoogleDoc,
+      });
+      if (result.ok) {
+        googleDocId = result.documentId;
+        googleDocUrl = result.documentUrl;
+        googleSync = result.sync as unknown as Record<string, unknown>;
+        await supabase
+          .from("submission_packets")
+          .upsert(
+            {
+              organization_id: organizationId,
+              opportunity_id: opportunityId,
+              google_docs_url: result.documentUrl,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "organization_id,opportunity_id" },
+          );
+      } else {
+        googleBlocker = result.message;
+      }
+    }
+  }
+
+  const { data: inserted, error } = await supabase
+    .from("submission_artifacts")
+    .insert({
+      organization_id: organizationId,
+      opportunity_id: opportunityId,
+      packet_id: source.packetId,
+      version,
+      generator: "proposal-assembly",
+      approval_state: "WORKING",
+      content_hash: assembled.contentHash,
+      sources: assembled.sources,
+      google_doc_id: googleDocId,
+      google_doc_url: googleDocUrl,
+      google_sync: googleSync,
+      portal_json: JSON.parse(portal.json) as Record<string, unknown>,
+      html_snapshot: assembled.htmlDocument,
+      immutable: false,
+      created_by: userId,
+    })
+    .select("id, version")
+    .single();
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`${workspacePath(opportunityId)}/submission`);
+  return {
+    artifactId: inserted.id,
+    version: inserted.version,
+    contentHash: assembled.contentHash,
+    approvedCount: assembled.sources.requirementIds.length,
+    excludedDraftOnly: assembled.sources.excludedDraftOnly,
+    googleDocsConfigured,
+    googleDocUrl,
+    googleBlocker,
+  };
+}
+
+/** Sync / create Google Doc for the latest (or newly generated) working proposal. */
+export async function syncWorkingProposalGoogleDoc(
+  opportunityId: string,
+  formData?: FormData,
+): Promise<GenerateWorkingProposalResult> {
+  const forceNew = String(formData?.get("force_new") ?? "") === "1";
+  return generateWorkingProposalArtifact(opportunityId, {
+    syncGoogleDoc: true,
+    forceNewGoogleDoc: forceNew,
+  });
+}
+
+/** Return native DOCX bytes (base64) for the current APPROVED assembly. */
+export async function downloadWorkingProposalDocx(opportunityId: string): Promise<{
+  filename: string;
+  base64: string;
+  contentHash: string;
+  isOoxml: boolean;
+}> {
+  const { supabase, organizationId } = await requireUserOrg();
+  const { buildWorkingProposal } = await import("@/lib/opportunity/generate-working-proposal");
+  const { buildProposalDocx, isOoxmlZip } = await import("@/lib/export/docx");
+
+  const source = await loadAssemblySource(opportunityId, organizationId, supabase);
+  const { assembled } = buildWorkingProposal(source);
+  if (assembled.sources.requirementIds.length === 0) {
+    throw new Error("No APPROVED requirement responses to export as DOCX.");
+  }
+  const bytes = await buildProposalDocx(assembled);
+  const base64 = Buffer.from(bytes).toString("base64");
+  return {
+    filename: `pursuit-${opportunityId}-proposal-v.docx`,
+    base64,
+    contentHash: assembled.contentHash,
+    isOoxml: isOoxmlZip(bytes),
+  };
+}
+
+/** Portal answers CSV + JSON for APPROVED responses. */
+export async function downloadPortalAnswers(opportunityId: string): Promise<{
+  csv: string;
+  json: string;
+  count: number;
+}> {
+  const { supabase, organizationId } = await requireUserOrg();
+  const { buildWorkingProposal } = await import("@/lib/opportunity/generate-working-proposal");
+  const source = await loadAssemblySource(opportunityId, organizationId, supabase);
+  const { portal } = buildWorkingProposal(source);
+  if (portal.rows.length === 0) {
+    throw new Error("No APPROVED answers for portal export.");
+  }
+  return { csv: portal.csv, json: portal.json, count: portal.rows.length };
+}
+
+/** Assembled HTML for print / HTML download (APPROVED only). */
+export async function downloadWorkingProposalHtml(opportunityId: string): Promise<{
+  html: string;
+  contentHash: string;
+}> {
+  const { supabase, organizationId } = await requireUserOrg();
+  const { buildWorkingProposal } = await import("@/lib/opportunity/generate-working-proposal");
+  const source = await loadAssemblySource(opportunityId, organizationId, supabase);
+  const { assembled } = buildWorkingProposal(source);
+  if (assembled.sources.requirementIds.length === 0) {
+    throw new Error("No APPROVED requirement responses to export as HTML.");
+  }
+  return { html: assembled.htmlDocument, contentHash: assembled.contentHash };
+}
+
+export async function getGoogleDocsConfigStatus(): Promise<{ configured: boolean }> {
+  const { resolveGoogleDocsAccessToken } = await import("@/lib/google/google-docs");
+  return { configured: Boolean(resolveGoogleDocsAccessToken()) };
 }

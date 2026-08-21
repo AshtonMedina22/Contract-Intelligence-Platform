@@ -8,6 +8,7 @@ import {
   loadSubmissionPacket,
 } from "@/lib/opportunity/load-response";
 import { computeResponseProgress } from "@/lib/opportunity/response";
+import { resolveGoogleDocsAccessToken } from "@/lib/google/google-docs";
 
 export default function OpportunitySubmissionPage({
   params,
@@ -37,6 +38,7 @@ async function OpportunitySubmissionContent({
     approvals,
     { data: pricingDecision },
     { data: user },
+    { data: latestArtifact },
   ] = await Promise.all([
     supabase
       .from("documents")
@@ -55,6 +57,13 @@ async function OpportunitySubmissionContent({
       .limit(1)
       .maybeSingle(),
     supabase.auth.getUser(),
+    supabase
+      .from("submission_artifacts")
+      .select("id, version, content_hash, approval_state, immutable, google_doc_url")
+      .eq("opportunity_id", opportunityId)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const exportHtml = responses
@@ -62,10 +71,12 @@ async function OpportunitySubmissionContent({
     .map((r) => r.draft_html)
     .join("\n<hr/>\n");
 
+  const hasApprovedContent = responses.some(
+    (r) => r.draft_status === "APPROVED" && r.draft_html?.trim(),
+  );
+
   const packet = submission.packet as Parameters<typeof SubmissionWorkbench>[0]["packet"];
   const submittedBy = packet?.submitted_by ?? null;
-  // Only the calling user's own identity is resolvable client-side without an admin read, so a
-  // different operator's submission stays attributed by id rather than an invented name.
   const submittedByLabel =
     submittedBy && user?.user?.id === submittedBy ? (user.user.email ?? submittedBy) : null;
 
@@ -91,6 +102,9 @@ async function OpportunitySubmissionContent({
       responseProgress={computeResponseProgress(requirements, responses)}
       pricingDecision={pricingDecision ?? null}
       submittedByLabel={submittedByLabel}
+      googleDocsConfigured={Boolean(resolveGoogleDocsAccessToken())}
+      hasApprovedContent={hasApprovedContent}
+      latestArtifact={latestArtifact ?? null}
     />
   );
 }

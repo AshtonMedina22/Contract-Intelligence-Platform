@@ -18,7 +18,7 @@ Purpose: distinguish what exists in code from what has been proven as a product.
 | **5 — Buyer / Competitor / Market / Win-Loss** | **Prompt 5 exit proven** — still corpus-thin; no fabricated market share |
 | **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** + **F6 governed structured analytics** + **F7 proposal content reuse** (`proposal_sections` taxonomy; promote `REVIEW_REQUIRED`; purpose-aware drafting match) |
 | **7 — Pricing Intelligence** | Prompt 7 exit + **P7 workbench polish**; **VERIFY 7's committed 29/29 is stale** (19/22 at clean `HEAD` — outdated fixtures/grep, not a behaviour regression) |
-| **8 — Response Builder / Submission / Result** | **PASS** (Prompt 8 + VERIFY 8 **23/23, re-earned 2026-08-21** after its unsourced-contract fixture was replaced) + **P8 submission / outcome / handoff polish** |
+| **8 — Response Builder / Submission / Result** | **PASS** (Prompt 8 + VERIFY 8 **23/23**) + **P8** + **F8** native DOCX / portal export / Google Docs provider / versioned artifacts |
 
 The product remains in the transition from Foundation into the real-document Historical Pilot. That is the honest current maturity position.
 
@@ -76,6 +76,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 2. Route a real reviewer through the verification workbench — `NEEDS_REVIEW` is currently **0**, so nothing is queued for a human.  
 3. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed. OCR has never run on real scanned evidence.  
 4. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+
+**F8 functional build (2026-08-21):** Real Proposal Output + Google Docs Working-Proposal Pipeline — deterministic APPROVED assembly (`proposal-assembly` + org template), native OOXML via `docx`, portal CSV/JSON, Google Docs create/sync when `GOOGLE_DRIVE_ACCESS_TOKEN`/`GOOGLE_DOCS_ACCESS_TOKEN` set (else blocker), PDF print-only documented, `submission_artifacts` versioned+immutable+RLS. `test:f8-proposal-output`. See [F8_PROPOSAL_OUTPUT_ACCEPTANCE.md](functionality/F8_PROPOSAL_OUTPUT_ACCEPTANCE.md).
 
 **F7 functional build (2026-08-21):** Historical Proposal Content Intelligence + Reuse Engine — extends `proposal_sections` / `document_chunks` / `search_verified_knowledge` (no `content_blocks`). Heuristic taxonomy extraction → AI_EXTRACTED; promote defaults **REVIEW_REQUIRED**; Won ≠ APPROVED; Lost ≠ DO_NOT_USE; `outcome_snapshot` display-only. Response uses `matchRequirementToProposalContent`. `test:f7-proposal-content`. See [F7_PROPOSAL_CONTENT_INTELLIGENCE_ACCEPTANCE.md](functionality/F7_PROPOSAL_CONTENT_INTELLIGENCE_ACCEPTANCE.md).
 

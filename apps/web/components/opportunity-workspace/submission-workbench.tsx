@@ -9,9 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   ensureSubmissionChecklist,
+  generateWorkingProposalArtifact,
   markSubmissionSubmitted,
   saveSubmissionConfirmation,
   saveSubmissionPacket,
+  syncWorkingProposalGoogleDoc,
+  downloadWorkingProposalDocx,
+  downloadPortalAnswers,
+  downloadWorkingProposalHtml,
   toggleChecklistItem,
 } from "@/app/(platform)/procurement/opportunities/[opportunityId]/actions";
 import { APPROVAL_LAYER_OPTIONS, type ResponseProgress } from "@/lib/opportunity/response";
@@ -82,6 +87,9 @@ export function SubmissionWorkbench({
   responseProgress,
   pricingDecision,
   submittedByLabel,
+  googleDocsConfigured,
+  hasApprovedContent,
+  latestArtifact,
 }: {
   opportunityId: string;
   packet: Packet;
@@ -97,6 +105,16 @@ export function SubmissionWorkbench({
   responseProgress: ResponseProgress | null;
   pricingDecision: ReadinessPricingInput | null;
   submittedByLabel: string | null;
+  googleDocsConfigured: boolean;
+  hasApprovedContent: boolean;
+  latestArtifact: {
+    id: string;
+    version: number;
+    content_hash: string;
+    approval_state: string;
+    immutable: boolean;
+    google_doc_url: string | null;
+  } | null;
 }) {
   const [pending, startTransition] = useTransition();
   const [authorized, setAuthorized] = useState(false);
@@ -119,9 +137,12 @@ export function SubmissionWorkbench({
   const blockedGate = evaluateMarkSubmittedGate({ readiness, humanAuthorized: true });
 
   const hasResponseContent = exportHtml.replace(/<[^>]+>/g, "").trim().length > 0;
+  const docsUrl = latestArtifact?.google_doc_url || packet?.google_docs_url || null;
   const outputs = describeSubmissionOutputs({
     hasResponseContent,
-    googleDocsUrl: packet?.google_docs_url,
+    hasApprovedContent,
+    googleDocsUrl: docsUrl,
+    googleDocsConfigured,
   });
   const outputByKind = useMemo(
     () => new Map(outputs.map((o) => [o.kind, o])),
@@ -144,6 +165,19 @@ export function SubmissionWorkbench({
 
   const download = (filename: string, content: string, mime: string) => {
     const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadBase64 = (filename: string, base64: string, mime: string) => {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    const blob = new Blob([bytes], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -495,11 +529,37 @@ export function SubmissionWorkbench({
 
       {/* ---------------------------------------------------------------- outputs */}
       <section className="space-y-3 rounded-md border p-4" data-testid="outputs">
-        <h2 className="text-sm font-medium">Outputs</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-medium">Outputs</h2>
+          <Button
+            type="button"
+            size="sm"
+            data-testid="generate-working-proposal"
+            disabled={pending || !hasApprovedContent}
+            onClick={() =>
+              run(async () => {
+                const result = await generateWorkingProposalArtifact(opportunityId);
+                setActionNote(
+                  `Working proposal v${result.version} generated (${result.approvedCount} approved; ${result.excludedDraftOnly} draft-only excluded).`,
+                );
+              })
+            }
+          >
+            Generate working proposal
+          </Button>
+        </div>
         <p className="text-xs text-muted-foreground">
-          Drafting lives on Response. These are working copies of the saved drafts. Every label states
-          exactly what the file is — no format is claimed that is not produced.
+          Assembly uses APPROVED responses only, in org template order — never GPT-ordered. Native
+          DOCX is real OOXML. PDF is print-only (no server converter). Google Docs create/sync runs
+          only when a server token is configured.
         </p>
+        {latestArtifact ? (
+          <p className="text-[11px]" data-testid="latest-artifact">
+            Latest artifact v{latestArtifact.version} · {latestArtifact.approval_state}
+            {latestArtifact.immutable ? " · immutable" : ""} · hash{" "}
+            {latestArtifact.content_hash.slice(0, 12)}…
+          </p>
+        ) : null}
         <ul className="space-y-2">
           <OutputRow
             output={outputByKind.get("HTML_PRINT")!}
@@ -509,12 +569,40 @@ export function SubmissionWorkbench({
                 size="sm"
                 variant="outline"
                 data-testid="output-html"
-                disabled={!hasResponseContent}
+                disabled={!hasApprovedContent || pending}
                 onClick={() =>
-                  download(`pursuit-${opportunityId}-response.html`, exportHtml, "text/html")
+                  run(async () => {
+                    const { html } = await downloadWorkingProposalHtml(opportunityId);
+                    download(`pursuit-${opportunityId}-proposal.html`, html, "text/html");
+                  }, "HTML downloaded.")
                 }
               >
                 Download .html
+              </Button>
+            }
+          />
+          <OutputRow
+            output={outputByKind.get("NATIVE_DOCX")!}
+            action={
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                data-testid="output-docx"
+                disabled={!hasApprovedContent || pending}
+                onClick={() =>
+                  run(async () => {
+                    const file = await downloadWorkingProposalDocx(opportunityId);
+                    if (!file.isOoxml) throw new Error("DOCX export did not produce OOXML zip bytes.");
+                    downloadBase64(
+                      file.filename,
+                      file.base64,
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    );
+                  }, "Native DOCX downloaded.")
+                }
+              >
+                Download .docx
               </Button>
             }
           />
@@ -535,8 +623,53 @@ export function SubmissionWorkbench({
                   )
                 }
               >
-                Download .doc
+                Download .doc (legacy)
               </Button>
+            }
+          />
+          <OutputRow
+            output={outputByKind.get("PORTAL_ANSWERS")!}
+            action={
+              <div className="flex flex-wrap gap-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  data-testid="output-portal-csv"
+                  disabled={!hasApprovedContent || pending}
+                  onClick={() =>
+                    run(async () => {
+                      const portal = await downloadPortalAnswers(opportunityId);
+                      download(
+                        `pursuit-${opportunityId}-portal-answers.csv`,
+                        portal.csv,
+                        "text/csv",
+                      );
+                    }, "Portal CSV downloaded.")
+                  }
+                >
+                  CSV
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  data-testid="output-portal-json"
+                  disabled={!hasApprovedContent || pending}
+                  onClick={() =>
+                    run(async () => {
+                      const portal = await downloadPortalAnswers(opportunityId);
+                      download(
+                        `pursuit-${opportunityId}-portal-answers.json`,
+                        portal.json,
+                        "application/json",
+                      );
+                    }, "Portal JSON downloaded.")
+                  }
+                >
+                  JSON
+                </Button>
+              </div>
             }
           />
           <OutputRow
@@ -564,17 +697,61 @@ export function SubmissionWorkbench({
           <OutputRow
             output={outputByKind.get("GOOGLE_DOCS")!}
             action={
-              packet?.google_docs_url ? (
-                <Button asChild size="sm" variant="outline">
-                  <a href={packet.google_docs_url} target="_blank" rel="noreferrer">
-                    Open Google Docs
-                  </a>
-                </Button>
-              ) : (
-                <Button type="button" size="sm" variant="outline" disabled data-testid="output-gdocs">
-                  Open Google Docs
-                </Button>
-              )
+              <div className="flex flex-wrap gap-1">
+                {googleDocsConfigured ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    data-testid="output-gdocs-sync"
+                    disabled={!hasApprovedContent || pending}
+                    onClick={() =>
+                      run(async () => {
+                        const result = await syncWorkingProposalGoogleDoc(opportunityId);
+                        if (result.googleBlocker) throw new Error(result.googleBlocker);
+                        setActionNote(
+                          result.googleDocUrl
+                            ? `Google Doc synced (v${result.version}).`
+                            : `Generated v${result.version}; Google Doc URL missing.`,
+                        );
+                      })
+                    }
+                  >
+                    Create / sync Doc
+                  </Button>
+                ) : (
+                  <Button type="button" size="sm" variant="outline" disabled data-testid="output-gdocs">
+                    Sync blocked (no token)
+                  </Button>
+                )}
+                {docsUrl ? (
+                  <Button asChild size="sm" variant="outline">
+                    <a href={docsUrl} target="_blank" rel="noreferrer">
+                      Open Doc
+                    </a>
+                  </Button>
+                ) : null}
+              </div>
+            }
+          />
+          <OutputRow
+            output={outputByKind.get("PDF_PRINT")!}
+            action={
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                data-testid="output-pdf-print"
+                disabled={!hasApprovedContent || pending}
+                onClick={() =>
+                  run(async () => {
+                    const { html } = await downloadWorkingProposalHtml(opportunityId);
+                    download(`pursuit-${opportunityId}-proposal-print.html`, html, "text/html");
+                  }, "HTML ready for browser Print → Save as PDF.")
+                }
+              >
+                Download HTML to print
+              </Button>
             }
           />
           <OutputRow
@@ -687,8 +864,13 @@ export function SubmissionWorkbench({
               id="google_docs_url"
               name="google_docs_url"
               defaultValue={packet?.google_docs_url ?? ""}
-              placeholder="https://docs.google.com/…  (a link only — there is no Google Docs integration)"
+              placeholder="https://docs.google.com/…  (paste existing, or create/sync when token is set)"
             />
+            {!googleDocsConfigured ? (
+              <p className="text-[11px] text-amber-600 dark:text-amber-400">
+                Server token absent — create/sync is blocked. Paste a URL to link an existing Doc.
+              </p>
+            ) : null}
           </div>
           <div className="space-y-1 sm:col-span-2">
             <Label htmlFor="notes">Notes</Label>

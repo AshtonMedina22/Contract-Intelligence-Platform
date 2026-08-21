@@ -1418,6 +1418,75 @@ export type Database = {
         };
         Relationships: [];
       };
+      submission_artifacts: {
+        Row: {
+          id: string;
+          organization_id: string;
+          opportunity_id: string;
+          packet_id: string | null;
+          version: number;
+          generated_at: string;
+          generator: string;
+          approval_state: "WORKING" | "READY" | "SUBMITTED" | "SUPERSEDED";
+          content_hash: string;
+          sources: Record<string, unknown>;
+          google_doc_id: string | null;
+          google_doc_url: string | null;
+          google_sync: Record<string, unknown>;
+          docx_storage_path: string | null;
+          portal_json: Record<string, unknown> | null;
+          html_snapshot: string | null;
+          immutable: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          opportunity_id: string;
+          packet_id?: string | null;
+          version: number;
+          generated_at?: string;
+          generator?: string;
+          approval_state?: "WORKING" | "READY" | "SUBMITTED" | "SUPERSEDED";
+          content_hash: string;
+          sources?: Record<string, unknown>;
+          google_doc_id?: string | null;
+          google_doc_url?: string | null;
+          google_sync?: Record<string, unknown>;
+          docx_storage_path?: string | null;
+          portal_json?: Record<string, unknown> | null;
+          html_snapshot?: string | null;
+          immutable?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          opportunity_id?: string;
+          packet_id?: string | null;
+          version?: number;
+          generated_at?: string;
+          generator?: string;
+          approval_state?: "WORKING" | "READY" | "SUBMITTED" | "SUPERSEDED";
+          content_hash?: string;
+          sources?: Record<string, unknown>;
+          google_doc_id?: string | null;
+          google_doc_url?: string | null;
+          google_sync?: Record<string, unknown>;
+          docx_storage_path?: string | null;
+          portal_json?: Record<string, unknown> | null;
+          html_snapshot?: string | null;
+          immutable?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       submission_checklist_items: {
         Row: {
           id: string;

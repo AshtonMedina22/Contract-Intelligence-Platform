@@ -553,52 +553,71 @@ check("the submission page loads the approvals, pricing and progress the model n
 
 // -------------------------------------------------------------- honest outputs
 
-check("no output claims a format the codebase does not produce", () => {
-  const outputs = describeSubmissionOutputs({ hasResponseContent: true, googleDocsUrl: null });
+check("native DOCX is offered; legacy .doc stays honest; PDF stays print-only", () => {
+  const outputs = describeSubmissionOutputs({
+    hasResponseContent: true,
+    hasApprovedContent: true,
+    googleDocsUrl: null,
+    googleDocsConfigured: false,
+  });
+  const docx = outputs.find((o) => o.kind === "NATIVE_DOCX");
+  assert.ok(docx, "NATIVE_DOCX output missing");
+  assert.match(docx.label, /DOCX/i);
+  assert.match(docx.honestNote, /OOXML|docx package/i);
   const word = outputs.find((o) => o.kind === "WORD_HTML");
-  assert.match(word.label, /Word-compatible HTML/);
-  assert.match(word.honestNote, /not a native DOCX\/OOXML file/);
-  assert.ok(
-    !outputs.some((o) => /^Download DOCX/i.test(o.label)),
-    "nothing may be labelled a DOCX download",
-  );
+  assert.match(word.label, /Word-compatible HTML|\.doc/i);
+  assert.match(word.honestNote, /legacy|Prefer native DOCX/i);
   const html = outputs.find((o) => o.kind === "HTML_PRINT");
-  assert.match(html.honestNote, /the app does not render PDFs/);
+  assert.match(html.honestNote, /does not render PDF/i);
+  const pdf = outputs.find((o) => o.kind === "PDF_PRINT");
+  assert.match(pdf.honestNote, /never ships fake PDF/i);
+  assert.match(sources.workbench, /output-docx/);
   assert.ok(
     !/Download DOCX-compatible/.test(sources.workbench),
-    "the old DOCX-compatible label must be gone from the UI",
+    "the old DOCX-compatible label must stay gone",
   );
 });
 
-check("the Google Docs action is honest about there being no integration", () => {
-  const withoutUrl = describeSubmissionOutputs({
+check("Google Docs create/sync is gated on server token; paste URL still works", () => {
+  const withoutToken = describeSubmissionOutputs({
     hasResponseContent: true,
+    hasApprovedContent: true,
     googleDocsUrl: null,
+    googleDocsConfigured: false,
   }).find((o) => o.kind === "GOOGLE_DOCS");
-  assert.equal(withoutUrl.available, false);
-  assert.match(withoutUrl.unavailableReason, /No Google Docs URL recorded/);
-  assert.match(withoutUrl.honestNote, /no Google Docs integration/);
-  assert.match(withoutUrl.honestNote, /nothing is created, pushed, or synced/);
+  assert.equal(withoutToken.available, false);
+  assert.match(withoutToken.honestNote, /GOOGLE_DRIVE_ACCESS_TOKEN|Blocked/i);
   const withUrl = describeSubmissionOutputs({
     hasResponseContent: true,
+    hasApprovedContent: true,
     googleDocsUrl: "https://docs.google.com/document/d/abc",
+    googleDocsConfigured: false,
   }).find((o) => o.kind === "GOOGLE_DOCS");
   assert.equal(withUrl.available, true);
-  assert.equal(withUrl.unavailableReason, null);
+  const withToken = describeSubmissionOutputs({
+    hasResponseContent: true,
+    hasApprovedContent: true,
+    googleDocsUrl: null,
+    googleDocsConfigured: true,
+  }).find((o) => o.kind === "GOOGLE_DOCS");
+  assert.equal(withToken.available, true);
   assert.match(sources.workbench, /data-testid="output-gdocs"/);
 });
 
-check("an empty draft set disables the exports instead of shipping an empty file", () => {
-  const outputs = describeSubmissionOutputs({ hasResponseContent: false, googleDocsUrl: null });
-  for (const kind of ["HTML_PRINT", "WORD_HTML", "PLAIN_TEXT"]) {
+check("an empty approved set disables assembly exports instead of shipping an empty file", () => {
+  const outputs = describeSubmissionOutputs({
+    hasResponseContent: false,
+    hasApprovedContent: false,
+    googleDocsUrl: null,
+  });
+  for (const kind of ["HTML_PRINT", "NATIVE_DOCX", "PORTAL_ANSWERS", "PDF_PRINT"]) {
     const output = outputs.find((o) => o.kind === kind);
-    assert.equal(output.available, false, `${kind} must not be offered with no content`);
-    assert.match(output.unavailableReason, /empty file/);
+    assert.equal(output.available, false, `${kind} must not be offered with no approved content`);
   }
   for (const kind of ["PRICING_WORKBOOK", "RESPONSE_TAB"]) {
     assert.equal(outputs.find((o) => o.kind === kind).available, true);
   }
-  assert.match(sources.workbench, /disabled=\{!hasResponseContent\}/);
+  assert.match(sources.workbench, /disabled=\{!hasApprovedContent/);
 });
 
 // ----------------------------------------------------------- outcome capture
