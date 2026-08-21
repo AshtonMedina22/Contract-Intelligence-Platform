@@ -17,11 +17,24 @@ export const LP_RENEWALS_LABEL = "L&P-held renewals";
 export const LP_RENEWALS_ROUTE = "/contracts/renewals";
 
 export const MARKET_RADAR_SCOPE_NOTE =
-  "Observed recompetes on contracts L&P does not hold. Built from verified awards, contracts, options and renewal notices only — no forecast, no pipeline estimate, and no share of any market.";
+  "Observed recompetes on contracts L&P does not hold. Built from verified awards, contracts, options and renewal notices only — no forecast, no pipeline estimate, and no share of any market. Watch and Start Pursuit are operator actions; automation never auto-creates pursuits from this list.";
 export const LP_RENEWALS_SCOPE_NOTE =
-  "Contracts L&P holds are not market radar entries. They are the internal renewal queue, bucketed from verified_end_on.";
+  "Two different concepts: Market radar rows are external recompetes; L&P-held renewals are the internal queue at /contracts/renewals, bucketed from verified_end_on. Contracts L&P holds are excluded from the market list above and never mixed into Market KPIs.";
 export const RADAR_NO_PREDICTION_NOTE =
   "Expected rebid restates a verified date. It is never inferred from a term length, a typical cycle, or an award date.";
+
+/** Operator watch statuses for Market radar candidates (recompete_watches). */
+export const RECOMPETE_WATCH_STATUSES = [
+  "WATCHING",
+  "READY_FOR_CAPTURE",
+  "PURSUIT_STARTED",
+  "DISMISSED",
+  "STALE",
+] as const;
+export type RecompeteWatchStatus = (typeof RECOMPETE_WATCH_STATUSES)[number];
+
+export const MARKET_START_PURSUIT_NOTE =
+  "Start Pursuit from a Market radar row creates a new INTAKE pursuit with provenance to buyer/award/source and an AI_EXTRACTED research fact. It never calls cloneRebidFromContract, never copies pricing, and never invents a due date.";
 
 /** Who holds the contract that would be recompeted. */
 export type RadarHolder = "L_AND_P" | "COMPETITOR" | "UNKNOWN";

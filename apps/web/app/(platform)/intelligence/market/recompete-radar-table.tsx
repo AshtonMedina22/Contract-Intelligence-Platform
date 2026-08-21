@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { createColumnHelper, tableFeatures, useTable } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,19 +13,43 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  MARKET_START_PURSUIT_NOTE,
   RADAR_DATA_STATUS_LABELS,
   RADAR_HOLDER_LABELS,
   type RecompeteRadarRow,
+  type RecompeteWatchStatus,
 } from "@/lib/intelligence/recompete-radar";
+import {
+  dismissRecompeteCandidate,
+  startPursuitFromRecompeteAndOpen,
+  watchRecompeteCandidate,
+} from "./actions";
 
 const features = tableFeatures({});
-const helper = createColumnHelper<typeof features, RecompeteRadarRow>();
+const helper = createColumnHelper<typeof features, RecompeteRadarRow & { watchStatus?: RecompeteWatchStatus | null }>();
 
 function Absent({ what }: { what: string }) {
   return (
     <span className="text-muted-foreground" title={`Not recorded: ${what}`}>
       —
     </span>
+  );
+}
+
+function CandidateFields({ row }: { row: RecompeteRadarRow }) {
+  const sourceUrl = row.sources.find((s) => s.href?.startsWith("http"))?.href ?? null;
+  return (
+    <>
+      <input type="hidden" name="candidate_key" value={row.key} />
+      <input type="hidden" name="title" value={row.contractLabel} />
+      <input type="hidden" name="buyer_id" value={row.buyerId ?? ""} />
+      <input type="hidden" name="buyer_name" value={row.buyerName ?? ""} />
+      <input type="hidden" name="contract_id" value={row.contractId ?? ""} />
+      <input type="hidden" name="opportunity_id" value={row.opportunityId ?? ""} />
+      <input type="hidden" name="incumbent_name" value={row.incumbent?.name ?? ""} />
+      <input type="hidden" name="source_url" value={sourceUrl ?? ""} />
+      <input type="hidden" name="award_id" value="" />
+    </>
   );
 }
 
@@ -147,13 +172,58 @@ const columns = helper.columns([
             {RADAR_HOLDER_LABELS[row.holder]}
             {row.missing.length > 0 ? ` · missing: ${row.missing.join(", ")}` : ""}
           </span>
+          {row.watchStatus ? (
+            <span className="block text-[10px] text-muted-foreground">Watch: {row.watchStatus}</span>
+          ) : null}
+        </div>
+      );
+    },
+  }),
+  helper.display({
+    id: "actions",
+    header: "Actions",
+    cell: (ctx) => {
+      const row = ctx.row.original;
+      const watching = row.watchStatus === "WATCHING" || row.watchStatus === "READY_FOR_CAPTURE";
+      const started = row.watchStatus === "PURSUIT_STARTED";
+      return (
+        <div className="flex flex-col gap-1" data-testid="radar-row-actions">
+          <form action={watchRecompeteCandidate}>
+            <CandidateFields row={row} />
+            <Button type="submit" size="sm" variant="outline" disabled={watching || started}>
+              {watching ? "Watching" : "Watch"}
+            </Button>
+          </form>
+          <form action={startPursuitFromRecompeteAndOpen}>
+            <CandidateFields row={row} />
+            <Button
+              type="submit"
+              size="sm"
+              variant="default"
+              title={MARKET_START_PURSUIT_NOTE}
+              disabled={started}
+              data-testid="radar-start-pursuit"
+            >
+              {started ? "Pursuit started" : "Start Pursuit"}
+            </Button>
+          </form>
+          {watching ? (
+            <form action={dismissRecompeteCandidate}>
+              <CandidateFields row={row} />
+              <Button type="submit" size="sm" variant="ghost">
+                Dismiss
+              </Button>
+            </form>
+          ) : null}
         </div>
       );
     },
   }),
 ]);
 
-export function RecompeteRadarTable({ rows }: { rows: RecompeteRadarRow[] }) {
+export type RadarTableRow = RecompeteRadarRow & { watchStatus?: RecompeteWatchStatus | null };
+
+export function RecompeteRadarTable({ rows }: { rows: RadarTableRow[] }) {
   const table = useTable({ features, columns, data: rows });
   if (rows.length === 0) {
     return (

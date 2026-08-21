@@ -62,8 +62,9 @@ obligation arises.
 `apps/web/lib/contracts/portfolio-model.ts`,
 `apps/web/components/contract-workspace/portfolio-strips.tsx`,
 `apps/web/app/(platform)/contracts/page.tsx`,
-`apps/web/app/(platform)/contracts/renewals/page.tsx`
+`apps/web/app/(platform)/contracts/renewals/page.tsx`,
+`docs/functionality/F5_RECOMPETE_RADAR_ACCEPTANCE.md` (F5 re-confirmed: queue + advisory alerts; still no notification dispatch)
 
 # Status
 
-ADOPTED PATTERN
+ADOPTED PATTERN · F5 (2026-08-21) re-confirmed — still no Gmail/Slack renewal reminders

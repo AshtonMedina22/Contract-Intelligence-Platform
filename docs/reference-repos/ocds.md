@@ -44,7 +44,8 @@ no schema files were vendored.
 
 - `apps/web/lib/procurement/providers/types.ts` (document extraction helper)
 - `docs/functionality/F2_PUBLIC_OPPORTUNITY_ENGINE_ACCEPTANCE.md`
+- `docs/functionality/F5_RECOMPETE_RADAR_ACCEPTANCE.md` (Market watches use `recompete_watches` statuses, not OCDS tender codes)
 
 # Status
 
-INSPECTED FOR TASK (registry + vocabulary) · SCHEMA REFERENCE ONLY · NOTHING COPIED
+INSPECTED FOR TASK (registry + vocabulary) · SCHEMA REFERENCE ONLY · NOTHING COPIED · F5 (2026-08-21) reconfirmed

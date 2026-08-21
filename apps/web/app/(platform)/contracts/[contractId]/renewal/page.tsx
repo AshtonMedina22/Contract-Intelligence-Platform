@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { RebidButton } from "@/components/opportunity-workspace/rebid-button";
 import { loadContractRenewal } from "@/lib/contracts/load-workspace";
 import {
+  ALERT_DEDUPE_NOTE,
+  assessOptionsRemaining,
   assessRebidReadiness,
   automationAudit,
   isRenewalBucket,
@@ -10,10 +12,13 @@ import {
   MARKET_RADAR_CONTRAST_LABEL,
   MARKET_RADAR_ROUTE,
   NO_AUTO_ACTION_NOTE,
+  OPTION_NOT_ASSUMED_EXERCISED_NOTE,
   REBID_CTA_LABEL,
   REBID_CTA_NOTE,
+  REBID_NO_PRICING_OR_REQUIREMENTS_COPY,
   RENEWAL_BUCKET_DEFINITION,
   RENEWAL_BUCKET_LABELS,
+  RENEWAL_OWNER_STATUS_UNKNOWN_NOTE,
   RENEWALS_ROUTE,
   summarizeRenewalBuckets,
 } from "@/lib/contracts/portfolio-model";
@@ -36,14 +41,35 @@ export default async function ContractRenewalPage({
   const supabase = await createClient();
   const { data: contract } = await supabase
     .from("contracts")
-    .select("id, title, verified_end_on, opportunity_id")
+    .select("id, title, verified_end_on, opportunity_id, client_id, source_document_id, source_fact_id")
     .eq("id", contractId)
     .maybeSingle();
 
-  const data = await loadContractRenewal(contractId);
+  const [data, buyer, priorOpportunity, winLoss] = await Promise.all([
+    loadContractRenewal(contractId),
+    contract?.client_id
+      ? supabase.from("clients").select("id, name").eq("id", contract.client_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    contract?.opportunity_id
+      ? supabase
+          .from("opportunities")
+          .select("id, title, stage")
+          .eq("id", contract.opportunity_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    contract?.opportunity_id
+      ? supabase
+          .from("win_loss_reviews")
+          .select("id, outcome, winner_name")
+          .eq("opportunity_id", contract.opportunity_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
   const today = new Date().toISOString().slice(0, 10);
 
   const readiness = assessRebidReadiness({ compliance: data.compliance, today });
+  const optionsRemaining = assessOptionsRemaining(data.options);
   const buckets = summarizeRenewalBuckets(
     data.alerts.map((a) => ({ bucket: isRenewalBucket(a.bucket) ? a.bucket : null })),
   );
@@ -51,8 +77,6 @@ export default async function ContractRenewalPage({
     (latest, alert) => (alert.computed_on && (!latest || alert.computed_on > latest) ? alert.computed_on : latest),
     null,
   );
-
-  const openOptions = data.options.filter((o) => !o.exercise_by || o.exercise_by >= today);
 
   return (
     <div className="space-y-6">
@@ -83,10 +107,28 @@ export default async function ContractRenewalPage({
         ) : null}
       </section>
 
+      <section className="space-y-2" data-testid="renewal-owner-status">
+        <h2 className="text-sm font-medium">Owner / status</h2>
+        <dl className="grid gap-1 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-xs text-muted-foreground">Renewal owner</dt>
+            <dd>UNKNOWN</dd>
+          </div>
+          <div>
+            <dt className="text-xs text-muted-foreground">Renewal status</dt>
+            <dd>UNKNOWN</dd>
+          </div>
+        </dl>
+        <p className="text-xs text-muted-foreground">{RENEWAL_OWNER_STATUS_UNKNOWN_NOTE}</p>
+      </section>
+
       <section className="space-y-2">
         <h2 className="text-sm font-medium">Alert buckets (verified dates only)</h2>
         <RenewalBucketStrip buckets={buckets} linkToQueue={false} />
         <p className="text-xs text-muted-foreground">{RENEWAL_BUCKET_DEFINITION}</p>
+        <p className="text-xs text-muted-foreground" data-testid="alert-dedupe-note">
+          {ALERT_DEDUPE_NOTE}
+        </p>
         {data.alerts.length > 0 ? (
           <ul className="list-disc pl-5 text-sm">
             {data.alerts.map((alert) => (
@@ -103,25 +145,29 @@ export default async function ContractRenewalPage({
         )}
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-2" data-testid="options-remaining">
         <h2 className="text-sm font-medium">Options on file</h2>
+        <p className="text-sm">
+          Remaining options:{" "}
+          <span className="font-medium" data-testid="options-remaining-value">
+            {optionsRemaining.remaining === "UNKNOWN" ? "UNKNOWN" : optionsRemaining.remaining}
+          </span>
+          {" · "}
+          {optionsRemaining.onFile} option row(s) on file
+        </p>
+        <p className="text-xs text-muted-foreground">{OPTION_NOT_ASSUMED_EXERCISED_NOTE}</p>
         {data.options.length === 0 ? (
           <p className="text-sm text-muted-foreground">None on file — remaining/exercised not assumed.</p>
         ) : (
-          <>
-            <p className="text-sm text-muted-foreground">
-              {data.options.length} option row(s) · {openOptions.length} with open or unstated exercise-by
-              (not inferred as exercised).
-            </p>
-            <ul className="list-disc pl-5 text-sm">
-              {data.options.map((row) => (
-                <li key={row.id}>
-                  {row.label}
-                  {row.exercise_by ? ` · exercise by ${row.exercise_by}` : " · no exercise-by date recorded"}
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className="list-disc pl-5 text-sm">
+            {data.options.map((row) => (
+              <li key={row.id}>
+                {row.label}
+                {row.exercise_by ? ` · exercise by ${row.exercise_by}` : " · no exercise-by date recorded"}
+                {" · not assumed exercised"}
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 
@@ -161,7 +207,7 @@ export default async function ContractRenewalPage({
         ) : null}
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-2" data-testid="rebid-historical-evidence">
         <h2 className="text-sm font-medium">Rebid pursuit</h2>
         {data.rebids.length === 0 ? (
           <p className="text-sm text-muted-foreground">No rebid pursuit linked from this contract.</p>
@@ -179,6 +225,63 @@ export default async function ContractRenewalPage({
             ))}
           </ul>
         )}
+
+        <div className="space-y-1 rounded-md border p-3">
+          <p className="text-xs font-medium text-foreground">Historical evidence (links only — not copied)</p>
+          <ul className="list-disc pl-5 text-sm">
+            <li>
+              Prior contract:{" "}
+              <Link className="underline" href={`/contracts/${contractId}`}>
+                {contract?.title ?? contractId}
+              </Link>
+            </li>
+            <li>
+              Buyer:{" "}
+              {buyer.data?.id ? (
+                <Link className="underline" href="/intelligence/clients">
+                  {buyer.data.name}
+                </Link>
+              ) : (
+                <span className="text-muted-foreground">not recorded</span>
+              )}
+            </li>
+            <li>
+              Prior pursuit:{" "}
+              {priorOpportunity.data?.id ? (
+                <Link className="underline" href={`/procurement/opportunities/${priorOpportunity.data.id}`}>
+                  {priorOpportunity.data.title} ({priorOpportunity.data.stage})
+                </Link>
+              ) : (
+                <span className="text-muted-foreground">none linked</span>
+              )}
+            </li>
+            <li>
+              Evaluation / outcome:{" "}
+              {winLoss.data?.id ? (
+                <Link className="underline" href="/intelligence/win-loss">
+                  {winLoss.data.outcome}
+                  {winLoss.data.winner_name ? ` · ${winLoss.data.winner_name}` : ""}
+                </Link>
+              ) : (
+                <span className="text-muted-foreground">no win/loss review on file</span>
+              )}
+            </li>
+            <li>
+              Source document:{" "}
+              {contract?.source_document_id ? (
+                <Link className="underline" href={`/ingestion/verification/${contract.source_document_id}`}>
+                  verification {contract.source_document_id.slice(0, 8)}
+                </Link>
+              ) : (
+                <span className="text-muted-foreground">none on file</span>
+              )}
+            </li>
+          </ul>
+          <p className="text-xs text-muted-foreground" data-testid="rebid-no-pricing-copy">
+            {REBID_NO_PRICING_OR_REQUIREMENTS_COPY}
+          </p>
+        </div>
+
         <div className="pt-1">
           <RebidButton contractId={contractId} />
         </div>

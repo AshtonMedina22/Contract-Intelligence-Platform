@@ -73,6 +73,18 @@ async function RenewalsContent() {
           </>
         }
       />
+      <p
+        data-testid="renewals-vs-market-radar"
+        className="border-l-2 border-muted-foreground/40 bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground"
+      >
+        <span className="font-medium text-foreground">L&amp;P renewals ≠ Market radar:</span> This
+        queue is only contracts this org holds, bucketed from <code>verified_end_on</code>. External
+        recompetes never appear here — they live on{" "}
+        <Link className="underline hover:text-foreground" href={MARKET_RADAR_ROUTE}>
+          Intelligence → Market
+        </Link>
+        . Alert upserts never auto-create pursuits.
+      </p>
       <ContractHonestyStrip
         extra={
           <>

@@ -61,8 +61,9 @@ was copied; the adoption is a vocabulary checklist.
 
 `apps/web/lib/contracts/portfolio-model.ts`,
 `apps/web/app/(platform)/contracts/[contractId]/changes/page.tsx`,
-`apps/web/app/(platform)/contracts/[contractId]/commercial-terms/page.tsx`
+`apps/web/app/(platform)/contracts/[contractId]/commercial-terms/page.tsx`,
+`docs/functionality/F5_RECOMPETE_RADAR_ACCEPTANCE.md` (F5: renewal/expiration opportunity is advisory queue + human Start Rebid — not CLM auto-renew)
 
 # Status
 
-INSPECTED FOR TASK — partial vocabulary adopted, lifecycle stages before **Active** declined
+INSPECTED FOR TASK — partial vocabulary adopted, lifecycle stages before **Active** declined · F5 (2026-08-21) still not a CLM

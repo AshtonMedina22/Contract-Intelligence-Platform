@@ -71,6 +71,13 @@ export type PublicSourceStatus =
   | "CONVERTED_TO_PURSUIT"
   | "CLOSED";
 
+export type RecompeteWatchStatus =
+  | "WATCHING"
+  | "READY_FOR_CAPTURE"
+  | "PURSUIT_STARTED"
+  | "DISMISSED"
+  | "STALE";
+
 export type CorpusClass = "A_LP_ORIGINATED" | "B_LP_TIED" | "C_COMPETITOR_TEST";
 
 export type PricingRateType =
@@ -337,6 +344,60 @@ export type Database = {
           dismissed_at?: string | null;
           status?: PublicSourceStatus;
           content_hash?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      recompete_watches: {
+        Row: {
+          id: string;
+          organization_id: string;
+          candidate_key: string;
+          status: RecompeteWatchStatus;
+          buyer_id: string | null;
+          award_id: string | null;
+          contract_id: string | null;
+          opportunity_id: string | null;
+          source_url: string | null;
+          title: string | null;
+          notes: string | null;
+          pursuit_id: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          candidate_key: string;
+          status?: RecompeteWatchStatus;
+          buyer_id?: string | null;
+          award_id?: string | null;
+          contract_id?: string | null;
+          opportunity_id?: string | null;
+          source_url?: string | null;
+          title?: string | null;
+          notes?: string | null;
+          pursuit_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          candidate_key?: string;
+          status?: RecompeteWatchStatus;
+          buyer_id?: string | null;
+          award_id?: string | null;
+          contract_id?: string | null;
+          opportunity_id?: string | null;
+          source_url?: string | null;
+          title?: string | null;
+          notes?: string | null;
+          pursuit_id?: string | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;

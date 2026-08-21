@@ -43,9 +43,36 @@ export const PORTFOLIO_HONESTY_TEXT =
  * Rendered on the portfolio, the renewal queue and the per-contract renewal tab.
  */
 export const LP_PORTFOLIO_VS_MARKET_RADAR_NOTE =
-  "This is L&P's own awarded portfolio, not the Intelligence Market Recompete Radar. The radar tracks recompetes on contracts L&P does not hold; a contract on this page can never appear there, and a radar row can never appear here.";
+  "This is L&P's own awarded portfolio, not the Intelligence Market Recompete Radar. Two different concepts: (1) L&P renewals — contracts this org already holds, bucketed from verified_end_on on /contracts/renewals; (2) Market recompete radar — awards/contracts L&P does not hold on /intelligence/market. A contract on this page can never appear on the Market radar, and a Market radar row can never appear in the renewal queue. Automation never auto-creates pursuits from either list.";
 
 export const MARKET_RADAR_CONTRAST_LABEL = "Not the Market Recompete Radar";
+
+/** Options exist as labelled rows; exercised vs remaining is not a schema field. */
+export const OPTION_NOT_ASSUMED_EXERCISED_NOTE =
+  "Option rows are listed as recorded. Exercised vs remaining is not assumed — the schema has no exercised status, so remaining options read UNKNOWN rather than a guessed count.";
+
+export type OptionsRemainingAssessment = {
+  remaining: "UNKNOWN" | number;
+  onFile: number;
+  note: string;
+};
+
+/**
+ * Remaining options are UNKNOWN unless the schema records exercised status.
+ * Today `contract_options` has label + exercise_by only — never invent remaining.
+ */
+export function assessOptionsRemaining(options: { id: string; label: string; exercise_by?: string | null }[]): OptionsRemainingAssessment {
+  const onFile = options.length;
+  return {
+    remaining: "UNKNOWN",
+    onFile,
+    note: OPTION_NOT_ASSUMED_EXERCISED_NOTE,
+  };
+}
+
+/** Renewal owner/status are not columns on `contracts` — show UNKNOWN, never invent. */
+export const RENEWAL_OWNER_STATUS_UNKNOWN_NOTE =
+  "Renewal owner and renewal status are not columns on contracts. Displayed as UNKNOWN until the schema records them.";
 
 // ------------------------------------------------------------------------------------- buckets
 
@@ -918,8 +945,18 @@ export const REBID_CTA_LABEL = "Start Rebid Pursuit";
 export const REBID_CTA_NOTE =
   "Creates a new pursuit workspace in INTAKE linked back to this contract (rebid_from_contract_id and rebid_from_opportunity_id). It carries over the buyer, the service type and a provenance note only — no pricing is copied, because prior rates were priced against a prior solicitation and must be re-verified.";
 
+/** Explicit operator-facing guarantee: Start Rebid never promotes prior commercial terms. */
+export const REBID_NO_PRICING_OR_REQUIREMENTS_COPY =
+  "Pricing and requirements are not copied as new truth. Prior rates, line items, award amounts, and requirement matrices stay on the historical records linked below — they must be re-verified against the new solicitation.";
+
 export const NO_AUTO_ACTION_NOTE =
-  "Nothing on this page renews, extends, exercises an option, approves, or submits. Alerts and readiness are advisory; every renewal and rebid decision is taken by a person.";
+  "Nothing on this page renews, extends, exercises an option, approves, or submits. Alerts and readiness are advisory; every renewal and rebid decision is taken by a person. Alert automation upserts contract_alerts only and never creates pursuits.";
+
+/** Alert dedupe: one row per (org, contract, bucket) — refresh upserts, it does not insert daily duplicates. */
+export const ALERT_DEDUPE_UNIQUE_KEY = "(organization_id, contract_id, bucket)";
+
+export const ALERT_DEDUPE_NOTE =
+  "contract_alerts is unique on (organization_id, contract_id, bucket). refresh_contract_alerts upserts on that key and deletes stale buckets — there is no daily duplicate row per contract, and no alert_events / last_notified_at table in this schema.";
 
 export type RebidReadinessLevel = "REVIEW_REQUIRED" | "NO_EXPIRED_ITEMS" | "UNKNOWN";
 

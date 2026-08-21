@@ -23,6 +23,7 @@ import {
   RADAR_NO_PREDICTION_NOTE,
   buildRecompeteRadar,
   filterRadarRows,
+  type RecompeteWatchStatus,
 } from "@/lib/intelligence/recompete-radar";
 import { RecompeteRadarTable } from "./recompete-radar-table";
 
@@ -66,6 +67,7 @@ async function MarketOverview({
     opportunityRows,
     buyerRows,
     reviewRows,
+    watchRows,
   ] = await Promise.all([
     supabase
       .from("awards")
@@ -85,6 +87,7 @@ async function MarketOverview({
       .limit(500),
     supabase.from("clients").select("id, name").limit(500),
     supabase.from("win_loss_reviews").select("opportunity_id, outcome, winner_name").limit(500),
+    supabase.from("recompete_watches").select("candidate_key, status").limit(500),
   ]);
 
   const radar = buildRecompeteRadar({
@@ -97,13 +100,20 @@ async function MarketOverview({
     winLoss: reviewRows.data ?? [],
   });
 
+  const watchByKey = new Map(
+    (watchRows.data ?? []).map((w) => [w.candidate_key, w.status as RecompeteWatchStatus]),
+  );
+
   const filters = {
     service: params.service ?? null,
     geography: params.geography ?? null,
     from: params.from ?? null,
     to: params.to ?? null,
   };
-  const filtered = filterRadarRows(radar.market, filters);
+  const filtered = filterRadarRows(radar.market, filters).map((row) => ({
+    ...row,
+    watchStatus: watchByKey.get(row.key) ?? null,
+  }));
   const activeFilters = Object.entries(filters).filter(([, v]) => v);
 
   const tiles = [
@@ -216,6 +226,18 @@ async function MarketOverview({
           </Button>
         }
       />
+      <p
+        data-testid="market-vs-lp-renewals"
+        className="border-l-2 border-muted-foreground/40 bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground"
+      >
+        <span className="font-medium text-foreground">Not L&amp;P renewals:</span> Market radar is
+        external recompetes only. L&amp;P-held contracts live on{" "}
+        <Link className="underline hover:text-foreground" href={LP_RENEWALS_ROUTE}>
+          {LP_RENEWALS_LABEL}
+        </Link>{" "}
+        and are excluded from every market row and KPI below. Watch / Start Pursuit never clone an
+        L&amp;P rebid and never invent a due date.
+      </p>
       <IntelligenceHonestyStrip
         extra={`${NO_MARKET_SHARE_NOTE} ${RADAR_NO_PREDICTION_NOTE} ${FEDERAL_AWARD_RESEARCH_NOTE}`}
       />
