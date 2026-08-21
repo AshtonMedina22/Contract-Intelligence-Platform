@@ -24,7 +24,7 @@ export function MarketSnapshotCard({ data }: Props) {
       <div className="flex flex-wrap gap-4">
         {data.clientCount > 0 && (
           <Link
-            href="/intelligence/buyers"
+            href="/intelligence/clients"
             className="flex items-center gap-2 rounded-md border px-3 py-2 hover:bg-muted/50 transition-colors"
           >
             <span className="text-sm text-muted-foreground">Buyers/agencies</span>

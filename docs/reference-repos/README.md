@@ -35,6 +35,7 @@ Use these slugs when a note is needed:
 | `morphic` | Morphic |
 | `open-deep-research` | Open Deep Research |
 | `wrenai` | WrenAI |
+| `rival` | Rival |
 
 ## Note template
 

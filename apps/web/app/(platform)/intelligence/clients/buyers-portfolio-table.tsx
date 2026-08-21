@@ -12,33 +12,72 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { BuyerPortfolioRow } from "@/lib/intelligence/load-corpus";
+import { buildAskHref } from "@/lib/intelligence/ask-launch";
 
 const features = tableFeatures({});
 const helper = createColumnHelper<typeof features, BuyerPortfolioRow>();
+
+/** A count only becomes a link when there is a record to open. Zero stays a plain zero. */
+function CountCell({ value, href }: { value: number; href: string | null }) {
+  if (value === 0 || !href) return <span className="tabular-nums text-muted-foreground">{value}</span>;
+  return (
+    <Link className="tabular-nums underline" href={href}>
+      {value}
+    </Link>
+  );
+}
+
 const columns = helper.columns([
   helper.accessor("name", {
     header: "Buyer / agency",
     cell: (ctx) => (
-      <Link className="underline" href={`/procurement/clients`}>
+      <Link className="underline" href="/procurement/clients">
         {ctx.getValue()}
       </Link>
     ),
   }),
   helper.accessor("opportunity_count", {
     header: "Solicitations",
-    cell: (ctx) => <span className="tabular-nums">{ctx.getValue()}</span>,
+    cell: (ctx) => (
+      <CountCell
+        value={ctx.getValue()}
+        href={
+          ctx.row.original.latest_opportunity_id
+            ? `/procurement/opportunities/${ctx.row.original.latest_opportunity_id}`
+            : null
+        }
+      />
+    ),
   }),
   helper.accessor("award_count", {
     header: "Awards",
-    cell: (ctx) => <span className="tabular-nums">{ctx.getValue()}</span>,
+    cell: (ctx) => (
+      <CountCell
+        value={ctx.getValue()}
+        href={
+          ctx.row.original.latest_opportunity_id
+            ? `/procurement/opportunities/${ctx.row.original.latest_opportunity_id}/result`
+            : null
+        }
+      />
+    ),
   }),
   helper.accessor("contract_count", {
     header: "Contracts",
-    cell: (ctx) => <span className="tabular-nums">{ctx.getValue()}</span>,
+    cell: (ctx) => (
+      <CountCell
+        value={ctx.getValue()}
+        href={
+          ctx.row.original.latest_contract_id
+            ? `/contracts/${ctx.row.original.latest_contract_id}`
+            : null
+        }
+      />
+    ),
   }),
   helper.accessor("win_loss_count", {
     header: "Win/Loss",
-    cell: (ctx) => <span className="tabular-nums">{ctx.getValue()}</span>,
+    cell: (ctx) => <CountCell value={ctx.getValue()} href="/intelligence/win-loss" />,
   }),
   helper.accessor("research_count", {
     header: "Public research",
@@ -51,6 +90,33 @@ const columns = helper.columns([
       return v ? <Badge variant="outline">{v}</Badge> : "—";
     },
   }),
+  helper.accessor("id", {
+    header: "Ask",
+    cell: (ctx) => {
+      const row = ctx.row.original;
+      return (
+        <Link
+          className="border px-1.5 py-0.5 text-xs hover:bg-muted"
+          title="Buyer brief from verified records only (purpose=GENERAL_QA)"
+          href={buildAskHref({
+            mode: "report",
+            purpose: "GENERAL_QA",
+            report: "buyer",
+            from: "clients",
+            q: row.name,
+            filters: {
+              buyer: row.name,
+              solicitations: row.opportunity_count,
+              awards: row.award_count,
+              contracts: row.contract_count,
+            },
+          })}
+        >
+          Buyer brief
+        </Link>
+      );
+    },
+  }),
 ]);
 
 export function BuyerPortfolioTable({ rows }: { rows: BuyerPortfolioRow[] }) {
@@ -58,17 +124,17 @@ export function BuyerPortfolioTable({ rows }: { rows: BuyerPortfolioRow[] }) {
   if (rows.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No buyers yet. Register agencies from solicitations — this is procurement intelligence, not CRM.
+        No buyers match. Register agencies from solicitations — this is procurement intelligence, not CRM.
       </p>
     );
   }
   return (
-    <Table>
+    <Table data-testid="buyer-portfolio-table">
       <TableHeader>
         {table.getHeaderGroups().map((group) => (
           <TableRow key={group.id}>
             {group.headers.map((header) => (
-              <TableHead key={header.id}>
+              <TableHead key={header.id} className="text-xs">
                 {header.isPlaceholder ? null : <table.FlexRender header={header} />}
               </TableHead>
             ))}
@@ -79,7 +145,7 @@ export function BuyerPortfolioTable({ rows }: { rows: BuyerPortfolioRow[] }) {
         {table.getRowModel().rows.map((row) => (
           <TableRow key={row.id}>
             {row.getAllCells().map((cell) => (
-              <TableCell key={cell.id}>
+              <TableCell key={cell.id} className="py-1.5">
                 <table.FlexRender cell={cell} />
               </TableCell>
             ))}

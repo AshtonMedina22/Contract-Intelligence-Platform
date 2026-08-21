@@ -49,6 +49,7 @@
     "test:p5-pursuit-strategy": "node scripts/p5-pursuit-strategy-acceptance.mjs",
     "test:p6-response-workspace": "node scripts/p6-response-workspace-acceptance.mjs",
     "test:p7-pricing-workbench": "node scripts/p7-pricing-workbench-acceptance.mjs",
-    "test:p8-submission-result": "node scripts/p8-submission-result-acceptance.mjs"
+    "test:p8-submission-result": "node scripts/p8-submission-result-acceptance.mjs",
+    "test:p9-intelligence-workbench": "node scripts/p9-intelligence-workbench-acceptance.mjs"
   }
 }

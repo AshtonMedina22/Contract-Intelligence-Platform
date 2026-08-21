@@ -1,11 +1,11 @@
 {
   "audit": "VERIFY5",
   "phase": "Canonical Phase 5 — Intelligence",
-  "stamp": "mt1fkptz",
-  "verdict": "PASS",
+  "stamp": "mt2u28hq",
+  "verdict": "FAIL",
   "total": 24,
-  "passed": 24,
-  "failed": 0,
+  "passed": 22,
+  "failed": 2,
   "matrix": [
     {
       "domain": "market",
@@ -24,7 +24,7 @@
     {
       "domain": "pursuit",
       "name": "Pursuit Overview consumes intelligence summary",
-      "ok": true,
+      "ok": false,
       "detail": "wired",
       "source": "opportunities/[id]/page.tsx"
     },
@@ -47,27 +47,27 @@
       "name": "Buyer history connects multiple pursuits",
       "ok": true,
       "detail": "opps=2",
-      "source": "Westside ISD mt1fkptz"
+      "source": "Westside ISD mt2u28hq"
     },
     {
       "domain": "buyer",
       "name": "Buyer history connects multiple contracts",
-      "ok": true,
-      "detail": "contracts=2",
-      "source": "Westside ISD mt1fkptz"
+      "ok": false,
+      "detail": "contracts=0",
+      "source": "Westside ISD mt2u28hq"
     },
     {
       "domain": "buyer",
       "name": "Buyer award links to pursuit under same buyer",
       "ok": true,
-      "detail": "[{\"id\":\"f4218b9f-e24f-4f29-863b-e329220b819d\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\"}]",
+      "detail": "[{\"id\":\"2479aca4-e44a-4392-af23-d94d6af4d428\",\"opportunity_id\":\"0ca4274d-8fc2-4a54-93e0-e824d9a73e4f\"}]",
       "source": "awards"
     },
     {
       "domain": "competitor",
       "name": "Sourced competitor bid promotes",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"competitor\",\"competitor_id\":\"659754f6-c895-4901-b5a4-d32d8add50ae\"}",
+      "detail": "{\"ok\":true,\"action\":\"competitor\",\"competitor_id\":\"12571752-cf60-4633-a7d9-34ea4e4f1a56\"}",
       "source": "competitor_bids"
     },
     {
@@ -88,14 +88,14 @@
       "domain": "competitor",
       "name": "competitor pricing is sourced",
       "ok": true,
-      "detail": "unsourced rejected; sourced={\"id\":\"84e75fff-6466-4deb-9ea9-0499f225b161\",\"source_fact_id\":\"4c9f5f60-3aa6-4740-aef9-a0286e902e9d\",\"source_document_id\":\"9c70da86-8752-4449-9ca3-a2cca38b5883\",\"hourly_rate\":18.75}",
+      "detail": "unsourced rejected; sourced={\"id\":\"21f9e842-c171-4ab2-ae43-31cf6ce73d29\",\"source_fact_id\":\"54524a9d-a8b6-4cdf-af38-39cb3cd06f8b\",\"source_document_id\":\"0b7def19-fe6b-488c-a310-9b863714796b\",\"hourly_rate\":18.75}",
       "source": "competitor_pricing_lines"
     },
     {
       "domain": "scores",
       "name": "ranks/scores match source records",
       "ok": true,
-      "detail": "{\"scoreRows\":[{\"respondent_name\":\"Acme Guard mt1fkptz\",\"points\":91,\"max_points\":100,\"rank\":1},{\"respondent_name\":\"L&P Global\",\"points\":82,\"max_points\":100,\"rank\":2}],\"bidRank\":{\"rank\":1,\"quoted_amount\":98000}}",
+      "detail": "{\"scoreRows\":[{\"respondent_name\":\"Acme Guard mt2u28hq\",\"points\":91,\"max_points\":100,\"rank\":1},{\"respondent_name\":\"L&P Global\",\"points\":82,\"max_points\":100,\"rank\":2}],\"bidRank\":{\"rank\":1,\"quoted_amount\":98000}}",
       "source": "evaluation_scores + competitor_bids.rank"
     },
     {
@@ -165,15 +165,15 @@
       "domain": "research",
       "name": "public facts retain provenance",
       "ok": true,
-      "detail": "{\"source_url\":\"https://example.com/board-minutes-westside\",\"client_id\":\"0784b237-5c0a-4901-8cd3-9d3db5ca7ab5\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\",\"source_document_id\":\"8e6f7170-66dd-43b8-a8c2-dad91c43adb6\",\"excerpt\":\"Board approved night coverage solicitation\",\"verification_status\":\"HUMAN_VERIFIED\",\"verified_by\":\"1bc96d31-80bc-4ede-bb86-d9ab0f9e1246\",\"verified_at\":\"2026-08-20T11:22:24.161+00:00\",\"published_on\":null,\"retrieved_at\":\"2026-08-20T11:22:24.619411+00:00\"}",
+      "detail": "{\"source_url\":\"https://example.com/board-minutes-westside\",\"client_id\":\"3ab64aa8-3185-4433-8418-a9a6559a6baf\",\"opportunity_id\":\"0ca4274d-8fc2-4a54-93e0-e824d9a73e4f\",\"source_document_id\":\"57f733be-86d8-4581-82ae-2cef6e7bccef\",\"excerpt\":\"Board approved night coverage solicitation\",\"verification_status\":\"HUMAN_VERIFIED\",\"verified_by\":\"06737002-d9a2-4654-82fd-e36402762a3a\",\"verified_at\":\"2026-08-21T10:55:43.201+00:00\",\"published_on\":null,\"retrieved_at\":\"2026-08-21T10:55:43.56073+00:00\"}",
       "source": "research_facts"
     },
     {
       "domain": "pursuit",
       "name": "current Pursuit can consume relevant intelligence",
       "ok": true,
-      "detail": "{\"outcome\":\"WON\",\"bids\":1,\"scores\":2,\"researchCount\":1,\"award\":\"f4218b9f-e24f-4f29-863b-e329220b819d\"}",
-      "source": "opportunity 383e40c3-5107-48e7-9921-7be60e16fee9"
+      "detail": "{\"outcome\":\"WON\",\"bids\":1,\"scores\":2,\"researchCount\":1,\"award\":\"2479aca4-e44a-4392-af23-d94d6af4d428\"}",
+      "source": "opportunity 0ca4274d-8fc2-4a54-93e0-e824d9a73e4f"
     }
   ],
   "byDomain": {
@@ -198,8 +198,8 @@
       ]
     },
     "buyer": {
-      "pass": 5,
-      "fail": 0,
+      "pass": 4,
+      "fail": 1,
       "rows": [
         {
           "domain": "buyer",
@@ -220,32 +220,32 @@
           "name": "Buyer history connects multiple pursuits",
           "ok": true,
           "detail": "opps=2",
-          "source": "Westside ISD mt1fkptz"
+          "source": "Westside ISD mt2u28hq"
         },
         {
           "domain": "buyer",
           "name": "Buyer history connects multiple contracts",
-          "ok": true,
-          "detail": "contracts=2",
-          "source": "Westside ISD mt1fkptz"
+          "ok": false,
+          "detail": "contracts=0",
+          "source": "Westside ISD mt2u28hq"
         },
         {
           "domain": "buyer",
           "name": "Buyer award links to pursuit under same buyer",
           "ok": true,
-          "detail": "[{\"id\":\"f4218b9f-e24f-4f29-863b-e329220b819d\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\"}]",
+          "detail": "[{\"id\":\"2479aca4-e44a-4392-af23-d94d6af4d428\",\"opportunity_id\":\"0ca4274d-8fc2-4a54-93e0-e824d9a73e4f\"}]",
           "source": "awards"
         }
       ]
     },
     "pursuit": {
-      "pass": 2,
-      "fail": 0,
+      "pass": 1,
+      "fail": 1,
       "rows": [
         {
           "domain": "pursuit",
           "name": "Pursuit Overview consumes intelligence summary",
-          "ok": true,
+          "ok": false,
           "detail": "wired",
           "source": "opportunities/[id]/page.tsx"
         },
@@ -253,8 +253,8 @@
           "domain": "pursuit",
           "name": "current Pursuit can consume relevant intelligence",
           "ok": true,
-          "detail": "{\"outcome\":\"WON\",\"bids\":1,\"scores\":2,\"researchCount\":1,\"award\":\"f4218b9f-e24f-4f29-863b-e329220b819d\"}",
-          "source": "opportunity 383e40c3-5107-48e7-9921-7be60e16fee9"
+          "detail": "{\"outcome\":\"WON\",\"bids\":1,\"scores\":2,\"researchCount\":1,\"award\":\"2479aca4-e44a-4392-af23-d94d6af4d428\"}",
+          "source": "opportunity 0ca4274d-8fc2-4a54-93e0-e824d9a73e4f"
         }
       ]
     },
@@ -307,7 +307,7 @@
           "domain": "competitor",
           "name": "Sourced competitor bid promotes",
           "ok": true,
-          "detail": "{\"ok\":true,\"action\":\"competitor\",\"competitor_id\":\"659754f6-c895-4901-b5a4-d32d8add50ae\"}",
+          "detail": "{\"ok\":true,\"action\":\"competitor\",\"competitor_id\":\"12571752-cf60-4633-a7d9-34ea4e4f1a56\"}",
           "source": "competitor_bids"
         },
         {
@@ -328,7 +328,7 @@
           "domain": "competitor",
           "name": "competitor pricing is sourced",
           "ok": true,
-          "detail": "unsourced rejected; sourced={\"id\":\"84e75fff-6466-4deb-9ea9-0499f225b161\",\"source_fact_id\":\"4c9f5f60-3aa6-4740-aef9-a0286e902e9d\",\"source_document_id\":\"9c70da86-8752-4449-9ca3-a2cca38b5883\",\"hourly_rate\":18.75}",
+          "detail": "unsourced rejected; sourced={\"id\":\"21f9e842-c171-4ab2-ae43-31cf6ce73d29\",\"source_fact_id\":\"54524a9d-a8b6-4cdf-af38-39cb3cd06f8b\",\"source_document_id\":\"0b7def19-fe6b-488c-a310-9b863714796b\",\"hourly_rate\":18.75}",
           "source": "competitor_pricing_lines"
         }
       ]
@@ -341,7 +341,7 @@
           "domain": "scores",
           "name": "ranks/scores match source records",
           "ok": true,
-          "detail": "{\"scoreRows\":[{\"respondent_name\":\"Acme Guard mt1fkptz\",\"points\":91,\"max_points\":100,\"rank\":1},{\"respondent_name\":\"L&P Global\",\"points\":82,\"max_points\":100,\"rank\":2}],\"bidRank\":{\"rank\":1,\"quoted_amount\":98000}}",
+          "detail": "{\"scoreRows\":[{\"respondent_name\":\"Acme Guard mt2u28hq\",\"points\":91,\"max_points\":100,\"rank\":1},{\"respondent_name\":\"L&P Global\",\"points\":82,\"max_points\":100,\"rank\":2}],\"bidRank\":{\"rank\":1,\"quoted_amount\":98000}}",
           "source": "evaluation_scores + competitor_bids.rank"
         }
       ]
@@ -394,7 +394,7 @@
           "domain": "research",
           "name": "public facts retain provenance",
           "ok": true,
-          "detail": "{\"source_url\":\"https://example.com/board-minutes-westside\",\"client_id\":\"0784b237-5c0a-4901-8cd3-9d3db5ca7ab5\",\"opportunity_id\":\"383e40c3-5107-48e7-9921-7be60e16fee9\",\"source_document_id\":\"8e6f7170-66dd-43b8-a8c2-dad91c43adb6\",\"excerpt\":\"Board approved night coverage solicitation\",\"verification_status\":\"HUMAN_VERIFIED\",\"verified_by\":\"1bc96d31-80bc-4ede-bb86-d9ab0f9e1246\",\"verified_at\":\"2026-08-20T11:22:24.161+00:00\",\"published_on\":null,\"retrieved_at\":\"2026-08-20T11:22:24.619411+00:00\"}",
+          "detail": "{\"source_url\":\"https://example.com/board-minutes-westside\",\"client_id\":\"3ab64aa8-3185-4433-8418-a9a6559a6baf\",\"opportunity_id\":\"0ca4274d-8fc2-4a54-93e0-e824d9a73e4f\",\"source_document_id\":\"57f733be-86d8-4581-82ae-2cef6e7bccef\",\"excerpt\":\"Board approved night coverage solicitation\",\"verification_status\":\"HUMAN_VERIFIED\",\"verified_by\":\"06737002-d9a2-4654-82fd-e36402762a3a\",\"verified_at\":\"2026-08-21T10:55:43.201+00:00\",\"published_on\":null,\"retrieved_at\":\"2026-08-21T10:55:43.56073+00:00\"}",
           "source": "research_facts"
         }
       ]

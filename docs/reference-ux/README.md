@@ -29,6 +29,7 @@ If the same repo is inspected for **mechanics** (e.g. OpenContracts PDF coordina
 | `novel` | Novel |
 | `morphic` | Morphic |
 | `tanstack-table` | TanStack Table |
+| `tremor` | Tremor (KPI cards / dashboard grid) |
 
 ## Note template
 

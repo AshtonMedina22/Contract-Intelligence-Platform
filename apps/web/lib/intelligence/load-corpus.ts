@@ -9,6 +9,11 @@ export type BuyerPortfolioRow = {
   win_loss_count: number;
   research_count: number;
   latest_outcome: string | null;
+  /** Deep-link target for the Solicitations / Awards columns; null when this buyer has no pursuit. */
+  latest_opportunity_id: string | null;
+  latest_opportunity_title: string | null;
+  /** Deep-link target for the Contracts column; null when no contract is on file. */
+  latest_contract_id: string | null;
 };
 
 export type PursuitIntelSummary = {
@@ -54,19 +59,36 @@ export async function loadBuyerPortfolio(): Promise<BuyerPortfolioRow[]> {
 
   const ids = clients.map((c) => c.id);
   const [opps, awards, contracts, reviews, research] = await Promise.all([
-    supabase.from("opportunities").select("id, client_id").in("client_id", ids),
+    supabase
+      .from("opportunities")
+      .select("id, client_id, title, updated_at")
+      .in("client_id", ids)
+      .order("updated_at", { ascending: false }),
     supabase.from("awards").select("id, opportunity_id"),
-    supabase.from("contracts").select("id, client_id").in("client_id", ids),
+    supabase
+      .from("contracts")
+      .select("id, client_id, updated_at")
+      .in("client_id", ids)
+      .order("updated_at", { ascending: false }),
     supabase.from("win_loss_reviews").select("id, opportunity_id, outcome"),
     supabase.from("research_facts").select("id, client_id").in("client_id", ids),
   ]);
 
   const oppByClient = new Map<string, string[]>();
+  const latestOppByClient = new Map<string, { id: string; title: string }>();
   for (const o of opps.data ?? []) {
     if (!o.client_id) continue;
     const list = oppByClient.get(o.client_id) ?? [];
     list.push(o.id);
     oppByClient.set(o.client_id, list);
+    if (!latestOppByClient.has(o.client_id)) {
+      latestOppByClient.set(o.client_id, { id: o.id, title: o.title });
+    }
+  }
+  const latestContractByClient = new Map<string, string>();
+  for (const c of contracts.data ?? []) {
+    if (!c.client_id || latestContractByClient.has(c.client_id)) continue;
+    latestContractByClient.set(c.client_id, c.id);
   }
   const oppToClient = new Map<string, string>();
   for (const [clientId, oppIds] of oppByClient) {
@@ -104,6 +126,7 @@ export async function loadBuyerPortfolio(): Promise<BuyerPortfolioRow[]> {
 
   return clients.map((c) => {
     const review = reviewByClient.get(c.id);
+    const latestOpp = latestOppByClient.get(c.id) ?? null;
     return {
       id: c.id,
       name: c.name,
@@ -113,6 +136,9 @@ export async function loadBuyerPortfolio(): Promise<BuyerPortfolioRow[]> {
       win_loss_count: review?.count ?? 0,
       research_count: researchByClient.get(c.id) ?? 0,
       latest_outcome: review?.latest ?? null,
+      latest_opportunity_id: latestOpp?.id ?? null,
+      latest_opportunity_title: latestOpp?.title ?? null,
+      latest_contract_id: latestContractByClient.get(c.id) ?? null,
     };
   });
 }

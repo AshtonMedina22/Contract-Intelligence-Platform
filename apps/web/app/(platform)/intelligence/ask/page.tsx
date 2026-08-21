@@ -17,12 +17,31 @@ import {
 import { locateRecords, searchVerifiedKnowledge } from "@/lib/retrieval/search";
 import { INSUFFICIENT } from "@/lib/ask/synthesize";
 import { generateIntelligenceReport, REPORT_CATALOG, type ReportKind } from "@/lib/reports/generate";
+import {
+  askLaunchViewFromParam,
+  askLaunchViewLabel,
+  buildAskHref,
+  parseAskContext,
+  type AskLaunchView,
+} from "@/lib/intelligence/ask-launch";
 
 const EXAMPLE_QUERIES = [
   "Dallas ISD security contract",
   "evaluator weaknesses staffing",
   "transition plan",
 ] as const;
+
+type AskSearchParams = {
+  q?: string;
+  opportunity?: string;
+  mode?: string;
+  purpose?: string;
+  report?: string;
+  /** Which Intelligence view launched this question. Provenance only. */
+  from?: string;
+  /** The filters that view had applied. Displayed, never used to narrow retrieval. */
+  context?: string;
+};
 
 function parseMode(raw: string | undefined): AskMode {
   if (raw === "locate" || raw === "report" || raw === "ask") return raw;
@@ -32,13 +51,7 @@ function parseMode(raw: string | undefined): AskMode {
 async function AskIntelligence({
   searchParams,
 }: {
-  searchParams: Promise<{
-    q?: string;
-    opportunity?: string;
-    mode?: string;
-    purpose?: string;
-    report?: string;
-  }>;
+  searchParams: Promise<AskSearchParams>;
 }) {
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
@@ -47,6 +60,8 @@ async function AskIntelligence({
   const purpose: RetrievalPurpose =
     purposeFromParam(params.purpose) ?? defaultPurposeForMode(mode);
   const reportKind = (params.report as ReportKind | undefined) ?? "executive";
+  const launchedFrom = askLaunchViewFromParam(params.from);
+  const launchContext = parseAskContext(params.context);
 
   const supabase = await createClient();
   const {
@@ -78,15 +93,22 @@ async function AskIntelligence({
   if (mode === "ask") {
     return (
       <div className="space-y-4">
-        <AskPageHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle} />
+        <AskPageHeader
+          opportunityId={opportunityId}
+          opportunityTitle={opportunityTitle}
+          launchedFrom={launchedFrom}
+          launchContext={launchContext}
+        />
         <AskModeForm
           mode={mode}
           purpose={purpose}
           opportunityId={opportunityId}
-          reportKind={reportKind}
-          query={query}
-          showQuery={false}
-        />
+        reportKind={reportKind}
+        query={query}
+        showQuery={false}
+        launchedFrom={launchedFrom}
+        launchContextRaw={params.context ?? null}
+      />
         <AskChatClient
           purpose={purpose}
           opportunityId={opportunityId || null}
@@ -138,7 +160,12 @@ async function AskIntelligence({
 
   return (
     <div className="space-y-4">
-      <AskPageHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle} />
+      <AskPageHeader
+        opportunityId={opportunityId}
+        opportunityTitle={opportunityTitle}
+        launchedFrom={launchedFrom}
+        launchContext={launchContext}
+      />
       <AskModeForm
         mode={mode}
         purpose={purpose}
@@ -146,6 +173,8 @@ async function AskIntelligence({
         reportKind={reportKind}
         query={query}
         showQuery
+        launchedFrom={launchedFrom}
+        launchContextRaw={params.context ?? null}
       />
 
       {!query && mode !== "report" ? (
@@ -154,7 +183,7 @@ async function AskIntelligence({
             <li key={example}>
               <Link
                 className="inline-block border px-2 py-1 text-xs hover:bg-muted"
-                href={`/intelligence/ask?mode=${mode}&purpose=${purpose}&q=${encodeURIComponent(example)}`}
+                href={buildAskHref({ mode, purpose, q: example, opportunityId, from: launchedFrom })}
               >
                 {example}
               </Link>
@@ -224,7 +253,10 @@ async function AskIntelligence({
 function AskPageHeader(props: {
   opportunityId: string;
   opportunityTitle: string | null;
+  launchedFrom: AskLaunchView | null;
+  launchContext: { key: string; value: string }[];
 }) {
+  const fromLabel = askLaunchViewLabel(props.launchedFrom);
   return (
     <>
       <div>
@@ -242,6 +274,36 @@ function AskPageHeader(props: {
           </Link>
         </p>
       ) : null}
+      {fromLabel ? (
+        <div
+          data-testid="ask-context-banner"
+          className="space-y-1 border-l-2 border-muted-foreground/40 bg-muted/30 px-3 py-2 text-sm"
+        >
+          <p>
+            Launched from{" "}
+            <Link className="underline" href={`/intelligence/${props.launchedFrom}`}>
+              {fromLabel}
+            </Link>
+            . The mode and purpose above came from that view.
+          </p>
+          {props.launchContext.length > 0 ? (
+            <p className="text-xs text-muted-foreground">
+              View context:{" "}
+              {props.launchContext.map((pair, index) => (
+                <span key={pair.key}>
+                  {index > 0 ? " · " : ""}
+                  <span className="font-medium">{pair.key}</span>
+                  {pair.value ? `=${pair.value}` : ""}
+                </span>
+              ))}
+            </p>
+          ) : null}
+          <p className="text-xs text-muted-foreground">
+            Context is shown for provenance only — it did not narrow retrieval. Retrieval scope is the
+            purpose above, and the answer is still limited to verified evidence.
+          </p>
+        </div>
+      ) : null}
     </>
   );
 }
@@ -253,10 +315,16 @@ function AskModeForm(props: {
   reportKind: ReportKind;
   query: string;
   showQuery: boolean;
+  launchedFrom: AskLaunchView | null;
+  launchContextRaw: string | null;
 }) {
   return (
     <form className="flex max-w-3xl flex-wrap items-end gap-3" method="get">
       {props.opportunityId ? <input type="hidden" name="opportunity" value={props.opportunityId} /> : null}
+      {props.launchedFrom ? <input type="hidden" name="from" value={props.launchedFrom} /> : null}
+      {props.launchContextRaw ? (
+        <input type="hidden" name="context" value={props.launchContextRaw} />
+      ) : null}
       <div className="space-y-1">
         <Label htmlFor="mode">Mode</Label>
         <select
@@ -313,17 +381,7 @@ function AskModeForm(props: {
   );
 }
 
-export default function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    q?: string;
-    opportunity?: string;
-    mode?: string;
-    purpose?: string;
-    report?: string;
-  }>;
-}) {
+export default function Page({ searchParams }: { searchParams: Promise<AskSearchParams> }) {
   return (
     <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
       <AskIntelligence searchParams={searchParams} />

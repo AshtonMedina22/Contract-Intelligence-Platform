@@ -492,8 +492,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/miurla/morphic |
 | **Reference category** | Grounded search/answer UX and public-research presentation |
 | **Usage mode** | HIGH-VALUE CODE/PATTERN REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. UX/streaming/citation patterns only. |
+| **Analysis status** | INSPECTED (P9 Intelligence Workbench, 2026-08-21) — see [reference-repos/morphic.md](reference-repos/morphic.md). Single-surface handoff + scope disclosure adopted; second chat surface and provider abstraction **rejected**. |
+| **License / copy caution** | **Apache-2.0** (verified 2026-08-21). Copy-eligible with attribution + NOTICE; no upstream source has been copied, so no NOTICE obligation is owed. UX/streaming/citation patterns only. |
 
 **Why it matters:** Ask experience (question → tool state → streaming answer → citations → source cards → follow-up) and public-research presentation.
 
@@ -588,9 +588,36 @@ we populate `estimated_value` only when the provider supplies an amount.
 
 ---
 
+### 20. Rival
+
+| Field | Value |
+| --- | --- |
+| **URL** | https://github.com/tessak22/rival |
+| **Reference category** | Competitor-intelligence view density and per-competitor brief launch |
+| **Usage mode** | SELECTIVE REFERENCE — layout / launch pattern only |
+| **Analysis status** | INSPECTED (P9 Intelligence Workbench, 2026-08-21) — README + license only; see [reference-repos/rival.md](reference-repos/rival.md). Density + per-entity brief launch adopted as a pattern; research rail **rejected**. |
+| **License / copy caution** | **MIT** (verified 2026-08-21) — permissive, copy-eligible with attribution. Nothing was copied, so nothing is owed. |
+
+**Why it matters:** It treats a competitor as a first-class row you open, backed by several focused
+evidence tables, with a per-competitor "brief" action that launches the app's existing answer surface
+with that entity already in scope.
+
+**Consult when:** Competitors view layout; per-entity brief launch; buyer/competitor detail density.
+
+**Inspect:** its competitor-profile composition and the brief-launch affordance. Nothing else.
+
+**Maps to our platform:** `apps/web/app/(platform)/intelligence/competitors/` and the per-buyer brief
+chip on `/intelligence/clients`.
+
+**Do not:** adopt its **Tabstack-powered scan / Deep Dive research rail** — that is a second research
+engine, and our public rail is the existing Phase 6 dual-rail agent. **Do not** adopt scheduled
+competitor scans, change-diff summaries, or any competitor score / rank / threat level.
+
+---
+
 ## Registry completeness
 
-Registered (19/19):
+Registered (20/20):
 
 1. RFPilot  
 2. AutoRFP  
@@ -611,5 +638,6 @@ Registered (19/19):
 17. Open Deep Research  
 18. WrenAI  
 19. RFP Map  
+20. Rival  
 
 Adding a new reference: append an entry with the same fields, add a routing-table row, keep status **REGISTERED ONLY** until a task inspects it, and do not create a `docs/reference-repos/<slug>.md` until that inspection happens.
