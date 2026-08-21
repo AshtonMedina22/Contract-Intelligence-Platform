@@ -70,8 +70,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 
 ## Current correct next work
 
-1. Grow verified historical corpus (~20–30 packages) — see [RELEASE_READINESS_REPORT.md](RELEASE_READINESS_REPORT.md).  
-2. Confirm Vercel prod + processor; set `ASK_MODEL` / `MISTRAL_API_KEY` as needed.  
+1. Grow verified historical corpus (~20–30 packages) — live org now **15 packages / 14 A/B harness-complete**; still short of exit band. See [RELEASE_READINESS_REPORT.md](RELEASE_READINESS_REPORT.md).  
+2. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed.  
 3. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
 
 **Prompt 9 / VERIFY 9 (2026-08-20):** Fix pass → **READY WITH NONBLOCKING LIMITATIONS**. Deferred: corpus acquisition ~20–30, Vercel login + prod processor, `ASK_MODEL`. See [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md).

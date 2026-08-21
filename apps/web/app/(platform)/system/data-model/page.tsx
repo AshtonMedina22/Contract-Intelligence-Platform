@@ -3,6 +3,11 @@ import { Suspense } from "react";
 import { SettingsNav } from "@/components/section-tabs";
 import { DataLayerBadge } from "@/components/data-layer-badge";
 import {
+  DOCUMENT_TABLE_MAP,
+  PILOT_PACKAGE_MAP,
+  PROMOTE_CHAIN,
+} from "@/lib/data-model/document-table-map";
+import {
   LAYER_LABELS,
   RFQ_FLOW_STEPS,
   tablesForLayer,
@@ -11,6 +16,13 @@ import {
 
 const LAYER_ORDER: DataLayer[] = ["staging", "canonical", "derived", "intelligence", "system"];
 
+const STATUS_LABEL: Record<string, string> = {
+  live: "Live fill",
+  partial: "Partial",
+  schema_ready: "Schema ready",
+  deferred: "Deferred",
+};
+
 function DataModelContent() {
   return (
     <div className="max-w-4xl space-y-8">
@@ -18,8 +30,9 @@ function DataModelContent() {
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Data model</h1>
         <p className="text-sm text-muted-foreground">
-          What Postgres stores, which columns matter, and how verified data flows into outputs when you prepare a
-          new RFQ. Every live page below links to real rows — not a mock dashboard.
+          Document type → commercial truth → promote RPCs → Postgres tables. This is the map from source
+          evidence to the finished platform (Pursuits, Contracts, Intelligence, Ask). Full write-up:{" "}
+          <code className="text-xs">docs/DOCUMENT_TABLE_MAPPING.md</code>.
         </p>
       </div>
 
@@ -45,6 +58,79 @@ function DataModelContent() {
         </ol>
       </section>
 
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium">Promote chain (after HUMAN_VERIFIED)</h2>
+        <p className="text-sm text-muted-foreground">
+          Verification workbench runs all four RPCs in order. Pilot harness must match.
+        </p>
+        <ol className="list-inside list-decimal font-mono text-xs">
+          {PROMOTE_CHAIN.map((rpc) => (
+            <li key={rpc}>{rpc}</li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium">Document type → tables</h2>
+        <div className="overflow-x-auto rounded-md border text-sm">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b bg-muted/40 text-left">
+                <th className="p-2">Document kinds</th>
+                <th className="p-2">Truth</th>
+                <th className="p-2">Target tables</th>
+                <th className="p-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {DOCUMENT_TABLE_MAP.map((row) => (
+                <tr key={row.documentTypes.join("|")} className="border-b align-top">
+                  <td className="p-2">
+                    <div className="font-mono text-xs">{row.documentTypes.slice(0, 3).join(", ")}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{row.productSurface}</div>
+                  </td>
+                  <td className="p-2 font-mono text-xs">{row.commercialTruth}</td>
+                  <td className="p-2 font-mono text-xs">{row.targetTables.join(", ")}</td>
+                  <td className="p-2 text-xs">
+                    {STATUS_LABEL[row.status] ?? row.status}
+                    <div className="mt-1 text-muted-foreground">{row.notes}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-medium">Pilot packages (A/B/C)</h2>
+        <div className="overflow-x-auto rounded-md border text-sm">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b bg-muted/40 text-left">
+                <th className="p-2">Package</th>
+                <th className="p-2">Class</th>
+                <th className="p-2">Buyer</th>
+                <th className="p-2">Sources</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(PILOT_PACKAGE_MAP).map(([key, meta]) => (
+                <tr key={key} className="border-b">
+                  <td className="p-2 font-mono text-xs">{key}</td>
+                  <td className="p-2 font-mono text-xs">{meta.corpusClass}</td>
+                  <td className="p-2 text-xs">{meta.buyer}</td>
+                  <td className="p-2 font-mono text-xs">{meta.srcIds.join(", ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Class C fills intelligence / schema-coverage tables only — never labeled as L&amp;P history.
+        </p>
+      </section>
+
       <section className="space-y-4">
         <h2 className="text-sm font-medium">Four commercial truths (never one rate field)</h2>
         <div className="overflow-x-auto rounded-md border text-sm">
@@ -60,37 +146,37 @@ function DataModelContent() {
             <tbody>
               <tr className="border-b">
                 <td className="p-2">Requested</td>
-                <td className="p-2 font-mono text-xs">commercial_truth = REQUESTED</td>
+                <td className="p-2 font-mono text-xs">commercial_truth = requested</td>
                 <td className="p-2 font-mono text-xs">requested_rate</td>
                 <td className="p-2">
-                  <Link className="underline" href="/procurement/opportunities">
+                  <Link className="underline" href="/pursuits">
                     Pursuits
                   </Link>
                 </td>
               </tr>
               <tr className="border-b">
                 <td className="p-2">Proposed</td>
-                <td className="p-2 font-mono text-xs">PROPOSED</td>
+                <td className="p-2 font-mono text-xs">proposed</td>
                 <td className="p-2 font-mono text-xs">proposed_rate</td>
                 <td className="p-2">
                   <Link className="underline" href="/intelligence/pricing">
-                    Pricing lines
+                    Pricing
                   </Link>
                 </td>
               </tr>
               <tr className="border-b">
                 <td className="p-2">Awarded</td>
-                <td className="p-2 font-mono text-xs">AWARDED</td>
-                <td className="p-2 font-mono text-xs">awarded_rate · awards table</td>
+                <td className="p-2 font-mono text-xs">awarded</td>
+                <td className="p-2 font-mono text-xs">awarded_rate · awards</td>
                 <td className="p-2">
-                  <Link className="underline" href="/procurement/opportunities">
-                    Opportunities
+                  <Link className="underline" href="/pursuits">
+                    Pursuits
                   </Link>
                 </td>
               </tr>
               <tr>
                 <td className="p-2">Current</td>
-                <td className="p-2 font-mono text-xs">CURRENT</td>
+                <td className="p-2 font-mono text-xs">current</td>
                 <td className="p-2 font-mono text-xs">current_rate · contracts</td>
                 <td className="p-2">
                   <Link className="underline" href="/contracts">
@@ -137,19 +223,12 @@ function DataModelContent() {
       })}
 
       <section className="space-y-2 text-sm text-muted-foreground">
-        <h2 className="text-sm font-medium text-foreground">Not exposed in UI yet</h2>
+        <h2 className="text-sm font-medium text-foreground">Governance</h2>
         <ul className="list-inside list-disc">
+          <li>Map facts to live tables first; record unsupported end-state concepts as schema-gap findings.</li>
+          <li>Do not invent L&amp;P prices, staffing, or loss reasons.</li>
           <li>
-            <code className="text-xs">verification_events</code> — full verify audit trail
-          </li>
-          <li>
-            <code className="text-xs">source_evidence</code> — bbox anchors per fact
-          </li>
-          <li>
-            <code className="text-xs">batch_ingest_items</code> — per-file bulk outcomes
-          </li>
-          <li>
-            <code className="text-xs">proposals</code> — Phase 13 workspace tables
+            Class C competitor documents verify for coverage — never promote as L&amp;P-authored history.
           </li>
         </ul>
       </section>

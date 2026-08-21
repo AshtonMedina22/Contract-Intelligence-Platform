@@ -34,3 +34,65 @@ def test_structured_extractor_ignores_non_hourly_amounts() -> None:
     )
     drafts = extract_pdf_structure(doc)
     assert not [d for d in drafts if d.normalized_type == "rate"]
+
+
+def test_po_extractor_rejects_political_word_fragments() -> None:
+    doc = NormalizedDocument(
+        parser_id="pdf-native",
+        filename="SRC-20_Terrell_ISD_LP_Security_Officer_Agreement.pdf",
+        pages=[
+            PdfPage(
+                page=1,
+                text="political subdivision of the State. positions identified in Exhibit A. possible action.",
+            )
+        ],
+    )
+    drafts = extract_pdf_structure(doc)
+    assert not [d for d in drafts if d.field == "po_number"]
+
+
+def test_po_extractor_accepts_real_po_number() -> None:
+    doc = NormalizedDocument(
+        parser_id="pdf-native",
+        filename="TxDMV_PO.pdf",
+        pages=[PdfPage(page=1, text="Purchase Order #0000016167 for armed security")],
+    )
+    drafts = extract_pdf_structure(doc)
+    pos = [d for d in drafts if d.field == "po_number"]
+    assert len(pos) == 1
+    assert pos[0].normalized_value == "0000016167"
+
+
+def test_term_range_emits_start_and_end_once() -> None:
+    doc = NormalizedDocument(
+        parser_id="pdf-native",
+        filename="agreement.pdf",
+        pages=[
+            PdfPage(
+                page=1,
+                text="The term of this contract shall commence on 08/01/2025 and automatically terminate on 07/31/2026.",
+            )
+        ],
+    )
+    drafts = extract_pdf_structure(doc)
+    starts = [d for d in drafts if d.field == "contract_start"]
+    ends = [d for d in drafts if d.field == "contract_end"]
+    assert len(starts) == 1 and starts[0].normalized_value == "2025-08-01"
+    assert len(ends) == 1 and ends[0].normalized_value == "2026-07-31"
+
+
+def test_lp_named_on_board_agenda_emits_award_vendor() -> None:
+    doc = NormalizedDocument(
+        parser_id="pdf-native",
+        filename="SRC-23_Mesquite_agenda.pdf",
+        pages=[
+            PdfPage(
+                page=1,
+                text="II.A. Action - Approve Armed Security Services Contract with L&P Global Security, LLC",
+            )
+        ],
+    )
+    drafts = extract_pdf_structure(doc)
+    awards = [d for d in drafts if d.field == "awarded_vendor"]
+    assert len(awards) == 1
+    assert awards[0].normalized_value == "L&P Global Security"

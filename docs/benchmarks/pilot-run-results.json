@@ -1,92 +1,59 @@
 {
-  "generatedAt": "2026-08-20T20:51:09.355Z",
+  "generatedAt": "2026-08-21T00:25:13.323Z",
   "orgId": "f9f6632f-b00f-41b0-9289-86c755408ae5",
-  "filesAttempted": 18,
-  "filesIngested": 7,
-  "filesProcessed": 7,
-  "filesVerified": 7,
-  "packagesComplete": 7,
-  "packages": 13,
+  "filesAttempted": 26,
+  "filesIngested": 26,
+  "filesProcessed": 24,
+  "filesVerified": 19,
+  "packagesComplete": 16,
+  "packages": 17,
   "packageResults": {
     "PKG-01": {
-      "files": [
-        "SRC-01"
-      ],
-      "cls": "A",
-      "ingested": 1,
-      "processed": 1,
-      "verified": 1,
-      "pipelineComplete": 1,
-      "buyer": "Williamson County",
-      "gaps": []
-    },
-    "PKG-02": {
-      "files": [
-        "SRC-02",
-        "SRC-03"
-      ],
-      "cls": "A",
-      "ingested": 2,
-      "processed": 2,
-      "verified": 2,
-      "pipelineComplete": 2,
-      "buyer": "Allen ISD",
-      "gaps": []
-    },
-    "PKG-04": {
-      "files": [
-        "SRC-04"
-      ],
-      "cls": "A",
-      "ingested": 1,
-      "processed": 1,
-      "verified": 1,
-      "pipelineComplete": 1,
-      "buyer": "TxDMV",
-      "gaps": []
-    },
-    "PKG-03": {
-      "files": [
-        "SRC-06",
-        "SRC-07"
-      ],
-      "cls": "B",
-      "ingested": 2,
-      "processed": 2,
-      "verified": 2,
-      "pipelineComplete": 2,
-      "buyer": "Arlington TX",
-      "gaps": []
-    },
-    "PKG-05": {
-      "files": [
-        "SRC-08"
-      ],
-      "cls": "B",
+      "files": [],
       "ingested": 0,
       "processed": 0,
       "verified": 0,
       "pipelineComplete": 0,
-      "buyer": "Jefferson County",
-      "gaps": [
-        {
-          "kind": "corpus_unavailable",
-          "severity": "blocking",
-          "detail": "C:\\Users\\Ashto\\Downloads\\12.pdf",
-          "ux": "Data Ops"
-        }
-      ]
+      "gaps": []
+    },
+    "PKG-02": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-04": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-03": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-05": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
     },
     "PKG-06": {
-      "files": [
-        "SRC-09"
-      ],
-      "cls": "B",
-      "ingested": 1,
-      "processed": 1,
-      "verified": 1,
-      "pipelineComplete": 1,
-      "buyer": "Texas Lottery",
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
       "gaps": []
     },
     "PKG-07": {
@@ -138,6 +105,49 @@
       "gaps": []
     },
     "PKG-13": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-14": {
+      "files": [
+        "SRC-20b"
+      ],
+      "cls": "B",
+      "ingested": 1,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "buyer": "Terrell ISD",
+      "gaps": [
+        {
+          "kind": "parser_extraction_failure",
+          "severity": "blocking",
+          "detail": "{'message': 'Cannot coerce the result to a single JSON object', 'code': 'PGRST116', 'hint': None, 'details': 'The result contains 0 rows'}",
+          "ux": "Data Ops"
+        }
+      ]
+    },
+    "PKG-15": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-16": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-17": {
       "files": [],
       "ingested": 0,
       "processed": 0,
@@ -203,6 +213,132 @@
       "gaps": [],
       "finalStatus": "VERIFIED",
       "pipelineComplete": true
+    },
+    {
+      "srcId": "SRC-01b",
+      "pkg": "PKG-01",
+      "cls": "B",
+      "buyer": "Williamson County",
+      "dtype": "board minutes",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-01b_Williamson_20241210_Commissioners_Court_Minutes.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "bed932ed-8f87-47b5-97d8-a45881e0ce74",
+        "versionId": "63f1d32e-0cd2-4397-9083-cd2dcd8bdb63",
+        "duplicate": false,
+        "sha256": "7e72bd438ceb73ea06abbf9ffa3705585c7ca7dc39fedfb50de36c2046c7ac88",
+        "opportunityId": "3f23c702-f7a6-4762-bb91-5a0d11c6a5d7"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 41,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 4,
+        "rejected": 37,
+        "promoted": 4,
+        "promotions": [
+          {
+            "factId": "8c47b42d-75cf-40ae-b6da-753ad8715e4c",
+            "field": "awarded_rate",
+            "ok": true,
+            "action": "rate",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 40.03,
+            "sourcePage": 13,
+            "excerpt": "100-0560-003670 Use of Donations $115.13\n  0100-0560-003671 Use of VA Donations $40.03\n  Aye:  Commissioner Precinct 1 Terry Cook \n  Commissioner Precinct 2 Cynthia L"
+          },
+          {
+            "factId": "66a4adfb-bf91-4cb3-96b6-1262e67934db",
+            "field": "po_number",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "purchase_order",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 3,
+            "excerpt": "mpensation\nchanges, position title changes, posi"
+          },
+          {
+            "factId": "dc798cdf-fd68-47b4-8608-08a3f372fd74",
+            "field": "amendment_number",
+            "ok": true,
+            "action": "rate",
+            "contractAction": "amendment",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 6,
+            "sourcePage": 17,
+            "excerpt": "tion to authorize the Renewal\nAmendment No. 6 for Stop Loss Insurance, with"
+          },
+          {
+            "factId": "91b1e5a2-39dd-457d-8e9d-6c5f17194b24",
+            "field": "solicitation_number",
+            "ok": true,
+            "action": "solicitation",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 26,
+            "excerpt": "and take appropriate action on awarding IFB #25IFB6 to\nRotten Apples Services LLC for Bagda"
+          }
+        ],
+        "factCount": 41,
+        "structuredCount": 4
+      },
+      "pdfAnalysis": {
+        "pages": 37,
+        "chars": 70934,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": true,
+          "pricing_table": true,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": true,
+          "proposal_sections": true,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": true,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
     },
     {
       "srcId": "SRC-02",
@@ -505,22 +641,104 @@
       "cls": "B",
       "buyer": "Jefferson County",
       "dtype": "bid tab",
-      "path": "C:\\Users\\Ashto\\Downloads\\12.pdf",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-08_Jefferson_bid_tab_12.pdf",
       "intake": {
-        "ok": false,
-        "reason": "file missing locally"
+        "ok": true,
+        "documentId": "042cc901-a0ab-4d34-bb6e-9d02128d575d",
+        "versionId": "17fad65d-56e8-4ee7-b343-53cede7df68b",
+        "duplicate": false,
+        "sha256": "72fbde263e5deae24c643042946ac013cab672c9365779652d8aab6c2ad976fd",
+        "opportunityId": "2a362eef-f509-4a38-9f4a-eaf48f4200f3"
       },
-      "process": null,
-      "verify": null,
-      "pdfAnalysis": null,
-      "gaps": [
-        {
-          "kind": "corpus_unavailable",
-          "severity": "blocking",
-          "detail": "C:\\Users\\Ashto\\Downloads\\12.pdf",
-          "ux": "Data Ops"
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 5,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 4,
+        "rejected": 1,
+        "promoted": 2,
+        "promotions": [
+          {
+            "factId": "9c21ba50-2cf3-4c49-bd6c-f5b40d0a333b",
+            "field": "awarded_rate",
+            "ok": true,
+            "action": "rate",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 19.31,
+            "sourcePage": 1,
+            "excerpt": "m Price \n(Hour/Security \nOfficer)\nAllied Universal Security Service yes yes yes $19.31\nBlackstone Security Services of Texas, Inc. yes yes yes $14.97\nJanissary, Inc."
+          },
+          {
+            "factId": "2ae8b552-1a3d-4744-8f69-d859dd2b787e",
+            "field": "awarded_rate",
+            "ok": false,
+            "action": "conflict",
+            "chunkAction": null,
+            "truth": "awarded",
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "vice yes yes yes $19.31\nBlackstone Security Services of Texas, Inc. yes yes yes $14.97\nJanissary, Inc. yes yes yes $16.52\nL & P Global Security, LLC yes yes yes $18.7"
+          },
+          {
+            "factId": "343642c9-6d0e-485d-9dd7-5d31234478e7",
+            "field": "awarded_rate",
+            "ok": false,
+            "action": "conflict",
+            "chunkAction": null,
+            "truth": "awarded",
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "Security Services of Texas, Inc. yes yes yes $14.97\nJanissary, Inc. yes yes yes $16.52\nL & P Global Security, LLC yes yes yes $18.75\nLofton Security Service, Inc. yes"
+          },
+          {
+            "factId": "908d87a1-7f97-4908-ba3e-acc3c34b9585",
+            "field": "solicitation_number",
+            "ok": true,
+            "action": "solicitation",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "Preliminary Tabulation\nIFB 18-009/YS, Term Contract for Security Personnel S"
+          }
+        ],
+        "factCount": 5,
+        "structuredCount": 4
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 4438,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": false,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": true,
+          "pricing_table": true,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
         }
-      ]
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true
     },
     {
       "srcId": "SRC-09",
@@ -598,20 +816,1528 @@
       "gaps": [],
       "finalStatus": "VERIFIED",
       "pipelineComplete": true
+    },
+    {
+      "srcId": "SRC-10",
+      "pkg": "PKG-07",
+      "cls": "C",
+      "buyer": "Dallas County",
+      "dtype": "bid tab",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-10_Dallas_BID_TAB_16-0219.PDF",
+      "intake": {
+        "ok": true,
+        "documentId": "5126aae6-12ae-47b2-aefd-e48dd39a37c2",
+        "versionId": "fdd493a6-f666-4a31-b730-b6a31dc921d5",
+        "duplicate": false,
+        "sha256": "6a6e13e8151922c7fac8f7f126d4939c1b53c779430b20af6777c93b2f92c3a6",
+        "opportunityId": "8800eb00-7c0a-4bed-9ca8-dc4556a896d1"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 4,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 1,
+        "rejected": 3,
+        "promoted": 0,
+        "promotions": [
+          {
+            "factId": "26705fc0-e214-459a-8d5c-6f1ed4cc06e3",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          }
+        ],
+        "factCount": 4,
+        "structuredCount": 1
+      },
+      "pdfAnalysis": {
+        "pages": 3,
+        "chars": 4881,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": false,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": true,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": false,
+      "classCComplete": true
+    },
+    {
+      "srcId": "SRC-11",
+      "pkg": "PKG-08",
+      "cls": "C",
+      "buyer": "Dallas County",
+      "dtype": "synopsis",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-11_Dallas_2014-036-6418SecurityGuard.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "64a9c5a2-50d0-4711-99ec-200245da066f",
+        "versionId": "14763a46-6d56-42ea-a72c-787bc581cad9",
+        "duplicate": false,
+        "sha256": "eebc7e7232a27e922ed4480d78a586f88c3b117bef146fa17aaa28ccdbc28962",
+        "opportunityId": "983a6171-f29a-4ff7-8ae9-d8b76a79441f"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 1,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 0,
+        "rejected": 1,
+        "promoted": 0,
+        "promotions": [],
+        "factCount": 1,
+        "structuredCount": 0
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 2000,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": true,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [
+        {
+          "kind": "schema_gap",
+          "severity": "blocking",
+          "detail": "Extractor emits page_text blobs only — no solicitation/pricing/scope entities",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "NEEDS_REVIEW",
+      "pipelineComplete": false,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-12",
+      "pkg": "PKG-09",
+      "cls": "C",
+      "buyer": "Tarrant County",
+      "dtype": "cost build",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-12_Tarrant_2018-092_AnnualContract.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "d1b74a6f-f5ba-4ef9-98c4-b207ae99a62d",
+        "versionId": "8eadec27-3fb9-4158-813e-5efcfaddd35d",
+        "duplicate": false,
+        "sha256": "8008be838b0502d6957c3cdec9c13991ea6e3fc76a005ff006eb9764169f1be6",
+        "opportunityId": "c946aa87-5a78-4adb-b96d-88a1125798dd"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 3,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 1,
+        "rejected": 2,
+        "promoted": 0,
+        "promotions": [
+          {
+            "factId": "7f489224-5512-436b-8acf-8929ca14dac1",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          }
+        ],
+        "factCount": 3,
+        "structuredCount": 1
+      },
+      "pdfAnalysis": {
+        "pages": 2,
+        "chars": 5014,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": false,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": false,
+      "classCComplete": true
+    },
+    {
+      "srcId": "SRC-13",
+      "pkg": "PKG-10",
+      "cls": "C",
+      "buyer": "MHMR Tarrant",
+      "dtype": "bid tab",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-13_MHMR_25-003-Security-Guard-Services-Tabulation.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "76a01a4b-fd75-463b-a249-4091c83a8e2c",
+        "versionId": "c381007f-017d-427b-ae30-71b8dcba2b7f",
+        "duplicate": false,
+        "sha256": "5ebf4975b592d381f48a6f0623d703bbd2170bd35f0160b80ae6d18d2e2f7b45",
+        "opportunityId": "a71bd7b4-a30e-47ec-97dc-fb66a843a351"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 5,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 3,
+        "promoted": 0,
+        "promotions": [
+          {
+            "factId": "63b362a4-3517-444b-b9f9-eba8a9a3e703",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          },
+          {
+            "factId": "03b1ee89-dd94-43b5-b9d6-2063ad03c23c",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          }
+        ],
+        "factCount": 5,
+        "structuredCount": 2
+      },
+      "pdfAnalysis": {
+        "pages": 3,
+        "chars": 5436,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": false,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": true,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": false,
+      "classCComplete": true
+    },
+    {
+      "srcId": "SRC-14",
+      "pkg": "PKG-11",
+      "cls": "C",
+      "buyer": "Harris County",
+      "dtype": "renewal",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-14_Harris_26-0534_Renewal_VSA.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "d8670f19-25ff-429d-9c6f-7a677e5973b4",
+        "versionId": "82dbdf6b-7add-4b1f-8131-a4a79be3a9bd",
+        "duplicate": false,
+        "sha256": "21a3f215cf8bca032692fc3fd40cc522a12d07e62297a34aba9901b5c9692cdd",
+        "opportunityId": "1e5f344f-c32d-4f79-a0c6-44c14842d57e"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 1,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 0,
+        "rejected": 1,
+        "promoted": 0,
+        "promotions": [],
+        "factCount": 1,
+        "structuredCount": 0
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 968,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": false,
+          "scope_service": true,
+          "scope_sites": false,
+          "scope_staffing": false,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": true,
+          "proposal_sections": true,
+          "result_award": false,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [
+        {
+          "kind": "schema_gap",
+          "severity": "blocking",
+          "detail": "Extractor emits page_text blobs only — no solicitation/pricing/scope entities",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "NEEDS_REVIEW",
+      "pipelineComplete": false,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-15",
+      "pkg": "PKG-12",
+      "cls": "C",
+      "buyer": "TFC",
+      "dtype": "contract",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-15_TFC_Vets_Securing_24-001-000_Redacted.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "5c223b70-e418-487c-aa10-270342bcd201",
+        "versionId": "f5700d25-083b-4971-a66d-9f51acdef99c",
+        "duplicate": false,
+        "sha256": "8f80d1b9461174abcf2898e0d45d16e96c945051dadb6a3e1523ee9008cb0d4a",
+        "opportunityId": "49b2a115-16d5-4367-a4fb-35393c002f52"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 76,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 74,
+        "promoted": 0,
+        "promotions": [
+          {
+            "factId": "d4b8afbe-6d4a-4321-986d-896cf3771ef3",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          },
+          {
+            "factId": "b6936ccd-aafe-4ce0-afbd-858ffa86d4ea",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          }
+        ],
+        "factCount": 76,
+        "structuredCount": 2
+      },
+      "pdfAnalysis": {
+        "pages": 74,
+        "chars": 184799,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": true,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": true,
+          "proposal_sections": true,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": true,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": false,
+      "classCComplete": true
+    },
+    {
+      "srcId": "SRC-16",
+      "pkg": "PKG-12",
+      "cls": "C",
+      "buyer": "TFC",
+      "dtype": "amendment",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-16_TFC_VSA_24-001_Amend_4.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "06639370-f656-48ac-bbe0-3e58154ad9e2",
+        "versionId": "ca70b3fa-ac6e-43be-b45c-78c80b0dea0a",
+        "duplicate": false,
+        "sha256": "b91a8441f18f1a3f5409750acbed97c223194670cd5a39a1d1ff27cef575e0f4",
+        "opportunityId": "49b2a115-16d5-4367-a4fb-35393c002f52"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 10,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 4,
+        "rejected": 6,
+        "promoted": 0,
+        "promotions": [
+          {
+            "factId": "dc6dd9e1-d12d-47fb-ac5d-e79b5b5b897d",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          },
+          {
+            "factId": "d0efc7a9-6903-4c3e-bb0b-b6185e51a45a",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          },
+          {
+            "factId": "176e5a8b-8957-475d-a16b-d35972cf1eef",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          },
+          {
+            "factId": "8fffc1ba-a305-4f03-b5fa-9f16a8c2779f",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          }
+        ],
+        "factCount": 10,
+        "structuredCount": 4
+      },
+      "pdfAnalysis": {
+        "pages": 6,
+        "chars": 8138,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": true,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": true,
+          "proposal_sections": true,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": true,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": false,
+      "classCComplete": true
+    },
+    {
+      "srcId": "SRC-17",
+      "pkg": "PKG-13",
+      "cls": "C",
+      "buyer": "Arlington County VA",
+      "dtype": "contract+NOA",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-17_ArlingtonVA_Contract19-264-R_NOA.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "a7231ac0-a504-4c5d-8b79-997640c3de74",
+        "versionId": "fd61bdd3-3f40-47ca-a686-5fe64fa425df",
+        "duplicate": false,
+        "sha256": "bb2658f90ec690cc005112c2447150d1622a208085d20e2a877d6588cb591fe6",
+        "opportunityId": "2e08567e-bb42-4cf7-94c3-a7a001670522"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 3,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 1,
+        "rejected": 2,
+        "promoted": 0,
+        "promotions": [
+          {
+            "factId": "09d121ad-8f2c-4598-8e92-91d987a42b5c",
+            "action": "skipped_class_c",
+            "ok": false,
+            "skipped": true
+          }
+        ],
+        "factCount": 3,
+        "structuredCount": 1
+      },
+      "pdfAnalysis": {
+        "pages": 13,
+        "chars": 4476,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": true,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": true,
+          "proposal_sections": true,
+          "result_award": true,
+          "result_scores": false,
+          "contract_po": true,
+          "contract_amendment": true,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": false,
+      "classCComplete": true
+    },
+    {
+      "srcId": "SRC-18",
+      "pkg": "PKG-13",
+      "cls": "C",
+      "buyer": "Arlington County VA",
+      "dtype": "amendment",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-18_ArlingtonVA_19-264-RAmendment2signed.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "34b3aa95-19b5-482d-9199-de9f9009aa9c",
+        "versionId": "03f43c9e-f80e-4fb7-8e86-9ea9778ac00d",
+        "duplicate": false,
+        "sha256": "831ece226849794a07c6ff64aead2e2d3f507b94b2593cf59d15e62f9fd95eeb",
+        "opportunityId": "2e08567e-bb42-4cf7-94c3-a7a001670522"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 2,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 0,
+        "rejected": 2,
+        "promoted": 0,
+        "promotions": [],
+        "factCount": 2,
+        "structuredCount": 0
+      },
+      "pdfAnalysis": {
+        "pages": 2,
+        "chars": 7061,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": false,
+          "scope_sites": false,
+          "scope_staffing": false,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": false,
+          "result_scores": false,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [
+        {
+          "kind": "schema_gap",
+          "severity": "blocking",
+          "detail": "Extractor emits page_text blobs only — no solicitation/pricing/scope entities",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "NEEDS_REVIEW",
+      "pipelineComplete": false,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-19",
+      "pkg": "PKG-13",
+      "cls": "C",
+      "buyer": "Arlington County VA",
+      "dtype": "amendment scan",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-19_ArlingtonVA_19-264-RA3Final.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "fdc41c9b-4bdf-44ad-ad38-d13a3d017d8e",
+        "versionId": "dd1ffd2a-0257-47b3-b4f4-03dbebdf6858",
+        "duplicate": false,
+        "sha256": "4f05f6ecdced56b8fa5eaccae5abba34ad32a06e0f22a61edc7591f6411b22c6",
+        "opportunityId": "2e08567e-bb42-4cf7-94c3-a7a001670522"
+      },
+      "process": {
+        "ok": false,
+        "status": 422,
+        "factCount": 0,
+        "error": "Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate to OCR; do not accept empty native parse. parser_id=ocr-mistral class=scanned_pdf policy=1.0.0 mime='application/pdf' filename='SRC-19_ArlingtonVA_19-264-RA3Final.pdf'."
+      },
+      "verify": null,
+      "pdfAnalysis": {
+        "pages": 9,
+        "chars": 0,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": false,
+          "scope_sites": false,
+          "scope_staffing": false,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": false,
+          "result_scores": false,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [
+        {
+          "kind": "parser_extraction_failure",
+          "severity": "blocking",
+          "detail": "Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate to OCR; do not accept empty native parse. parser_id=ocr-mistral class=scanned_pdf policy=1.0.0 mime='application/pdf' filename='SRC-19_ArlingtonVA_19-264-RA3Final.pdf'.",
+          "ux": "Data Ops"
+        },
+        {
+          "kind": "parser_extraction_failure",
+          "severity": "blocking",
+          "detail": "Scanned/image PDF — no extractable text (OCR unwired)",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "FAILED",
+      "pipelineComplete": false,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-20",
+      "pkg": "PKG-14",
+      "cls": "A",
+      "buyer": "Terrell ISD",
+      "dtype": "contract",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-20_Terrell_ISD_LP_Security_Officer_Agreement.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "de7a3f86-db47-4b9d-b517-8910630b205e",
+        "versionId": "9ab41781-9d7a-438f-9b4e-bf0218dc90ee",
+        "duplicate": false,
+        "sha256": "83c3c903f0d1255b9587e3ea02e265c77a1cab314c30aecd1f6a071faec0055c",
+        "opportunityId": "857d9002-a1f8-4e3d-a179-419eada69191"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 10,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 8,
+        "promoted": 2,
+        "promotions": [
+          {
+            "factId": "548b0648-accf-4cf4-b471-cb0a9c30f331",
+            "field": "awarded_rate",
+            "ok": true,
+            "action": "rate",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 29.35,
+            "sourcePage": 4,
+            "excerpt": "Throughout  the  term  of  this  Agreement,  Customer  shall  pay  to  Agency  $29.35  per  hour  per  officer  for  time  worked  (actual  production  hours  only)"
+          },
+          {
+            "factId": "7b691a99-e4d0-4eae-8f6b-8b4b5df2af97",
+            "field": "po_number",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "purchase_order",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "l\n \nDistrict,\n \na\n \npolitical\n \nsubdivision\n \nof"
+          }
+        ],
+        "factCount": 10,
+        "structuredCount": 2
+      },
+      "pdfAnalysis": {
+        "pages": 8,
+        "chars": 29384,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": false,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": true,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": false,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-20b",
+      "pkg": "PKG-14",
+      "cls": "B",
+      "buyer": "Terrell ISD",
+      "dtype": "board ESR",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-20b_Terrell_ISD_2025-26_LP_Security_ESR.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "efd017d0-4399-4d79-a566-cf30ffd052f1",
+        "versionId": "cacf98c6-38b5-4cd3-9ecf-ee9711ecbdb7",
+        "duplicate": true,
+        "sha256": "993be12dd84b9e5d563715dd9b4f2255d9c1056669e812251660f1b43e889dfe",
+        "opportunityId": "857d9002-a1f8-4e3d-a179-419eada69191"
+      },
+      "process": {
+        "ok": false,
+        "status": 500,
+        "factCount": 0,
+        "error": "{'message': 'Cannot coerce the result to a single JSON object', 'code': 'PGRST116', 'hint': None, 'details': 'The result contains 0 rows'}"
+      },
+      "verify": {
+        "verified": 4,
+        "promoted": 0
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 1890,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": false,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [
+        {
+          "kind": "parser_extraction_failure",
+          "severity": "blocking",
+          "detail": "{'message': 'Cannot coerce the result to a single JSON object', 'code': 'PGRST116', 'hint': None, 'details': 'The result contains 0 rows'}",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-20c",
+      "pkg": "PKG-14",
+      "cls": "B",
+      "buyer": "Terrell ISD",
+      "dtype": "price comparison",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-20c_Terrell_ISD_2025-26_LP_Price_Comparison.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "9d1d7127-fe95-46da-ab43-bcf7ff68ff29",
+        "versionId": "0c6af23d-aeca-4208-b41e-231c349b1359",
+        "duplicate": false,
+        "sha256": "fc63a793e506b5138ee29b1140a6c1392c3bc1e7e0983b8020e421cd68d419ac",
+        "opportunityId": "857d9002-a1f8-4e3d-a179-419eada69191"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 2,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 1,
+        "rejected": 1,
+        "promoted": 1,
+        "promotions": [
+          {
+            "factId": "2de8f25e-f579-4068-8f61-516747605462",
+            "field": "po_number",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "purchase_order",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "11\" Chromebook 511 Portege X40-M \nPrice Compar"
+          }
+        ],
+        "factCount": 2,
+        "structuredCount": 1
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 378,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": true,
+          "solicitation_forms": false,
+          "scope_service": false,
+          "scope_sites": false,
+          "scope_staffing": false,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": false,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-21",
+      "pkg": "PKG-15",
+      "cls": "A",
+      "buyer": "Terrell ISD",
+      "dtype": "contract",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-21_Terrell_ISD_2026-27_LP_Security_Contract.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "10cb525d-694f-4d65-af37-fcf7ef0ec900",
+        "versionId": "0a25692b-b13e-45ac-a4e3-0695c4877bde",
+        "duplicate": false,
+        "sha256": "0171e4a779e3b44f907efc2986a44e3a221f5486f21a2c8821603e6c8655df6f",
+        "opportunityId": "eb3aaf7b-d463-4ad6-b331-16e2a9a70a03"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 11,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 4,
+        "rejected": 7,
+        "promoted": 4,
+        "promotions": [
+          {
+            "factId": "9789e927-d019-4b3c-b17c-264ebf05180d",
+            "field": "awarded_rate",
+            "ok": true,
+            "action": "rate",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 29.35,
+            "sourcePage": 4,
+            "excerpt": "Throughout  the  term  of  this  Agreement,  Customer  shall  pay  to  Agency  $29.35  per  hour  per  officer  for  time  worked  (actual  production  hours  only)"
+          },
+          {
+            "factId": "3b11c624-9291-4dfd-ad4b-8245a8cea6fc",
+            "field": "po_number",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "purchase_order",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "l\n \nDistrict,\n \na\n \npolitical\n \nsubdivision\n \nof"
+          },
+          {
+            "factId": "8722f0b3-0e10-42af-9422-3f35669ed347",
+            "field": "contract_start",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "contract_start",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 2,
+            "excerpt": "s  contract  shall  commence  on  08/01/2026  and  automatically  \nterminate\n \non\n \n07/31/2027.\n \nCustomer\n \nand"
+          },
+          {
+            "factId": "e00aa731-5a62-4f49-8199-80d64e7a3592",
+            "field": "contract_end",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "contract_end",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 2,
+            "excerpt": "s  contract  shall  commence  on  08/01/2026  and  automatically  \nterminate\n \non\n \n07/31/2027.\n \nCustomer\n \nand"
+          }
+        ],
+        "factCount": 11,
+        "structuredCount": 4
+      },
+      "pdfAnalysis": {
+        "pages": 7,
+        "chars": 29324,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": true,
+          "pricing_table": false,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": true,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": false,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-21b",
+      "pkg": "PKG-15",
+      "cls": "B",
+      "buyer": "Terrell ISD",
+      "dtype": "board ESR",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-21b_Terrell_ISD_2026-27_LP_Security_ESR.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "d10e6d91-de81-4c68-a10e-005d080c7c1c",
+        "versionId": "fadc04b0-b745-481b-bab2-e728855c55b4",
+        "duplicate": false,
+        "sha256": "c520aa39645401512b893395738f361040f108728f6f929ad1d3186b1da29681",
+        "opportunityId": "eb3aaf7b-d463-4ad6-b331-16e2a9a70a03"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 4,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 3,
+        "rejected": 1,
+        "promoted": 3,
+        "promotions": [
+          {
+            "factId": "3924857f-f111-489f-bc9f-6df099f9416f",
+            "field": "txmas",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "federal_identifier",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "rvices.   TXMAS  Cooperative  TXMAS-24-99003  Guard  and  Security  Servic"
+          },
+          {
+            "factId": "5ea3d226-ceb7-4c1e-b850-0fdb22f722cb",
+            "field": "po_number",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "purchase_order",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "d  police  officer  positions  for  all  campuses"
+          },
+          {
+            "factId": "ba15d323-7c8f-4439-ae65-0bc18c34edff",
+            "field": "contract_nte",
+            "ok": true,
+            "action": "rate",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 100000,
+            "sourcePage": 1,
+            "excerpt": "Not  to  Exceed  $100,000"
+          }
+        ],
+        "factCount": 4,
+        "structuredCount": 3
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 2062,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": false,
+          "result_scores": true,
+          "contract_po": true,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-22",
+      "pkg": "PKG-16",
+      "cls": "B",
+      "buyer": "Wylie ISD",
+      "dtype": "committee minutes",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-22_Wylie_July31_Safety_Security_Minutes.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "17ca9e3a-bfab-46d1-b2a1-cd57adb48ca4",
+        "versionId": "d9595346-6617-4870-a8ca-8e15a7fbed8d",
+        "duplicate": false,
+        "sha256": "676fa763699f9d31e60da20f0493229f895e3ecd860d6cd6fd5912780abf34e0",
+        "opportunityId": "30eb3268-cc0a-45df-a786-bb64556da4cd"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 2,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 2,
+        "promoted": 0,
+        "promotions": [],
+        "factCount": 2,
+        "structuredCount": 0
+      },
+      "pdfAnalysis": {
+        "pages": 2,
+        "chars": 2135,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [
+        {
+          "kind": "schema_gap",
+          "severity": "blocking",
+          "detail": "Extractor emits page_text blobs only — no solicitation/pricing/scope entities",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-23",
+      "pkg": "PKG-17",
+      "cls": "B",
+      "buyer": "Mesquite ISD",
+      "dtype": "board agenda",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-23_Mesquite_ISD_20230901_LP_Contract_Approval_Agenda.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "2d7a84b2-5424-4afe-8652-092e9aff398a",
+        "versionId": "de8badbb-ab96-4df3-a6b8-910a5c14d3c5",
+        "duplicate": false,
+        "sha256": "75349ebf5856b352e1e7debffc322eda3d577aa7dcb25bf1dfbaba38f754a20d",
+        "opportunityId": "4b003fe0-9650-471d-bd11-af0ce584367e"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 1,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 1,
+        "promoted": 0,
+        "promotions": [],
+        "factCount": 1,
+        "structuredCount": 0
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 914,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": false,
+          "scope_classifications": true,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [
+        {
+          "kind": "schema_gap",
+          "severity": "blocking",
+          "detail": "Extractor emits page_text blobs only — no solicitation/pricing/scope entities",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
     }
   ],
   "pricingLines": [
     {
-      "id": "9eb19da7-e295-4671-926c-6e0ebf34fc0e",
-      "opportunity_id": "2a6b6056-e563-4e46-be7a-a0cea9c73231",
-      "labor_category": "hourly",
+      "id": "1a4c3b87-33bf-4cc6-a9ab-d9578d8fd2e4",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "Blackstone Security",
       "requested_rate": null,
       "proposed_rate": null,
-      "awarded_rate": 32.28,
+      "awarded_rate": 70.48,
       "current_rate": null,
       "requested_source_fact_id": null,
       "proposed_source_fact_id": null,
-      "awarded_source_fact_id": "c59cd260-b0fb-4f70-9248-64db7d078949",
+      "awarded_source_fact_id": "468d8aa9-525f-4c78-90ea-6bcbeb7b207b",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "f3c48a59-839d-4c1b-8c67-56e19d9b14c8",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "Security Engineers, Inc.,",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 67.34,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "0dec3c9e-f26b-46c3-8366-54cdafcb1793",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "1b0ff1ae-c2f5-4f06-808f-629dfd248106",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "Texas Industrial Security,",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 63.89,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "c78499e4-5844-4546-9c0f-eee05fc8a577",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "df552c6f-8357-4c50-8c74-f9ad2156f180",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "National Security &",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 40.6,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "746ca195-8096-465a-8608-80054a134332",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "a54e1bdd-c867-41f6-84c6-5156ed318d11",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "Bid closed",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 35.06,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "60f87394-e335-43ae-8153-93621603c5fe",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "61547aa2-7f16-4ed6-924d-4a9c8749671f",
+      "opportunity_id": "857d9002-a1f8-4e3d-a179-419eada69191",
+      "labor_category": "contract",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 100000,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "495d1851-e54a-4390-a59b-9dc5267d4802",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "2f5ea442-ab9c-4e5f-b355-f3ff2ff0aa2f",
+      "opportunity_id": "2a362eef-f509-4a38-9f4a-eaf48f4200f3",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 19.31,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "9c21ba50-2cf3-4c49-bd6c-f5b40d0a333b",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "5570197b-82f6-4af0-88f6-b04dfeb1a1f9",
+      "opportunity_id": "8800eb00-7c0a-4bed-9ca8-dc4556a896d1",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 14.14,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "26705fc0-e214-459a-8d5c-6f1ed4cc06e3",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "fdc1d037-31d7-450c-a1c9-37b22317238a",
+      "opportunity_id": "49b2a115-16d5-4367-a4fb-35393c002f52",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 53.08,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "d4b8afbe-6d4a-4321-986d-896cf3771ef3",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "4f7ebe75-a297-4044-8bd5-322225f44cfc",
+      "opportunity_id": "eb3aaf7b-d463-4ad6-b331-16e2a9a70a03",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 29.35,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "aabe48c7-0a48-47e2-92e4-cf7ec14479e3",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "4a549d16-af6b-4dd5-8d8e-50a8a493e4a0",
+      "opportunity_id": "c946aa87-5a78-4adb-b96d-88a1125798dd",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 13,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "7f489224-5512-436b-8acf-8929ca14dac1",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "115035c6-0173-45d5-b326-a6ec54913826",
+      "opportunity_id": "a71bd7b4-a30e-47ec-97dc-fb66a843a351",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 28.5,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "63b362a4-3517-444b-b9f9-eba8a9a3e703",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "c84266e3-4f31-4221-a673-0ac07352f5b7",
+      "opportunity_id": "49b2a115-16d5-4367-a4fb-35393c002f52",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": null,
+      "current_rate": 37.97,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": null,
+      "current_source_fact_id": "dc6dd9e1-d12d-47fb-ac5d-e79b5b5b897d"
+    },
+    {
+      "id": "0be7881b-6984-4da1-b1ef-73f8806e2bd1",
+      "opportunity_id": "49b2a115-16d5-4367-a4fb-35393c002f52",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": null,
+      "current_rate": 37.25,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": null,
+      "current_source_fact_id": "8fffc1ba-a305-4f03-b5fa-9f16a8c2779f"
+    },
+    {
+      "id": "bb2ccf6a-ded2-42bf-9435-02443b8c082a",
+      "opportunity_id": "3f23c702-f7a6-4762-bb91-5a0d11c6a5d7",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": 31.45,
+      "awarded_rate": null,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": "0a62a3c7-af74-4bd2-88bd-fea2d683876f",
+      "awarded_source_fact_id": null,
+      "current_source_fact_id": null
+    },
+    {
+      "id": "efaefb03-51e8-4756-bc6a-e9c4e2848a9f",
+      "opportunity_id": "3f23c702-f7a6-4762-bb91-5a0d11c6a5d7",
+      "labor_category": "federal",
+      "requested_rate": null,
+      "proposed_rate": 4722008,
+      "awarded_rate": null,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": "4f3ac36d-72e8-4f62-8b0c-e4043266ce6a",
+      "awarded_source_fact_id": null,
       "current_source_fact_id": null
     },
     {
@@ -637,31 +2363,335 @@
       "current_rate": null,
       "requested_source_fact_id": null,
       "proposed_source_fact_id": null,
-      "awarded_source_fact_id": "990e0f8c-0656-4bb4-82a9-675227748c54",
+      "awarded_source_fact_id": "4da91fc0-2adb-4b82-acb8-88df50655a46",
       "current_source_fact_id": null
     },
     {
-      "id": "bb2ccf6a-ded2-42bf-9435-02443b8c082a",
+      "id": "49736ae2-f251-47f0-bd89-8e820359b866",
+      "opportunity_id": "2a6b6056-e563-4e46-be7a-a0cea9c73231",
+      "labor_category": "federal",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 4722008,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "426233ea-dea2-4a90-8443-d216eddc1786",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "98e7440c-3756-4600-aec5-41a917e48aae",
+      "opportunity_id": "857d9002-a1f8-4e3d-a179-419eada69191",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 29.35,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "4d43c3ba-9e52-40d9-a12b-c6b1d4d4e362",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "4a407366-8af4-462e-ba22-28cf80b220a8",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "Securitas Security USA",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 90.46,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "b9f643f3-e2fa-495d-b791-659668adaaaa",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "bce08791-9c0a-403c-8a63-54d4646ea177",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "Metropolitan Security",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 86.01,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "a06d2a80-f564-4f5b-ab1a-6930e11195ff",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "d8378c0f-b67d-47d0-b9ea-5fd6d1cf2f81",
+      "opportunity_id": "b937b54c-70d5-468e-97cf-803d2a69e5a9",
+      "labor_category": "L&P Global Security, LLC,",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 82.39,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "aea3743e-0c22-4871-a394-65ee0138c063",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "a8580ddd-8149-4d64-be41-5a7268b1a7b4",
       "opportunity_id": "3f23c702-f7a6-4762-bb91-5a0d11c6a5d7",
       "labor_category": "hourly",
       "requested_rate": null,
-      "proposed_rate": 31.45,
-      "awarded_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 40.03,
       "current_rate": null,
       "requested_source_fact_id": null,
-      "proposed_source_fact_id": "7f7090e0-47e9-4f97-b63c-184d34f45d8d",
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "8c47b42d-75cf-40ae-b6da-753ad8715e4c",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "a6aaadea-bfb9-42a5-a80a-e576e8f999cc",
+      "opportunity_id": "3f23c702-f7a6-4762-bb91-5a0d11c6a5d7",
+      "labor_category": "amendment",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 6,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "dc798cdf-fd68-47b4-8608-08a3f372fd74",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "18ee63ad-a535-4a20-a0e5-f0fc1a0411ee",
+      "opportunity_id": "e879c97f-5d05-490a-8d2c-b656a63d3f09",
+      "labor_category": "purchase_order",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 16167,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "1a0e8f14-f8e7-4297-9965-470bf397dc52",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "0697e783-7f09-479c-b624-80a531e77a9d",
+      "opportunity_id": "2a362eef-f509-4a38-9f4a-eaf48f4200f3",
+      "labor_category": "competitor",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 18.5,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "7030ffeb-291a-4b80-8961-739adcae085e",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "53bc4955-5b3a-4422-8a9d-260c11dd4351",
+      "opportunity_id": "387f091f-63ad-46f8-8dc1-2bb8fa715940",
+      "labor_category": "required_form",
+      "requested_rate": -1,
+      "proposed_rate": null,
+      "awarded_rate": null,
+      "current_rate": null,
+      "requested_source_fact_id": "a1a551da-7568-496e-9fc2-8aea16533dd8",
+      "proposed_source_fact_id": null,
       "awarded_source_fact_id": null,
+      "current_source_fact_id": null
+    },
+    {
+      "id": "b5e4e0ff-51cd-40db-87d1-8145f3bbb769",
+      "opportunity_id": "387f091f-63ad-46f8-8dc1-2bb8fa715940",
+      "labor_category": "required_form",
+      "requested_rate": -2,
+      "proposed_rate": null,
+      "awarded_rate": null,
+      "current_rate": null,
+      "requested_source_fact_id": "47c01850-2d5f-4871-a09e-3d418609ba18",
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": null,
+      "current_source_fact_id": null
+    },
+    {
+      "id": "94dd084d-c7f5-4c3d-93f1-83e7a9dd8112",
+      "opportunity_id": "eb3aaf7b-d463-4ad6-b331-16e2a9a70a03",
+      "labor_category": "contract",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 100000,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "27fbb74d-69a2-4506-b24e-f75b15e90730",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "9eb19da7-e295-4671-926c-6e0ebf34fc0e",
+      "opportunity_id": "2a6b6056-e563-4e46-be7a-a0cea9c73231",
+      "labor_category": "hourly",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 32.28,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "51ae5373-a039-45d8-b52a-9f03437f405e",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "93860137-a69e-4938-8773-bebb6e67b1f6",
+      "opportunity_id": "2a6b6056-e563-4e46-be7a-a0cea9c73231",
+      "labor_category": "federal",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 4722008,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "45899e64-e00b-45c5-b14d-04c030650502",
       "current_source_fact_id": null
     }
   ],
   "provenance": [
     {
       "truth": "awarded",
-      "rate": 32.28,
-      "factId": "c59cd260-b0fb-4f70-9248-64db7d078949",
-      "sourcePage": 3,
-      "excerpt": "nel at these campuses that would commence August 1, 2024, at an hourly rate \nof $32.28 per hour for time worked.  \nTotal expenditure for the 2024-2025 fiscal year wou",
-      "evidencePage": 3,
+      "rate": 70.48,
+      "factId": "468d8aa9-525f-4c78-90ea-6bcbeb7b207b",
+      "sourcePage": 2,
+      "excerpt": "41.48 \n \n \n29.00 \n \n \n70.48 \nBlackstone Security",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 67.34,
+      "factId": "0dec3c9e-f26b-46c3-8366-54cdafcb1793",
+      "sourcePage": 2,
+      "excerpt": "38.34 \n \n \n29.00 \n \n \n67.34 \n \nSecurity Engineers, Inc.,",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 63.89,
+      "factId": "c78499e4-5844-4546-9c0f-eee05fc8a577",
+      "sourcePage": 2,
+      "excerpt": "33.00 \n \n \n30.89 \n \n \n63.89 \nTexas Industrial Security,",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 40.6,
+      "factId": "746ca195-8096-465a-8608-80054a134332",
+      "sourcePage": 2,
+      "excerpt": "17.00 \n \n \n23.60 \n \n \n40.60 \nNational Security &",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 35.06,
+      "factId": "60f87394-e335-43ae-8153-93621603c5fe",
+      "sourcePage": 2,
+      "excerpt": "12.00 \n \n \n23.06 \n \n \n35.06 \n \n \nBid closed",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 100000,
+      "factId": "495d1851-e54a-4390-a59b-9dc5267d4802",
+      "sourcePage": 1,
+      "excerpt": "Not  to  Exceed  $100,000",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 19.31,
+      "factId": "9c21ba50-2cf3-4c49-bd6c-f5b40d0a333b",
+      "sourcePage": 1,
+      "excerpt": "m Price \n(Hour/Security \nOfficer)\nAllied Universal Security Service yes yes yes $19.31\nBlackstone Security Services of Texas, Inc. yes yes yes $14.97\nJanissary, Inc.",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 14.14,
+      "factId": "26705fc0-e214-459a-8d5c-6f1ed4cc06e3",
+      "sourcePage": 1,
+      "excerpt": "Services for the Water \nDepartment, per the \nattached s\npecifications. 3,016 HR $14.14 $42,646.24 $13.77 $41,530.32 $16.56 $49,944.96 $12.75 $38,454.00 $18.49 $55,765",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 53.08,
+      "factId": "d4b8afbe-6d4a-4321-986d-896cf3771ef3",
+      "sourcePage": 46,
+      "excerpt": "valuation Purposes Only Standard Hourly Rate Overtime Hourly Rate\nSite 320 36.61$  53.08$  \nLead Officer Armed Commissioned 2400 33.94$  49.21$  \nLevel III Armed Commis",
+      "evidencePage": 46,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 29.35,
+      "factId": "aabe48c7-0a48-47e2-92e4-cf7ec14479e3",
+      "sourcePage": 4,
+      "excerpt": "Throughout  the  term  of  this  Agreement,  Customer  shall  pay  to  Agency  $29.35  per  hour  per  officer  for  time  worked  (actual  production  hours  only)",
+      "evidencePage": 4,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 13,
+      "factId": "7f489224-5512-436b-8acf-8929ca14dac1",
+      "sourcePage": 1,
+      "excerpt": "898\n16,119.10$                              \n16,119.10$                              \n13.00$                                     \nITEM 1: UNARMED GUARD WITH VEHICLE\n1.33$",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 28.5,
+      "factId": "63b362a4-3517-444b-b9f9-eba8a9a3e703",
+      "sourcePage": 1,
+      "excerpt": "es\nA,C,D,E A,C,D, A,C,D,E A,C,D,E A,C,D,E A,C,D,E\n8 6-9 150 250 9 8\n0 0 0 0 0 0\n$28.50 $26.07 $38.00 $23.34 $21.46 $25.75 \n$42.75 $39.10 $57.00 $35.01 $24.30 $37.63",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "current",
+      "rate": 37.97,
+      "factId": "dc6dd9e1-d12d-47fb-ac5d-e79b5b5b897d",
+      "sourcePage": 5,
+      "excerpt": "Position / Title Standard \nHourly Rate \nOvertime \nHourly Rate % increase \nSite  $  37.97  $  55.05 3.72% \nLead Officer armed  $  35.30  $  51.18 4.0% \nLevel III Armed C",
+      "evidencePage": 5,
+      "survived": true
+    },
+    {
+      "truth": "current",
+      "rate": 37.25,
+      "factId": "8fffc1ba-a305-4f03-b5fa-9f16a8c2779f",
+      "sourcePage": 6,
+      "excerpt": "Title Standard \nHourly Rate \nOvertime \nHourly Rate % increase \nSite Supervisor $  37.25  $  54.01 3.8% \nLead Officer $  34.55  $  50.10 4.0% \nLevel III Armed Commissio",
+      "evidencePage": 6,
+      "survived": true
+    },
+    {
+      "truth": "proposed",
+      "rate": 31.45,
+      "factId": "0a62a3c7-af74-4bd2-88bd-fea2d683876f",
+      "sourcePage": 17,
+      "excerpt": "Onsite Security Officer) Price  \n($ per hour) \nUnArmed Security Officer         $31.45 \nGolf Cart         $500/Month \n \n                 \n \nPRICE QUOTED GOOD FOR THIR",
+      "evidencePage": 17,
+      "survived": true
+    },
+    {
+      "truth": "proposed",
+      "rate": 4722008,
+      "factId": "4f3ac36d-72e8-4f62-8b0c-e4043266ce6a",
+      "sourcePage": 13,
+      "excerpt": "perience) \n \n• GSA Contract : 47QSWA22D008W \n \n• TXMAS Contract : TXMAS-2",
+      "evidencePage": 13,
       "survived": true
     },
     {
@@ -676,30 +2706,149 @@
     {
       "truth": "awarded",
       "rate": 32.28,
-      "factId": "990e0f8c-0656-4bb4-82a9-675227748c54",
+      "factId": "4da91fc0-2adb-4b82-acb8-88df50655a46",
       "sourcePage": 139,
       "excerpt": "nel at these campuses that would commence August 1, 2024, at an hourly rate \nof $32.28 per hour for time worked.  \nTotal expenditure for the 2024-2025 fiscal year wou",
       "evidencePage": 139,
       "survived": true
     },
     {
-      "truth": "proposed",
-      "rate": 31.45,
-      "factId": "7f7090e0-47e9-4f97-b63c-184d34f45d8d",
+      "truth": "awarded",
+      "rate": 4722008,
+      "factId": "426233ea-dea2-4a90-8443-d216eddc1786",
+      "sourcePage": 139,
+      "excerpt": "chool year utilizing contract GSA #47QSWA22D008W.”\n139",
+      "evidencePage": 139,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 29.35,
+      "factId": "4d43c3ba-9e52-40d9-a12b-c6b1d4d4e362",
+      "sourcePage": 4,
+      "excerpt": "Throughout  the  term  of  this  Agreement,  Customer  shall  pay  to  Agency  $29.35  per  hour  per  officer  for  time  worked  (actual  production  hours  only)",
+      "evidencePage": 4,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 90.46,
+      "factId": "b9f643f3-e2fa-495d-b791-659668adaaaa",
+      "sourcePage": 1,
+      "excerpt": "50.00 \n \n \n40.46 \n \n \n90.46 \n \nSecuritas Security USA",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 86.01,
+      "factId": "a06d2a80-f564-4f5b-ab1a-6930e11195ff",
+      "sourcePage": 2,
+      "excerpt": "46.01 \n \n \n \n40.00 \n \n \n \n86.01 \nMetropolitan Security",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 82.39,
+      "factId": "aea3743e-0c22-4871-a394-65ee0138c063",
+      "sourcePage": 2,
+      "excerpt": "47.00 \n \n \n \n35.39 \n \n \n \n82.39 \n \nL&P Global Security, LLC,",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 40.03,
+      "factId": "8c47b42d-75cf-40ae-b6da-753ad8715e4c",
+      "sourcePage": 13,
+      "excerpt": "100-0560-003670 Use of Donations $115.13\n  0100-0560-003671 Use of VA Donations $40.03\n  Aye:  Commissioner Precinct 1 Terry Cook \n  Commissioner Precinct 2 Cynthia L",
+      "evidencePage": 13,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 6,
+      "factId": "dc798cdf-fd68-47b4-8608-08a3f372fd74",
       "sourcePage": 17,
-      "excerpt": "Onsite Security Officer) Price  \n($ per hour) \nUnArmed Security Officer         $31.45 \nGolf Cart         $500/Month \n \n                 \n \nPRICE QUOTED GOOD FOR THIR",
+      "excerpt": "tion to authorize the Renewal\nAmendment No. 6 for Stop Loss Insurance, with",
       "evidencePage": 17,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 16167,
+      "factId": "1a0e8f14-f8e7-4297-9965-470bf397dc52",
+      "sourcePage": 1,
+      "excerpt": "siness Unit # 60800\nPurchase Order # 0000016167\nPayment Terms: \nNET",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 18.5,
+      "factId": "7030ffeb-291a-4b80-8961-739adcae085e",
+      "sourcePage": 1,
+      "excerpt": "curity Service, Inc. yes yes yes $13.50\nPPS IX Security Services LLC yes yes no $18.50\nPatriot Security EOC no yes yes $17.95\nSouthern Comfort Security Services no ye",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "requested",
+      "rate": -1,
+      "factId": "a1a551da-7568-496e-9fc2-8aea16533dd8",
+      "sourcePage": 10,
+      "excerpt": "ATTACHMENT J-1  HSP QUICK CHECKLIST",
+      "evidencePage": 10,
+      "survived": true
+    },
+    {
+      "truth": "requested",
+      "rate": -2,
+      "factId": "47c01850-2d5f-4871-a09e-3d418609ba18",
+      "sourcePage": 10,
+      "excerpt": "ATTACHMENT J-2  HUB SUBCONTRACTING OPPORTUNITY NOTIFICATION FORM",
+      "evidencePage": 10,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 100000,
+      "factId": "27fbb74d-69a2-4506-b24e-f75b15e90730",
+      "sourcePage": 1,
+      "excerpt": "Not  to  Exceed  $100,000",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 32.28,
+      "factId": "51ae5373-a039-45d8-b52a-9f03437f405e",
+      "sourcePage": 3,
+      "excerpt": "nel at these campuses that would commence August 1, 2024, at an hourly rate \nof $32.28 per hour for time worked.  \nTotal expenditure for the 2024-2025 fiscal year wou",
+      "evidencePage": 3,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 4722008,
+      "factId": "45899e64-e00b-45c5-b14d-04c030650502",
+      "sourcePage": 3,
+      "excerpt": "chool year utilizing contract GSA #47QSWA22D008W.”\n139",
+      "evidencePage": 3,
       "survived": true
     }
   ],
   "precedence": {
     "tested": true,
-    "on": "SRC-02",
+    "on": "SRC-20b",
     "action": "conflict",
     "ok": true,
     "exception": "precedence_requested"
   },
   "classCPromoted": 0,
   "verifiedWithZeroHumanFacts": [],
-  "fourTruthsDistinct": true
+  "fourTruthsDistinct": true,
+  "mergeNote": "Partial run merged (PILOT_SRC_IDS=SRC-20B)",
+  "classCComplete": 6
 }

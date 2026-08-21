@@ -3,6 +3,8 @@
 Synced with Canonical Product Pack + full domain map from [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md).  
 Business rules: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
+**Document kind → table → promote RPC map:** [DOCUMENT_TABLE_MAPPING.md](DOCUMENT_TABLE_MAPPING.md) (code: `apps/web/lib/data-model/document-table-map.ts`).
+
 This file owns **data/evidence architecture**, not navigation. UX/IA: [UX_UI.md](UX_UI.md).
 
 ## Core principle

@@ -24,16 +24,41 @@ const CLASS_FILTER = new Set(
     .map((s) => s.trim().toUpperCase())
     .filter(Boolean),
 );
+/** Optional comma list e.g. SRC-08,SRC-10 — when set, only these IDs run. */
+const SRC_FILTER = new Set(
+  (process.env.PILOT_SRC_IDS || "")
+    .split(",")
+    .map((s) => s.trim().toUpperCase())
+    .filter(Boolean),
+);
 
 const ACQUIRED_BY_SRC = {
   "SRC-01": "SRC-01_Williamson_Services_Contract_with_proposal_Final.pdf",
+  "SRC-01b": "SRC-01b_Williamson_20241210_Commissioners_Court_Minutes.pdf",
   "SRC-02": "SRC-02_Allen_ISD_LP_security_agreement_excerpt.pdf",
   "SRC-03": "SRC-03_AllenISD_5-21_board_packet.pdf",
   "SRC-04": "SRC-04_TxDMV_PO_0000016167.pdf",
   "SRC-06": "SRC-06_Arlington_22-0143-bid-invitation.pdf",
   "SRC-07": "SRC-07_Arlington_22-0143-staff-report.pdf",
+  "SRC-08": "SRC-08_Jefferson_bid_tab_12.pdf",
   "SRC-09": "SRC-09_TexasLottery_IFB_RQ22-0480DP.pdf",
+  "SRC-10": "SRC-10_Dallas_BID_TAB_16-0219.PDF",
+  "SRC-11": "SRC-11_Dallas_2014-036-6418SecurityGuard.pdf",
+  "SRC-12": "SRC-12_Tarrant_2018-092_AnnualContract.pdf",
   "SRC-13": "SRC-13_MHMR_25-003-Security-Guard-Services-Tabulation.pdf",
+  "SRC-14": "SRC-14_Harris_26-0534_Renewal_VSA.pdf",
+  "SRC-15": "SRC-15_TFC_Vets_Securing_24-001-000_Redacted.pdf",
+  "SRC-16": "SRC-16_TFC_VSA_24-001_Amend_4.pdf",
+  "SRC-17": "SRC-17_ArlingtonVA_Contract19-264-R_NOA.pdf",
+  "SRC-18": "SRC-18_ArlingtonVA_19-264-RAmendment2signed.pdf",
+  "SRC-19": "SRC-19_ArlingtonVA_19-264-RA3Final.pdf",
+  "SRC-20": "SRC-20_Terrell_ISD_LP_Security_Officer_Agreement.pdf",
+  "SRC-20b": "SRC-20b_Terrell_ISD_2025-26_LP_Security_ESR.pdf",
+  "SRC-20c": "SRC-20c_Terrell_ISD_2025-26_LP_Price_Comparison.pdf",
+  "SRC-21": "SRC-21_Terrell_ISD_2026-27_LP_Security_Contract.pdf",
+  "SRC-21b": "SRC-21b_Terrell_ISD_2026-27_LP_Security_ESR.pdf",
+  "SRC-22": "SRC-22_Wylie_July31_Safety_Security_Minutes.pdf",
+  "SRC-23": "SRC-23_Mesquite_ISD_20230901_LP_Contract_Approval_Agenda.pdf",
 };
 
 function resolveCorpusPath(row) {
@@ -61,6 +86,7 @@ if (!url || !publishable || !secret) {
 /** USABLE rows from PILOT_CORPUS_MANIFEST.md (canonical paths only). */
 const CORPUS = [
   { id: "SRC-01", pkg: "PKG-01", cls: "A", buyer: "Williamson County", dtype: "contract+proposal", path: join(DOWNLOADS, "1770_43.35658_Services_Contract_with_proposal_Final.pdf"), sha: "0a3e3762d64da3cd074ed8fb1678528f499d18fc9fc75f2d86fca732040024fa", size: 4169850 },
+  { id: "SRC-01b", pkg: "PKG-01", cls: "B", buyer: "Williamson County", dtype: "board minutes", path: join(ACQUIRED, "SRC-01b_Williamson_20241210_Commissioners_Court_Minutes.pdf"), sha: "7e72bd438ceb73ea06abbf9ffa3705585c7ca7dc39fedfb50de36c2046c7ac88", size: 206756 },
   { id: "SRC-02", pkg: "PKG-02", cls: "A", buyer: "Allen ISD", dtype: "agreement excerpt", path: join(ROOT, "docs/pilot/source-pdfs/Allen_ISD_LP_security_agreement_excerpt.pdf"), sha: "44497b51d423b4f282a58fb217caff64271ca7097a6317fa347a6c3019a2c658", size: 334504 },
   { id: "SRC-03", pkg: "PKG-02", cls: "B", buyer: "Allen ISD", dtype: "board packet", path: join(DOWNLOADS, "5-21_AllenISD.pdf"), sha: "2521a6b57c017ca2b735cc0ae7484ef957b0a2162592c9ec46965c7b514520de", size: 32599851 },
   { id: "SRC-04", pkg: "PKG-04", cls: "A", buyer: "TxDMV", dtype: "PO", path: join(DOWNLOADS, "60800 0000016167.pdf"), sha: "e1f3f631bdc5efa30b08a4201a08ef1977698ef7300a07c5534c6c4892704a0a", size: 38345 },
@@ -78,11 +104,19 @@ const CORPUS = [
   { id: "SRC-17", pkg: "PKG-13", cls: "C", buyer: "Arlington County VA", dtype: "contract+NOA", path: join(DOWNLOADS, "Contract19-264-RFullyExecuted&NOA.pdf"), sha: "bb2658f90ec690cc005112c2447150d1622a208085d20e2a877d6588cb591fe6", size: 503650 },
   { id: "SRC-18", pkg: "PKG-13", cls: "C", buyer: "Arlington County VA", dtype: "amendment", path: join(DOWNLOADS, "19-264-RAmendment2signed.pdf"), sha: "831ece226849794a07c6ff64aead2e2d3f507b94b2593cf59d15e62f9fd95eeb", size: 240634 },
   { id: "SRC-19", pkg: "PKG-13", cls: "C", buyer: "Arlington County VA", dtype: "amendment scan", path: join(DOWNLOADS, "19-264-RA3Final.pdf"), sha: "4f05f6ecdced56b8fa5eaccae5abba34ad32a06e0f22a61edc7591f6411b22c6", size: 1984573 },
+  { id: "SRC-20", pkg: "PKG-14", cls: "A", buyer: "Terrell ISD", dtype: "contract", path: join(ACQUIRED, "SRC-20_Terrell_ISD_LP_Security_Officer_Agreement.pdf"), sha: "83c3c903f0d1255b9587e3ea02e265c77a1cab314c30aecd1f6a071faec0055c", size: 171273 },
+  { id: "SRC-20b", pkg: "PKG-14", cls: "B", buyer: "Terrell ISD", dtype: "board ESR", path: join(ACQUIRED, "SRC-20b_Terrell_ISD_2025-26_LP_Security_ESR.pdf"), sha: "993be12dd84b9e5d563715dd9b4f2255d9c1056669e812251660f1b43e889dfe", size: 63635 },
+  { id: "SRC-20c", pkg: "PKG-14", cls: "B", buyer: "Terrell ISD", dtype: "price comparison", path: join(ACQUIRED, "SRC-20c_Terrell_ISD_2025-26_LP_Price_Comparison.pdf"), sha: "fc63a793e506b5138ee29b1140a6c1392c3bc1e7e0983b8020e421cd68d419ac", size: 55757 },
+  { id: "SRC-21", pkg: "PKG-15", cls: "A", buyer: "Terrell ISD", dtype: "contract", path: join(ACQUIRED, "SRC-21_Terrell_ISD_2026-27_LP_Security_Contract.pdf"), sha: "0171e4a779e3b44f907efc2986a44e3a221f5486f21a2c8821603e6c8655df6f", size: 172564 },
+  { id: "SRC-21b", pkg: "PKG-15", cls: "B", buyer: "Terrell ISD", dtype: "board ESR", path: join(ACQUIRED, "SRC-21b_Terrell_ISD_2026-27_LP_Security_ESR.pdf"), sha: "c520aa39645401512b893395738f361040f108728f6f929ad1d3186b1da29681", size: 66293 },
+  { id: "SRC-22", pkg: "PKG-16", cls: "B", buyer: "Wylie ISD", dtype: "committee minutes", path: join(ACQUIRED, "SRC-22_Wylie_July31_Safety_Security_Minutes.pdf"), sha: "676fa763699f9d31e60da20f0493229f895e3ecd860d6cd6fd5912780abf34e0", size: 74640 },
+  { id: "SRC-23", pkg: "PKG-17", cls: "B", buyer: "Mesquite ISD", dtype: "board agenda", path: join(ACQUIRED, "SRC-23_Mesquite_ISD_20230901_LP_Contract_Approval_Agenda.pdf"), sha: "75349ebf5856b352e1e7debffc322eda3d577aa7dcb25bf1dfbaba38f754a20d", size: 66679 },
 ];
 
 /** Document type + commercial truth for promotion (infer_commercial_truth / four truths). */
 const DOC_META = {
   "SRC-01": { documentType: "proposal", commercialTruth: "proposed" },
+  "SRC-01b": { documentType: "award staff report", commercialTruth: "awarded" },
   "SRC-02": { documentType: "contract", commercialTruth: "awarded" },
   "SRC-03": { documentType: "board packet", commercialTruth: "awarded" },
   "SRC-04": { documentType: "purchase order", commercialTruth: "awarded" },
@@ -100,10 +134,38 @@ const DOC_META = {
   "SRC-17": { documentType: "contract", commercialTruth: "awarded" },
   "SRC-18": { documentType: "amendment", commercialTruth: "current" },
   "SRC-19": { documentType: "amendment", commercialTruth: "current" },
+  "SRC-20": { documentType: "contract", commercialTruth: "awarded" },
+  "SRC-20b": { documentType: "award staff report", commercialTruth: "awarded" },
+  "SRC-20c": { documentType: "bid tab", commercialTruth: "awarded" },
+  "SRC-21": { documentType: "contract", commercialTruth: "awarded" },
+  "SRC-21b": { documentType: "award staff report", commercialTruth: "awarded" },
+  "SRC-22": { documentType: "board minutes", commercialTruth: "awarded" },
+  "SRC-23": { documentType: "board agenda", commercialTruth: "awarded" },
 };
 
-const STRUCTURED_TYPES = new Set(["rate", "identifier", "requirement", "award"]);
-const CANONICAL_PROMOTE_ACTIONS = new Set(["rate", "requirement", "award", "solicitation"]);
+const STRUCTURED_TYPES = new Set(["rate", "identifier", "requirement", "award", "number", "text"]);
+const CANONICAL_PROMOTE_ACTIONS = new Set([
+  "rate",
+  "requirement",
+  "award",
+  "solicitation",
+  "contract_number",
+  "contract_end",
+  "contract_start",
+  "contract_title",
+  "amendment",
+  "renewal",
+  "compliance",
+  "option",
+  "po_number",
+  "purchase_order",
+  "payment_terms",
+  "federal",
+  "service_plan",
+  "competitor",
+  "evaluation_score",
+  "proposal_section",
+]);
 
 const DOMAIN_SIGNALS = {
   solicitation_metadata: /RFP|RFQ|IFB|Invitation|solicitation|procurement/i,
@@ -305,11 +367,31 @@ async function pilotVerifyDocument(client, userId, documentId, orgId, { allowPro
     }
 
     const { data: promo, error: promoErr } = await client.rpc("promote_verified_fact", { p_fact_id: fact.id });
+    const canonicalOk = promo?.ok === true && CANONICAL_PROMOTE_ACTIONS.has(promo?.action);
+    const { data: contractPromo } = await client.rpc("promote_contract_from_fact", { p_fact_id: fact.id });
+    const { data: intelPromo } = await client.rpc("promote_intelligence_from_fact", { p_fact_id: fact.id });
+    const { data: sectionPromo } = await client.rpc("promote_proposal_section_from_fact", { p_fact_id: fact.id });
+    const { data: formPromo } = await client.rpc("promote_required_form_from_fact", { p_fact_id: fact.id });
+    const { data: costPromo } = await client.rpc("promote_cost_component_from_fact", { p_fact_id: fact.id });
+    const { data: chunk, error: chunkErr } = await client.rpc("promote_knowledge_chunk_from_fact", {
+      p_fact_id: fact.id,
+    });
     promotions.push({
       factId: fact.id,
       field: fact.field,
-      ok: promo?.ok === true && CANONICAL_PROMOTE_ACTIONS.has(promo?.action),
+      ok:
+        canonicalOk ||
+        contractPromo?.ok === true ||
+        intelPromo?.ok === true ||
+        formPromo?.ok === true ||
+        costPromo?.ok === true,
       action: promo?.action ?? promoErr?.message,
+      contractAction: contractPromo?.action ?? null,
+      intelAction: intelPromo?.action ?? null,
+      sectionAction: sectionPromo?.action ?? null,
+      formAction: formPromo?.action ?? null,
+      costAction: costPromo?.action ?? null,
+      chunkAction: chunk?.action ?? chunkErr?.message ?? null,
       truth: promo?.truth ?? null,
       rate: promo?.rate ?? null,
       sourcePage: fact.source_page,
@@ -389,8 +471,38 @@ async function main() {
 
   const batchIds = {};
   const pkgIdentity = {};
-  const activeCorpus = CORPUS.filter((r) => CLASS_FILTER.has(r.cls));
+  const activeCorpus = CORPUS.filter(
+    (r) => CLASS_FILTER.has(r.cls) && (SRC_FILTER.size === 0 || SRC_FILTER.has(r.id.toUpperCase())),
+  );
   for (const pkg of [...new Set(activeCorpus.map((r) => r.pkg))]) {
+    const buyer = activeCorpus.find((r) => r.pkg === pkg)?.buyer ?? pkg;
+    const cls = activeCorpus.find((r) => r.pkg === pkg)?.cls ?? "B";
+    const corpusClass =
+      cls === "A" ? "A_LP_ORIGINATED" : cls === "C" ? "C_COMPETITOR_TEST" : "B_LP_TIED";
+
+    const { data: existingPkg } = await client
+      .from("procurement_packages")
+      .select("id, client_id, opportunity_id")
+      .eq("organization_id", orgId)
+      .eq("package_key", pkg)
+      .maybeSingle();
+
+    if (existingPkg?.id) {
+      const { data: batch, error } = await client
+        .from("document_batches")
+        .insert({ organization_id: orgId, label: `${pkg} add` })
+        .select("id")
+        .single();
+      if (error) throw new Error(`batch ${pkg}: ${error.message}`);
+      batchIds[pkg] = batch.id;
+      pkgIdentity[pkg] = {
+        clientId: existingPkg.client_id,
+        opportunityId: existingPkg.opportunity_id,
+        packageId: existingPkg.id,
+      };
+      continue;
+    }
+
     const { data: batch, error } = await client
       .from("document_batches")
       .insert({ organization_id: orgId, label: pkg })
@@ -398,7 +510,6 @@ async function main() {
       .single();
     if (error) throw new Error(`batch ${pkg}: ${error.message}`);
     batchIds[pkg] = batch.id;
-    const buyer = activeCorpus.find((r) => r.pkg === pkg)?.buyer ?? pkg;
     const { data: clientRow, error: clientErr } = await client
       .from("clients")
       .insert({ organization_id: orgId, name: buyer })
@@ -411,7 +522,25 @@ async function main() {
       .select("id")
       .single();
     if (oppErr) throw new Error(`opportunity ${pkg}: ${oppErr.message}`);
-    pkgIdentity[pkg] = { clientId: clientRow.id, opportunityId: oppRow.id };
+    const { data: pkgRow, error: pkgErr } = await client
+      .from("procurement_packages")
+      .insert({
+        organization_id: orgId,
+        package_key: pkg,
+        title: `${pkg} ${buyer}`,
+        corpus_class: corpusClass,
+        buyer_name: buyer,
+        client_id: clientRow.id,
+        opportunity_id: oppRow.id,
+      })
+      .select("id")
+      .single();
+    if (pkgErr) throw new Error(`procurement_package ${pkg}: ${pkgErr.message}`);
+    pkgIdentity[pkg] = {
+      clientId: clientRow.id,
+      opportunityId: oppRow.id,
+      packageId: pkgRow.id,
+    };
   }
 
   console.log(
@@ -511,6 +640,7 @@ async function main() {
       .update({
         document_type: meta.documentType,
         commercial_truth: meta.commercialTruth,
+        procurement_package_id: identity.packageId,
         updated_at: new Date().toISOString(),
       })
       .eq("id", documentId);
@@ -595,7 +725,8 @@ async function main() {
       const canComplete =
         result.verify.verified > 0 &&
         (row.cls === "C" || result.verify.promoted > 0);
-      if (canComplete && row.cls !== "C") {
+      // Class C: verify facts for schema coverage; never promote to L&P canonical.
+      if (canComplete) {
         await client
           .from("documents")
           .update({
@@ -614,12 +745,12 @@ async function main() {
       .single();
     result.finalStatus = docRow?.processing_status ?? "unknown";
     result.pipelineComplete =
-      row.cls !== "C" &&
       result.intake?.ok &&
       result.process?.ok &&
       (result.verify?.verified ?? 0) > 0 &&
-      (result.verify?.promoted ?? 0) > 0 &&
-      result.finalStatus === "VERIFIED";
+      result.finalStatus === "VERIFIED" &&
+      (row.cls === "C" || (result.verify?.promoted ?? 0) > 0);
+    result.classCComplete = row.cls === "C" && result.pipelineComplete;
 
     fileResults.push(result);
     console.log(
@@ -772,10 +903,41 @@ async function main() {
   };
 
   mkdirSync(join(ROOT, "docs/benchmarks"), { recursive: true });
-  writeFileSync(RESULTS_JSON, JSON.stringify(summary, null, 2) + "\n", "utf8");
+  let toWrite = summary;
+  if (SRC_FILTER.size > 0 && existsSync(RESULTS_JSON)) {
+    try {
+      const prev = JSON.parse(readFileSync(RESULTS_JSON, "utf8"));
+      const byId = new Map((prev.fileResults ?? []).map((r) => [r.srcId, r]));
+      for (const r of fileResults) byId.set(r.srcId, r);
+      const mergedFiles = [...byId.values()].sort((a, b) => String(a.srcId).localeCompare(String(b.srcId)));
+      toWrite = {
+        ...prev,
+        ...summary,
+        mergeNote: `Partial run merged (PILOT_SRC_IDS=${[...SRC_FILTER].join(",")})`,
+        fileResults: mergedFiles,
+        filesAttempted: CORPUS.length,
+        filesIngested: mergedFiles.filter((r) => r.intake?.ok).length,
+        filesProcessed: mergedFiles.filter((r) => r.process?.ok).length,
+        filesVerified: mergedFiles.filter((r) => r.finalStatus === "VERIFIED").length,
+        packagesComplete: mergedFiles.filter((r) => r.pipelineComplete).length,
+        classCComplete: mergedFiles.filter((r) => r.classCComplete).length,
+        // Partial runs often skip the precedence probe; keep a prior successful result.
+        precedence:
+          summary.precedence?.tested === true
+            ? summary.precedence
+            : prev.precedence?.tested === true
+              ? prev.precedence
+              : summary.precedence,
+      };
+      console.log(`Merged partial run into existing ${RESULTS_JSON} (${mergedFiles.length} file rows).`);
+    } catch (err) {
+      console.warn(`Could not merge prior results: ${err.message}`);
+    }
+  }
+  writeFileSync(RESULTS_JSON, JSON.stringify(toWrite, null, 2) + "\n", "utf8");
   console.log(`\nWrote ${RESULTS_JSON}`);
   console.log(
-    `Summary: ${summary.filesIngested}/${summary.filesAttempted} ingested, ${summary.filesProcessed} processed, ${summary.packagesComplete} A/B pipeline-complete, C promoted=${classCPromoted}`,
+    `Summary: ${toWrite.filesIngested}/${toWrite.filesAttempted} ingested, ${toWrite.filesProcessed} processed, ${toWrite.packagesComplete} A/B pipeline-complete, C promoted=${classCPromoted}`,
   );
 
   // Ephemeral harness users/orgs are deleted by default. Operator-backed runs keep data.

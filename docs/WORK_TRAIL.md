@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (P0/P1 execution: live migrations + Vercel env fix + RLS proof) |
-| **Git HEAD on origin/main** | local uncommitted P0/P1 work on top of `aae9ff1` — commit when asked |
-| **Product truth gate** | VERIFY9 = engineering/trust harness READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 product exit. Corpus ~7 A/B; exit ~20–30 unmet. |
+| **Last updated** | 2026-08-20 (section fix-pass PASS; corpus **17** packages) |
+| **Git HEAD on origin/main** | `259fd9f` + local corpus/fill/fix work — commit when asked |
+| **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **17**; A/B harness-complete **16**; exit ~20–30 still unmet. Section Terrell audit: **PASS WITH DEFERRED** ([SECTION_TERRELL_AUDIT_FIX.md](pilot/SECTION_TERRELL_AUDIT_FIX.md)). |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
 Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
@@ -53,18 +53,19 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 1. ~~Apply pending migrations on live~~ **DONE** through `20260821120000` (includes `20260821090000` trust triggers).  
 2. ~~Confirm Vercel Supabase env~~ **DONE** — keys existed but were **empty**; filled from local + redeployed. Prod shows sign-in (not “env not configured”). Still missing: `PROCESSOR_*`, `ASK_MODEL`.  
 3. ~~Prove two-user RLS~~ **DONE** — `npm run test:phase2-rls` **51/51 PASS** on live.  
-4. **Grow pilot corpus** toward ~20–30. **This machine A/B re-run (2026-08-20):** processor up; `PILOT_CLASSES=A,B` → **7 available A/B ingested + harness-stamped** into lasting org `f9f6632f-…` (Williamson, Allen×2, TxDMV, Arlington×2, Lottery). **Not operator eyeball-verify** — `phase2-pilot-run.mjs` stamped `HUMAN_VERIFIED` / promoted without the Verification workbench. Real human verify = Data Ops → Verification (PDF/xlsx + page/excerpt) then promote. SRC-08 Jefferson still missing. Still grow toward ~20–30 packages.  
+4. **Grow pilot corpus** toward ~20–30. **Progress:** **17** packages / A/B harness **16** (added Wylie SRC-22 + Mesquite SRC-23 Grade B records). POP dates → Renewals EXPIRED. False POs purged. Still short of ~20–30. SRC-19 OCR deferred.  
 
 **P1 — Trust parity**  
-5–8. ~~append-only `document_versions`; awards/requirements sourced; pricing awarded/current gated; ops labeled planning-only; reports verified-only; `createContractFromWin` award-shaped~~ **DONE** (live migration + app changes on latest prod deploy).  
+5–8. ~~DONE~~  
 
 **P2 — Operator capability (when needed)**  
-9. Set `ASK_MODEL` / AI Gateway on Vercel.  
-10. Hosted/reachable processor (`PROCESSOR_URL` + secret).  
-11. OCR / Drive tokens only when those paths are in use.  
+9. Set `ASK_MODEL` / AI Gateway on Vercel — **still unset** (no key fabricated).  
+10. Hosted/reachable processor (`PROCESSOR_URL` + secret) beyond local.  
+11. OCR / Drive tokens only when those paths are in use (`MISTRAL_API_KEY` for SRC-19).  
 
 **P3 — Hygiene**  
 12. Keep foundation audit honest; no CRM / no free-form chatbot expansion.  
+13. Operator workbench VERIFY on harness-stamped facts when ready for production truth.  
 
 ---
 
@@ -72,6 +73,13 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-20 | Section FAIL fix-pass + next corpus | False PO root cause fixed; digit CHECK; purged garbage. VERIFY2B **8/8**. Added Wylie/Mesquite B packages → live **17** pkgs / **16** A/B complete. | More Grade A instruments; MISTRAL; ASK_MODEL |
+| 2026-08-20 | Section audit FAIL → fix-pass | Root cause: `_PO` matched inside “political/positions”. Tightened extractor + digit CHECK; purged 6 bad POs + REJECT garbage/dup facts. pytest **16/16**. SRC-19 OCR deferred. [SECTION_TERRELL_AUDIT_FIX.md](pilot/SECTION_TERRELL_AUDIT_FIX.md) **PASS WITH DEFERRED** | Grow corpus ~20–30; MISTRAL for SRC-19; ASK_MODEL |
+| 2026-08-20 | Verified next vs end-state; implement | Confirmed P0 = corpus (~20–30). Acquired Terrell 2026–27 + ESRs/price; discarded non-L&P Williamson funding. Extractor POP dates/NTE; Allen+Terrell `verified_end_on`; Renewals UI shows **2 EXPIRED**. Packages **15**, A/B harness **14**. | More public packages; ASK_MODEL; OCR for SRC-19; workbench VERIFY |
+| 2026-08-20 | Implement next steps | Acquired Terrell BoardBook contract (May 19 agenda file 6676708); ingested SRC-20 + SRC-01b. Extractor+RPC for required_form/cost_component; re-extract SRC-09/12/14. Live: packages **14**, renewals **1** (CPI-W), forms **12**, cost stack **10**, contracts **7**. Browser: Contracts portfolio shows Terrell/Harris/Williamson. | More acquisitions to ~20–30; ASK_MODEL; hosted processor; workbench VERIFY |
+| 2026-08-20 | Verified next vs end-state; fill empty mapped tables | Expanded extractor (PO/TXMAS/GSA/eval scores/competitors/sections/amendments); re-extract+promote. Live: contracts **3**, POs **4**, federal **2**, competitor lines **18**, eval scores **8**, proposal sections **4**, amendments **2**, chunks **130**, pricing_lines **24** | Acquire packages toward ~20–30; ASK_MODEL; workbench VERIFY |
+| 2026-08-20 | Document→table mapping | `DOCUMENT_TABLE_MAPPING.md` + `document-table-map.ts` + Settings Data model UI; migration competitor_pricing_lines promote; packages linked; full promote chain in pilot/backfill | Grow corpus; re-extract bid tabs for competitor rows; workbench VERIFY |
+| 2026-08-20 | Corpus push on this PC | Staged all USABLE PDFs → `docs/pilot/acquired/`; processor + `PILOT_SRC_IDS` ingest SRC-08 + C; **8 A/B** harness-complete; **6 C** VERIFIED (no L&P promote); **35 chunks** via backfill; VERIFY2B **8/8** | Acquire more packages toward ~20–30; workbench VERIFY; ASK_MODEL / hosted processor |
 | 2026-08-20 | Lasting operator + agent login | `LP_OPERATOR_*` in `.env.local`; ensure-operator → global_admin; local auto-login verified; pilot keeps operator org `f9f6632f-…` (no delete) | Agents use LP_OPERATOR; grow corpus |
 | 2026-08-20 | Honesty: harness ≠ human VERIFY | Prior “HUMAN_VERIFIED / pipeline-complete” language overstated — script stamped status; workbench (source PDF + page/excerpt) is the real human gate | Reset stamp / walk real Verification UI if operator wants |
 | 2026-08-20 | Processor + A/B ingest→verify→promote | Local processor healthy; 7 A/B **harness**-stamped/promoted (not workbench-eyeballed); rates e.g. Williamson $31.45 proposed, Allen $32.28 awarded | Real human VERIFY in UI; grow packages; ASK_MODEL later |

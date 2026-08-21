@@ -203,6 +203,12 @@ export async function applyFactDecision(input: {
       if (contractPromoted.error) throw new Error(contractPromoted.error.message);
       const intelPromoted = await supabase.rpc("promote_intelligence_from_fact", { p_fact_id: fact.id });
       if (intelPromoted.error) throw new Error(intelPromoted.error.message);
+      const sectionPromoted = await supabase.rpc("promote_proposal_section_from_fact", { p_fact_id: fact.id });
+      if (sectionPromoted.error) throw new Error(sectionPromoted.error.message);
+      const formPromoted = await supabase.rpc("promote_required_form_from_fact", { p_fact_id: fact.id });
+      if (formPromoted.error) throw new Error(formPromoted.error.message);
+      const costPromoted = await supabase.rpc("promote_cost_component_from_fact", { p_fact_id: fact.id });
+      if (costPromoted.error) throw new Error(costPromoted.error.message);
       const chunkPromoted = await supabase.rpc("promote_knowledge_chunk_from_fact", { p_fact_id: fact.id });
       if (chunkPromoted.error) throw new Error(chunkPromoted.error.message);
       // Fan-out embeddings behind JobPort (never lifecycle). Falls back to inline if unset.

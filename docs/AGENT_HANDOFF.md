@@ -34,14 +34,14 @@ Historical files → staging → human verification → canonical Postgres. Four
 | Phase | Status |
 | --- | --- |
 | **1 Foundation** | **Mostly real** (auth, RLS, staging defaults `AI_EXTRACTED`, verify→promote gates, FastAPI processor, intake/workbench). Confirm prod env + migrations. |
-| **2 Real-Document Historical Pilot** | **Incomplete.** ~**7 A/B** packages through source→verify→promote (VERIFY 2B). Exit target **~20–30** unmet. |
+| **2 Real-Document Historical Pilot** | **Incomplete.** **8 A/B** packages harness source→verify→promote (VERIFY 2B). **6 Class C** competitor docs VERIFIED without L&P canonical promote. Exit target **~20–30** unmet — need new acquisitions. |
 | **3–8** | **Large code + acceptance harnesses exist** (Contracts, Intelligence, Ask, Pricing, Response). Corpus-thin / unvalidated for L&P daily use. Treat “PASS” in WORK_TRAIL as **script pass**, not product exit. |
 
 **Wrong:** “Phase 2 complete because RLS 48/48.” RLS = Foundation, not Historical Pilot.  
 **Wrong:** “Platform READY / Phases 3–8 complete” while pilot corpus and prod processor/`ASK_MODEL` are open.  
 **Wrong:** “0 packages through pipeline” — that is stale; use **~7 A/B**, not zero and not 20–30.
 
-**Next task:** Grow the public-first Historical Pilot corpus; confirm Vercel + migrations. Do not invent L&P prices. Do not auto-promote AI facts. Do not expand finished-product claims on empty screens.
+**Next task:** Use [DOCUMENT_TABLE_MAPPING.md](DOCUMENT_TABLE_MAPPING.md) when promoting corpus; acquire more packages toward ~20–30; operator workbench VERIFY; set `ASK_MODEL` + hosted processor when ready. Do not invent L&P prices. Do not auto-promote AI facts.
 
 ---
 
