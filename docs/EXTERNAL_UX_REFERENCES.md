@@ -426,8 +426,8 @@ Local spec already: Resizable + PDF.js + TanStack + badges + keyboard.
 | **URL** | https://github.com/documenso/documenso |
 | **Reference category** | Submission / signing / document-completion UX |
 | **Usage mode** | UX REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | **AGPL / commercial dual-license considerations.** Design reference first. Do not copy app source unless approved. |
+| **Analysis status** | INSPECTED (P8, 2026-08-21) — see [reference-ux/documenso.md](reference-ux/documenso.md) |
+| **License / copy caution** | **AGPL-3.0** verified (`LICENSE` on `main`). Design reference first. Do not copy app source unless approved. |
 
 **Why it matters:** Document status, completion steps, required recipient/action state, history, action bars, review/approve/send, signing/completion.
 

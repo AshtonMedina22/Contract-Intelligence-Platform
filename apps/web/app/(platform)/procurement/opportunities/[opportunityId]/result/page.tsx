@@ -3,11 +3,15 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { FactRef } from "@/components/opportunity-workspace/shared";
 import { CompetitorBriefPanel, type CompetitorBriefData } from "@/components/opportunity-workspace/competitor-brief";
-import { ResultCapturePanel } from "@/components/opportunity-workspace/result-capture-panel";
+import {
+  ResultCapturePanel,
+  type AwardEvidenceRow,
+} from "@/components/opportunity-workspace/result-capture-panel";
 import { loadFactDocumentMap, loadOpportunityHeader } from "@/lib/opportunity/load-workspace";
 import { loadPricingComparables } from "@/lib/opportunity/comparables";
 import { formatMoney, summarizeComparableRates } from "@/lib/opportunity/pricing-math";
 import type { OpportunityResultOutcome } from "@/lib/opportunity/response";
+import { isAwardishFact } from "@/lib/opportunity/submission-readiness";
 
 export default function OpportunityResultPage({
   params,
@@ -59,6 +63,35 @@ async function OpportunityResultContent({
     if (bid.source_fact_id) factIds.push(bid.source_fact_id);
   }
   const factDocumentMap = await loadFactDocumentMap(factIds);
+
+  // Award evidence for the contract handoff: the HUMAN_VERIFIED facts on this pursuit's own
+  // documents. Nothing is inferred from the outcome — the list is what the record actually holds.
+  const { data: pursuitDocuments } = await supabase
+    .from("documents")
+    .select("id, original_filename")
+    .eq("opportunity_id", opportunityId);
+  const pursuitDocIds = (pursuitDocuments ?? []).map((d) => d.id);
+  const documentNames = new Map((pursuitDocuments ?? []).map((d) => [d.id, d.original_filename]));
+  const { data: verifiedFacts } = pursuitDocIds.length
+    ? await supabase
+        .from("extracted_facts")
+        .select("id, document_id, field, entity, verified_value, normalized_value, raw_value, source_page")
+        .eq("verification_status", "HUMAN_VERIFIED")
+        .in("document_id", pursuitDocIds)
+        .order("verified_at", { ascending: false })
+        .limit(40)
+    : { data: [] as never[] };
+
+  const awardEvidence: AwardEvidenceRow[] = (verifiedFacts ?? []).map((f) => ({
+    factId: f.id,
+    documentId: f.document_id,
+    documentName: f.document_id ? (documentNames.get(f.document_id) ?? null) : null,
+    field: f.field,
+    entity: f.entity,
+    value: f.verified_value ?? f.normalized_value ?? f.raw_value ?? null,
+    sourcePage: f.source_page ?? null,
+    awardish: isAwardishFact(f),
+  }));
 
   const proposedSummary = summarizeComparableRates(comparables, "proposed_rate");
   const gaps: string[] = [];
@@ -117,6 +150,8 @@ async function OpportunityResultContent({
         }
         contractId={contract?.id ?? null}
         contractTitle={contract?.title ?? null}
+        awardEvidence={awardEvidence}
+        pursuitDocumentCount={pursuitDocIds.length}
       />
 
       <CompetitorBriefPanel data={brief} />

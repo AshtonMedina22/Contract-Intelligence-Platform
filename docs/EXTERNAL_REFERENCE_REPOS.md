@@ -418,8 +418,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/wraft/wraft |
 | **Reference category** | Structured document creation / lifecycle / output |
 | **Usage mode** | UX / ARCHITECTURE REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | **REFERENCE ONLY** unless current license obligations are reviewed. Do not replace Tiptap/Google Docs. |
+| **Analysis status** | INSPECTED (P8 Submission/Result, 2026-08-21) — see [reference-repos/wraft.md](reference-repos/wraft.md) |
+| **License / copy caution** | **AGPL-3.0** verified (`LICENSE.md`). **REFERENCE ONLY.** Do not replace Tiptap/Google Docs. |
 
 **Why it matters:** Template → reusable content → versioned output pipeline ideas for proposal packages.
 

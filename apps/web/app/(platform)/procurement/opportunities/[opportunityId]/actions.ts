@@ -557,20 +557,27 @@ export async function upsertApprovalLayer(opportunityId: string, formData: FormD
   revalidatePath(`${workspacePath(opportunityId)}/submission`);
 }
 
+/**
+ * Submission logistics only: deadlines, method, portal details, instructions, working-copy links.
+ *
+ * This action deliberately cannot write `submitted_at` or move the pursuit to SUBMITTED. Recording
+ * a submission is a separate, explicitly authorized human act — see `markSubmissionSubmitted`.
+ */
 export async function saveSubmissionPacket(opportunityId: string, formData: FormData) {
   const { supabase, organizationId } = await requireUserOrg();
+  const method = String(formData.get("submission_method") ?? "").trim() || null;
   const { error } = await supabase.from("submission_packets").upsert(
     {
       organization_id: organizationId,
       opportunity_id: opportunityId,
       due_at: String(formData.get("due_at") ?? "").trim() || null,
       question_deadline_at: String(formData.get("question_deadline_at") ?? "").trim() || null,
-      submission_method: String(formData.get("submission_method") ?? "").trim() || null,
+      submission_method: method,
+      submission_url: String(formData.get("submission_url") ?? "").trim() || null,
       portal_recipient: String(formData.get("portal_recipient") ?? "").trim() || null,
+      submission_instructions: String(formData.get("submission_instructions") ?? "").trim() || null,
       final_output_version: String(formData.get("final_output_version") ?? "").trim() || null,
       google_docs_url: String(formData.get("google_docs_url") ?? "").trim() || null,
-      submitted_at: String(formData.get("submitted_at") ?? "").trim() || null,
-      confirmation_reference: String(formData.get("confirmation_reference") ?? "").trim() || null,
       notes: String(formData.get("notes") ?? "").trim() || null,
       updated_at: new Date().toISOString(),
     },
@@ -578,14 +585,97 @@ export async function saveSubmissionPacket(opportunityId: string, formData: Form
   );
   if (error) throw new Error(error.message);
 
-  const method = String(formData.get("submission_method") ?? "").trim() || null;
-  const markSubmitted = String(formData.get("mark_submitted") ?? "") === "1";
-  const oppUpdate: { submission_method?: string | null; stage?: "SUBMITTED" } = {
-    submission_method: method,
-  };
-  if (markSubmitted) oppUpdate.stage = "SUBMITTED";
-  await supabase.from("opportunities").update(oppUpdate).eq("id", opportunityId);
+  await supabase.from("opportunities").update({ submission_method: method }).eq("id", opportunityId);
 
+  revalidatePath(`${workspacePath(opportunityId)}/submission`);
+}
+
+/**
+ * Records that a human submitted this response. It does not submit anything.
+ *
+ * Three gates, all server-side, in this order:
+ *  1. readiness is recomputed from the stored checklist and approval layers — the client cannot
+ *     assert it;
+ *  2. required checklist items and enabled approval layers must be settled;
+ *  3. the operator must have explicitly authorized the record.
+ *
+ * `submitted_by` is always the calling user, never a form value, and the DB constraint
+ * `submission_packets_submitted_requires_actor` rejects a timestamp with no actor.
+ */
+export async function markSubmissionSubmitted(opportunityId: string, formData: FormData) {
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  const { computeSubmissionReadiness, evaluateMarkSubmittedGate } = await import(
+    "@/lib/opportunity/submission-readiness"
+  );
+
+  const [{ data: packet }, { data: checklist }, { data: approvals }] = await Promise.all([
+    supabase
+      .from("submission_packets")
+      .select("submitted_at, submitted_by, confirmation_reference, submission_method, due_at")
+      .eq("opportunity_id", opportunityId)
+      .maybeSingle(),
+    supabase
+      .from("submission_checklist_items")
+      .select("item_key, label, required, completed, notes")
+      .eq("opportunity_id", opportunityId),
+    supabase
+      .from("pursuit_approval_layers")
+      .select("layer_key, enabled, status, decided_at, notes")
+      .eq("opportunity_id", opportunityId),
+  ]);
+
+  const readiness = computeSubmissionReadiness({
+    checklist: checklist ?? [],
+    approvals: (approvals ?? []) as Parameters<typeof computeSubmissionReadiness>[0]["approvals"],
+    packet,
+  });
+  const gate = evaluateMarkSubmittedGate({
+    readiness,
+    humanAuthorized: String(formData.get("submission_authorized") ?? "") === "1",
+  });
+  if (!gate.allowed) throw new Error(gate.message);
+
+  const submittedAt = String(formData.get("submitted_at") ?? "").trim() || new Date().toISOString();
+  const { error } = await supabase.from("submission_packets").upsert(
+    {
+      organization_id: organizationId,
+      opportunity_id: opportunityId,
+      submitted_at: submittedAt,
+      submitted_by: userId,
+      confirmation_reference: String(formData.get("confirmation_reference") ?? "").trim() || null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "organization_id,opportunity_id" },
+  );
+  if (error) throw new Error(error.message);
+
+  await supabase.from("opportunities").update({ stage: "SUBMITTED" }).eq("id", opportunityId);
+
+  revalidatePath(`${workspacePath(opportunityId)}/submission`);
+  revalidatePath(workspacePath(opportunityId));
+  revalidatePath("/procurement/opportunities/submitted");
+}
+
+/** Post-submission confirmation / reference capture. Does not change the submission record. */
+export async function saveSubmissionConfirmation(opportunityId: string, formData: FormData) {
+  const { supabase } = await requireUserOrg();
+  const { data: packet } = await supabase
+    .from("submission_packets")
+    .select("id, submitted_at")
+    .eq("opportunity_id", opportunityId)
+    .maybeSingle();
+  if (!packet?.submitted_at) {
+    throw new Error("Nothing is marked submitted on this pursuit yet.");
+  }
+  const { error } = await supabase
+    .from("submission_packets")
+    .update({
+      confirmation_reference: String(formData.get("confirmation_reference") ?? "").trim() || null,
+      notes: String(formData.get("notes") ?? "").trim() || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", packet.id);
+  if (error) throw new Error(error.message);
   revalidatePath(`${workspacePath(opportunityId)}/submission`);
 }
 
@@ -667,16 +757,20 @@ export async function savePursuitResult(opportunityId: string, formData: FormDat
   revalidatePath("/intelligence/pricing");
 }
 
+/**
+ * Contract handoff from a won pursuit. Idempotent: an existing contract is opened, never duplicated.
+ *
+ * A contract row is a canonical portfolio claim, so it must cite a HUMAN_VERIFIED award-shaped fact
+ * on this pursuit. A WON outcome is not evidence. The DB trigger `contracts_require_verified_fact`
+ * is the final enforcement; `evaluateContractHandoffGate` supplies the operator-facing reason so the
+ * Result panel and this action explain the block in the same words.
+ */
 export async function createContractFromWin(opportunityId: string, formData: FormData) {
   const { supabase, organizationId } = await requireUserOrg();
+  const { evaluateContractHandoffGate, isAwardishFact } = await import(
+    "@/lib/opportunity/submission-readiness"
+  );
   const title = String(formData.get("title") ?? "").trim();
-  if (!title) throw new Error("Contract title required.");
-
-  const { data: opp } = await supabase
-    .from("opportunities")
-    .select("client_id, title")
-    .eq("id", opportunityId)
-    .maybeSingle();
 
   const { data: existing } = await supabase
     .from("contracts")
@@ -684,45 +778,51 @@ export async function createContractFromWin(opportunityId: string, formData: For
     .eq("opportunity_id", opportunityId)
     .maybeSingle();
   if (existing) {
+    // Idempotent open. Not an error: two operators clicking the same CTA get the same contract.
     revalidatePath(`${workspacePath(opportunityId)}/result`);
+    revalidatePath(`/contracts/${existing.id}`);
     return existing.id;
   }
 
-  // Canonical contracts require a HUMAN_VERIFIED fact — never invent portfolio rows from a win click alone.
+  const { data: opp } = await supabase
+    .from("opportunities")
+    .select("client_id, title")
+    .eq("id", opportunityId)
+    .maybeSingle();
+
   const { data: docs } = await supabase
     .from("documents")
     .select("id")
     .eq("opportunity_id", opportunityId);
   const docIds = (docs ?? []).map((d) => d.id);
-  if (docIds.length === 0) {
-    throw new Error(
-      "Cannot create a contract without pursuit documents. Ingest and verify an award/contract fact first.",
-    );
-  }
 
-  const { data: verifiedFacts } = await supabase
-    .from("extracted_facts")
-    .select("id, document_id, field, entity")
-    .eq("organization_id", organizationId)
-    .eq("verification_status", "HUMAN_VERIFIED")
-    .in("document_id", docIds)
-    .order("verified_at", { ascending: false })
-    .limit(40);
+  const { data: verifiedFacts } = docIds.length
+    ? await supabase
+        .from("extracted_facts")
+        .select("id, document_id, field, entity, verified_value, normalized_value, raw_value")
+        .eq("organization_id", organizationId)
+        .eq("verification_status", "HUMAN_VERIFIED")
+        .in("document_id", docIds)
+        .order("verified_at", { ascending: false })
+        .limit(40)
+    : { data: [] as never[] };
 
-  const awardish = (verifiedFacts ?? []).filter((f) => {
-    const blob = `${f.field ?? ""} ${f.entity ?? ""}`.toLowerCase();
-    return /award|contract|po\b|purchase.?order|nte|not.?to.?exceed|instrument|agreement|vehicle|txmas|mas/.test(
-      blob,
-    );
+  const { data: review } = await supabase
+    .from("win_loss_reviews")
+    .select("outcome")
+    .eq("opportunity_id", opportunityId)
+    .maybeSingle();
+
+  const awardish = (verifiedFacts ?? []).filter(isAwardishFact);
+  const gate = evaluateContractHandoffGate({
+    title,
+    pursuitDocumentCount: docIds.length,
+    verifiedAwardishFactCount: awardish.length,
+    outcome: review?.outcome ?? null,
   });
-  const verifiedFact = awardish[0] ?? null;
+  if (!gate.allowed) throw new Error(gate.message);
 
-  if (!verifiedFact?.id) {
-    throw new Error(
-      "Cannot create a contract without a HUMAN_VERIFIED award/contract-shaped fact on this pursuit. Verify an award, PO, NTE, or contract instrument fact first.",
-    );
-  }
-
+  const verifiedFact = awardish[0];
   const { data, error } = await supabase
     .from("contracts")
     .insert({
@@ -738,16 +838,27 @@ export async function createContractFromWin(opportunityId: string, formData: For
     .single();
   if (error) throw new Error(error.message);
 
+  // The outcome is already WON — the gate above required it. This action never records an outcome.
   await supabase.from("opportunities").update({ stage: "AWARDED" }).eq("id", opportunityId);
-  await supabase.from("win_loss_reviews").upsert(
-    {
+
+  // Link the award instrument itself when the same verified fact can back it. Amounts, winner and
+  // rank stay null: `awards.amount_nte` is only ever promoted from a fact that states an amount.
+  const { data: existingAward } = await supabase
+    .from("awards")
+    .select("id")
+    .eq("opportunity_id", opportunityId)
+    .maybeSingle();
+  if (!existingAward) {
+    const noticeSource =
+      verifiedFact.verified_value ?? verifiedFact.normalized_value ?? verifiedFact.raw_value ?? null;
+    await supabase.from("awards").insert({
       organization_id: organizationId,
       opportunity_id: opportunityId,
-      outcome: "WON",
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "organization_id,opportunity_id" },
-  );
+      source_fact_id: verifiedFact.id,
+      source_document_id: verifiedFact.document_id,
+      notice: noticeSource ? String(noticeSource).slice(0, 300) : null,
+    });
+  }
 
   revalidatePath(`${workspacePath(opportunityId)}/result`);
   revalidatePath(`/contracts/${data.id}`);

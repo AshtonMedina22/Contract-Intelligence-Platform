@@ -48,6 +48,7 @@
     "test:p4-discovery-rls": "node --env-file=apps/web/.env.local scripts/p4-public-sources-rls.mjs",
     "test:p5-pursuit-strategy": "node scripts/p5-pursuit-strategy-acceptance.mjs",
     "test:p6-response-workspace": "node scripts/p6-response-workspace-acceptance.mjs",
-    "test:p7-pricing-workbench": "node scripts/p7-pricing-workbench-acceptance.mjs"
+    "test:p7-pricing-workbench": "node scripts/p7-pricing-workbench-acceptance.mjs",
+    "test:p8-submission-result": "node scripts/p8-submission-result-acceptance.mjs"
   }
 }

@@ -44,6 +44,10 @@ function read(rel) {
   return readFileSync(join(ROOT, rel), "utf8");
 }
 
+/** Mirrors `AWARDISH_FACT_RE` in `apps/web/lib/opportunity/submission-readiness.ts`. */
+const AWARDISH_FACT_RE =
+  /award|contract|po\b|purchase.?order|nte|not.?to.?exceed|instrument|agreement|vehicle|txmas|mas/i;
+
 async function main() {
   const adm = admin();
   try {
@@ -57,7 +61,9 @@ async function main() {
       "apps/web/components/opportunity-workspace/submission-workbench.tsx",
       "apps/web/components/opportunity-workspace/result-capture-panel.tsx",
       "apps/web/lib/opportunity/response.ts",
+      "apps/web/lib/opportunity/submission-readiness.ts",
       "supabase/migrations/20260820920000_phase8_response_submission_result.sql",
+      "supabase/migrations/20260821200000_p8_submission_authorization.sql",
     ];
     for (const rel of surfaces) {
       record("ui", `exists ${rel.split("/").slice(-2).join("/")}`, existsSync(join(ROOT, rel)), rel);
@@ -104,6 +110,31 @@ async function main() {
       "submission",
       "Submission packet + checklist schema",
       /submission_packets/.test(mig) && /submission_checklist_items/.test(mig) && /notarization/.test(lib),
+    );
+    const readiness = read("apps/web/lib/opportunity/submission-readiness.ts");
+    const authMig = read("supabase/migrations/20260821200000_p8_submission_authorization.sql");
+    record(
+      "submission",
+      "Readiness is computed, never asserted — incomplete cannot read Complete",
+      /export function computeSubmissionReadiness/.test(readiness) &&
+        /NEEDS_SIGNATURE/.test(readiness) &&
+        /NEEDS_APPROVAL/.test(readiness) &&
+        /NOT_APPLICABLE/.test(readiness) &&
+        /function isSettledStatus/.test(readiness),
+    );
+    record(
+      "submission",
+      "Mark submitted is human-authorized, server-gated, and attributed",
+      /export async function markSubmissionSubmitted/.test(actions) &&
+        /submission_authorized/.test(actions) &&
+        /submitted_by: userId/.test(actions) &&
+        /submission_packets_submitted_requires_actor/.test(authMig),
+    );
+    record(
+      "submission",
+      "Logistics save cannot submit or advance the stage",
+      /This action deliberately cannot write `submitted_at`/.test(actions) &&
+        !/mark_submitted/.test(actions),
     );
     record(
       "result",
@@ -312,20 +343,86 @@ async function main() {
       JSON.stringify(result ?? resultErr),
     );
 
+    // Contract-on-win goes through the verified award fact, exactly like `createContractFromWin`.
+    // A bare insert is expected to be rejected by `contracts_require_verified_fact`.
+    const awardSha = createHash("sha256").update(`p8-award-${stamp}-${randomUUID()}`).digest("hex");
+    const { data: awardDoc } = await asA
+      .from("documents")
+      .insert({
+        organization_id: orgId,
+        opportunity_id: opp.id,
+        original_filename: "award-notice.pdf",
+        document_type: "award",
+        commercial_truth: "awarded",
+        mime_type: "application/pdf",
+      })
+      .select("id")
+      .single();
+    const { data: awardVersion } = await asA
+      .from("document_versions")
+      .insert({
+        organization_id: orgId,
+        document_id: awardDoc.id,
+        sha256: awardSha,
+        storage_path: `${orgId}/${awardDoc.id}/v/${awardSha}/original.pdf`,
+      })
+      .select("id")
+      .single();
+    const { data: awardRun } = await asA
+      .from("extraction_runs")
+      .insert({ organization_id: orgId, document_version_id: awardVersion.id })
+      .select("id")
+      .single();
+    const { data: awardFact } = await asA
+      .from("extracted_facts")
+      .insert({
+        organization_id: orgId,
+        extraction_run_id: awardRun.id,
+        document_id: awardDoc.id,
+        document_version_id: awardVersion.id,
+        entity: "award",
+        field: "contract_number",
+        raw_value: `C-${stamp}`,
+        normalized_value: `C-${stamp}`,
+        verified_value: `C-${stamp}`,
+        verification_status: "HUMAN_VERIFIED",
+        verified_by: userId,
+        verified_at: new Date().toISOString(),
+        source_page: 1,
+      })
+      .select("id, document_id, field, entity")
+      .single();
+
+    const { error: unsourcedContractErr } = await asA.from("contracts").insert({
+      organization_id: orgId,
+      opportunity_id: opp.id,
+      title: `Unsourced contract ${stamp}`,
+    });
+
+    const awardish = AWARDISH_FACT_RE.test(`${awardFact.field ?? ""} ${awardFact.entity ?? ""}`);
     const { data: contract, error: contractErr } = await asA
       .from("contracts")
       .insert({
         organization_id: orgId,
         opportunity_id: opp.id,
         title: `Contract for ${stamp}`,
+        source_fact_id: awardFact.id,
+        source_document_id: awardFact.document_id,
       })
-      .select("id, opportunity_id")
+      .select("id, opportunity_id, source_fact_id")
       .single();
     record(
       "result",
-      "Won result can link contract to pursuit",
-      !contractErr && contract?.opportunity_id === opp.id,
-      JSON.stringify(contract ?? contractErr),
+      "Won result links a contract only from a HUMAN_VERIFIED award fact",
+      Boolean(unsourcedContractErr) &&
+        awardish &&
+        !contractErr &&
+        contract?.opportunity_id === opp.id &&
+        contract?.source_fact_id === awardFact.id,
+      JSON.stringify({
+        unsourcedBlocked: unsourcedContractErr?.message ?? null,
+        contract: contract ?? contractErr?.message,
+      }),
     );
 
     // DO_NOT_USE must not be treated as draft-ready

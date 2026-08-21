@@ -180,6 +180,30 @@ async function addVerifiedFact(client, orgId, userId, opportunityId, opts) {
   return { factId: fact.id, documentId: document.id, versionId: version.id, sha };
 }
 
+/**
+ * Mirrors `createContractFromWin` / `evaluateContractHandoffGate`: a contract may only cite a
+ * HUMAN_VERIFIED fact on this pursuit's own documents whose field/entity reads as an award,
+ * contract, purchase order, NTE, agreement or ordering vehicle. Kept in step with
+ * `AWARDISH_FACT_RE` in `apps/web/lib/opportunity/submission-readiness.ts`.
+ */
+const AWARDISH_FACT_RE =
+  /award|contract|po\b|purchase.?order|nte|not.?to.?exceed|instrument|agreement|vehicle|txmas|mas/i;
+
+async function pickVerifiedAwardFact(client, orgId, opportunityId) {
+  const { data: docs } = await client.from("documents").select("id").eq("opportunity_id", opportunityId);
+  const docIds = (docs ?? []).map((d) => d.id);
+  if (docIds.length === 0) return null;
+  const { data: facts } = await client
+    .from("extracted_facts")
+    .select("id, document_id, field, entity")
+    .eq("organization_id", orgId)
+    .eq("verification_status", "HUMAN_VERIFIED")
+    .in("document_id", docIds)
+    .order("verified_at", { ascending: false })
+    .limit(40);
+  return (facts ?? []).find((f) => AWARDISH_FACT_RE.test(`${f.field ?? ""} ${f.entity ?? ""}`)) ?? null;
+}
+
 function writeReport() {
   const failed = matrix.filter((r) => !r.ok);
   const verdict = failed.length === 0 ? "PASS" : "FAIL";
@@ -859,28 +883,43 @@ async function main() {
       "submission_checklist_items",
     );
 
-    // --- 16 + 17. Submitted datetime + confirmation ---
+    // --- 16 + 17. Submitted datetime + confirmation (human-attributed) ---
     const submittedAt = new Date().toISOString();
     const confirmation = `PORTAL-CONF-${stamp}`;
+
+    // A submission with no human actor must be rejected before the happy path is claimed.
+    const { error: anonSubmitErr } = await asA
+      .from("submission_packets")
+      .update({ submitted_at: submittedAt, submitted_by: null })
+      .eq("opportunity_id", opp.id);
+
     const { data: submittedPacket, error: subErr } = await asA
       .from("submission_packets")
       .update({
         submitted_at: submittedAt,
+        submitted_by: userId,
         confirmation_reference: confirmation,
         final_output_version: "v1.0",
       })
       .eq("opportunity_id", opp.id)
-      .select("submitted_at, confirmation_reference")
+      .select("submitted_at, submitted_by, confirmation_reference")
       .single();
 
     await asA.from("opportunities").update({ stage: "SUBMITTED" }).eq("id", opp.id);
 
     record(
       16,
-      "submitted date/time is captured",
-      !subErr && Boolean(submittedPacket?.submitted_at),
-      JSON.stringify({ submitted_at: submittedPacket?.submitted_at }),
-      "submission_packets.submitted_at",
+      "submitted date/time is captured and attributed to a human",
+      Boolean(anonSubmitErr) &&
+        !subErr &&
+        Boolean(submittedPacket?.submitted_at) &&
+        submittedPacket?.submitted_by === userId,
+      JSON.stringify({
+        anonymousSubmitBlocked: anonSubmitErr?.message ?? null,
+        submitted_at: submittedPacket?.submitted_at,
+        submitted_by: submittedPacket?.submitted_by,
+      }),
+      "submission_packets.submitted_at + submitted_requires_actor",
     );
 
     record(
@@ -1018,26 +1057,60 @@ async function main() {
       "evaluation_scores + competitor_bids source_fact_id",
     );
 
-    // --- 21. Win creates/links Contract ---
-    const { data: contract, error: contractErr } = await asA
-      .from("contracts")
-      .insert({
-        organization_id: orgId,
-        opportunity_id: opp.id,
-        client_id: buyer.id,
-        title: `Awarded — ${PACKAGE.title}`,
-        contract_number: `C-${stamp}`,
-      })
-      .select("id, opportunity_id, title")
-      .single();
+    // --- 21. Win creates/links Contract from a HUMAN_VERIFIED award fact ---
+    // A WON checkbox is not evidence. The award instrument is ingested and verified first, then the
+    // contract cites that fact — the same path `createContractFromWin` takes.
+    const awardFact = await addVerifiedFact(asA, orgId, userId, opp.id, {
+      filename: `arlington-award-notice-${stamp}.pdf`,
+      documentType: "award",
+      truth: "awarded",
+      entity: "award",
+      field: "contract_number",
+      value: `C-${stamp}`,
+      sourcePage: 1,
+      sourceExcerpt: `Notice of award — contract C-${stamp} (staff report fixture — verified fact)`,
+    });
+
+    // A bare contract row with no verified fact must be rejected outright.
+    const { error: unsourcedContractErr } = await asA.from("contracts").insert({
+      organization_id: orgId,
+      opportunity_id: opp.id,
+      client_id: buyer.id,
+      title: `Unsourced — ${PACKAGE.title}`,
+    });
+
+    const pickedFact = await pickVerifiedAwardFact(asA, orgId, opp.id);
+    const { data: contract, error: contractErr } = pickedFact
+      ? await asA
+          .from("contracts")
+          .insert({
+            organization_id: orgId,
+            opportunity_id: opp.id,
+            client_id: buyer.id,
+            title: `Awarded — ${PACKAGE.title}`,
+            contract_number: `C-${stamp}`,
+            source_fact_id: pickedFact.id,
+            source_document_id: pickedFact.document_id,
+          })
+          .select("id, opportunity_id, title, source_fact_id, source_document_id")
+          .single()
+      : { data: null, error: new Error("no HUMAN_VERIFIED award-shaped fact on the pursuit") };
     await asA.from("opportunities").update({ stage: "AWARDED" }).eq("id", opp.id);
 
     record(
       21,
-      "a win creates/links the Contract",
-      !contractErr && contract?.opportunity_id === opp.id,
-      JSON.stringify(contract ?? contractErr),
-      "contracts.opportunity_id",
+      "a win creates/links the Contract from a verified award fact (and blocks unsourced rows)",
+      Boolean(unsourcedContractErr) &&
+        !contractErr &&
+        contract?.opportunity_id === opp.id &&
+        contract?.source_fact_id === awardFact.factId &&
+        contract?.source_document_id === awardFact.documentId,
+      JSON.stringify({
+        unsourcedBlocked: unsourcedContractErr?.message ?? null,
+        contractId: contract?.id,
+        source_fact_id: contract?.source_fact_id,
+      }),
+      "contracts_require_verified_fact + createContractFromWin path",
     );
 
     // --- 22. Outcome feeds intelligence corpus ---

@@ -1,7 +1,13 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { SubmissionWorkbench } from "@/components/opportunity-workspace/submission-workbench";
-import { loadSubmissionPacket, loadRequirementResponses } from "@/lib/opportunity/load-response";
+import {
+  loadApprovalLayers,
+  loadRequirementMatrix,
+  loadRequirementResponses,
+  loadSubmissionPacket,
+} from "@/lib/opportunity/load-response";
+import { computeResponseProgress } from "@/lib/opportunity/response";
 
 export default function OpportunitySubmissionPage({
   params,
@@ -23,7 +29,15 @@ async function OpportunitySubmissionContent({
   const { opportunityId } = await params;
   const supabase = await createClient();
 
-  const [{ data: documents }, submission, responses] = await Promise.all([
+  const [
+    { data: documents },
+    submission,
+    responses,
+    requirements,
+    approvals,
+    { data: pricingDecision },
+    { data: user },
+  ] = await Promise.all([
     supabase
       .from("documents")
       .select("id, original_filename, document_type, commercial_truth, processing_status, created_at")
@@ -31,6 +45,16 @@ async function OpportunitySubmissionContent({
       .order("created_at", { ascending: false }),
     loadSubmissionPacket(opportunityId),
     loadRequirementResponses(opportunityId),
+    loadRequirementMatrix(opportunityId),
+    loadApprovalLayers(opportunityId),
+    supabase
+      .from("pricing_decisions")
+      .select("status, final_bid_rate, final_bid_amount, decided_by, decided_at")
+      .eq("opportunity_id", opportunityId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase.auth.getUser(),
   ]);
 
   const exportHtml = responses
@@ -38,11 +62,25 @@ async function OpportunitySubmissionContent({
     .map((r) => r.draft_html)
     .join("\n<hr/>\n");
 
+  const packet = submission.packet as Parameters<typeof SubmissionWorkbench>[0]["packet"];
+  const submittedBy = packet?.submitted_by ?? null;
+  // Only the calling user's own identity is resolvable client-side without an admin read, so a
+  // different operator's submission stays attributed by id rather than an invented name.
+  const submittedByLabel =
+    submittedBy && user?.user?.id === submittedBy ? (user.user.email ?? submittedBy) : null;
+
   return (
     <SubmissionWorkbench
       opportunityId={opportunityId}
-      packet={submission.packet as Parameters<typeof SubmissionWorkbench>[0]["packet"]}
+      packet={packet}
       checklist={submission.checklist}
+      approvals={approvals.map((a) => ({
+        layer_key: a.layer_key,
+        enabled: a.enabled,
+        status: a.status,
+        decided_at: a.decided_at,
+        notes: a.notes,
+      }))}
       documents={(documents ?? []).map((d) => ({
         id: d.id,
         original_filename: d.original_filename,
@@ -50,6 +88,9 @@ async function OpportunitySubmissionContent({
         processing_status: d.processing_status,
       }))}
       exportHtml={exportHtml}
+      responseProgress={computeResponseProgress(requirements, responses)}
+      pricingDecision={pricingDecision ?? null}
+      submittedByLabel={submittedByLabel}
     />
   );
 }

@@ -83,6 +83,14 @@ None directly. Informed the section set in
 `apps/web/components/opportunity-workspace/overview-sections.tsx` and the withheld-evidence
 discipline in `apps/web/lib/opportunity/overview-model.ts`.
 
+# P8 addendum — proposal output / completion (2026-08-21)
+
+No clone. Re-confirmed **MIT** via `LICENSE` + GitHub SPDX.
+
+**Completion workflow shape (adapt):** explicit operator steps — upload → analyze → match → **`POST …/generate`** (versioned Proposal) → **download** → separate **`PATCH …/status`** (`draft` | `in_progress` | `submitted` | `won` | `lost`). Generate does **not** set `submitted`; status change is a distinct human action. Audit log on generate/download/status_change. Proposal versions increment.
+
+**Adopt for Submission:** versioned output artifacts + download + checklist readiness gating generate; **manual** Mark submitted / Record result (no auto-submit). Reject inventing scores/prose into the packet (same as P5).
+
 # Status
 
-INSPECTED FOR TASK — taxonomy adopted, generation method REJECTED
+INSPECTED FOR TASK — taxonomy adopted, generation method REJECTED; P8 completion workflow shape noted (MIT)

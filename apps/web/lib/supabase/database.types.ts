@@ -1225,6 +1225,9 @@ export type Database = {
           final_output_version: string | null;
           google_docs_url: string | null;
           submitted_at: string | null;
+          submitted_by: string | null;
+          submission_url: string | null;
+          submission_instructions: string | null;
           confirmation_reference: string | null;
           notes: string | null;
           created_at: string;
@@ -1241,6 +1244,9 @@ export type Database = {
           final_output_version?: string | null;
           google_docs_url?: string | null;
           submitted_at?: string | null;
+          submitted_by?: string | null;
+          submission_url?: string | null;
+          submission_instructions?: string | null;
           confirmation_reference?: string | null;
           notes?: string | null;
           created_at?: string;
@@ -1257,6 +1263,9 @@ export type Database = {
           final_output_version?: string | null;
           google_docs_url?: string | null;
           submitted_at?: string | null;
+          submitted_by?: string | null;
+          submission_url?: string | null;
+          submission_instructions?: string | null;
           confirmation_reference?: string | null;
           notes?: string | null;
           created_at?: string;
