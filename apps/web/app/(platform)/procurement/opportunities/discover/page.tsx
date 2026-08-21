@@ -5,8 +5,11 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/shell";
 import { PursuitsNav } from "@/components/section-tabs";
 import { DiscoverTable, type DiscoverRowState } from "@/components/procurement/discover-table";
+import { ManualPublicEntryForm } from "@/components/procurement/manual-public-entry-form";
 import { ProviderModeBanner } from "@/components/procurement/provider-mode-banner";
+import { SearchProfilesPanel } from "@/components/procurement/search-profiles-panel";
 import { searchPublicOpportunities } from "@/lib/procurement/providers";
+import type { PublicSourceStatus } from "@/lib/procurement/providers";
 import { createClient } from "@/lib/supabase/server";
 
 type SearchParams = {
@@ -68,40 +71,67 @@ async function DiscoverContent({ searchParams }: { searchParams: Promise<SearchP
     limit: 50,
   });
 
-  // Only previously watched, dismissed, or started notices exist in the database. Search
-  // results themselves are never written on view.
+  // Only previously watched, dismissed, started, or sync-upserted notices exist in the database.
+  // Ad-hoc Discover search results themselves are never written on view.
   const states = new Map<string, DiscoverRowState>();
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (user && results.length > 0) {
-    const { data: known } = await supabase
-      .from("public_sources")
-      .select("id, provider, external_id, watchlisted_at, dismissed_at")
-      .in(
-        "external_id",
-        results.map((row) => row.external_id),
+
+  let profiles: {
+    id: string;
+    name: string;
+    enabled: boolean;
+    criteria: Record<string, unknown> | null;
+    schedule_cron: string | null;
+    last_run_at: string | null;
+    last_error: string | null;
+  }[] = [];
+
+  if (user) {
+    const { data: profileRows } = await supabase
+      .from("opportunity_search_profiles")
+      .select("id, name, enabled, criteria, schedule_cron, last_run_at, last_error")
+      .order("name")
+      .limit(50);
+    profiles = (profileRows ?? []).map((row) => ({
+      ...row,
+      criteria: (row.criteria ?? null) as Record<string, unknown> | null,
+    }));
+
+    if (results.length > 0) {
+      const { data: known } = await supabase
+        .from("public_sources")
+        .select("id, provider, external_id, watchlisted_at, dismissed_at, status")
+        .in(
+          "external_id",
+          results.map((row) => row.external_id),
+        );
+      const { data: started } = await supabase
+        .from("opportunities")
+        .select("id, external_provider, external_source_id")
+        .not("external_source_id", "is", null);
+      const startedBy = new Map(
+        (started ?? []).map((row) => [`${row.external_provider}:${row.external_source_id}`, row.id]),
       );
-    const { data: started } = await supabase
-      .from("opportunities")
-      .select("id, external_provider, external_source_id")
-      .not("external_source_id", "is", null);
-    const startedBy = new Map(
-      (started ?? []).map((row) => [`${row.external_provider}:${row.external_source_id}`, row.id]),
-    );
-    for (const row of known ?? []) {
-      const key = `${row.provider}:${row.external_id}`;
-      states.set(key, {
-        public_source_id: row.id,
-        watchlisted: row.watchlisted_at != null,
-        dismissed: row.dismissed_at != null,
-        opportunity_id: startedBy.get(key) ?? null,
-      });
+      for (const row of known ?? []) {
+        const key = `${row.provider}:${row.external_id}`;
+        states.set(key, {
+          public_source_id: row.id,
+          watchlisted: row.watchlisted_at != null,
+          dismissed: row.dismissed_at != null || row.status === "DISMISSED",
+          opportunity_id: startedBy.get(key) ?? null,
+          status: row.status as PublicSourceStatus,
+        });
+      }
     }
   }
 
-  const visible = results.filter((row) => !states.get(`${row.provider}:${row.external_id}`)?.dismissed);
+  const visible = results.filter((row) => {
+    const state = states.get(`${row.provider}:${row.external_id}`);
+    return !(state?.dismissed || state?.status === "DISMISSED");
+  });
 
   return (
     <>
@@ -109,7 +139,7 @@ async function DiscoverContent({ searchParams }: { searchParams: Promise<SearchP
       <div className="space-y-4">
         <PageHeader
           title="Discover public opportunities"
-          description="Search configured public procurement providers. Nothing is saved until you watch a notice or start a pursuit, and no fit score is ever computed."
+          description="Search configured public procurement providers. Ad-hoc search is not saved on view; sync profiles upsert provider hits only. No fit score is ever computed."
           actions={
             <Button asChild size="sm" variant="outline">
               <Link href="/procurement/opportunities/watchlist">Watchlist</Link>
@@ -118,6 +148,8 @@ async function DiscoverContent({ searchParams }: { searchParams: Promise<SearchP
         />
         <FilterBar params={params} />
         <ProviderModeBanner searches={searches} />
+        <ManualPublicEntryForm />
+        {user ? <SearchProfilesPanel profiles={profiles} /> : null}
         <DiscoverTable notices={visible} states={states} />
       </div>
     </>

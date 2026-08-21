@@ -6,6 +6,7 @@ OpenSAM — https://github.com/akshayakula/OpenSAM
 
 P4 productization: public opportunity discovery + watchlist + start pursuit
 (`docs/productization/P4_OPPORTUNITY_DISCOVERY_ACCEPTANCE.md`).
+Revisited for F2 (`docs/functionality/F2_PUBLIC_OPPORTUNITY_ENGINE_ACCEPTANCE.md`).
 
 # Relevant upstream files inspected
 
@@ -18,16 +19,17 @@ the repository was not cloned.**
 Our `SamGovProvider` request shape was written from the **documented SAM.gov v2 search API** plus the
 OpenSAM-style parameter conventions already summarized in our registry entry:
 
-- `GET api.sam.gov/opportunities/v2/search` with `api_key`, `postedFrom`, `postedTo`, `limit`
+- `GET api.sam.gov/opportunities/v2/search` with `api_key`, `postedFrom`, `postedTo`, `limit`, `offset`
 - `postedFrom` / `postedTo` in `MM/dd/yyyy`
-- keyword filter as `title`, NAICS as `ncode`, agency as `organizationName`
+- keyword filter as `title`, NAICS as `ncode`, agency as `organizationName`, set-aside / state when present
 - results under `opportunitiesData[]`, notices keyed by `noticeId`, with `fullParentPathName`,
-  `responseDeadLine`, `classificationCode`, `typeOfSetAside`, `placeOfPerformance`, `uiLink`
+  `responseDeadLine`, `classificationCode`, `typeOfSetAside`, `placeOfPerformance`, `uiLink`,
+  optional `resourceLinks` / `attachments`
 
 # What maps to our codebase
 
-`apps/web/lib/procurement/providers/sam-gov.ts` — live adapter, plus `placeOfPerformance` flattening
-to "City, ST" and the fixture fallback.
+`apps/web/lib/procurement/providers/sam-gov.ts` — live adapter, PoP flattening, document extraction
+when present, fixture fallback, `buildSamSearchUrl` for tested request construction.
 
 # What we are adopting
 
@@ -38,7 +40,8 @@ Request parameter naming and response-field mapping conventions for SAM.gov. Not
 - OpenSAM as a federal system of record.
 - Semantic/AI matching of notices to our capabilities. No fit score, no embedding-based ranking of
   public notices — a public listing is not a bid decision.
-- Any persistence of search results. Discover writes nothing until an operator acts.
+- Inventing attachment URLs — `getDocuments` returns links only when present on the provider payload.
+- Treating fixture/sample notices as live public opportunities.
 
 # License/copy implications verified
 
@@ -49,7 +52,8 @@ copied. The parameter names we use are facts about a public government API, not 
 # Open risk
 
 The live SAM.gov path has **never been exercised against a real response** (no `SAM_GOV_API_KEY` in
-this environment). Parameter names and the `opportunitiesData` shape are unvalidated in practice.
+this environment, or not yet validated when set). Parameter names and the `opportunitiesData` shape
+are proven with **mocked fetch** in `test:f2-opportunity-engine`, not against production SAM.gov.
 First live run should be treated as unverified and reconciled against the actual payload.
 
 # Local files affected

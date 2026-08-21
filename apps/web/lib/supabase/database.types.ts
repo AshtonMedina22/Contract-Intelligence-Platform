@@ -44,6 +44,14 @@ export type PublicSourceProvider =
   | "state"
   | "local";
 
+export type PublicSourceStatus =
+  | "NEW"
+  | "WATCHING"
+  | "DISMISSED"
+  | "REVIEWING"
+  | "CONVERTED_TO_PURSUIT"
+  | "CLOSED";
+
 export type CorpusClass = "A_LP_ORIGINATED" | "B_LP_TIED" | "C_COMPETITOR_TEST";
 
 export type PricingRateType =
@@ -254,6 +262,8 @@ export type Database = {
           retrieved_at: string;
           watchlisted_at: string | null;
           dismissed_at: string | null;
+          status: PublicSourceStatus;
+          content_hash: string | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
@@ -279,6 +289,8 @@ export type Database = {
           retrieved_at?: string;
           watchlisted_at?: string | null;
           dismissed_at?: string | null;
+          status?: PublicSourceStatus;
+          content_hash?: string | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -304,6 +316,50 @@ export type Database = {
           retrieved_at?: string;
           watchlisted_at?: string | null;
           dismissed_at?: string | null;
+          status?: PublicSourceStatus;
+          content_hash?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      opportunity_search_profiles: {
+        Row: {
+          id: string;
+          organization_id: string;
+          name: string;
+          enabled: boolean;
+          criteria: Record<string, unknown>;
+          schedule_cron: string | null;
+          last_run_at: string | null;
+          last_error: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          name: string;
+          enabled?: boolean;
+          criteria?: Record<string, unknown>;
+          schedule_cron?: string | null;
+          last_run_at?: string | null;
+          last_error?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          name?: string;
+          enabled?: boolean;
+          criteria?: Record<string, unknown>;
+          schedule_cron?: string | null;
+          last_run_at?: string | null;
+          last_error?: string | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;

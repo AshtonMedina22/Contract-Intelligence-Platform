@@ -7,8 +7,16 @@ import type {
   PublicProviderSearchResult,
 } from "./types";
 
-export { isSamGovLive, createSamGovProvider, loadSamFixtures } from "./sam-gov";
-export { createManualProvider, normalizeManualEntry } from "./manual";
+export {
+  isSamGovLive,
+  createSamGovProvider,
+  loadSamFixtures,
+  buildSamSearchUrl,
+  toSamDate,
+  samGeography,
+  SAM_SEARCH_URL,
+} from "./sam-gov";
+export { createManualProvider, normalizeManualEntry, documentsForManual } from "./manual";
 export * from "./types";
 
 /** Searchable public procurement adapters, in the order Discover should query them. */

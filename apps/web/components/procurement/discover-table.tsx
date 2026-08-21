@@ -1,18 +1,23 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shell";
-import type { NormalizedPublicOpportunity } from "@/lib/procurement/providers";
+import type { NormalizedPublicOpportunity, PublicSourceStatus } from "@/lib/procurement/providers";
 import {
   dismissOpportunity,
   startPursuitAndOpen,
   watchOpportunity,
 } from "@/app/(platform)/procurement/opportunities/discover/actions";
+import {
+  PublicSourceStatusBadge,
+  discoverDisplayStatus,
+} from "@/components/procurement/public-source-status-badge";
 
 export type DiscoverRowState = {
   public_source_id: string;
   watchlisted: boolean;
   dismissed: boolean;
   opportunity_id: string | null;
+  status?: PublicSourceStatus | null;
 };
 
 /** Every notice field travels with the action — Discover results are never persisted on view. */
@@ -79,6 +84,12 @@ export function DiscoverTable({
           {notices.map((notice) => {
             const key = `${notice.provider}:${notice.external_id}`;
             const state = states.get(key);
+            const status = discoverDisplayStatus({
+              status: state?.status,
+              opportunity_id: state?.opportunity_id ?? null,
+              watchlisted: state?.watchlisted ?? false,
+              dismissed: state?.dismissed ?? false,
+            });
             return (
               <tr key={key} className="border-b align-top">
                 <td className="px-2 py-1.5">
@@ -97,19 +108,12 @@ export function DiscoverTable({
                   <p className="text-xs text-muted-foreground">
                     {notice.solicitation_number ?? notice.external_id}
                   </p>
-                  {state?.opportunity_id ? (
-                    <Badge className="mt-1" variant="secondary">
-                      Pursuit started
-                    </Badge>
-                  ) : state?.watchlisted ? (
-                    <Badge className="mt-1" variant="outline">
-                      Watching
-                    </Badge>
-                  ) : state?.dismissed ? (
-                    <Badge className="mt-1" variant="outline">
-                      Dismissed
+                  {notice.provider === "fixture" ? (
+                    <Badge className="mt-1 mr-1" variant="outline">
+                      sample
                     </Badge>
                   ) : null}
+                  <PublicSourceStatusBadge status={status} />
                 </td>
                 <td className="px-2 py-1.5 text-muted-foreground">{notice.buyer_name ?? "—"}</td>
                 <td className="px-2 py-1.5 text-muted-foreground">{notice.procurement_type ?? "—"}</td>
@@ -132,7 +136,7 @@ export function DiscoverTable({
                 </td>
                 <td className="px-2 py-1.5">
                   <div className="flex flex-wrap gap-1">
-                    {state?.watchlisted ? null : (
+                    {state?.watchlisted || status === "WATCHING" || status === "CONVERTED_TO_PURSUIT" ? null : (
                       <form action={watchOpportunity}>
                         <NoticeFields notice={notice} />
                         <Button size="sm" variant="outline" type="submit">
@@ -140,7 +144,7 @@ export function DiscoverTable({
                         </Button>
                       </form>
                     )}
-                    {state?.opportunity_id ? null : (
+                    {state?.opportunity_id || status === "CONVERTED_TO_PURSUIT" ? null : (
                       <form action={startPursuitAndOpen}>
                         <NoticeFields notice={notice} />
                         {state?.public_source_id ? (
@@ -151,7 +155,7 @@ export function DiscoverTable({
                         </Button>
                       </form>
                     )}
-                    {state?.dismissed ? null : (
+                    {state?.dismissed || status === "DISMISSED" ? null : (
                       <form action={dismissOpportunity}>
                         <NoticeFields notice={notice} />
                         {state?.public_source_id ? (

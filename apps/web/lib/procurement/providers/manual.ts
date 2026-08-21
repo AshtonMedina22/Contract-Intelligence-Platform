@@ -1,4 +1,5 @@
 import {
+  documentsFromRawPayload,
   normalizePublicOpportunity,
   type NormalizedPublicOpportunity,
   type PublicProcurementProvider,
@@ -24,6 +25,23 @@ export function createManualProvider(): PublicProcurementProvider {
         notice: MANUAL_NOTICE,
         results: [],
         error: null,
+        totalRecords: null,
+      };
+    },
+    async getOpportunity() {
+      return null;
+    },
+    async getById() {
+      return null;
+    },
+    async getDocuments() {
+      return [];
+    },
+    async healthCheck() {
+      return {
+        ok: true,
+        mode: "live",
+        message: "Manual entry adapter healthy — no remote dependency.",
       };
     },
   };
@@ -60,4 +78,10 @@ export function normalizeManualEntry(input: {
     estimated_value: null,
     raw_payload: { entered_by: "operator", entry_mode: "manual" },
   });
+}
+
+/** Manual notices never invent attachments — only return links present in raw_payload. */
+export function documentsForManual(notice: NormalizedPublicOpportunity | null) {
+  if (!notice) return [];
+  return documentsFromRawPayload(notice.raw_payload);
 }

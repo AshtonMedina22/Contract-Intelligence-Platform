@@ -33,13 +33,16 @@ The **concept only**: one adapter per public procurement source behind a single
 `PublicProcurementProvider` interface returning a normalized notice, with tenant-scoped
 dedupe/upsert. No upstream code, schema, or naming was copied.
 
+**F2 (2026-08-21):** Organized search *profiles* + bounded sync upsert are an intentional
+local addition beyond TenderRadar’s concept. Sync still only writes provider hits (or labeled
+fixtures) into `public_sources` — it does not adopt an upstream database, scoring, or fit rank.
+
 # What we are explicitly NOT adopting
 
-- Any upstream database as our canonical store — `public_sources` is ours, RLS-scoped, and holds only
-  what an operator explicitly watched or started.
-- Background synchronization jobs. P4 is operator-initiated search; Discover persists nothing on view.
+- Any upstream database as our canonical store — `public_sources` is ours, RLS-scoped.
 - Opportunity matching / scoring / fit ranking. We deliberately show provider fields verbatim with no
   AI fit percentage.
+- Inventing live public notices or marking public rows `HUMAN_VERIFIED`.
 
 # License/copy implications verified
 

@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { NormalizedPublicOpportunity } from "@/lib/procurement/providers";
+import {
+  contentHashForNotice,
+  normalizeManualEntry,
+  statusForOperatorAction,
+  type NormalizedPublicOpportunity,
+  type PublicSourceStatus,
+} from "@/lib/procurement/providers";
 import type { FactVerificationStatus, PublicSourceProvider } from "@/lib/supabase/database.types";
 
 const DISCOVER_PATH = "/procurement/opportunities/discover";
@@ -92,13 +98,19 @@ function assertUnverified<T extends { verification_status: FactVerificationStatu
   return row;
 }
 
+type UpsertPatch = {
+  watchlisted_at?: string | null;
+  dismissed_at?: string | null;
+  status: PublicSourceStatus;
+};
+
 /** Upsert the public record and return its id. Public facts stay public — nothing is promoted. */
 async function upsertPublicSource(
   supabase: SupabaseServerClient,
   organizationId: string,
   userId: string,
   notice: NormalizedPublicOpportunity,
-  patch: { watchlisted_at?: string | null; dismissed_at?: string | null },
+  patch: UpsertPatch,
 ): Promise<string> {
   const { data, error } = await supabase
     .from("public_sources")
@@ -121,9 +133,12 @@ async function upsertPublicSource(
         estimated_value: notice.estimated_value,
         raw_payload: notice.raw_payload,
         retrieved_at: new Date().toISOString(),
+        content_hash: contentHashForNotice(notice),
+        status: patch.status,
         created_by: userId,
         updated_at: new Date().toISOString(),
-        ...patch,
+        watchlisted_at: patch.watchlisted_at,
+        dismissed_at: patch.dismissed_at,
       },
       { onConflict: "organization_id,provider,external_id" },
     )
@@ -140,6 +155,7 @@ export async function watchOpportunity(formData: FormData) {
   await upsertPublicSource(supabase, organizationId, userId, notice, {
     watchlisted_at: new Date().toISOString(),
     dismissed_at: null,
+    status: statusForOperatorAction("watch"),
   });
   revalidatePath(DISCOVER_PATH);
   revalidatePath(WATCHLIST_PATH);
@@ -156,6 +172,7 @@ export async function dismissOpportunity(formData: FormData) {
       .update({
         dismissed_at: new Date().toISOString(),
         watchlisted_at: null,
+        status: statusForOperatorAction("dismiss"),
         updated_at: new Date().toISOString(),
       })
       .eq("id", existingId);
@@ -165,6 +182,7 @@ export async function dismissOpportunity(formData: FormData) {
     await upsertPublicSource(supabase, organizationId, userId, notice, {
       dismissed_at: new Date().toISOString(),
       watchlisted_at: null,
+      status: statusForOperatorAction("dismiss"),
     });
   }
 
@@ -179,7 +197,12 @@ export async function undismissOpportunity(formData: FormData) {
   if (!id) throw new Error("Public source required.");
   const { error } = await supabase
     .from("public_sources")
-    .update({ dismissed_at: null, updated_at: new Date().toISOString() })
+    .update({
+      dismissed_at: null,
+      watchlisted_at: new Date().toISOString(),
+      status: statusForOperatorAction("restore"),
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath(DISCOVER_PATH);
@@ -249,11 +272,22 @@ export async function startPursuitFromPublicSource(formData: FormData): Promise<
       estimated_value: row.estimated_value,
       raw_payload: row.raw_payload ?? {},
     };
+    const { error: statusError } = await supabase
+      .from("public_sources")
+      .update({
+        status: statusForOperatorAction("start_pursuit"),
+        watchlisted_at: row.watchlisted_at ?? new Date().toISOString(),
+        dismissed_at: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", publicSourceId);
+    if (statusError) throw new Error(statusError.message);
   } else {
     notice = normalizedFromForm(formData);
     publicSourceId = await upsertPublicSource(supabase, organizationId, userId, notice, {
       watchlisted_at: new Date().toISOString(),
       dismissed_at: null,
+      status: statusForOperatorAction("start_pursuit"),
     });
   }
 
@@ -295,20 +329,22 @@ export async function startPursuitFromPublicSource(formData: FormData): Promise<
 
   // Public notice metadata is external evidence, not verified truth.
   if (notice.source_url) {
-    const { error: factError } = await supabase.from("research_facts").insert(assertUnverified({
-      organization_id: organizationId,
-      client_id: clientId,
-      opportunity_id: opportunity.id,
-      source_url: notice.source_url,
-      title: notice.title,
-      excerpt: publicNoticeNote(notice),
-      published_on: notice.posted_on,
-      verification_status: "AI_EXTRACTED",
-      verified_by: null,
-      verified_at: null,
-      provider: notice.provider,
-      external_id: notice.external_id,
-    }));
+    const { error: factError } = await supabase.from("research_facts").insert(
+      assertUnverified({
+        organization_id: organizationId,
+        client_id: clientId,
+        opportunity_id: opportunity.id,
+        source_url: notice.source_url,
+        title: notice.title,
+        excerpt: publicNoticeNote(notice),
+        published_on: notice.posted_on,
+        verification_status: "AI_EXTRACTED",
+        verified_by: null,
+        verified_at: null,
+        provider: notice.provider,
+        external_id: notice.external_id,
+      }),
+    );
     if (factError) throw new Error(factError.message);
   }
 
@@ -323,6 +359,135 @@ export async function startPursuitFromPublicSource(formData: FormData): Promise<
 export async function startPursuitAndOpen(formData: FormData) {
   const opportunityId = await startPursuitFromPublicSource(formData);
   redirect(`/procurement/opportunities/${opportunityId}`);
+}
+
+/**
+ * Paste a public notice URL/title into Discover. Normalizes via normalizeManualEntry, then
+ * watches or starts a pursuit — never invents fields the operator did not supply.
+ */
+export async function submitManualPublicEntry(formData: FormData) {
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  const intent = String(formData.get("intent") ?? "watch").trim();
+  const notice = normalizeManualEntry({
+    title: String(formData.get("title") ?? ""),
+    source_url: String(formData.get("source_url") ?? "") || null,
+    buyer_name: String(formData.get("buyer_name") ?? "") || null,
+    solicitation_number: String(formData.get("solicitation_number") ?? "") || null,
+    due_on: String(formData.get("due_on") ?? "") || null,
+    geography: String(formData.get("geography") ?? "") || null,
+    naics: String(formData.get("naics") ?? "") || null,
+  });
+  if (!notice) throw new Error("Title is required for a manual public notice.");
+
+  if (intent === "start") {
+    const payload = new FormData();
+    payload.set("provider", notice.provider);
+    payload.set("external_id", notice.external_id);
+    payload.set("title", notice.title);
+    payload.set("source_url", notice.source_url ?? "");
+    payload.set("buyer_name", notice.buyer_name ?? "");
+    payload.set("solicitation_number", notice.solicitation_number ?? "");
+    payload.set("procurement_type", "");
+    payload.set("posted_on", "");
+    payload.set("due_on", notice.due_on ?? "");
+    payload.set("naics", notice.naics ?? "");
+    payload.set("psc", "");
+    payload.set("set_aside", "");
+    payload.set("geography", notice.geography ?? "");
+    payload.set("estimated_value", "");
+    payload.set("raw_payload", JSON.stringify(notice.raw_payload));
+    const opportunityId = await startPursuitFromPublicSource(payload);
+    redirect(`/procurement/opportunities/${opportunityId}`);
+  }
+
+  await upsertPublicSource(supabase, organizationId, userId, notice, {
+    watchlisted_at: new Date().toISOString(),
+    dismissed_at: null,
+    status: statusForOperatorAction("watch"),
+  });
+  revalidatePath(DISCOVER_PATH);
+  revalidatePath(WATCHLIST_PATH);
+  redirect(WATCHLIST_PATH);
+}
+
+/** Create or update an org-scoped search profile (Discover settings). */
+export async function saveSearchProfile(formData: FormData) {
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  const id = String(formData.get("profile_id") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) throw new Error("Profile name is required.");
+
+  const enabled = String(formData.get("enabled") ?? "") === "1";
+  const criteria = {
+    keywords: String(formData.get("keywords") ?? "").trim() || null,
+    buyer: String(formData.get("buyer") ?? "").trim() || null,
+    naics: String(formData.get("naics") ?? "").trim() || null,
+    set_aside: String(formData.get("set_aside") ?? "").trim() || null,
+    state: String(formData.get("state") ?? "").trim() || null,
+    dueWithinDays: (() => {
+      const n = Number.parseInt(String(formData.get("dueWithinDays") ?? ""), 10);
+      return Number.isFinite(n) && n > 0 ? n : null;
+    })(),
+    limit: (() => {
+      const n = Number.parseInt(String(formData.get("limit") ?? ""), 10);
+      return Number.isFinite(n) && n > 0 ? Math.min(n, 100) : 25;
+    })(),
+  };
+  const schedule_cron = String(formData.get("schedule_cron") ?? "").trim() || null;
+
+  if (id) {
+    const { error } = await supabase
+      .from("opportunity_search_profiles")
+      .update({
+        name,
+        enabled,
+        criteria,
+        schedule_cron,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .eq("organization_id", organizationId);
+    if (error) throw new Error(error.message);
+  } else {
+    const { error } = await supabase.from("opportunity_search_profiles").insert({
+      organization_id: organizationId,
+      name,
+      enabled,
+      criteria,
+      schedule_cron,
+      created_by: userId,
+    });
+    if (error) throw new Error(error.message);
+  }
+
+  revalidatePath(DISCOVER_PATH);
+}
+
+export async function deleteSearchProfile(formData: FormData) {
+  const { supabase, organizationId } = await requireUserOrg();
+  const id = String(formData.get("profile_id") ?? "").trim();
+  if (!id) throw new Error("Profile required.");
+  const { error } = await supabase
+    .from("opportunity_search_profiles")
+    .delete()
+    .eq("id", id)
+    .eq("organization_id", organizationId);
+  if (error) throw new Error(error.message);
+  revalidatePath(DISCOVER_PATH);
+}
+
+export async function toggleSearchProfile(formData: FormData) {
+  const { supabase, organizationId } = await requireUserOrg();
+  const id = String(formData.get("profile_id") ?? "").trim();
+  const enabled = String(formData.get("enabled") ?? "") === "1";
+  if (!id) throw new Error("Profile required.");
+  const { error } = await supabase
+    .from("opportunity_search_profiles")
+    .update({ enabled, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("organization_id", organizationId);
+  if (error) throw new Error(error.message);
+  revalidatePath(DISCOVER_PATH);
 }
 
 /** Verbatim provider fields only — no interpretation, scoring, or fit assessment. */

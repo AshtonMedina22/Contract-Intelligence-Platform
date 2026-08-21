@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState, PageHeader } from "@/components/shell";
 import { PursuitsNav } from "@/components/section-tabs";
+import { PublicSourceStatusBadge } from "@/components/procurement/public-source-status-badge";
+import type { PublicSourceStatus } from "@/lib/procurement/providers";
 import { createClient } from "@/lib/supabase/server";
 import {
   dismissOpportunity,
@@ -38,10 +40,12 @@ async function WatchlistContent({
   const query = supabase
     .from("public_sources")
     .select(
-      "id, provider, external_id, title, source_url, buyer_name, solicitation_number, procurement_type, naics, psc, set_aside, geography, posted_on, due_on, estimated_value, watchlisted_at, dismissed_at",
+      "id, provider, external_id, title, source_url, buyer_name, solicitation_number, procurement_type, naics, psc, set_aside, geography, posted_on, due_on, estimated_value, watchlisted_at, dismissed_at, status",
     )
     .order("due_on", { ascending: true, nullsFirst: false })
     .limit(200);
+  // Watchlist membership still keys off operator watch/dismiss timestamps (P4). Status is
+  // display/lifecycle — sync-upserted NEW rows do not appear here until watched.
   const { data, error } = showDismissed
     ? await query.not("dismissed_at", "is", null)
     : await query.not("watchlisted_at", "is", null).is("dismissed_at", null);
@@ -103,6 +107,7 @@ async function WatchlistContent({
                   <th className="px-2 py-1.5">Notice ({rows.length})</th>
                   <th className="px-2 py-1.5">Buyer as listed</th>
                   <th className="px-2 py-1.5">Provider</th>
+                  <th className="px-2 py-1.5">Status</th>
                   <th className="px-2 py-1.5">NAICS / PSC</th>
                   <th className="px-2 py-1.5">Place</th>
                   <th className="px-2 py-1.5">Due</th>
@@ -112,6 +117,7 @@ async function WatchlistContent({
               <tbody>
                 {rows.map((row) => {
                   const opportunityId = startedBy.get(row.id) ?? null;
+                  const status = (row.status as PublicSourceStatus | null) ?? null;
                   return (
                     <tr key={row.id} className="border-b align-top">
                       <td className="px-2 py-1.5">
@@ -131,17 +137,21 @@ async function WatchlistContent({
                           {row.solicitation_number ?? row.external_id}
                           {row.procurement_type ? ` · ${row.procurement_type}` : ""}
                         </p>
-                        {row.dismissed_at ? (
-                          <Badge className="mt-1" variant="outline">
-                            Dismissed
-                          </Badge>
-                        ) : null}
                       </td>
                       <td className="px-2 py-1.5 text-muted-foreground">{row.buyer_name ?? "—"}</td>
                       <td className="px-2 py-1.5 text-xs">
                         <Badge variant={row.provider === "fixture" ? "outline" : "secondary"}>
                           {row.provider === "fixture" ? "sample" : row.provider}
                         </Badge>
+                      </td>
+                      <td className="px-2 py-1.5">
+                        <PublicSourceStatusBadge
+                          status={
+                            opportunityId && status !== "CONVERTED_TO_PURSUIT"
+                              ? "CONVERTED_TO_PURSUIT"
+                              : status
+                          }
+                        />
                       </td>
                       <td className="px-2 py-1.5 text-xs text-muted-foreground">
                         {row.naics ?? "—"}
@@ -153,7 +163,9 @@ async function WatchlistContent({
                         <div className="flex flex-wrap gap-1">
                           {opportunityId ? (
                             <Button asChild size="sm" variant="outline">
-                              <Link href={`/procurement/opportunities/${opportunityId}`}>Review pursuit</Link>
+                              <Link href={`/procurement/opportunities/${opportunityId}`}>
+                                Review pursuit
+                              </Link>
                             </Button>
                           ) : (
                             <form action={startPursuitAndOpen}>
@@ -163,7 +175,7 @@ async function WatchlistContent({
                               </Button>
                             </form>
                           )}
-                          {row.dismissed_at ? (
+                          {row.dismissed_at || status === "DISMISSED" ? (
                             <form action={undismissOpportunity}>
                               <input type="hidden" name="public_source_id" value={row.id} />
                               <Button size="sm" variant="ghost" type="submit">
