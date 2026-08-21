@@ -36,16 +36,16 @@ async function VerificationQueueContent() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <DataOpsNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Verification queue</h1>
+      <div className="space-y-0.5">
+        <h1 className="text-base font-semibold tracking-tight sm:text-lg">Verification queue</h1>
         <p className="text-sm text-muted-foreground">
           Human review against source. AI-extracted values are not canonical until verified.
         </p>
       </div>
       {(documents ?? []).length === 0 ? (
-        <p className="text-sm text-muted-foreground">No documents waiting. Run intake + processor first.</p>
+        <p className="rounded-md border border-dashed px-3 py-2 text-sm text-muted-foreground">No documents waiting. Run intake + processor first.</p>
       ) : (
         <ul className="space-y-2 text-sm">
           {(documents ?? []).map((doc) => (

@@ -59,12 +59,11 @@ async function HomeContent() {
         : { href: "/ingestion/intake", label: "Start intake" };
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Home</h1>
+    <div className="max-w-3xl space-y-4">
+      <div className="space-y-0.5">
+        <h1 className="text-base font-semibold tracking-tight sm:text-lg">Home</h1>
         <p className="text-sm text-muted-foreground">
-          Two connected workflows: digitize and verify historical evidence, then use that corpus to pursue and
-          price the next solicitation.
+          Digitize and verify historical evidence, then pursue and price the next solicitation.
         </p>
       </div>
 

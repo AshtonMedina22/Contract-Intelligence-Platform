@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AppShellHeader } from "@/components/app-shell-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getIntakeContext } from "@/lib/org/intake-context";
 
 async function HeaderSlot() {
@@ -26,6 +26,8 @@ export default function PlatformLayout({
       </Suspense>
       <SidebarInset>
         <header className="flex min-h-12 shrink-0 items-center gap-2 border-b px-2 py-1.5">
+          {/* Outside the sheet so mobile (<768) can open primary nav */}
+          <SidebarTrigger className="md:hidden" />
           <Suspense fallback={<div className="h-8 flex-1" />}>
             <HeaderSlot />
           </Suspense>

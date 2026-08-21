@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { DataOpsNav } from "@/components/section-tabs";
+import { PageHeader } from "@/components/shell";
 import { IntakeForm } from "./intake-form";
 import { getIntakeContext } from "@/lib/org/intake-context";
 
@@ -9,24 +10,26 @@ async function IntakeContent({ defaultOpportunityId }: { defaultOpportunityId?: 
   const driveConfigured = Boolean(process.env.GOOGLE_DRIVE_ACCESS_TOKEN?.trim());
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <DataOpsNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Intake — step 1</h1>
-        <p className="text-sm text-muted-foreground">
-          Upload a new RFP/RFQ/IFB or historical package. After upload, continue to Processing → Verification
-          before facts become searchable intelligence.
-        </p>
-        {defaultOpportunityId ? (
-          <p className="text-sm">
-            Linking uploads to workspace{" "}
-            <Link className="underline" href={`/procurement/opportunities/${defaultOpportunityId}`}>
-              open pursuit
-            </Link>
-            .
-          </p>
-        ) : null}
-      </div>
+      <PageHeader
+        title="Intake"
+        description={
+          <>
+            Upload a new RFP/RFQ/IFB or historical package. Continue to Processing → Verification before facts become searchable.
+            {defaultOpportunityId ? (
+              <>
+                {" "}
+                Linking to{" "}
+                <Link className="underline" href={`/procurement/opportunities/${defaultOpportunityId}`}>
+                  pursuit
+                </Link>
+                .
+              </>
+            ) : null}
+          </>
+        }
+      />
 
       {!user ? (
         <p className="text-sm">

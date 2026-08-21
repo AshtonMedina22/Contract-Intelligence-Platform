@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ContractsNav } from "@/components/section-tabs";
 import { ContractsTable, type ContractRow } from "./contracts-table";
 import { deriveContractStatus } from "@/lib/contracts/load-workspace";
+import { PageHeader } from "@/components/shell";
+import { EmptyState } from "@/components/shell";
 
 async function ContractsContent() {
   const supabase = await createClient();
@@ -39,16 +41,20 @@ async function ContractsContent() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <ContractsNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Contracts</h1>
-        <p className="text-sm text-muted-foreground">
-          Awarded portfolio from verified facts only. Open a contract for Overview, Service Plan, Commercial
-          Terms, Changes, and Renewal. Absent terms stay blank — never invented.
-        </p>
-      </div>
-      <ContractsTable rows={rows} />
+      <PageHeader
+        title="Contracts"
+        description="Awarded portfolio from verified facts only. Open a contract for Overview, Service Plan, Commercial Terms, Changes, and Renewal."
+      />
+      {rows.length > 0 ? (
+        <ContractsTable rows={rows} />
+      ) : (
+        <EmptyState
+          title="No contracts yet"
+          description="Verify a contract end date on an awarded/current document to populate this portfolio."
+        />
+      )}
     </div>
   );
 }

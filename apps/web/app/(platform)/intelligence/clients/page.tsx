@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { IntelligenceNav } from "@/components/section-tabs";
+import { PageHeader } from "@/components/shell";
 import { loadBuyerPortfolio } from "@/lib/intelligence/load-corpus";
 import { BuyerPortfolioTable } from "./buyers-portfolio-table";
 import { ResearchFactsTable, type ResearchFactRow } from "./research-facts-table";
@@ -47,29 +48,27 @@ async function ClientsContent() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <IntelligenceNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Buyers</h1>
-        <p className="text-sm text-muted-foreground">
-          Procurement intelligence for issuing agencies — prior solicitations, awards, contracts, L&amp;P
-          outcomes, and sourced public research. Not CRM.{" "}
-          <Link className="underline" href="/procurement/clients">
-            Buyer registry
-          </Link>
-        </p>
-      </div>
+      <PageHeader
+        title="Buyers"
+        description={
+          <>
+            Procurement intelligence for issuing agencies — prior solicitations, awards, contracts, L&P outcomes. Not CRM.{" "}
+            <Link className="underline" href="/procurement/clients">
+              Buyer registry
+            </Link>
+          </>
+        }
+      />
 
-      <section className="space-y-2">
-        <h2 className="text-sm font-medium">Buyer portfolio (verified corpus)</h2>
+      <section className="space-y-1.5">
+        <h2 className="text-sm font-medium">Buyer portfolio</h2>
         <BuyerPortfolioTable rows={portfolio} />
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-1.5">
         <h2 className="text-sm font-medium">Sourced public research</h2>
-        <p className="text-xs text-muted-foreground">
-          Each row retains source URL, org link, document when present, published date, and verification status.
-        </p>
         <ResearchFactsTable rows={rows} />
       </section>
     </div>

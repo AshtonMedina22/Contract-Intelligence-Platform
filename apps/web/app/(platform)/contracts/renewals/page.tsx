@@ -1,7 +1,11 @@
 import { Suspense } from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { ContractsNav } from "@/components/section-tabs";
 import { RenewalsTable, type AlertRow } from "../contracts-table";
+import { PageHeader } from "@/components/shell";
+import { EmptyState } from "@/components/shell";
+import { Button } from "@/components/ui/button";
 
 async function RenewalsContent() {
   const supabase = await createClient();
@@ -32,16 +36,32 @@ async function RenewalsContent() {
   });
 
   return (
-    <div className="space-y-4">
-      <ContractsNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Renewal queue</h1>
-        <p className="text-sm text-muted-foreground">
-          180 / 120 / 90 / 60 / 30 / EXPIRED from verified_end_on. Nested: 32 days lands in the 60-day
-          bucket; 20 days lands in 30. Supabase Cron refreshes nightly; this page also refreshes on load.
-        </p>
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href="/contracts" className="flex items-center gap-1 hover:text-foreground">
+          <ArrowLeft className="size-3.5" />
+          Portfolio
+        </Link>
+        <span>/</span>
+        <span>Renewals</span>
       </div>
-      <RenewalsTable rows={rows} />
+      <PageHeader
+        title="Renewal queue"
+        description="180 / 120 / 90 / 60 / 30 / EXPIRED buckets from verified_end_on. Refreshed nightly and on load."
+        actions={
+          <Button asChild size="sm" variant="outline">
+            <Link href="/contracts">View portfolio</Link>
+          </Button>
+        }
+      />
+      {rows.length > 0 ? (
+        <RenewalsTable rows={rows} />
+      ) : (
+        <EmptyState
+          title="No renewal alerts"
+          description="Buckets use verified_end_on only. Contracts without verified end dates don't appear here."
+        />
+      )}
     </div>
   );
 }

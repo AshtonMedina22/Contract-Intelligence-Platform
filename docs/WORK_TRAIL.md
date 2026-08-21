@@ -4,7 +4,7 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (Ask GPT dual-rail AI SDK agent + Custom GPT Actions; no Grok) |
+| **Last updated** | 2026-08-20 (P1 independent verify PASS — mobile header SidebarTrigger fix) |
 | **Git HEAD on origin/main** | _(pushing this commit)_ |
 | **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **~22**; A/B harness-complete **~23**; exit ~20–30 **lower bound met**, still short of ~30. VERIFY2B **8/8**. Local Ask synthesis: **Ollama** (free) + Google Gemini fallback; Gateway needs card; OpenAI key quota-blocked. Secrets stay in `.env.local` only. |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
@@ -73,6 +73,8 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-20 | **P1 independent verification** | Code + IronBee browser: IA gates **PASS**. Found mobile nav dead (trigger inside closed Sheet); fixed header `SidebarTrigger` `md:hidden` + trigger `aria-label`. lint/tsc re-PASS; build previously PASS 68 routes. Acceptance updated. [P1_UX_FOUNDATION_ACCEPTANCE.md](productization/P1_UX_FOUNDATION_ACCEPTANCE.md) | Optional: reduce `useIsMobile` hydration warnings; commit when requested |
+| 2026-08-20 | **P1 UX Foundation** | Sidebar IA fix (Intelligence/Data Ops → single links); shell primitives (`PageHeader`, `WorkspaceHeader`, `EmptyState`, `CollectionPage`); workspace shells condensed; CONTRACTS_TABS demoted Renewals/Compliance (pages still work with breadcrumb back); collection pages wired. lint/typecheck/build **PASS**. [P1_UX_FOUNDATION_ACCEPTANCE.md](productization/P1_UX_FOUNDATION_ACCEPTANCE.md) | Parent to verify & commit |
 | 2026-08-20 | External UX/shell registry (no product code) | [EXTERNAL_UX_REFERENCES.md](EXTERNAL_UX_REFERENCES.md) + `docs/reference-ux/README.md` + `.cursor/rules/external-ux-references.mdc`. 12 UX refs REGISTERED ONLY (Plane/Twenty AGPL visual; Studio Admin + shadcn for code). IA lock restated; skeleton listed not built. No shadcn install, no page redesign, nothing committed. | Explicit shell/skeleton task later if requested; do not load all UX refs per task |
 | 2026-08-20 | External reference registry (no product code) | [EXTERNAL_REFERENCE_REPOS.md](EXTERNAL_REFERENCE_REPOS.md) + lazy `docs/reference-repos/README.md` + `.cursor/rules/external-reference-repos.mdc`. 18 repos REGISTERED ONLY; max-3 subsystem inspect. No clones, no schema/app changes, nothing committed. | Inspect a listed repo only when a subsystem gap needs it; write a lazy note then |
 | 2026-08-20 | Ask dual-rail AI SDK upgrade | Shipped evidence model, Gateway/Groq/Ollama/Google/OpenAI (no Grok), internal+public tools, `streamAskChat`, `POST /api/ask/chat`, AskChatClient on mode=ask, Custom GPT Actions OpenAPI + routes, `.env.example` + phase6 asserts. Public never writes to `document_chunks`. LOCATE still no LLM. | Set provider keys / Gateway card / Tavily; harden Actions auth to operator org under bearer; grow corpus |

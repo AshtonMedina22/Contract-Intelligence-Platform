@@ -103,7 +103,7 @@ async function AskIntelligence({
   let answer = "";
   let insufficient = false;
   let limitations = "";
-  let modelUsed: string | null = null;
+  const modelUsed: string | null = null;
 
   if (query && mode === "locate") {
     const { hits: knowledgeHits, error } = await searchVerifiedKnowledge({

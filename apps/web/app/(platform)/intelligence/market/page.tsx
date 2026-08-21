@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { IntelligenceNav } from "@/components/section-tabs";
+import { PageHeader } from "@/components/shell";
+import { EmptyState } from "@/components/shell";
 
 async function MarketOverview() {
   const supabase = await createClient();
@@ -24,65 +26,62 @@ async function MarketOverview() {
   const stats = [
     { label: "Verified awards", value: awards.count ?? 0 },
     { label: "Win/loss reviews", value: reviews.count ?? 0 },
-    { label: "Documented wins (outcome=WON)", value: won.count ?? 0 },
+    { label: "Documented wins", value: won.count ?? 0 },
     { label: "Sourced competitor bids", value: bids.count ?? 0 },
     { label: "Verified pricing lines", value: pricingLines.count ?? 0 },
-    { label: "Buyers / agencies on file", value: clients.count ?? 0 },
-    { label: "Observed competitors", value: competitors.count ?? 0 },
-    { label: "Contracts nearing rebid (alerts)", value: alerts.count ?? 0 },
+    { label: "Buyers on file", value: clients.count ?? 0 },
+    { label: "Competitors", value: competitors.count ?? 0 },
+    { label: "Nearing rebid", value: alerts.count ?? 0 },
   ];
 
   const hasEvidence =
     (awards.count ?? 0) + (reviews.count ?? 0) + (bids.count ?? 0) + (pricingLines.count ?? 0) > 0;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <IntelligenceNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Market</h1>
-        <p className="text-sm text-muted-foreground">
-          Verified observations only. Document counts are not market share. Empty until historical packages are
-          verified — do not invent TAM or share from corpus size.
-        </p>
-      </div>
+      <PageHeader
+        title="Market"
+        description="Verified observations only. Document counts are not market share."
+      />
       {!hasEvidence ? (
-        <p className="rounded-md border border-dashed px-3 py-2 text-sm text-muted-foreground">
-          No verified market observations yet. Counts stay zero until awards, win/loss, sourced bids, or pricing
-          lines exist.
-        </p>
+        <EmptyState
+          title="No verified market observations"
+          description="Counts stay zero until awards, win/loss, sourced bids, or pricing lines are verified."
+        />
       ) : null}
-      <dl className="grid grid-cols-2 gap-px border text-sm sm:grid-cols-3">
+      <dl className="grid grid-cols-2 gap-px border text-sm sm:grid-cols-4">
         {stats.map((row) => (
-          <div key={row.label} className="bg-background p-3">
-            <dt className="text-muted-foreground">{row.label}</dt>
-            <dd className="text-lg font-semibold tabular-nums">{row.value}</dd>
+          <div key={row.label} className="bg-background px-2.5 py-2">
+            <dt className="text-xs text-muted-foreground">{row.label}</dt>
+            <dd className="text-base font-semibold tabular-nums">{row.value}</dd>
           </div>
         ))}
       </dl>
-      <ul className="list-inside list-disc text-sm text-muted-foreground">
+      <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
         <li>
-          <Link className="underline" href="/intelligence/competitors">
-            Competitor bids and scores
+          <Link className="underline hover:text-foreground" href="/intelligence/competitors">
+            Competitors
           </Link>
         </li>
         <li>
-          <Link className="underline" href="/intelligence/clients">
-            Buyer portfolio and research
+          <Link className="underline hover:text-foreground" href="/intelligence/clients">
+            Buyers
           </Link>
         </li>
         <li>
-          <Link className="underline" href="/intelligence/win-loss">
-            Win/loss with documented reasons
+          <Link className="underline hover:text-foreground" href="/intelligence/win-loss">
+            Win/Loss
           </Link>
         </li>
         <li>
-          <Link className="underline" href="/intelligence/pricing">
-            Pricing lines
+          <Link className="underline hover:text-foreground" href="/intelligence/pricing">
+            Pricing
           </Link>
         </li>
         <li>
-          <Link className="underline" href="/contracts/renewals">
-            Upcoming rebids
+          <Link className="underline hover:text-foreground" href="/contracts/renewals">
+            Rebids
           </Link>
         </li>
       </ul>

@@ -148,9 +148,10 @@ Do not replace these. Reconcile them to the locked IA.
 | Piece | Local |
 | --- | --- |
 | Platform layout | `apps/web/app/(platform)/layout.tsx` (`SidebarProvider`, header, inset) |
-| Sidebar | `apps/web/components/app-sidebar.tsx` (`collapsible="icon"` already) |
+| Sidebar | `apps/web/components/app-sidebar.tsx` (`collapsible="icon"`, **five single links**) |
 | Header | `apps/web/components/app-shell-header.tsx` (breadcrumbs, Find/Ask form, + New, user) |
 | shadcn Sidebar primitive | `apps/web/components/ui/sidebar.tsx` |
+| Shell primitives | `apps/web/components/shell/` (`PageHeader`, `WorkspaceHeader`, `EmptyState`, `CollectionPage`) |
 | Pursuit workspace tabs | `apps/web/components/opportunity-workspace/workspace-shell.tsx` |
 | Contract workspace tabs | `apps/web/components/contract-workspace/workspace-shell.tsx` |
 | Verification | `apps/web/app/(platform)/ingestion/verification/` |

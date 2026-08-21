@@ -2,6 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shell";
+import { EmptyState } from "@/components/shell";
 import { OPPORTUNITY_STAGES, GO_NO_GO_OPTIONS } from "@/lib/opportunity/types";
 import type { OpportunityStage, GoNoGo } from "@/lib/opportunity/types";
 
@@ -37,35 +39,39 @@ export async function PursuitsList() {
   const closed = (data ?? []).filter((row) => row.stage === "CLOSED" || row.stage === "AWARDED");
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight">Pursuits</h1>
-          <p className="max-w-2xl text-sm text-muted-foreground">
-            Pre-award workspaces. Open a row for Overview, Requirements, Pricing, Response, Submission, and Result.
-          </p>
-        </div>
-        <Button asChild size="sm">
-          <Link href="/ingestion/intake">New solicitation</Link>
-        </Button>
-      </div>
+    <div className="space-y-4">
+      <PageHeader
+        title="Pursuits"
+        description="Pre-award workspaces. Open a row for Overview, Requirements, Pricing, Response, Submission, and Result."
+        actions={
+          <Button asChild size="sm">
+            <Link href="/ingestion/intake">New solicitation</Link>
+          </Button>
+        }
+      />
 
-      <section className="space-y-3">
+      <section className="space-y-2">
         <h2 className="text-sm font-medium">Active ({active.length})</h2>
         {active.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No active pursuits. Upload a solicitation via Data Ops → Intake.
-          </p>
+          <EmptyState
+            title="No active pursuits"
+            description="Upload a solicitation via Data Ops → Intake."
+            action={
+              <Button asChild size="sm" variant="outline">
+                <Link href="/ingestion/intake">Start intake</Link>
+              </Button>
+            }
+          />
         ) : (
           <div className="overflow-x-auto rounded-md border">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left">
-                  <th className="p-2">Pursuit</th>
-                  <th className="p-2">Buyer</th>
-                  <th className="p-2">Stage</th>
-                  <th className="p-2">Due</th>
-                  <th className="p-2">Go</th>
+                  <th className="px-2 py-1.5">Pursuit</th>
+                  <th className="px-2 py-1.5">Buyer</th>
+                  <th className="px-2 py-1.5">Stage</th>
+                  <th className="px-2 py-1.5">Due</th>
+                  <th className="px-2 py-1.5">Go</th>
                 </tr>
               </thead>
               <tbody>
@@ -76,7 +82,7 @@ export async function PursuitsList() {
                   const dueSoon = isDueSoon(row.response_due_on);
                   return (
                     <tr key={row.id} className="border-b">
-                      <td className="p-2">
+                      <td className="px-2 py-1.5">
                         <Link className="font-medium underline" href={`/procurement/opportunities/${row.id}`}>
                           {row.title}
                         </Link>
@@ -84,14 +90,14 @@ export async function PursuitsList() {
                           <p className="text-xs text-muted-foreground">{row.service_type}</p>
                         ) : null}
                       </td>
-                      <td className="p-2 text-muted-foreground">{client?.name ?? "—"}</td>
-                      <td className="p-2">
+                      <td className="px-2 py-1.5 text-muted-foreground">{client?.name ?? "—"}</td>
+                      <td className="px-2 py-1.5">
                         <Badge variant="outline">{stageLabel(stage)}</Badge>
                       </td>
-                      <td className={`p-2 ${dueSoon ? "font-medium text-amber-700" : "text-muted-foreground"}`}>
+                      <td className={`px-2 py-1.5 ${dueSoon ? "font-medium text-amber-700" : "text-muted-foreground"}`}>
                         {row.response_due_on ?? "—"}
                       </td>
-                      <td className="p-2">
+                      <td className="px-2 py-1.5">
                         <Badge variant={go === "NO_GO" ? "destructive" : "secondary"}>{goLabel(go)}</Badge>
                       </td>
                     </tr>
@@ -104,9 +110,9 @@ export async function PursuitsList() {
       </section>
 
       {closed.length > 0 ? (
-        <section className="space-y-2">
+        <section className="space-y-1.5">
           <h2 className="text-sm font-medium text-muted-foreground">Awarded / closed ({closed.length})</h2>
-          <ul className="space-y-1 text-sm">
+          <ul className="space-y-0.5 text-sm">
             {closed.map((row) => (
               <li key={row.id}>
                 <Link className="underline" href={`/procurement/opportunities/${row.id}`}>

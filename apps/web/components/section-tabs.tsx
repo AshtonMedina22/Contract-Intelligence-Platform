@@ -74,8 +74,6 @@ export const SETTINGS_TABS: SectionTab[] = [
 
 export const CONTRACTS_TABS: SectionTab[] = [
   { href: "/contracts", label: "Portfolio" },
-  { href: "/contracts/renewals", label: "Renewals" },
-  { href: "/contracts/compliance", label: "Compliance" },
 ];
 
 export function IntelligenceNav() {

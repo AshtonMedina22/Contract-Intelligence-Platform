@@ -42,12 +42,12 @@ async function ProcessingQueueContent() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <DataOpsNav />
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Processing queue</h1>
+      <div className="space-y-0.5">
+        <h1 className="text-base font-semibold tracking-tight sm:text-lg">Processing queue</h1>
         <p className="text-sm text-muted-foreground">
-          Intake and parse/extract status. Human review is on Verification Queue. AI completion is not VERIFIED.
+          Intake and parse/extract status. Human review is on Verification. AI completion is not VERIFIED.
         </p>
       </div>
       <ProcessingQueueTable rows={rows} />
