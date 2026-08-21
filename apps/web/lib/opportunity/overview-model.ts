@@ -225,12 +225,30 @@ export type ComplianceItemInput = {
   source_fact_id: string | null;
 };
 
+export type ComplianceMatchInput = {
+  id?: string;
+  match_status: string;
+  rationale?: string | null;
+  requirement_id?: string;
+};
+
 export type ComplianceReadiness = {
-  mode: "CONTRACT_LINKED" | "NO_CONTRACT_LINKED";
+  mode: "CONTRACT_LINKED" | "NO_CONTRACT_LINKED" | "MATCH_ROLLUP";
   contractId: string | null;
   buckets: { verified: number; expiring: number; missing: number; unknown: number };
+  /** F12 match statuses when requirement_compliance_matches exist. */
+  matchBuckets?: {
+    VERIFIED_AVAILABLE: number;
+    EXPIRING: number;
+    MISSING: number;
+    INSUFFICIENT: number;
+    UNKNOWN: number;
+    NOT_APPLICABLE: number;
+  };
   items: (ComplianceItemInput & { bucket: "verified" | "expiring" | "missing" | "unknown" })[];
+  matchItems?: ComplianceMatchInput[];
   message: string;
+  hardCaveat?: string;
 };
 
 export const COMPLIANCE_EXPIRING_WINDOW_DAYS = 60;
@@ -239,15 +257,55 @@ const NO_PURSUIT_COMPLIANCE_MESSAGE =
   "Pursuit-level compliance matrix not available — compliance items are tracked per contract. " +
   "See Contracts after award, or the required forms and attachments on Requirements / Submission for this pursuit.";
 
+const ELIGIBILITY_HARD_CAVEAT =
+  "Recorded evidence status only — not a legal determination of SAM eligibility, bid authority, or insurance adequacy.";
+
 /**
  * Buckets recorded compliance items by their recorded expiry only. With no contract linked the answer
  * is Unknown for everything — the absence of items is not evidence of compliance.
+ * When F12 requirement_compliance_matches are present, prefer that rollup (MATCH_ROLLUP).
  */
 export function computeComplianceReadiness(input: {
   contractId: string | null;
   items: ComplianceItemInput[];
   today: string;
+  matches?: ComplianceMatchInput[];
 }): ComplianceReadiness {
+  const matches = input.matches ?? [];
+  if (matches.length > 0) {
+    const matchBuckets = {
+      VERIFIED_AVAILABLE: 0,
+      EXPIRING: 0,
+      MISSING: 0,
+      INSUFFICIENT: 0,
+      UNKNOWN: 0,
+      NOT_APPLICABLE: 0,
+    };
+    for (const m of matches) {
+      const s = m.match_status as keyof typeof matchBuckets;
+      if (s in matchBuckets) matchBuckets[s] += 1;
+      else matchBuckets.UNKNOWN += 1;
+    }
+    const buckets = {
+      verified: matchBuckets.VERIFIED_AVAILABLE,
+      expiring: matchBuckets.EXPIRING,
+      missing: matchBuckets.MISSING + matchBuckets.INSUFFICIENT,
+      unknown: matchBuckets.UNKNOWN,
+    };
+    return {
+      mode: "MATCH_ROLLUP",
+      contractId: input.contractId,
+      buckets,
+      matchBuckets,
+      items: [],
+      matchItems: matches,
+      hardCaveat: ELIGIBILITY_HARD_CAVEAT,
+      message:
+        `F12 requirement↔compliance match rollup (${matches.length}). ` +
+        `VERIFIED_AVAILABLE requires HUMAN_VERIFIED inventory with source. ${ELIGIBILITY_HARD_CAVEAT}`,
+    };
+  }
+
   if (!input.contractId) {
     return {
       mode: "NO_CONTRACT_LINKED",
@@ -255,6 +313,7 @@ export function computeComplianceReadiness(input: {
       buckets: { verified: 0, expiring: 0, missing: 0, unknown: 0 },
       items: [],
       message: NO_PURSUIT_COMPLIANCE_MESSAGE,
+      hardCaveat: ELIGIBILITY_HARD_CAVEAT,
     };
   }
 
@@ -280,6 +339,7 @@ export function computeComplianceReadiness(input: {
     contractId: input.contractId,
     buckets,
     items,
+    hardCaveat: ELIGIBILITY_HARD_CAVEAT,
     message:
       items.length === 0
         ? "A contract is linked but it has no compliance items recorded. Readiness is Unknown, not compliant."

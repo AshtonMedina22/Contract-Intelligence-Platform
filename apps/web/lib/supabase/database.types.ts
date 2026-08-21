@@ -27,7 +27,29 @@ export type RetrievalPurpose =
   | "REPORT_GENERATION";
 
 export type ContractAlertBucket = "180" | "120" | "90" | "60" | "30" | "EXPIRED";
-export type ComplianceKind = "insurance" | "license" | "certification" | "other";
+export type ComplianceKind =
+  | "insurance"
+  | "license"
+  | "certification"
+  | "registration"
+  | "personnel_qualification"
+  | "membership"
+  | "other";
+
+export type ComplianceVerificationStatus =
+  | "AI_EXTRACTED"
+  | "PUBLIC_UNVERIFIED"
+  | "HUMAN_VERIFIED"
+  | "REJECTED"
+  | "NEEDS_REVIEW";
+
+export type RequirementComplianceMatchStatus =
+  | "VERIFIED_AVAILABLE"
+  | "EXPIRING"
+  | "MISSING"
+  | "INSUFFICIENT"
+  | "UNKNOWN"
+  | "NOT_APPLICABLE";
 
 export type BatchMigrationStatus =
   | "OPEN"
@@ -1818,6 +1840,20 @@ export type Database = {
           statement: string;
           expires_on: string | null;
           created_at: string;
+          verification_status: ComplianceVerificationStatus;
+          verified_by: string | null;
+          verified_at: string | null;
+          effective_on: string | null;
+          issuer: string | null;
+          credential_number: string | null;
+          holder_name: string | null;
+          coverage_json: Record<string, unknown> | null;
+          source_document_id: string | null;
+          source_document_version_id: string | null;
+          source_url: string | null;
+          supersedes_id: string | null;
+          organization_registration_id: string | null;
+          updated_at: string;
         };
         Insert: {
           id?: string;
@@ -1828,6 +1864,20 @@ export type Database = {
           statement: string;
           expires_on?: string | null;
           created_at?: string;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          effective_on?: string | null;
+          issuer?: string | null;
+          credential_number?: string | null;
+          holder_name?: string | null;
+          coverage_json?: Record<string, unknown> | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_url?: string | null;
+          supersedes_id?: string | null;
+          organization_registration_id?: string | null;
+          updated_at?: string;
         };
         Update: {
           id?: string;
@@ -1838,6 +1888,140 @@ export type Database = {
           statement?: string;
           expires_on?: string | null;
           created_at?: string;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          effective_on?: string | null;
+          issuer?: string | null;
+          credential_number?: string | null;
+          holder_name?: string | null;
+          coverage_json?: Record<string, unknown> | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_url?: string | null;
+          supersedes_id?: string | null;
+          organization_registration_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      organization_registrations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          uei: string | null;
+          cage: string | null;
+          sam_status: string | null;
+          sam_expiration_on: string | null;
+          naics: string[];
+          psc: string[];
+          vehicles_notes: string | null;
+          source_document_id: string | null;
+          source_document_version_id: string | null;
+          source_url: string | null;
+          source_fact_id: string | null;
+          verification_status: ComplianceVerificationStatus;
+          verified_by: string | null;
+          verified_at: string | null;
+          supersedes_id: string | null;
+          as_of: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          uei?: string | null;
+          cage?: string | null;
+          sam_status?: string | null;
+          sam_expiration_on?: string | null;
+          naics?: string[];
+          psc?: string[];
+          vehicles_notes?: string | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_url?: string | null;
+          source_fact_id?: string | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          supersedes_id?: string | null;
+          as_of?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          uei?: string | null;
+          cage?: string | null;
+          sam_status?: string | null;
+          sam_expiration_on?: string | null;
+          naics?: string[];
+          psc?: string[];
+          vehicles_notes?: string | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_url?: string | null;
+          source_fact_id?: string | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          supersedes_id?: string | null;
+          as_of?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      requirement_compliance_matches: {
+        Row: {
+          id: string;
+          organization_id: string;
+          requirement_id: string;
+          opportunity_id: string | null;
+          compliance_item_id: string | null;
+          organization_registration_id: string | null;
+          match_status: RequirementComplianceMatchStatus;
+          rationale: string | null;
+          evidence_links: unknown;
+          required_coverage_json: Record<string, unknown> | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          requirement_id: string;
+          opportunity_id?: string | null;
+          compliance_item_id?: string | null;
+          organization_registration_id?: string | null;
+          match_status?: RequirementComplianceMatchStatus;
+          rationale?: string | null;
+          evidence_links?: unknown;
+          required_coverage_json?: Record<string, unknown> | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          requirement_id?: string;
+          opportunity_id?: string | null;
+          compliance_item_id?: string | null;
+          organization_registration_id?: string | null;
+          match_status?: RequirementComplianceMatchStatus;
+          rationale?: string | null;
+          evidence_links?: unknown;
+          required_coverage_json?: Record<string, unknown> | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -3451,6 +3635,8 @@ export type Database = {
       batch_item_outcome: BatchItemOutcome;
       contract_alert_bucket: ContractAlertBucket;
       compliance_kind: ComplianceKind;
+      compliance_verification_status: ComplianceVerificationStatus;
+      requirement_compliance_match_status: RequirementComplianceMatchStatus;
       opportunity_outcome: OpportunityOutcome;
       reuse_status: ReuseStatus;
       research_type: ResearchType;

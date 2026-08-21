@@ -20,6 +20,7 @@ Use these slugs when a note is needed:
 | `auto-rfp` | AutoRFP |
 | `opencontracts` | OpenContracts |
 | `f11-change-detection` | F11 note — SemanticDiff rejected; OpenContracts pattern-only |
+| `f12-compliance-eligibility` | F12 note — BidBridge / ExpiryGuard / OpenContracts pattern-only |
 | `docling` | Docling |
 | `unstructured` | Unstructured |
 | `tenderradar` | TenderRadar |

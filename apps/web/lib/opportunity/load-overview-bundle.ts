@@ -48,6 +48,7 @@ import {
   type EvaluationWeightAudit,
   type EvaluationScoreReading,
   type ComplianceItemInput,
+  type ComplianceMatchInput,
   type ComplianceReadiness,
   type BidStrategy,
   type NextAction,
@@ -278,10 +279,11 @@ export async function loadOverviewBundle(opportunityId: string): Promise<Overvie
     }),
   ]);
 
-  const [factCounts, complianceItems, factDocumentMap] = await Promise.all([
+  const [factCounts, complianceItems, factDocumentMap, complianceMatches] = await Promise.all([
     loadFactCounts(documentIds),
     loadComplianceItems(linkedContractId),
     loadFactDocumentMap(collectFactIdsFromPricingLines(pricingLines)),
+    loadComplianceMatches(opportunityId),
   ]);
 
   const requirements = rollupRequirements(requirementRows);
@@ -316,6 +318,7 @@ export async function loadOverviewBundle(opportunityId: string): Promise<Overvie
     contractId: linkedContractId,
     items: complianceItems,
     today: new Date().toISOString().slice(0, 10),
+    matches: complianceMatches,
   });
 
   const bidStrategy = buildBidStrategy({
@@ -433,6 +436,17 @@ async function loadComplianceItems(contractId: string | null): Promise<Complianc
     .eq("contract_id", contractId)
     .order("expires_on", { ascending: true, nullsFirst: false });
   return (data ?? []) as ComplianceItemInput[];
+}
+
+async function loadComplianceMatches(opportunityId: string): Promise<ComplianceMatchInput[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("requirement_compliance_matches")
+    .select("id, match_status, rationale, requirement_id")
+    .eq("opportunity_id", opportunityId)
+    .order("created_at", { ascending: false })
+    .limit(200);
+  return (data ?? []) as ComplianceMatchInput[];
 }
 
 async function loadPublicSource(publicSourceId: string | null): Promise<PublicSourceRow | null> {

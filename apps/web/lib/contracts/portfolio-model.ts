@@ -977,7 +977,7 @@ export type ReadinessComplianceItem = {
 };
 
 export const READINESS_ADVISORY_NOTE =
-  "Advisory only. This reads compliance_items already on file; it does not certify eligibility, does not gate the rebid button, and an empty list means nothing has been recorded — not that the requirement does not exist.";
+  "Advisory only. This reads compliance_items already on file (including F12 mirrored SAM registration rows for F9 expiry). It does not certify eligibility, does not gate the rebid button, and an empty list means nothing has been recorded — not that the requirement does not exist. When requirement_compliance_matches exist on a pursuit, Overview prefers that match rollup.";
 
 /** Days ahead that count as "expiring soon" for a rebid readiness read. */
 export const READINESS_HORIZON_DAYS = 90;

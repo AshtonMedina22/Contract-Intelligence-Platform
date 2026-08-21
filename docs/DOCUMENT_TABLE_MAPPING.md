@@ -102,6 +102,9 @@ Every ingested pilot file must set `documents.procurement_package_id` → `procu
 | Standalone XLSX workbook | deferred | HUNT-06 unavailable |
 | proposals / proposal_versions | deferred | `proposal_sections` sufficient for SRC-01 |
 | Past performance integrity tables | deferred | Not in gap blocking list |
+| Org SAM/UEI/CAGE + COI/license inventory | `organization_registrations` + enriched `compliance_items` YES (F12) | Thin real credential corpus; eligibility advisory only |
+| Standalone `licenses` / `insurance_policies` / `certifications` tables | deferred | F12 keeps single inventory until pilot volume forces split |
+| Requirement↔compliance matches | `requirement_compliance_matches` YES (F12) | Operators must create matches; AI never auto VERIFIED_AVAILABLE |
 
 ---
 

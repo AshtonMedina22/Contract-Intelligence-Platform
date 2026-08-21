@@ -729,7 +729,7 @@ function PriorExperienceSection({ bundle }: { bundle: OverviewBundle }) {
 }
 
 function ComplianceReadinessSection({ bundle }: { bundle: OverviewBundle }) {
-  const { compliance, requirements, opportunityId, linkedContractId } = bundle;
+  const { compliance, requirements, linkedContractId } = bundle;
 
   return (
     <Section
@@ -742,13 +742,54 @@ function ComplianceReadinessSection({ bundle }: { bundle: OverviewBundle }) {
             Contract →
           </Link>
         ) : (
-          <Link className="underline" href={tabHref(opportunityId, "/submission")}>
-            Submission packet →
+          <Link className="underline" href="/contracts/compliance">
+            Org compliance →
           </Link>
         )
       }
     >
-      {compliance.mode === "NO_CONTRACT_LINKED" ? (
+      {compliance.mode === "MATCH_ROLLUP" && compliance.matchBuckets ? (
+        <>
+          <div className="flex flex-wrap gap-1.5">
+            <Badge variant="default" className="font-normal">
+              VERIFIED_AVAILABLE: {compliance.matchBuckets.VERIFIED_AVAILABLE}
+            </Badge>
+            <Badge variant="outline" className="font-normal">
+              EXPIRING: {compliance.matchBuckets.EXPIRING}
+            </Badge>
+            <Badge variant="destructive" className="font-normal">
+              MISSING: {compliance.matchBuckets.MISSING}
+            </Badge>
+            <Badge variant="destructive" className="font-normal">
+              INSUFFICIENT: {compliance.matchBuckets.INSUFFICIENT}
+            </Badge>
+            <Badge variant="secondary" className="font-normal">
+              UNKNOWN: {compliance.matchBuckets.UNKNOWN}
+            </Badge>
+            <Badge variant="secondary" className="font-normal">
+              N/A: {compliance.matchBuckets.NOT_APPLICABLE}
+            </Badge>
+          </div>
+          {compliance.hardCaveat ? (
+            <p className="text-xs text-muted-foreground">{compliance.hardCaveat}</p>
+          ) : null}
+          {compliance.matchItems && compliance.matchItems.length > 0 ? (
+            <ul className="space-y-0.5 text-sm">
+              {compliance.matchItems.slice(0, 8).map((item, i) => (
+                <li key={item.id ?? `${item.requirement_id}-${i}`} className="truncate">
+                  <span className="text-xs uppercase text-muted-foreground">{item.match_status}</span>{" "}
+                  {item.rationale ?? ""}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <p className="text-xs">
+            <Link className="underline" href="/contracts/compliance">
+              View org compliance inventory
+            </Link>
+          </p>
+        </>
+      ) : compliance.mode === "NO_CONTRACT_LINKED" ? (
         <>
           <div className="flex flex-wrap gap-1.5">
             <Badge variant="secondary" className="font-normal">
@@ -766,6 +807,11 @@ function ComplianceReadinessSection({ bundle }: { bundle: OverviewBundle }) {
             for a pre-award pursuit. What it can show is the paperwork the solicitation asks for:{" "}
             {requirements.attachmentRequired} requirement(s) need an attachment
             {requirements.formNames.length > 0 ? ` and ${requirements.formNames.length} named form(s) appear` : ""}.
+          </p>
+          <p className="text-xs">
+            <Link className="underline" href="/contracts/compliance">
+              Org compliance inventory →
+            </Link>
           </p>
         </>
       ) : (
