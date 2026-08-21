@@ -21,7 +21,8 @@ export type PromoteRpc =
   | "promote_verified_fact"
   | "promote_contract_from_fact"
   | "promote_intelligence_from_fact"
-  | "promote_knowledge_chunk_from_fact";
+  | "promote_knowledge_chunk_from_fact"
+  | "promote_experience_from_contract";
 
 export type FillStatus = "live" | "partial" | "schema_ready" | "deferred";
 
@@ -246,7 +247,26 @@ export const DOCUMENT_TABLE_MAP: DocumentTypeMapEntry[] = [
       "awarded_rate",
     ],
     status: "partial",
-    notes: "Class C contracts verify for schema coverage; do not label as L&P history. F12: compliance_items carry verification_status, coverage_json, holder_name; org SAM/UEI/CAGE live on organization_registrations (mirrored to kind=registration for F9).",
+    notes: "Class C contracts verify for schema coverage; do not label as L&P history. F12: compliance_items carry verification_status, coverage_json, holder_name; org SAM/UEI/CAGE live on organization_registrations (mirrored to kind=registration for F9). F14: promote_experience_from_contract → L_AND_P_CORPORATE only; Class C rejected.",
+  },
+  {
+    documentTypes: ["resume", "personnel resume", "key personnel", "past performance", "reference letter"],
+    filenameHints: ["resume", "cv", "past performance", "reference", "personnel"],
+    commercialTruth: "proposed",
+    corpusClasses: ["A", "B"],
+    productSurface: "Intelligence → Content (Experience library)",
+    promoteRpcs: ["promote_experience_from_contract"],
+    targetTables: ["experience_records", "experience_references"],
+    expectedFields: [
+      "experience_type",
+      "attribution_language",
+      "person_name",
+      "employer_name",
+      "subcontractor_name",
+      "contract_value (sourced only)",
+    ],
+    status: "schema_ready",
+    notes: "F14: types never merge; only HUMAN_VERIFIED L_AND_P_CORPORATE is L&P past performance; never invent value/years; references alone ≠ corporate PP.",
   },
   {
     documentTypes: ["coi", "certificate of insurance", "insurance certificate"],

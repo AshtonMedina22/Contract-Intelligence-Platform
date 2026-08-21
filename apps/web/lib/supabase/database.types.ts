@@ -51,6 +51,12 @@ export type RequirementComplianceMatchStatus =
   | "UNKNOWN"
   | "NOT_APPLICABLE";
 
+export type ExperienceType =
+  | "L_AND_P_CORPORATE"
+  | "MANAGEMENT_PRIOR_EXPERIENCE"
+  | "KEY_PERSONNEL_EXPERIENCE"
+  | "SUBCONTRACTOR_EXPERIENCE";
+
 export type BatchMigrationStatus =
   | "OPEN"
   | "INGESTING"
@@ -2025,6 +2031,174 @@ export type Database = {
         };
         Relationships: [];
       };
+      experience_records: {
+        Row: {
+          id: string;
+          organization_id: string;
+          experience_type: ExperienceType;
+          person_name: string | null;
+          subcontractor_name: string | null;
+          buyer_name: string | null;
+          buyer_client_id: string | null;
+          project_or_contract_name: string;
+          contract_number: string | null;
+          period_of_performance_start: string | null;
+          period_of_performance_end: string | null;
+          scope_summary: string | null;
+          geography: string | null;
+          contract_value_amount: number | null;
+          contract_value_currency: string | null;
+          contract_value_source: string | null;
+          years_of_experience: number | null;
+          years_source: string | null;
+          role_description: string | null;
+          performance_result: string | null;
+          source_document_id: string | null;
+          source_document_version_id: string | null;
+          source_page: number | null;
+          source_fact_id: string | null;
+          source_url: string | null;
+          verification_status: ComplianceVerificationStatus;
+          verified_by: string | null;
+          verified_at: string | null;
+          attribution_language: string;
+          contract_id: string | null;
+          employer_name: string | null;
+          performed_by_org: string | null;
+          supersedes_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          experience_type: ExperienceType;
+          person_name?: string | null;
+          subcontractor_name?: string | null;
+          buyer_name?: string | null;
+          buyer_client_id?: string | null;
+          project_or_contract_name: string;
+          contract_number?: string | null;
+          period_of_performance_start?: string | null;
+          period_of_performance_end?: string | null;
+          scope_summary?: string | null;
+          geography?: string | null;
+          contract_value_amount?: number | null;
+          contract_value_currency?: string | null;
+          contract_value_source?: string | null;
+          years_of_experience?: number | null;
+          years_source?: string | null;
+          role_description?: string | null;
+          performance_result?: string | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_page?: number | null;
+          source_fact_id?: string | null;
+          source_url?: string | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          attribution_language: string;
+          contract_id?: string | null;
+          employer_name?: string | null;
+          performed_by_org?: string | null;
+          supersedes_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          experience_type?: ExperienceType;
+          person_name?: string | null;
+          subcontractor_name?: string | null;
+          buyer_name?: string | null;
+          buyer_client_id?: string | null;
+          project_or_contract_name?: string;
+          contract_number?: string | null;
+          period_of_performance_start?: string | null;
+          period_of_performance_end?: string | null;
+          scope_summary?: string | null;
+          geography?: string | null;
+          contract_value_amount?: number | null;
+          contract_value_currency?: string | null;
+          contract_value_source?: string | null;
+          years_of_experience?: number | null;
+          years_source?: string | null;
+          role_description?: string | null;
+          performance_result?: string | null;
+          source_document_id?: string | null;
+          source_document_version_id?: string | null;
+          source_page?: number | null;
+          source_fact_id?: string | null;
+          source_url?: string | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          attribution_language?: string;
+          contract_id?: string | null;
+          employer_name?: string | null;
+          performed_by_org?: string | null;
+          supersedes_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      experience_references: {
+        Row: {
+          id: string;
+          organization_id: string;
+          experience_record_id: string;
+          contact_name: string | null;
+          contact_title: string | null;
+          contact_phone: string | null;
+          contact_email: string | null;
+          agency_or_company: string | null;
+          notes: string | null;
+          source_document_id: string | null;
+          source_page: number | null;
+          verification_status: ComplianceVerificationStatus;
+          verified_by: string | null;
+          verified_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          experience_record_id: string;
+          contact_name?: string | null;
+          contact_title?: string | null;
+          contact_phone?: string | null;
+          contact_email?: string | null;
+          agency_or_company?: string | null;
+          notes?: string | null;
+          source_document_id?: string | null;
+          source_page?: number | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          experience_record_id?: string;
+          contact_name?: string | null;
+          contact_title?: string | null;
+          contact_phone?: string | null;
+          contact_email?: string | null;
+          agency_or_company?: string | null;
+          notes?: string | null;
+          source_document_id?: string | null;
+          source_page?: number | null;
+          verification_status?: ComplianceVerificationStatus;
+          verified_by?: string | null;
+          verified_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       contract_alerts: {
         Row: {
           id: string;
@@ -3623,6 +3797,10 @@ export type Database = {
         Args: { org_id: string };
         Returns: number;
       };
+      promote_experience_from_contract: {
+        Args: { p_contract_id: string };
+        Returns: Record<string, unknown>;
+      };
     };
     Enums: {
       membership_role: MembershipRole;
@@ -3637,6 +3815,7 @@ export type Database = {
       compliance_kind: ComplianceKind;
       compliance_verification_status: ComplianceVerificationStatus;
       requirement_compliance_match_status: RequirementComplianceMatchStatus;
+      experience_type: ExperienceType;
       opportunity_outcome: OpportunityOutcome;
       reuse_status: ReuseStatus;
       research_type: ResearchType;

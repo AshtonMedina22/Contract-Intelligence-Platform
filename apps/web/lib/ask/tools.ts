@@ -717,6 +717,99 @@ export function createAskTools(ctx: AskToolContext) {
       },
     }),
 
+    search_experience_records: tool({
+      description:
+        "INTERNAL rail (F14): typed experience_records. Types NEVER merge. For L&P corporate past performance use experience_type=L_AND_P_CORPORATE (or corporate_only=true) — returns only HUMAN_VERIFIED corporate rows. Management prior / key personnel / subcontractor stay separately attributed. References alone are not corporate PP. Never invents value/years.",
+      inputSchema: z.object({
+        experience_type: z
+          .enum([
+            "L_AND_P_CORPORATE",
+            "MANAGEMENT_PRIOR_EXPERIENCE",
+            "KEY_PERSONNEL_EXPERIENCE",
+            "SUBCONTRACTOR_EXPERIENCE",
+          ])
+          .optional(),
+        corporate_only: z
+          .boolean()
+          .optional()
+          .describe("When true, only HUMAN_VERIFIED L_AND_P_CORPORATE — excludes all other types."),
+        buyer_contains: z.string().optional(),
+        limit: z.number().int().min(1).max(40).optional(),
+      }),
+      execute: async ({ experience_type, corporate_only, buyer_contains, limit }) => {
+        const supabase = await createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        const { data: membership } = user
+          ? await supabase
+              .from("memberships")
+              .select("organization_id")
+              .eq("user_id", user.id)
+              .limit(1)
+              .maybeSingle()
+          : { data: null };
+        if (!membership) {
+          return { ok: false, error: "No organization membership.", count: 0, evidence: [] };
+        }
+
+        const { retrieveCorporatePastPerformance, retrieveExperienceByType } = await import(
+          "@/lib/experience/retrieve"
+        );
+        const { EXPERIENCE_HARD_CAVEAT } = await import("@/lib/experience/types");
+
+        const wantCorporate =
+          corporate_only === true ||
+          experience_type === "L_AND_P_CORPORATE" ||
+          (!experience_type && /past\s+performance|corporate/i.test(ctx.purpose));
+
+        let rows = wantCorporate
+          ? await retrieveCorporatePastPerformance(supabase, membership.organization_id, {
+              limit: limit ?? 20,
+              buyerNameContains: buyer_contains,
+            })
+          : await retrieveExperienceByType(
+              supabase,
+              membership.organization_id,
+              experience_type ?? "L_AND_P_CORPORATE",
+              { limit: limit ?? 20, requireHumanVerified: true },
+            );
+
+        if (buyer_contains?.trim() && !wantCorporate) {
+          const needle = buyer_contains.trim().toLowerCase();
+          rows = rows.filter((r) => (r.buyer_name ?? "").toLowerCase().includes(needle));
+        }
+
+        const evidence: NormalizedEvidence[] = rows.map((r) => ({
+          id: makeEvidenceId("experience", r.id),
+          rail: "internal",
+          evidence_class: "INTERNAL_VERIFIED",
+          source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+          title: `${r.experience_type}: ${r.project_or_contract_name}`,
+          url: null,
+          internal_ref: r.source_document_id
+            ? `/ingestion/verification/${r.source_document_id}`
+            : "/intelligence/content",
+          document_id: r.source_document_id ?? null,
+          chunk_id: null,
+          page: r.source_page ?? null,
+          excerpt: r.attribution_language,
+          published_date: null,
+          retrieved_at: new Date().toISOString(),
+          verification_status: r.verification_status,
+          entity: r.experience_type,
+          topic: "past_performance",
+        }));
+        pushEvidence(ctx, evidence);
+        return {
+          ok: true,
+          count: evidence.length,
+          evidence,
+          honesty: EXPERIENCE_HARD_CAVEAT,
+        };
+      },
+    }),
+
     validate_answer_citations: tool({
       description:
         "Validate that [n] citations in a draft answer map to the evidence bag. Flags drafting misuse of public/unverified sources.",

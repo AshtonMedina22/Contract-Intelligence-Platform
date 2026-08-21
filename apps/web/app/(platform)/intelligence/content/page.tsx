@@ -15,7 +15,11 @@ import { askChip } from "@/lib/intelligence/ask-launch";
 import { observationTile } from "@/lib/intelligence/observations";
 import { purposeRequiresDraftingGates } from "@/lib/retrieval/purpose";
 import { PROPOSAL_SECTION_KEYS, isProposalSectionKey } from "@/lib/content/taxonomy";
+import { loadExperienceLibrary } from "@/lib/experience/retrieve";
+import { EXPERIENCE_HARD_CAVEAT } from "@/lib/experience/types";
+import { memberHasPermission } from "@/lib/auth/permissions";
 import { SearchHitsTable, type SearchHitRow } from "./search-hits-table";
+import { ExperienceLibraryTable } from "./experience-library-table";
 
 const REUSE_FILTERS = ["APPROVED", "REVIEW_REQUIRED", "DO_NOT_USE", "SUPERSEDED"] as const;
 const VERIFICATION_FILTERS = ["AI_EXTRACTED", "NEEDS_REVIEW", "HUMAN_VERIFIED", "REJECTED"] as const;
@@ -43,6 +47,20 @@ async function ContentLibrary({ searchParams }: { searchParams: Promise<ContentS
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return <p className="text-sm">Sign in to search verified knowledge.</p>;
+
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("organization_id, role")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
+
+  const canVerifyExperience = membership
+    ? memberHasPermission(membership.role, "verify.promote")
+    : false;
+  const experienceRows = membership
+    ? await loadExperienceLibrary(supabase, membership.organization_id, { limit: 40 })
+    : [];
 
   let rows: SearchHitRow[] = [];
   let errorMessage: string | null = null;
@@ -136,13 +154,18 @@ async function ContentLibrary({ searchParams }: { searchParams: Promise<ContentS
       <IntelligenceNav />
       <PageHeader
         title="Content intelligence"
-        description="Historical proposal sections (taxonomy + verification + reuse). Outcome is display-only — Won ≠ auto-approve; Lost ≠ auto-reject. Drafting retrieval excludes DO_NOT_USE, SUPERSEDED, and non-current versions. Embeddings only from HUMAN_VERIFIED eligible text."
+        description="Historical proposal sections (taxonomy + verification + reuse) plus typed experience library (F14). Outcome is display-only — Won ≠ auto-approve; Lost ≠ auto-reject. Drafting retrieval excludes DO_NOT_USE, SUPERSEDED, and non-current versions. Embeddings only from HUMAN_VERIFIED eligible text."
       />
       <IntelligenceHonestyStrip
-        extra={`PROPOSAL_DRAFTING always applies the drafting gates (${
+        extra={`${EXPERIENCE_HARD_CAVEAT} PROPOSAL_DRAFTING always applies the drafting gates (${
           purposeRequiresDraftingGates("PROPOSAL_DRAFTING") ? "enforced" : "not enforced"
         }), so a DO_NOT_USE or SUPERSEDED passage can be read here for analysis but can never be retrieved for a draft. Promote defaults to REVIEW_REQUIRED.`}
       />
+
+      <section className="space-y-2 border border-border p-3">
+        <h2 className="text-sm font-medium">Experience library (typed past performance)</h2>
+        <ExperienceLibraryTable rows={experienceRows} canVerify={canVerifyExperience} />
+      </section>
       <AskAboutThis chips={chips} />
 
       <form className="flex flex-wrap items-end gap-2 border p-2" method="get">
