@@ -31,7 +31,11 @@ _AWARD = re.compile(
     re.I,
 )
 _SHALL = re.compile(r"([^\n.]{0,80}\b(?:shall|must)\b[^\n.]{10,200})", re.I)
-_LP_NEAR = re.compile(r"L\s*[&+]\s*P|L\s+AND\s+P|GLOBAL SECURITY", re.I)
+# Include glued BoardBook/OCR forms like "LandPGlobal Securities" / "GLOBALSECURITY".
+_LP_NEAR = re.compile(
+    r"L\s*[&+]\s*P|L\s*AND\s*P|LANDP(?:GLOBAL)?|GLOBAL\s*SECURITY",
+    re.I,
+)
 _VSA_NEAR = re.compile(r"Vets\s+Securing|VSA\b|Veterans?\s+Securing", re.I)
 _SCORE_ROW = re.compile(
     r"(\d{1,3}\.\d{2})\s+(\d{1,3}\.\d{2})\s+(\d{1,3}\.\d{2})\s+([A-Za-z][A-Za-z0-9 &.,'/+\-]{2,80})",
@@ -65,14 +69,15 @@ _TERM_RANGE = re.compile(
     re.I | re.S,
 )
 _NTE = re.compile(
-    r"(?:not\s+to\s+exceed|NTE)\s*(?:of\s*)?\$?\s*([\d,]+(?:\.\d{2})?)",
+    r"(?:not\s*to\s*exceed|NTE)\s*(?:of\s*)?\$?\s*([\d,\s]+(?:\.\d{2})?)",
     re.I,
 )
+_LP_TOKEN = r"(?:L\s*[&+]\s*P|L\s*AND\s*P|LANDP(?:GLOBAL)?|GLOBAL\s*SECURITY)"
 _LP_CONTRACT_ACTION = re.compile(
-    r"(?:approve|consider|contract\s+(?:for|with)|armed\s+security|presentation|contractor).{0,100}"
-    r"(?:L\s*[&+]\s*P|L\s+AND\s+P|GLOBAL\s+SECURITY)|"
-    r"(?:L\s*[&+]\s*P|L\s+AND\s+P|GLOBAL\s+SECURITY).{0,100}"
-    r"(?:contract|security\s+services|security\s+contractor|presentation)",
+    rf"(?:approve|consider|authorization|negotiate|contract\s+(?:for|with)|armed\s+security|presentation|contractor).{{0,120}}"
+    rf"{_LP_TOKEN}|"
+    rf"{_LP_TOKEN}.{{0,120}}"
+    rf"(?:contract|security\s+services|security\s+contractor|presentation|negotiate)",
     re.I | re.S,
 )
 
@@ -484,22 +489,23 @@ def extract_pdf_structure(document: NormalizedDocument) -> list[ExtractedFactDra
         if not found_nte:
             nte = _NTE.search(text)
             if nte:
-                found_nte = True
-                amount = nte.group(1).replace(",", "")
-                drafts.append(
-                    ExtractedFactDraft(
-                        idempotency_key=f"nte:{amount}"[:200],
-                        entity="contract",
-                        field="contract_nte",
-                        raw_value=f"${nte.group(1)}",
-                        normalized_value=amount,
-                        normalized_type="number",
-                        source_page=page.page,
-                        source_section=f"page {page.page}",
-                        source_excerpt=nte.group(0).strip()[:500],
-                        confidence=0.75,
+                amount = re.sub(r"[,\s]", "", nte.group(1))
+                if amount and re.fullmatch(r"\d+(?:\.\d{2})?", amount):
+                    found_nte = True
+                    drafts.append(
+                        ExtractedFactDraft(
+                            idempotency_key=f"nte:{amount}"[:200],
+                            entity="contract",
+                            field="contract_nte",
+                            raw_value=f"${nte.group(1).strip()}",
+                            normalized_value=amount,
+                            normalized_type="number",
+                            source_page=page.page,
+                            source_section=f"page {page.page}",
+                            source_excerpt=nte.group(0).strip()[:500],
+                            confidence=0.75,
+                        )
                     )
-                )
 
         if not found_lp_action and _LP_CONTRACT_ACTION.search(text):
             found_lp_action = True

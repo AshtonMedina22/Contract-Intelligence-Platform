@@ -55,7 +55,7 @@ That split-brain poisons the next agent. This file is the reconciled product tru
 | Claim | Verdict |
 | --- | --- |
 | Foundation (auth, tenancy, staging, verify gate, processor, intake) | **Mostly real in code + local scripts** — still confirm prod env/migrations |
-| Historical Pilot exit (~20–30 packages source→verify→promote) | **Not met** — VERIFY 2B documents **~7 A/B** through pipeline |
+| Historical Pilot exit (~20–30 packages source→verify→promote) | **Lower bound met, upper unmet** — live org **21** packages / **21** A/B harness-complete (VERIFY2B); still short of ~30 |
 | Later surfaces (Contracts, Intelligence, Ask, Pricing, Response) | **Large code + harnesses exist**; corpus-thin; do **not** equal L&P-ready product |
 | VERIFY 9 “READY WITH NONBLOCKING LIMITATIONS” | Means **engineering/trust harness green** with corpus / prod processor / `ASK_MODEL` deferred — **not** original Phase 2–8 product exit |
 
@@ -78,7 +78,7 @@ See [WORK_TRAIL.md](WORK_TRAIL.md). As of 2026-08-20 P0/P1 execution:
 1. **Live DB:** migrations through `20260821120000` applied (trust triggers + append-only versions + sourced awards/requirements + pricing awarded/current gates).  
 2. **Vercel:** Supabase env keys were empty placeholders — filled from local + redeployed; prod asks for sign-in. Still no processor/`ASK_MODEL`.  
 3. **RLS:** two-user suite **51/51 PASS** on live.  
-4. **Corpus:** still ~7 A/B vs ~20–30 — next product bottleneck.  
+4. **Corpus:** live **21** packages / **21** A/B harness-complete — ~20 lower bound met; continue toward ~30.  
 5. Do not expand “complete” claims or weaken `HUMAN_VERIFIED` gates.
 
 ## Rollback

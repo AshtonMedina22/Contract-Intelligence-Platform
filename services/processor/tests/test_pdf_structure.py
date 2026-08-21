@@ -96,3 +96,26 @@ def test_lp_named_on_board_agenda_emits_award_vendor() -> None:
     awards = [d for d in drafts if d.field == "awarded_vendor"]
     assert len(awards) == 1
     assert awards[0].normalized_value == "L&P Global Security"
+
+
+def test_glued_boardbook_esr_emits_nte_and_lp_award() -> None:
+    doc = NormalizedDocument(
+        parser_id="pdf-native",
+        filename="SRC-24_Terrell_ISD_2023_LP_Negotiate_ESR.pdf",
+        pages=[
+            PdfPage(
+                page=1,
+                text=(
+                    "Consider authorization of Superintendent to negotiate contract for unarmed and "
+                    "armed security guard services with LandPGlobal Securities, LLC nottoexceed$300, 000"
+                ),
+            )
+        ],
+    )
+    drafts = extract_pdf_structure(doc)
+    awards = [d for d in drafts if d.field == "awarded_vendor"]
+    ntes = [d for d in drafts if d.field == "contract_nte"]
+    assert len(awards) == 1
+    assert awards[0].normalized_value == "L&P Global Security"
+    assert len(ntes) == 1
+    assert ntes[0].normalized_value == "300000"

@@ -59,6 +59,13 @@ const ACQUIRED_BY_SRC = {
   "SRC-21b": "SRC-21b_Terrell_ISD_2026-27_LP_Security_ESR.pdf",
   "SRC-22": "SRC-22_Wylie_July31_Safety_Security_Minutes.pdf",
   "SRC-23": "SRC-23_Mesquite_ISD_20230901_LP_Contract_Approval_Agenda.pdf",
+  "SRC-24": "SRC-24_Terrell_ISD_2023_LP_Negotiate_ESR.pdf",
+  "SRC-25": "SRC-25_TxSmartBuy_Contracts_VendorsListing_2025-2026.pdf",
+  "SRC-26": "SRC-26_Allen_ISD_2024-06-17_Minutes_LP_excerpt.pdf",
+  "SRC-27": "SRC-27_HHSC_ESBD_HHSTX-6-0000383549_FY26_Security_RG06.pdf",
+  "SRC-28": "SRC-28_HHSC_ESBD_HHSTX-5-0000357097_R7_TXMAS.pdf",
+  "SRC-29": "SRC-29_ERS_Contracts_Over_100k_LP_Security.pdf",
+  "SRC-30": "SRC-30_ERS_ESBD_22-11357-001_Security_RFP_Awarded.pdf",
 };
 
 function resolveCorpusPath(row) {
@@ -111,6 +118,13 @@ const CORPUS = [
   { id: "SRC-21b", pkg: "PKG-15", cls: "B", buyer: "Terrell ISD", dtype: "board ESR", path: join(ACQUIRED, "SRC-21b_Terrell_ISD_2026-27_LP_Security_ESR.pdf"), sha: "c520aa39645401512b893395738f361040f108728f6f929ad1d3186b1da29681", size: 66293 },
   { id: "SRC-22", pkg: "PKG-16", cls: "B", buyer: "Wylie ISD", dtype: "committee minutes", path: join(ACQUIRED, "SRC-22_Wylie_July31_Safety_Security_Minutes.pdf"), sha: "676fa763699f9d31e60da20f0493229f895e3ecd860d6cd6fd5912780abf34e0", size: 74640 },
   { id: "SRC-23", pkg: "PKG-17", cls: "B", buyer: "Mesquite ISD", dtype: "board agenda", path: join(ACQUIRED, "SRC-23_Mesquite_ISD_20230901_LP_Contract_Approval_Agenda.pdf"), sha: "75349ebf5856b352e1e7debffc322eda3d577aa7dcb25bf1dfbaba38f754a20d", size: 66679 },
+  { id: "SRC-24", pkg: "PKG-18", cls: "B", buyer: "Terrell ISD", dtype: "board ESR", path: join(ACQUIRED, "SRC-24_Terrell_ISD_2023_LP_Negotiate_ESR.pdf"), sha: "9f5ea768fd8fd587e9d148b2f748ded1d074bc5f5c50eba506627b683ae447ef", size: 51018 },
+  { id: "SRC-25", pkg: "PKG-19", cls: "B", buyer: "Texas SmartBuy / TXMAS", dtype: "vendor listing", path: join(ACQUIRED, "SRC-25_TxSmartBuy_Contracts_VendorsListing_2025-2026.pdf"), sha: "ae9152d7a694eb283445fb29c5b62b5b67ab7bfa4213d45072837dfa9caf4f5d", size: 291920 },
+  { id: "SRC-26", pkg: "PKG-02", cls: "B", buyer: "Allen ISD", dtype: "board minutes", path: join(ACQUIRED, "SRC-26_Allen_ISD_2024-06-17_Minutes_LP_excerpt.pdf"), sha: "e799cebfa452d6a411c1899b856effa1ab0a3762c12e857c6aecd9c6d40ba2d1", size: 136175 },
+  { id: "SRC-27", pkg: "PKG-20", cls: "B", buyer: "Texas HHSC", dtype: "ESBD award", path: join(ACQUIRED, "SRC-27_HHSC_ESBD_HHSTX-6-0000383549_FY26_Security_RG06.pdf"), sha: "29b935ae0860750f834d3c3d0946b5382b1414897a11df5330a61b52f0125b82", size: 147310 },
+  { id: "SRC-28", pkg: "PKG-21", cls: "B", buyer: "Texas HHSC", dtype: "ESBD award", path: join(ACQUIRED, "SRC-28_HHSC_ESBD_HHSTX-5-0000357097_R7_TXMAS.pdf"), sha: "e4355d6969587171938c5e37c1f80b31bde38841b50c3b801c455023c4cd562e", size: 146519 },
+  { id: "SRC-29", pkg: "PKG-22", cls: "B", buyer: "ERS of Texas", dtype: "vendor listing", path: join(ACQUIRED, "SRC-29_ERS_Contracts_Over_100k_LP_Security.pdf"), sha: "998098dc17844eb2fd0ea4bb55d18524abd3892c523b5da474357cb7888e29fc", size: 160001 },
+  { id: "SRC-30", pkg: "PKG-22", cls: "B", buyer: "ERS of Texas", dtype: "ESBD solicitation awarded", path: join(ACQUIRED, "SRC-30_ERS_ESBD_22-11357-001_Security_RFP_Awarded.pdf"), sha: "0a44ba53410f2a14db1313c07d0642ca4513c65ae1d9e0bb7d1e72fe6f4baddf", size: 162375 },
 ];
 
 /** Document type + commercial truth for promotion (infer_commercial_truth / four truths). */
@@ -141,6 +155,13 @@ const DOC_META = {
   "SRC-21b": { documentType: "award staff report", commercialTruth: "awarded" },
   "SRC-22": { documentType: "board minutes", commercialTruth: "awarded" },
   "SRC-23": { documentType: "board agenda", commercialTruth: "awarded" },
+  "SRC-24": { documentType: "award staff report", commercialTruth: "awarded" },
+  "SRC-25": { documentType: "vendor listing", commercialTruth: "awarded" },
+  "SRC-26": { documentType: "board minutes", commercialTruth: "awarded" },
+  "SRC-27": { documentType: "award staff report", commercialTruth: "awarded" },
+  "SRC-28": { documentType: "award staff report", commercialTruth: "awarded" },
+  "SRC-29": { documentType: "vendor listing", commercialTruth: "current" },
+  "SRC-30": { documentType: "rfp solicitation", commercialTruth: "awarded" },
 };
 
 const STRUCTURED_TYPES = new Set(["rate", "identifier", "requirement", "award", "number", "text"]);

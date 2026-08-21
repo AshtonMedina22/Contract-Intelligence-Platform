@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (pushed `1b9961e`; Vercel Production **success**) |
-| **Git HEAD on origin/main** | `1b9961e` (fix-up to `38f364b` corpus/PO fix) |
-| **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **17**; A/B harness-complete **16**; exit ~20–30 still unmet. Section Terrell audit: **PASS WITH DEFERRED** ([SECTION_TERRELL_AUDIT_FIX.md](pilot/SECTION_TERRELL_AUDIT_FIX.md)). Prod Renewals verified after deploy. |
+| **Last updated** | 2026-08-20 (Ask GPT: Ollama/Google/Gateway multi-provider; corpus SRC-24…30 trail) |
+| **Git HEAD on origin/main** | _(pushing this commit)_ |
+| **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **~22**; A/B harness-complete **~23**; exit ~20–30 **lower bound met**, still short of ~30. VERIFY2B **8/8**. Local Ask synthesis: **Ollama** (free) + Google Gemini fallback; Gateway needs card; OpenAI key quota-blocked. Secrets stay in `.env.local` only. |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
 Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
@@ -36,7 +36,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 | **Phase 3 Historical Ingestion** | **PASS** — Data Ops productionized ([PHASE3_ACCEPTANCE.md](PHASE3_ACCEPTANCE.md)); DOCX wired; OCR key-gated; package grouping; resizable verify | Set `MISTRAL_API_KEY` for live scans; grow corpus |
 | **Phase 4 Contracts / Compliance** | **Prompt 4 exit** — Portfolio/Renewals/Compliance nav; workspace tabs wired to verified tables; alert buckets; [PHASE4_ACCEPTANCE.md](PHASE4_ACCEPTANCE.md) | Validate on more real awarded instruments; grow corpus |
 | **Phase 5 Intelligence** | **Prompt 5 + VERIFY 5 PASS** — Buyers/Competitors/Market/Pricing/Win-Loss/Content/Reports; [PHASE5_INTELLIGENCE_ACCEPTANCE.md](PHASE5_INTELLIGENCE_ACCEPTANCE.md) | Corpus-thin |
-| **Phase 6 Ask / Reports / Automation** | **Prompt 6 + VERIFY 6 PASS** — LOCATE/ASK/REPORT; purpose-aware retrieval; 8 reports; automation incl. approval reminders; [PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md](PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md) | Corpus-thin; ASK synthesis needs AI Gateway/`ASK_MODEL` |
+| **Phase 6 Ask / Reports / Automation** | **Prompt 6 + VERIFY 6 PASS** — LOCATE/ASK/REPORT; purpose-aware retrieval; 8 reports; automation incl. approval reminders; [PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md](PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md) | Corpus-thin; local Ask synthesis via **Ollama** / Google / Gateway (prod Gateway still unset) |
 | **Phase 7 Pricing Intelligence** | Prompt 7 + **VERIFY 7 PASS** — blank comparable reason blocked; Glide source_fact URI columns. [VERIFY7_ACCEPTANCE.md](pilot/VERIFY7_ACCEPTANCE.md) | Grow verified pricing corpus |
 | **Phase 8 Response / Submission / Result** | Prompt 8 + **VERIFY 8 PASS** — end-to-end pre-award flow. [VERIFY8_ACCEPTANCE.md](pilot/VERIFY8_ACCEPTANCE.md) | Grow verified corpus |
 | **Docs** | Pack + full master context reconciled | Same |
@@ -53,13 +53,13 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 1. ~~Apply pending migrations on live~~ **DONE** through `20260821120000` (includes `20260821090000` trust triggers).  
 2. ~~Confirm Vercel Supabase env~~ **DONE** — keys existed but were **empty**; filled from local + redeployed. Prod shows sign-in (not “env not configured”). Still missing: `PROCESSOR_*`, `ASK_MODEL`.  
 3. ~~Prove two-user RLS~~ **DONE** — `npm run test:phase2-rls` **51/51 PASS** on live.  
-4. **Grow pilot corpus** toward ~20–30. **Progress:** **17** packages / A/B harness **16** (added Wylie SRC-22 + Mesquite SRC-23 Grade B records). POP dates → Renewals EXPIRED. False POs purged. Still short of ~20–30. SRC-19 OCR deferred.  
+4. **Grow pilot corpus** toward ~20–30. **Progress:** **21** packages / A/B harness **21** (added PKG-20 HHSC FY26 RG06 ESBD award SRC-27 `$3,497,000`; PKG-21 HHSC R7 ESBD award SRC-28 `$617,400` via TXMAS-24-99003). **Lower bound ~20 met**; still short of ~30. SRC-19 OCR deferred. Rejected this hunt: Allen Jul-31 agenda (no L&P name), Wylie Collin finalsiste/BoardBook (no L&P), Jefferson IFB 404, extra TxDMV POs (none), duplicate Williamson minutes.  
 
 **P1 — Trust parity**  
 5–8. ~~DONE~~  
 
 **P2 — Operator capability (when needed)**  
-9. Set `ASK_MODEL` / AI Gateway on Vercel — **still unset** (no key fabricated).  
+9. Ask synthesis: local **Ollama** wired (`ASK_MODEL=ollama/…`); Google Gemini works as fallback; Vercel Gateway key saved locally but needs card on file for free credits; OpenAI API quota blocked. **Prod Vercel still needs** `ASK_MODEL` + provider auth for hosted Ask.  
 10. Hosted/reachable processor (`PROCESSOR_URL` + secret) beyond local.  
 11. OCR / Drive tokens only when those paths are in use (`MISTRAL_API_KEY` for SRC-19).  
 
@@ -73,6 +73,9 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-20 | Ask providers + push | Multi-provider Ask (`synthesize.ts`): Ollama local free path verified; Google Gemini OK; Gateway needs card; OpenAI quota fail. Corpus harness SRC-24…30 + BoardBook extractor fix. Secrets not committed. | Grow to ~30; prod Ask env; hosted processor |
+| 2026-08-20 | Verified P0 vs end-state; cross ~20 | Acquired/ingested SRC-27/28 public TxSmartBuy ESBD awards (HHSC). Live **21** pkgs / **21** A/B complete. VERIFY2B **8/8**. Lower bound of ~20–30 **met**. | Continue toward ~30 (prefer Grade A instruments); ASK_MODEL; MISTRAL; hosted processor |
+| 2026-08-20 | Verified P0 vs end-state; grow corpus | Acquired/ingested SRC-24 Terrell 2023 ESR, SRC-25 TxSmartBuy TXMAS list, SRC-26 Allen minutes excerpt. Live **19** pkgs. Extractor glued-BoardBook fix + reextract SRC-24 NTE `$300000` + LP award. VERIFY2B **8/8**. Browser Contracts shows SRC-24/25. Rejected false TxDMV FTP hits. | ≥1 more package to cross ~20; Grade A instruments preferred; ASK_MODEL; MISTRAL; hosted processor |
 | 2026-08-20 | Section FAIL fix-pass + next corpus | False PO root cause fixed; digit CHECK; purged garbage. VERIFY2B **8/8**. Added Wylie/Mesquite B packages → live **17** pkgs / **16** A/B complete. | More Grade A instruments; MISTRAL; ASK_MODEL |
 | 2026-08-20 | Section audit FAIL → fix-pass | Root cause: `_PO` matched inside “political/positions”. Tightened extractor + digit CHECK; purged 6 bad POs + REJECT garbage/dup facts. pytest **16/16**. SRC-19 OCR deferred. [SECTION_TERRELL_AUDIT_FIX.md](pilot/SECTION_TERRELL_AUDIT_FIX.md) **PASS WITH DEFERRED** | Grow corpus ~20–30; MISTRAL for SRC-19; ASK_MODEL |
 | 2026-08-20 | Verified next vs end-state; implement | Confirmed P0 = corpus (~20–30). Acquired Terrell 2026–27 + ESRs/price; discarded non-L&P Williamson funding. Extractor POP dates/NTE; Allen+Terrell `verified_end_on`; Renewals UI shows **2 EXPIRED**. Packages **15**, A/B harness **14**. | More public packages; ASK_MODEL; OCR for SRC-19; workbench VERIFY |

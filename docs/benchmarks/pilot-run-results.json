@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-21T00:25:13.323Z",
+  "generatedAt": "2026-08-21T01:56:21.213Z",
   "orgId": "f9f6632f-b00f-41b0-9289-86c755408ae5",
-  "filesAttempted": 26,
-  "filesIngested": 26,
-  "filesProcessed": 24,
-  "filesVerified": 19,
-  "packagesComplete": 16,
-  "packages": 17,
+  "filesAttempted": 33,
+  "filesIngested": 33,
+  "filesProcessed": 30,
+  "filesVerified": 29,
+  "packagesComplete": 23,
+  "packages": 22,
   "packageResults": {
     "PKG-01": {
       "files": [],
@@ -113,23 +113,12 @@
       "gaps": []
     },
     "PKG-14": {
-      "files": [
-        "SRC-20b"
-      ],
-      "cls": "B",
-      "ingested": 1,
+      "files": [],
+      "ingested": 0,
       "processed": 0,
       "verified": 0,
       "pipelineComplete": 0,
-      "buyer": "Terrell ISD",
-      "gaps": [
-        {
-          "kind": "parser_extraction_failure",
-          "severity": "blocking",
-          "detail": "{'message': 'Cannot coerce the result to a single JSON object', 'code': 'PGRST116', 'hint': None, 'details': 'The result contains 0 rows'}",
-          "ux": "Data Ops"
-        }
-      ]
+      "gaps": []
     },
     "PKG-15": {
       "files": [],
@@ -153,6 +142,51 @@
       "processed": 0,
       "verified": 0,
       "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-18": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-19": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-20": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-21": {
+      "files": [],
+      "ingested": 0,
+      "processed": 0,
+      "verified": 0,
+      "pipelineComplete": 0,
+      "gaps": []
+    },
+    "PKG-22": {
+      "files": [
+        "SRC-29",
+        "SRC-30"
+      ],
+      "cls": "B",
+      "ingested": 2,
+      "processed": 2,
+      "verified": 2,
+      "pipelineComplete": 2,
+      "buyer": "ERS of Texas",
       "gaps": []
     }
   },
@@ -2129,6 +2163,665 @@
       "finalStatus": "VERIFIED",
       "pipelineComplete": true,
       "classCComplete": false
+    },
+    {
+      "srcId": "SRC-24",
+      "pkg": "PKG-18",
+      "cls": "B",
+      "buyer": "Terrell ISD",
+      "dtype": "board ESR",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-24_Terrell_ISD_2023_LP_Negotiate_ESR.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "949ff69b-e6a9-4725-bc4f-baa34c70ab7e",
+        "versionId": "3cfce6c8-7a40-4da6-a433-5ff97df98320",
+        "duplicate": true,
+        "sha256": "9f5ea768fd8fd587e9d148b2f748ded1d074bc5f5c50eba506627b683ae447ef",
+        "opportunityId": "624c3641-1e53-4ee3-800a-3d38f0eee451"
+      },
+      "process": {
+        "ok": false,
+        "status": 500,
+        "factCount": 0,
+        "error": "{'message': 'Cannot coerce the result to a single JSON object', 'code': 'PGRST116', 'hint': None, 'details': 'The result contains 0 rows'}"
+      },
+      "verify": {
+        "structuredCount": 2,
+        "promoted": 2,
+        "verified": 2
+      },
+      "pdfAnalysis": {
+        "pages": 1,
+        "chars": 1508,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": false,
+          "scope_service": true,
+          "scope_sites": false,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": true,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [
+        {
+          "kind": "parser_extraction_failure",
+          "severity": "blocking",
+          "detail": "{'message': 'Cannot coerce the result to a single JSON object', 'code': 'PGRST116', 'hint': None, 'details': 'The result contains 0 rows'}",
+          "ux": "Data Ops"
+        }
+      ],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-25",
+      "pkg": "PKG-19",
+      "cls": "B",
+      "buyer": "Texas SmartBuy / TXMAS",
+      "dtype": "vendor listing",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-25_TxSmartBuy_Contracts_VendorsListing_2025-2026.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "57ce6016-a137-4ddd-9da5-a6c3ceed16c1",
+        "versionId": "05b0b9dd-9439-4299-a67e-037157da0ece",
+        "duplicate": false,
+        "sha256": "ae9152d7a694eb283445fb29c5b62b5b67ab7bfa4213d45072837dfa9caf4f5d",
+        "opportunityId": "640495e2-ec9d-469c-8d58-1444f311596e"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 14,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 3,
+        "rejected": 11,
+        "promoted": 3,
+        "promotions": [
+          {
+            "factId": "2082dc59-8c85-476d-b221-89ecf8f8e105",
+            "field": "txmas",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "federal_identifier",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "e, Educational and Healthcare TXMAS-25-42001 6/20/2026\nAce Relocation Syst"
+          },
+          {
+            "factId": "f8656f4f-7da2-4a4d-ad1e-16e1f30a622a",
+            "field": "contract_number",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "contract_number",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "ame Texas SmartBuy Contract Description Contract Number Contract End Date\n1st Choice Restaurant Equipmen"
+          },
+          {
+            "factId": "c8a5c998-9fbc-4691-9146-40389b13aceb",
+            "field": "awarded_vendor",
+            "ok": true,
+            "action": "award",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 5,
+            "excerpt": "L&P Global Security, LLC Guard and Security Services"
+          }
+        ],
+        "factCount": 14,
+        "structuredCount": 3
+      },
+      "pdfAnalysis": {
+        "pages": 11,
+        "chars": 44998,
+        "signals": {
+          "solicitation_metadata": false,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": true,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": false,
+          "contract_po": false,
+          "contract_amendment": true,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-26",
+      "pkg": "PKG-02",
+      "cls": "B",
+      "buyer": "Allen ISD",
+      "dtype": "board minutes",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-26_Allen_ISD_2024-06-17_Minutes_LP_excerpt.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "b8174012-fdf5-451e-9583-142603a79f31",
+        "versionId": "8552b5d5-faab-4974-a3a4-cfd012547a7a",
+        "duplicate": false,
+        "sha256": "e799cebfa452d6a411c1899b856effa1ab0a3762c12e857c6aecd9c6d40ba2d1",
+        "opportunityId": "2a6b6056-e563-4e46-be7a-a0cea9c73231"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 5,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 3,
+        "promoted": 2,
+        "promotions": [
+          {
+            "factId": "1008c414-4634-4bdc-ad36-1027a27cfd3f",
+            "field": "gsa",
+            "ok": true,
+            "action": "rate",
+            "contractAction": "federal_identifier",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": "awarded",
+            "rate": 4722008,
+            "sourcePage": 2,
+            "excerpt": "chool year utilizing contract GSA #47QSWA22D008W.\nMonthly reports were acknowl"
+          },
+          {
+            "factId": "2e172b0e-a773-49db-91b2-d473233b2e30",
+            "field": "awarded_vendor",
+            "ok": true,
+            "action": "award",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 2,
+            "excerpt": "approve the \nSecurity Services agreement with L&P Global Security"
+          }
+        ],
+        "factCount": 5,
+        "structuredCount": 2
+      },
+      "pdfAnalysis": {
+        "pages": 3,
+        "chars": 5646,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": false,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": true,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": false,
+          "contract_po": true,
+          "contract_amendment": true,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-27",
+      "pkg": "PKG-20",
+      "cls": "B",
+      "buyer": "Texas HHSC",
+      "dtype": "ESBD award",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-27_HHSC_ESBD_HHSTX-6-0000383549_FY26_Security_RG06.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "00bbc7fd-e64f-415d-8dfa-59889c14892e",
+        "versionId": "6b05ecf9-eaf4-4437-9266-42598d89b9ac",
+        "duplicate": false,
+        "sha256": "29b935ae0860750f834d3c3d0946b5382b1414897a11df5330a61b52f0125b82",
+        "opportunityId": "eab459a5-d01f-4d20-b5be-5260b55d654d"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 3,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 1,
+        "rejected": 2,
+        "promoted": 1,
+        "promotions": [
+          {
+            "factId": "760824da-4a55-4f69-bb78-446ebf31bbf5",
+            "field": "awarded_vendor",
+            "ok": true,
+            "action": "award",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "globalsecurity.com\nNIGP Codes:   99046-Guard And Security Services"
+          }
+        ],
+        "factCount": 3,
+        "structuredCount": 1
+      },
+      "pdfAnalysis": {
+        "pages": 2,
+        "chars": 1603,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": false,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-28",
+      "pkg": "PKG-21",
+      "cls": "B",
+      "buyer": "Texas HHSC",
+      "dtype": "ESBD award",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-28_HHSC_ESBD_HHSTX-5-0000357097_R7_TXMAS.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "d7541ac4-0bf1-46db-8f1c-8d33bad35f0b",
+        "versionId": "38083995-ea67-4ef7-97c4-d4d37d107526",
+        "duplicate": false,
+        "sha256": "e4355d6969587171938c5e37c1f80b31bde38841b50c3b801c455023c4cd562e",
+        "opportunityId": "1dd30fad-b461-41dd-8510-afff3a92e4d0"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 4,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 2,
+        "rejected": 2,
+        "promoted": 2,
+        "promotions": [
+          {
+            "factId": "d98f8fa3-5c6b-47d9-a4d3-9a78605ef810",
+            "field": "txmas",
+            "ok": true,
+            "action": "skipped",
+            "contractAction": "federal_identifier",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "Awarded via TXMAS Contract TXMAS-24-99003\nAgency/Texas SmartBuy Member"
+          },
+          {
+            "factId": "b7e14a40-1893-4afc-a3d1-59d41f7eb7d9",
+            "field": "awarded_vendor",
+            "ok": true,
+            "action": "award",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "globalsecurity.com\nNIGP Codes:   99046-Guard And Security Services"
+          }
+        ],
+        "factCount": 4,
+        "structuredCount": 2
+      },
+      "pdfAnalysis": {
+        "pages": 2,
+        "chars": 1666,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": false,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": false,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-29",
+      "pkg": "PKG-22",
+      "cls": "B",
+      "buyer": "ERS of Texas",
+      "dtype": "vendor listing",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-29_ERS_Contracts_Over_100k_LP_Security.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "79278cc7-12cc-4007-8fb4-e23f538366fa",
+        "versionId": "a0a97b48-60e0-42b7-aa1c-60db6b4c9b86",
+        "duplicate": false,
+        "sha256": "998098dc17844eb2fd0ea4bb55d18524abd3892c523b5da474357cb7888e29fc",
+        "opportunityId": "97bfa06f-18bb-46ee-95eb-81824f7b9901"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 7,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 1,
+        "rejected": 6,
+        "promoted": 1,
+        "promotions": [
+          {
+            "factId": "6cc5fb27-bc49-4fa4-b80d-e009091243d3",
+            "field": "awarded_vendor",
+            "ok": true,
+            "action": "conflict",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 4,
+            "excerpt": "L&P Global Security, LLC. Security Services"
+          }
+        ],
+        "factCount": 7,
+        "structuredCount": 1
+      },
+      "pdfAnalysis": {
+        "pages": 6,
+        "chars": 6323,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": false,
+          "solicitation_evaluation": false,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": false,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": false,
+          "contract_renewal": false
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
+    },
+    {
+      "srcId": "SRC-30",
+      "pkg": "PKG-22",
+      "cls": "B",
+      "buyer": "ERS of Texas",
+      "dtype": "ESBD solicitation awarded",
+      "path": "C:\\Users\\Ashto\\Projects\\Contract-Intelligence-Platform\\docs\\pilot\\acquired\\SRC-30_ERS_ESBD_22-11357-001_Security_RFP_Awarded.pdf",
+      "intake": {
+        "ok": true,
+        "documentId": "e002b920-85a0-415e-8c60-8600f24b814a",
+        "versionId": "3e615760-c1b7-4c26-8617-cdba5658797a",
+        "duplicate": false,
+        "sha256": "0a44ba53410f2a14db1313c07d0642ca4513c65ae1d9e0bb7d1e72fe6f4baddf",
+        "opportunityId": "97bfa06f-18bb-46ee-95eb-81824f7b9901"
+      },
+      "process": {
+        "ok": true,
+        "status": 200,
+        "parserId": "pdf-native",
+        "factCount": 8,
+        "documentStatus": "NEEDS_REVIEW"
+      },
+      "verify": {
+        "ok": true,
+        "verified": 5,
+        "rejected": 3,
+        "promoted": 5,
+        "promotions": [
+          {
+            "factId": "5f3a62e0-0823-4a61-873d-886bb309ee69",
+            "field": "solicitation_number",
+            "ok": true,
+            "action": "solicitation",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "ndment alters Section A.3.,\nSchedule of RFP Process. Also, an update has been made to Appen"
+          },
+          {
+            "factId": "540c0efe-2cb8-4c6f-8e1a-7d773c8e2f87",
+            "field": "requirement",
+            "ok": true,
+            "action": "conflict",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 1,
+            "excerpt": "Respondents shall be required to"
+          },
+          {
+            "factId": "c9e0890e-9a25-40b9-8fa0-1bc5c10cb019",
+            "field": "awarded_vendor",
+            "ok": true,
+            "action": "award",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 2,
+            "excerpt": "Contractor Name: L&P Global Security"
+          },
+          {
+            "factId": "16a9a23c-f4e3-4299-af33-4c6acec26a60",
+            "field": "requirement",
+            "ok": true,
+            "action": "conflict",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 2,
+            "excerpt": "h, download the RFP, submit questions and/or a Proposal, prospectiveRespondents must first create a profile in Bonfire, which operates best on the latest versions ofMicrosoft Edge,"
+          },
+          {
+            "factId": "5d2296be-a906-4cac-9e4a-9583241efd5d",
+            "field": "requirement",
+            "ok": true,
+            "action": "conflict",
+            "contractAction": "skipped",
+            "intelAction": "skipped",
+            "sectionAction": "skipped",
+            "formAction": "skipped",
+            "costAction": "skipped",
+            "chunkAction": "chunked",
+            "truth": null,
+            "rate": null,
+            "sourcePage": 2,
+            "excerpt": "All Proposal materials shall be received by ERS viaBonfire no later than December 2, 2022 at 10:00 a"
+          }
+        ],
+        "factCount": 8,
+        "structuredCount": 5
+      },
+      "pdfAnalysis": {
+        "pages": 3,
+        "chars": 5992,
+        "signals": {
+          "solicitation_metadata": true,
+          "solicitation_dates": true,
+          "solicitation_evaluation": true,
+          "solicitation_forms": true,
+          "scope_service": true,
+          "scope_sites": true,
+          "scope_staffing": true,
+          "scope_classifications": false,
+          "pricing_hourly": false,
+          "pricing_table": false,
+          "pricing_cost_build": false,
+          "pricing_ot_holiday": true,
+          "pricing_escalation": false,
+          "proposal_sections": true,
+          "result_award": true,
+          "result_scores": true,
+          "contract_po": false,
+          "contract_amendment": true,
+          "contract_renewal": true
+        }
+      },
+      "gaps": [],
+      "finalStatus": "VERIFIED",
+      "pipelineComplete": true,
+      "classCComplete": false
     }
   ],
   "pricingLines": [
@@ -2195,19 +2888,6 @@
       "requested_source_fact_id": null,
       "proposed_source_fact_id": null,
       "awarded_source_fact_id": "60f87394-e335-43ae-8153-93621603c5fe",
-      "current_source_fact_id": null
-    },
-    {
-      "id": "61547aa2-7f16-4ed6-924d-4a9c8749671f",
-      "opportunity_id": "857d9002-a1f8-4e3d-a179-419eada69191",
-      "labor_category": "contract",
-      "requested_rate": null,
-      "proposed_rate": null,
-      "awarded_rate": 100000,
-      "current_rate": null,
-      "requested_source_fact_id": null,
-      "proposed_source_fact_id": null,
-      "awarded_source_fact_id": "495d1851-e54a-4390-a59b-9dc5267d4802",
       "current_source_fact_id": null
     },
     {
@@ -2547,6 +3227,45 @@
       "proposed_source_fact_id": null,
       "awarded_source_fact_id": "45899e64-e00b-45c5-b14d-04c030650502",
       "current_source_fact_id": null
+    },
+    {
+      "id": "61547aa2-7f16-4ed6-924d-4a9c8749671f",
+      "opportunity_id": "857d9002-a1f8-4e3d-a179-419eada69191",
+      "labor_category": "contract",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 100000,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "30dd5d86-46cb-434a-b52e-a7c13f719f6b",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "705ea1e0-f7b8-4f53-b5e9-be7099d86f49",
+      "opportunity_id": "2a6b6056-e563-4e46-be7a-a0cea9c73231",
+      "labor_category": "federal",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 4722008,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "1008c414-4634-4bdc-ad36-1027a27cfd3f",
+      "current_source_fact_id": null
+    },
+    {
+      "id": "d71beb85-e473-4661-8d43-bc08f184866c",
+      "opportunity_id": "624c3641-1e53-4ee3-800a-3d38f0eee451",
+      "labor_category": "contract",
+      "requested_rate": null,
+      "proposed_rate": null,
+      "awarded_rate": 300000,
+      "current_rate": null,
+      "requested_source_fact_id": null,
+      "proposed_source_fact_id": null,
+      "awarded_source_fact_id": "d1c6960b-9b48-4b09-b5b5-ddd311291b4d",
+      "current_source_fact_id": null
     }
   ],
   "provenance": [
@@ -2593,15 +3312,6 @@
       "sourcePage": 2,
       "excerpt": "12.00 \n \n \n23.06 \n \n \n35.06 \n \n \nBid closed",
       "evidencePage": 2,
-      "survived": true
-    },
-    {
-      "truth": "awarded",
-      "rate": 100000,
-      "factId": "495d1851-e54a-4390-a59b-9dc5267d4802",
-      "sourcePage": 1,
-      "excerpt": "Not  to  Exceed  $100,000",
-      "evidencePage": 1,
       "survived": true
     },
     {
@@ -2837,11 +3547,38 @@
       "excerpt": "chool year utilizing contract GSA #47QSWA22D008W.”\n139",
       "evidencePage": 3,
       "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 100000,
+      "factId": "30dd5d86-46cb-434a-b52e-a7c13f719f6b",
+      "sourcePage": 1,
+      "excerpt": "Not  to  Exceed  $100,000",
+      "evidencePage": 1,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 4722008,
+      "factId": "1008c414-4634-4bdc-ad36-1027a27cfd3f",
+      "sourcePage": 2,
+      "excerpt": "chool year utilizing contract GSA #47QSWA22D008W.\nMonthly reports were acknowl",
+      "evidencePage": 2,
+      "survived": true
+    },
+    {
+      "truth": "awarded",
+      "rate": 300000,
+      "factId": "d1c6960b-9b48-4b09-b5b5-ddd311291b4d",
+      "sourcePage": 1,
+      "excerpt": "not toexceed$300, 000",
+      "evidencePage": 1,
+      "survived": true
     }
   ],
   "precedence": {
     "tested": true,
-    "on": "SRC-20b",
+    "on": "SRC-30",
     "action": "conflict",
     "ok": true,
     "exception": "precedence_requested"
@@ -2849,6 +3586,6 @@
   "classCPromoted": 0,
   "verifiedWithZeroHumanFacts": [],
   "fourTruthsDistinct": true,
-  "mergeNote": "Partial run merged (PILOT_SRC_IDS=SRC-20B)",
+  "mergeNote": "Partial run merged (PILOT_SRC_IDS=SRC-29,SRC-30)",
   "classCComplete": 6
 }
