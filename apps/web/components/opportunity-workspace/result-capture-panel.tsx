@@ -59,6 +59,8 @@ export function ResultCapturePanel({
   opportunityTitle,
   awardEvidence,
   pursuitDocumentCount,
+  canResultWrite = true,
+  canContractCreate = true,
 }: {
   opportunityId: string;
   winLoss: WinLoss;
@@ -67,6 +69,8 @@ export function ResultCapturePanel({
   opportunityTitle: string;
   awardEvidence: AwardEvidenceRow[];
   pursuitDocumentCount: number;
+  canResultWrite?: boolean;
+  canContractCreate?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const [outcome, setOutcome] = useState<OpportunityResultOutcome>(
@@ -237,9 +241,14 @@ export function ResultCapturePanel({
             </div>
           </fieldset>
 
-          <Button type="submit" size="sm" disabled={pending}>
+          <Button type="submit" size="sm" disabled={pending || !canResultWrite}>
             Save result
           </Button>
+          {!canResultWrite ? (
+            <p className="text-xs text-muted-foreground">
+              Result write requires admin, bidder, or executive.
+            </p>
+          ) : null}
           {note ? (
             <span className="ml-2 text-xs text-muted-foreground" data-testid="result-note">
               {note}
@@ -352,8 +361,14 @@ export function ResultCapturePanel({
                 type="submit"
                 size="sm"
                 data-testid="create-contract"
-                disabled={pending || !gate.allowed}
-                title={gate.allowed ? undefined : gate.message}
+                disabled={pending || !gate.allowed || !canContractCreate}
+                title={
+                  !canContractCreate
+                    ? "Requires admin, bidder, or executive (contract.create)."
+                    : gate.allowed
+                      ? undefined
+                      : gate.message
+                }
               >
                 Create contract from win
               </Button>

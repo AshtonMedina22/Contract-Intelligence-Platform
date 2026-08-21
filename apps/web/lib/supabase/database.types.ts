@@ -2612,6 +2612,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      audit_log: {
+        Row: {
+          id: string;
+          organization_id: string;
+          actor_user_id: string;
+          action: string;
+          entity_type: string;
+          entity_id: string | null;
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          actor_user_id: string;
+          action: string;
+          entity_type: string;
+          entity_id?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          actor_user_id?: string;
+          action?: string;
+          entity_type?: string;
+          entity_id?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       notifications: {
         Row: {
           id: string;
@@ -3097,6 +3130,17 @@ export type Database = {
       };
       create_organization_with_admin: {
         Args: { org_name: string };
+        Returns: string;
+      };
+      write_audit_log: {
+        Args: {
+          p_organization_id: string;
+          p_actor_user_id: string;
+          p_action: string;
+          p_entity_type: string;
+          p_entity_id?: string | null;
+          p_metadata?: Record<string, unknown>;
+        };
         Returns: string;
       };
       register_ingested_document: {

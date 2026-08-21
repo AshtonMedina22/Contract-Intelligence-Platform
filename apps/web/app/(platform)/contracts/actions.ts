@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { writeAuditLog } from "@/lib/auth/audit";
+import { requirePermission } from "@/lib/auth/permissions";
 
 async function requireUserOrg() {
   const supabase = await createClient();
@@ -17,7 +19,7 @@ async function requireUserOrg() {
     .limit(1)
     .maybeSingle();
   if (!membership?.organization_id) throw new Error("No organization.");
-  return { supabase, organizationId: membership.organization_id };
+  return { supabase, organizationId: membership.organization_id, userId: user.id };
 }
 
 /**
@@ -33,7 +35,8 @@ async function requireUserOrg() {
  * rebid discoverable from the contract's Renewal tab.
  */
 export async function cloneRebidFromContract(contractId: string) {
-  const { supabase, organizationId } = await requireUserOrg();
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "rebid.clone");
 
   const { data: contract, error: contractError } = await supabase
     .from("contracts")
@@ -83,6 +86,15 @@ export async function cloneRebidFromContract(contractId: string) {
     .single();
 
   if (createError || !created) throw new Error(createError?.message ?? "Failed to create rebid workspace.");
+
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "rebid.clone",
+    entityType: "opportunity",
+    entityId: created.id,
+    metadata: { from_contract_id: contractId },
+  });
 
   revalidatePath("/proposals");
   revalidatePath("/procurement/opportunities");

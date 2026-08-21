@@ -12,6 +12,7 @@ import { loadPricingComparables } from "@/lib/opportunity/comparables";
 import { formatMoney, summarizeComparableRates } from "@/lib/opportunity/pricing-math";
 import type { OpportunityResultOutcome } from "@/lib/opportunity/response";
 import { isAwardishFact } from "@/lib/opportunity/submission-readiness";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 export default function OpportunityResultPage({
   params,
@@ -32,6 +33,7 @@ async function OpportunityResultContent({
 }) {
   const { opportunityId } = await params;
   const supabase = await createClient();
+  const caps = await loadCurrentOrgCapabilities();
 
   const [opportunity, comparables, { data: winLoss }, { data: competitorBids }, { data: contract }, { data: scores }] =
     await Promise.all([
@@ -152,6 +154,8 @@ async function OpportunityResultContent({
         contractTitle={contract?.title ?? null}
         awardEvidence={awardEvidence}
         pursuitDocumentCount={pursuitDocIds.length}
+        canResultWrite={caps?.canResultWrite ?? false}
+        canContractCreate={caps?.canContractCreate ?? false}
       />
 
       <CompetitorBriefPanel data={brief} />

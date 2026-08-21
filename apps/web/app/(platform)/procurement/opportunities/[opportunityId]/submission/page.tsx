@@ -9,6 +9,7 @@ import {
 } from "@/lib/opportunity/load-response";
 import { computeResponseProgress } from "@/lib/opportunity/response";
 import { resolveGoogleDocsAccessToken } from "@/lib/google/google-docs";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 export default function OpportunitySubmissionPage({
   params,
@@ -29,6 +30,7 @@ async function OpportunitySubmissionContent({
 }) {
   const { opportunityId } = await params;
   const supabase = await createClient();
+  const caps = await loadCurrentOrgCapabilities();
 
   const [
     { data: documents },
@@ -105,6 +107,7 @@ async function OpportunitySubmissionContent({
       googleDocsConfigured={Boolean(resolveGoogleDocsAccessToken())}
       hasApprovedContent={hasApprovedContent}
       latestArtifact={latestArtifact ?? null}
+      canPursuitSubmit={caps?.canPursuitSubmit ?? false}
     />
   );
 }

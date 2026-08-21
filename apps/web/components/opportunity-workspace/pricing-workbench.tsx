@@ -44,6 +44,8 @@ type Props = {
   factDocumentMap: Map<string, string>;
   economics: FulfillmentEconomics;
   structureHints: readonly string[];
+  canPricingEdit?: boolean;
+  canPricingApprove?: boolean;
 };
 
 const COST_FIELDS = [
@@ -227,6 +229,8 @@ export function PricingWorkbench({
   factDocumentMap,
   economics,
   structureHints,
+  canPricingEdit = true,
+  canPricingApprove = true,
 }: Props) {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const costModelsRef = useRef<HTMLDivElement | null>(null);
@@ -334,7 +338,13 @@ export function PricingWorkbench({
         <AddLaborCategoryForm opportunityId={opportunityId} />
       </div>
 
-      <FinalBidPanel opportunityId={opportunityId} support={support} decisions={decisions} />
+      <FinalBidPanel
+        opportunityId={opportunityId}
+        support={support}
+        decisions={decisions}
+        canPricingEdit={canPricingEdit}
+        canPricingApprove={canPricingApprove}
+      />
     </div>
   );
 }

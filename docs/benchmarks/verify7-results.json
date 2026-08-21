@@ -1,11 +1,11 @@
 {
   "audit": "VERIFY7",
   "phase": "Canonical Phase 7 — Pricing Intelligence",
-  "stamp": "mt2ysq16",
+  "stamp": "mt3a5qoy",
   "verdict": "FAIL",
   "total": 22,
-  "passed": 19,
-  "failed": 3,
+  "passed": 20,
+  "failed": 2,
   "matrix": [
     {
       "domain": "surface",
@@ -73,7 +73,7 @@
     {
       "domain": "human",
       "name": "Final bid UI requires explicit human action",
-      "ok": false,
+      "ok": true,
       "detail": "FinalBidPanel + savePricingDecision",
       "source": "final-bid-panel + actions"
     },
@@ -102,7 +102,7 @@
       "domain": "truths",
       "name": "buyer requested != submitted != awarded != current (+ internal cost distinct)",
       "ok": true,
-      "detail": "{\"id\":\"e7cfdff6-66b0-42bd-a55e-62d65d3aeb7d\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"2a6639c5-594d-472e-91ad-fd45d7caea31\",\"proposed_source_fact_id\":\"8816709a-ef48-40d2-9579-d9abba634f64\",\"awarded_source_fact_id\":\"c3c67f4a-29e9-4259-99a2-5b1eb47dc520\",\"current_source_fact_id\":\"8ef0efae-1ccf-452e-9f1a-c1ac2efb40ec\"}",
+      "detail": "{\"id\":\"fe7bcff4-4a43-405c-a1fe-0b80852b71ff\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"77003c4f-ba9c-400b-a04b-cf588c998ab7\",\"proposed_source_fact_id\":\"e75f5996-dbe7-4840-bba0-3e08399a08eb\",\"awarded_source_fact_id\":\"9e0e9a92-7cff-423e-9bbc-24553af6a1c9\",\"current_source_fact_id\":\"fce4b121-73a9-44ef-be38-885bb86a17ac\"}",
       "source": "pricing_lines five columns"
     },
     {
@@ -151,7 +151,7 @@
       "domain": "competitor",
       "name": "Competitor pricing does not become L&P pricing_lines",
       "ok": true,
-      "detail": "{\"compLine\":\"58200355-89bc-4a76-b61b-3578476d446a\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
+      "detail": "{\"compLine\":\"b70934b4-b50a-4a1a-8561-59aa75104b0f\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
       "source": "competitor_pricing_lines isolation"
     },
     {
@@ -239,13 +239,13 @@
       ]
     },
     "human": {
-      "pass": 1,
-      "fail": 1,
+      "pass": 2,
+      "fail": 0,
       "rows": [
         {
           "domain": "human",
           "name": "Final bid UI requires explicit human action",
-          "ok": false,
+          "ok": true,
           "detail": "FinalBidPanel + savePricingDecision",
           "source": "final-bid-panel + actions"
         },
@@ -292,7 +292,7 @@
           "domain": "truths",
           "name": "buyer requested != submitted != awarded != current (+ internal cost distinct)",
           "ok": true,
-          "detail": "{\"id\":\"e7cfdff6-66b0-42bd-a55e-62d65d3aeb7d\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"2a6639c5-594d-472e-91ad-fd45d7caea31\",\"proposed_source_fact_id\":\"8816709a-ef48-40d2-9579-d9abba634f64\",\"awarded_source_fact_id\":\"c3c67f4a-29e9-4259-99a2-5b1eb47dc520\",\"current_source_fact_id\":\"8ef0efae-1ccf-452e-9f1a-c1ac2efb40ec\"}",
+          "detail": "{\"id\":\"fe7bcff4-4a43-405c-a1fe-0b80852b71ff\",\"requested_rate\":28,\"internal_cost_rate\":24.1,\"proposed_rate\":31.5,\"awarded_rate\":30.25,\"current_rate\":30.75,\"requested_source_fact_id\":\"77003c4f-ba9c-400b-a04b-cf588c998ab7\",\"proposed_source_fact_id\":\"e75f5996-dbe7-4840-bba0-3e08399a08eb\",\"awarded_source_fact_id\":\"9e0e9a92-7cff-423e-9bbc-24553af6a1c9\",\"current_source_fact_id\":\"fce4b121-73a9-44ef-be38-885bb86a17ac\"}",
           "source": "pricing_lines five columns"
         }
       ]
@@ -371,7 +371,7 @@
           "domain": "competitor",
           "name": "Competitor pricing does not become L&P pricing_lines",
           "ok": true,
-          "detail": "{\"compLine\":\"58200355-89bc-4a76-b61b-3578476d446a\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
+          "detail": "{\"compLine\":\"b70934b4-b50a-4a1a-8561-59aa75104b0f\",\"newLp\":0,\"proposedDelta\":0,\"unsourcedBlocked\":true}",
           "source": "competitor_pricing_lines isolation"
         }
       ]

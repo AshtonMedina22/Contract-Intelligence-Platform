@@ -19,9 +19,11 @@ import {
 } from "@/components/contract-workspace/portfolio-strips";
 import { PageHeader, EmptyState } from "@/components/shell";
 import { Button } from "@/components/ui/button";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 async function RenewalsContent() {
   const supabase = await createClient();
+  const caps = await loadCurrentOrgCapabilities();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -101,7 +103,7 @@ async function RenewalsContent() {
       <RenewalBucketStrip buckets={portfolio.buckets} linkToQueue={false} />
 
       {rows.length > 0 ? (
-        <RenewalsTable rows={rows} />
+        <RenewalsTable rows={rows} canRebidClone={caps?.canRebidClone ?? false} />
       ) : (
         <EmptyState
           title="No renewal alerts"

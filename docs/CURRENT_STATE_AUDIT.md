@@ -16,8 +16,8 @@ Purpose: distinguish what exists in code from what has been proven as a product.
 | **3 — Historical Ingestion & Migration** | **PASS** — Prompt 3 + **VERIFY 3 PASS 26/26** ([VERIFY3_ACCEPTANCE.md](pilot/VERIFY3_ACCEPTANCE.md)) + **F1 37/37** ([F1_PRODUCTION_INGESTION_ACCEPTANCE.md](functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md)). DOCX wired; OCR live only with `MISTRAL_API_KEY` and never yet run on real evidence. |
 | **4 — Contracts / Compliance** | Prompt 4 exit proven in app + acceptance, plus **P10 portfolio / renewal-rebid command center**; still thin vs a real awarded corpus — 12 contracts, **3** with a verified end date, **0** with an NTE or PO |
 | **5 — Buyer / Competitor / Market / Win-Loss** | **Prompt 5 exit proven** — still corpus-thin; no fabricated market share |
-| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** + **F6 governed structured analytics** + **F7 proposal content reuse** (`proposal_sections` taxonomy; promote `REVIEW_REQUIRED`; purpose-aware drafting match) + **F9 automation notifications** (same `intelligence-automation-daily` + digest cron; `notifications` table; never auto-verify/price/approve/submit/renew) |
-| **7 — Pricing Intelligence** | Prompt 7 exit + **P7 workbench polish**; **VERIFY 7's committed 29/29 is stale** (19/22 at clean `HEAD` — outdated fixtures/grep, not a behaviour regression) |
+| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** + **F6 governed structured analytics** + **F7 proposal content reuse** (`proposal_sections` taxonomy; promote `REVIEW_REQUIRED`; purpose-aware drafting match) + **F9 automation notifications** (same `intelligence-automation-daily` + digest cron; `notifications` table; never auto-verify/price/approve/submit/renew) + **F10 RBAC** (`requirePermission` + `audit_log` + `/api/health` + Ask/research rate limits) |
+| **7 — Pricing Intelligence** | Prompt 7 exit + **P7 workbench polish**; **VERIFY 7** still **verdict FAIL** (**20/22** after F10 `userId` grep fix — remaining failures are trust-trigger fixture gaps, not behaviour regression) |
 | **8 — Response Builder / Submission / Result** | **PASS** (Prompt 8 + VERIFY 8 **23/23**) + **P8** + **F8** native DOCX / portal export / Google Docs provider / versioned artifacts |
 
 The product remains in the transition from Foundation into the real-document Historical Pilot. That is the honest current maturity position.
@@ -28,7 +28,7 @@ The product remains in the transition from Foundation into the real-document His
 
 ### Phase 1 — Foundation
 
-**Proven locally (Prompt 1):** Auth + organizations/memberships + `organization_id` RLS (48/48 including Storage isolation and same-org integrity); SHA-256 registry/versions; batches; extraction runs; staging facts default `AI_EXTRACTED`; append-only source evidence; verification events; validation exceptions; Zod/Pydantic contracts; Vercel Workflow + JobPort; FastAPI processor (9 pytest); PDF review workbench; lint/typecheck/build. See [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md). Role enum is stored but not enforced in UI — not a tenancy hole. **Do not treat this as Historical Pilot completion.**
+**Proven locally (Prompt 1):** Auth + organizations/memberships + `organization_id` RLS (48/48 including Storage isolation and same-org integrity); SHA-256 registry/versions; batches; extraction runs; staging facts default `AI_EXTRACTED`; append-only source evidence; verification events; validation exceptions; Zod/Pydantic contracts; Vercel Workflow + JobPort; FastAPI processor (9 pytest); PDF review workbench; lint/typecheck/build. See [PHASE1_FOUNDATION_AUDIT.md](PHASE1_FOUNDATION_AUDIT.md). **F10:** consequential mutations are role-gated via `requirePermission` (not UI-only). **Do not treat this as Historical Pilot completion.**
 
 ### Phase 2 — Real-Document Historical Pilot
 
@@ -76,6 +76,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 2. Route a real reviewer through the verification workbench — `NEEDS_REVIEW` is currently **0**, so nothing is queued for a human.  
 3. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed. OCR has never run on real scanned evidence.  
 4. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+
+**F10 functional build (2026-08-21):** RBAC + Production Security — `lib/auth/permissions.ts` matrix + `requirePermission`; consequential server actions gated; `audit_log` RLS; `/api/health`; env-check optional features; Ask/research rate limits (single-node); `test:f10-production`. See [F10_PRODUCTION_OPERATIONAL_ACCEPTANCE.md](functionality/F10_PRODUCTION_OPERATIONAL_ACCEPTANCE.md) · [FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md](functionality/FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md).
 
 **F8 functional build (2026-08-21):** Real Proposal Output + Google Docs Working-Proposal Pipeline — deterministic APPROVED assembly (`proposal-assembly` + org template), native OOXML via `docx`, portal CSV/JSON, Google Docs create/sync when `GOOGLE_DRIVE_ACCESS_TOKEN`/`GOOGLE_DOCS_ACCESS_TOKEN` set (else blocker), PDF print-only documented, `submission_artifacts` versioned+immutable+RLS. `test:f8-proposal-output`. See [F8_PROPOSAL_OUTPUT_ACCEPTANCE.md](functionality/F8_PROPOSAL_OUTPUT_ACCEPTANCE.md).
 

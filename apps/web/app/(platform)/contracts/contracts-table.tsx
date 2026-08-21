@@ -188,7 +188,9 @@ export type AlertRow = {
 
 const alertFeatures = tableFeatures({});
 const alertHelper = createColumnHelper<typeof alertFeatures, AlertRow>();
-const alertColumns = alertHelper.columns([
+
+function buildAlertColumns(canRebidClone: boolean) {
+  return alertHelper.columns([
   alertHelper.accessor("bucket", {
     header: "Bucket",
     cell: (ctx) => {
@@ -241,7 +243,7 @@ const alertColumns = alertHelper.columns([
     header: "Rebid",
     cell: (ctx) => (
       <div className="flex items-center gap-2">
-        <RebidButton contractId={ctx.row.original.contract_id} />
+        <RebidButton contractId={ctx.row.original.contract_id} canRebidClone={canRebidClone} />
         <Link
           className="text-xs underline text-muted-foreground hover:text-foreground"
           href={`/contracts/${ctx.row.original.contract_id}/renewal`}
@@ -252,9 +254,20 @@ const alertColumns = alertHelper.columns([
     ),
   }),
 ]);
+}
 
-export function RenewalsTable({ rows }: { rows: AlertRow[] }) {
-  const table = useTable({ features: alertFeatures, columns: alertColumns, data: rows });
+export function RenewalsTable({
+  rows,
+  canRebidClone = true,
+}: {
+  rows: AlertRow[];
+  canRebidClone?: boolean;
+}) {
+  const table = useTable({
+    features: alertFeatures,
+    columns: buildAlertColumns(canRebidClone),
+    data: rows,
+  });
   if (rows.length === 0) {
     return <p className="text-sm text-muted-foreground">No renewal alerts. Buckets use verified_end_on only.</p>;
   }

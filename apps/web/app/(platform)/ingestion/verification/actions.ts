@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { embedVerifiedChunk } from "@/lib/search/embed-chunk";
 import { getJobPort } from "@/lib/jobs/get-job-port";
 import { identityTarget } from "@/lib/verification/identity";
-import { VERIFY_ROLES, requireOrgRole } from "@/lib/org/roles";
+import { requirePermission } from "@/lib/auth/permissions";
 import type { FactVerificationStatus } from "@/lib/supabase/database.types";
 
 export type VerificationActionResult = { error?: string; ok?: true };
@@ -38,7 +38,7 @@ async function loadFact(id: string) {
   if (error || !data) {
     throw new Error(error?.message ?? "Fact not found.");
   }
-  await requireOrgRole(supabase, user.id, data.organization_id, VERIFY_ROLES);
+  await requirePermission(supabase, user.id, data.organization_id, "verify.promote");
   return { supabase, user, fact: data };
 }
 
@@ -252,7 +252,7 @@ export async function completeDocumentVerification(documentId: string): Promise<
       .eq("id", documentId)
       .maybeSingle();
     if (docError || !document) return { error: docError?.message ?? "Document not found." };
-    await requireOrgRole(supabase, user.id, document.organization_id, VERIFY_ROLES);
+    await requirePermission(supabase, user.id, document.organization_id, "verify.promote");
 
     const { data: openFacts, error: factError } = await supabase
       .from("extracted_facts")
@@ -374,7 +374,7 @@ export async function resolveValidationException(input: {
       .eq("id", input.exceptionId)
       .maybeSingle();
     if (error || !row) return { error: error?.message ?? "Exception not found." };
-    await requireOrgRole(supabase, user.id, row.organization_id, VERIFY_ROLES);
+    await requirePermission(supabase, user.id, row.organization_id, "verify.promote");
     if (row.resolved) return { ok: true };
 
     const { error: updateError } = await supabase

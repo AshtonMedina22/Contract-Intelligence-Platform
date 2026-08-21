@@ -15,13 +15,18 @@ export function FinalBidPanel({
   opportunityId,
   support,
   decisions,
+  canPricingEdit = true,
+  canPricingApprove = true,
 }: {
   opportunityId: string;
   support: PricingDecisionSupport;
   decisions: PricingDecisionRow[];
+  canPricingEdit?: boolean;
+  canPricingApprove?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [actionError, setActionError] = useState<string | null>(null);
   const latest = decisions[0] ?? null;
 
   const validate = useCallback((name: string, raw: string) => {
@@ -35,6 +40,8 @@ export function FinalBidPanel({
   }, []);
 
   const invalid = Object.keys(errors).length > 0;
+  const canEdit = canPricingEdit;
+  const canApprove = canPricingApprove;
 
   return (
     <div className="space-y-3 rounded-md border border-amber-600/40 bg-amber-50/40 p-4 dark:bg-amber-950/20">
@@ -90,7 +97,12 @@ export function FinalBidPanel({
         action={(formData) => {
           if (invalid) return;
           startTransition(async () => {
-            await savePricingDecision(opportunityId, formData);
+            try {
+              setActionError(null);
+              await savePricingDecision(opportunityId, formData);
+            } catch (e) {
+              setActionError(e instanceof Error ? e.message : "Pricing save failed.");
+            }
           });
         }}
       >
@@ -144,14 +156,33 @@ export function FinalBidPanel({
           <Input id="rationale" name="rationale" placeholder="Why this price vs cost floor / comps" />
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:col-span-2">
-          <Button type="submit" name="approve" value="" variant="outline" disabled={pending || invalid}>
+          <Button
+            type="submit"
+            name="approve"
+            value=""
+            variant="outline"
+            disabled={pending || invalid || !canEdit}
+            title={canEdit ? undefined : "Requires admin, bidder, or executive (pricing.edit)."}
+          >
             Save draft
           </Button>
-          <Button type="submit" name="approve" value="1" disabled={pending || invalid}>
+          <Button
+            type="submit"
+            name="approve"
+            value="1"
+            disabled={pending || invalid || !canApprove}
+            title={canApprove ? undefined : "Requires admin, bidder, or executive (pricing.approve)."}
+          >
             Human-approve final bid
           </Button>
           {invalid ? (
             <span className="text-xs text-destructive">Fix the highlighted amounts to continue.</span>
+          ) : null}
+          {actionError ? <span className="text-xs text-destructive sm:col-span-2">{actionError}</span> : null}
+          {!canEdit && !canApprove ? (
+            <span className="text-xs text-muted-foreground">
+              Your role cannot edit or approve pricing.
+            </span>
           ) : null}
         </div>
       </form>

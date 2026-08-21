@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T14:17:58.300Z",
+  "generated_at": "2026-08-21T18:22:57.223Z",
   "verdict": "PASS",
   "passed": 26,
   "failed": 0,
@@ -7,35 +7,35 @@
   "timings": [
     {
       "step": "parse:xlsx-fixture",
-      "ms": 7
+      "ms": 8
     },
     {
       "step": "parse:SRC-02",
-      "ms": 168
+      "ms": 193
     },
     {
       "step": "register:Allen_ISD_LP_security_agreement_excerpt.pdf",
-      "ms": 2210,
+      "ms": 1651,
       "bytes": 334504
     },
     {
       "step": "register:12.pdf",
-      "ms": 595,
+      "ms": 587,
       "bytes": 31322
     },
     {
       "step": "register:1770_43.35658_Services_Contract_with_proposal_Final.pdf",
-      "ms": 21080,
+      "ms": 17180,
       "bytes": 4169850
     },
     {
       "step": "register:5-21_AllenISD.pdf",
-      "ms": 121337,
+      "ms": 105990,
       "bytes": 32599851
     },
     {
       "step": "register:bulk-12.pdf",
-      "ms": 635,
+      "ms": 608,
       "bytes": 31346
     },
     {
@@ -72,15 +72,15 @@
       "domain": "xlsx",
       "name": "XLSX parses via openpyxl without OCR",
       "ok": true,
-      "detail": "parser=xlsx-openpyxl sheets=1 7ms (pilot has 0 XLSX; fixture proves path)",
-      "ms": 7
+      "detail": "parser=xlsx-openpyxl sheets=1 8ms (pilot has 0 XLSX; fixture proves path)",
+      "ms": 8
     },
     {
       "domain": "pdf",
       "name": "digital PDF parses (SRC-02)",
       "ok": true,
-      "detail": "pages=13 168ms",
-      "ms": 168
+      "detail": "pages=13 193ms",
+      "ms": 193
     },
     {
       "domain": "scans",
@@ -104,14 +104,14 @@
       "domain": "pdf",
       "name": "real pilot PDF registers in evidence vault (SRC-02)",
       "ok": true,
-      "detail": "2210ms sha=44497b51d423…",
-      "ms": 2210
+      "detail": "1651ms sha=44497b51d423…",
+      "ms": 1651
     },
     {
       "domain": "package",
       "name": "package grouping links multiple pilot docs",
       "ok": true,
-      "detail": "package=9c1baa68 docs=2"
+      "detail": "package=d65ffdcd docs=2"
     },
     {
       "domain": "dedupe",
@@ -123,7 +123,7 @@
       "domain": "versions",
       "name": "different pilot PDF creates separate version/document",
       "ok": true,
-      "detail": "doc1=3d1ff17f doc2=0bf8a2c0"
+      "detail": "doc1=d353965a doc2=fff059bb"
     },
     {
       "domain": "intake",
@@ -135,7 +135,7 @@
       "domain": "pdf",
       "name": "large pilot PDF registers (SRC-03)",
       "ok": true,
-      "detail": "121360ms 31.1MB"
+      "detail": "106006ms 31.1MB"
     },
     {
       "domain": "retry",
@@ -153,19 +153,19 @@
       "domain": "provenance",
       "name": "HUMAN_VERIFIED promote succeeds with source_page provenance",
       "ok": true,
-      "detail": "{\"ok\":true,\"rate\":32.28,\"truth\":\"awarded\",\"action\":\"rate\",\"rate_type\":\"standard\",\"labor_category\":\"Armed officer\",\"pricing_line_id\":\"b7de6202-349e-4ffb-869a-518213ce5cc1\"}"
+      "detail": "{\"ok\":true,\"rate\":32.28,\"truth\":\"awarded\",\"action\":\"rate\",\"rate_type\":\"standard\",\"labor_category\":\"Armed officer\",\"pricing_line_id\":\"fac7479a-bebc-4b3e-bc4d-82777497ef3f\"}"
     },
     {
       "domain": "provenance",
       "name": "provenance survives to canonical pricing_lines",
       "ok": true,
-      "detail": "source_fact=846e3679 page=3"
+      "detail": "source_fact=006c932b page=3"
     },
     {
       "domain": "trust",
       "name": "unresolved rate conflict cannot silently promote overwrite",
       "ok": true,
-      "detail": "{\"ok\":false,\"truth\":\"awarded\",\"action\":\"conflict\",\"existing\":32.28,\"incoming\":40,\"pricing_line_id\":\"b7de6202-349e-4ffb-869a-518213ce5cc1\"}"
+      "detail": "{\"ok\":false,\"truth\":\"awarded\",\"action\":\"conflict\",\"existing\":32.28,\"incoming\":40,\"pricing_line_id\":\"fac7479a-bebc-4b3e-bc4d-82777497ef3f\"}"
     },
     {
       "domain": "trust",

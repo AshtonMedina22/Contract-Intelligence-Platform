@@ -15,6 +15,7 @@ import {
   loadResponseContext,
 } from "@/lib/opportunity/load-response";
 import { searchVerifiedKnowledge } from "@/lib/retrieval/search";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 export default function OpportunityResponsePage({
   params,
@@ -39,6 +40,7 @@ async function OpportunityResponseContent({
 }) {
   const { opportunityId } = await params;
   const requestedReq = (await searchParams).req ?? null;
+  const caps = await loadCurrentOrgCapabilities();
   const [opportunity, summary, staffing, requirements, responses, approvals, context] =
     await Promise.all([
       loadOpportunityHeader(opportunityId),
@@ -108,6 +110,7 @@ async function OpportunityResponseContent({
           document_id: h.document_id,
           source_page: h.source_page,
         }))}
+        canProposalApprove={caps?.canProposalApprove ?? false}
       />
       <ProposalPacketGaps opportunityId={opportunityId} gaps={gaps} />
     </div>

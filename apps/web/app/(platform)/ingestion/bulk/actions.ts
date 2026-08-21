@@ -8,7 +8,7 @@ import {
   startBatchProcessing,
   type BulkIngestSummary,
 } from "@/lib/intake/batch-migrate";
-import { INTAKE_ROLES, requireOrgRole } from "@/lib/org/roles";
+import { requirePermission } from "@/lib/auth/permissions";
 
 export type BulkActionResult = {
   error?: string;
@@ -31,7 +31,7 @@ async function requireIntakeMembership(organizationId: string) {
   } = await supabase.auth.getUser();
   if (userError || !user) throw new Error("You must be signed in.");
 
-  await requireOrgRole(supabase, user.id, organizationId, INTAKE_ROLES);
+  await requirePermission(supabase, user.id, organizationId, "intake.write");
   return supabase;
 }
 

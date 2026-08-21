@@ -7,6 +7,9 @@ import { isResearchType, type ResearchType } from "@/lib/ask/research/plan";
 import { executeResearchRun } from "@/lib/ask/research/execute-run";
 import { syncRunStatusFromFacts } from "@/lib/ask/research/persist-run";
 import { generateResearchBrief } from "@/lib/ask/research/synthesize-brief";
+import { writeAuditLog } from "@/lib/auth/audit";
+import { requirePermission } from "@/lib/auth/permissions";
+import { checkRateLimit, RESEARCH_START_RATE } from "@/lib/auth/rate-limit";
 
 const RESEARCH_PATH = "/intelligence/research";
 
@@ -26,6 +29,15 @@ async function requireUserOrg() {
   return { supabase, organizationId: membership.organization_id, userId: user.id };
 }
 
+function assertResearchRateLimit(userId: string) {
+  const limited = checkRateLimit(`research:${userId}`, RESEARCH_START_RATE);
+  if (!limited.ok) {
+    throw new Error(
+      `Too many research requests. Try again in ${limited.retryAfterSec}s. (In-memory limit; not shared across instances.)`,
+    );
+  }
+}
+
 async function loadParties(supabase: Awaited<ReturnType<typeof createClient>>, organizationId: string) {
   const [clients, competitors] = await Promise.all([
     supabase.from("clients").select("id, name").eq("organization_id", organizationId).limit(500),
@@ -39,6 +51,8 @@ async function loadParties(supabase: Awaited<ReturnType<typeof createClient>>, o
 
 export async function startResearchRun(formData: FormData): Promise<void> {
   const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "ask.use");
+  assertResearchRateLimit(userId);
   const researchTypeRaw = String(formData.get("research_type") ?? "").trim();
   const query = String(formData.get("query") ?? "").trim();
   const entityName = String(formData.get("entity_name") ?? "").trim() || null;
@@ -67,6 +81,8 @@ export async function startResearchRun(formData: FormData): Promise<void> {
 
 export async function refreshResearchRun(formData: FormData): Promise<void> {
   const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "ask.use");
+  assertResearchRateLimit(userId);
   const runId = String(formData.get("run_id") ?? "").trim();
   if (!runId) throw new Error("run_id required.");
 
@@ -142,12 +158,13 @@ function revalidateFactPaths(runId: string | null) {
   revalidatePath("/intelligence/clients");
 }
 
-/** Require actor — sets HUMAN_VERIFIED + verified_by/at. Never silent. */
+/** Require research.verify — sets HUMAN_VERIFIED + verified_by/at. Never silent. */
 export async function verifyResearchFact(formData: FormData): Promise<void> {
   const factId = String(formData.get("fact_id") ?? "").trim();
   if (!factId) throw new Error("fact_id required.");
   const { supabase, organizationId, userId, fact } = await loadFactForReview(factId);
   if (!userId) throw new Error("Actor required to verify research facts.");
+  await requirePermission(supabase, userId, organizationId, "research.verify");
 
   const now = new Date().toISOString();
   const { error } = await supabase
@@ -170,6 +187,14 @@ export async function verifyResearchFact(formData: FormData): Promise<void> {
     fromStatus: fact.verification_status as FactVerificationStatus,
     toStatus: "HUMAN_VERIFIED",
   });
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "research.verify",
+    entityType: "research_fact",
+    entityId: factId,
+    metadata: { to_status: "HUMAN_VERIFIED" },
+  });
 
   if (fact.research_run_id) {
     await syncRunStatusFromFacts(supabase, {
@@ -185,6 +210,7 @@ export async function rejectResearchFact(formData: FormData): Promise<void> {
   if (!factId) throw new Error("fact_id required.");
   const { supabase, organizationId, userId, fact } = await loadFactForReview(factId);
   if (!userId) throw new Error("Actor required to reject research facts.");
+  await requirePermission(supabase, userId, organizationId, "research.verify");
 
   const now = new Date().toISOString();
   const { error } = await supabase
@@ -207,6 +233,14 @@ export async function rejectResearchFact(formData: FormData): Promise<void> {
     fromStatus: fact.verification_status as FactVerificationStatus,
     toStatus: "REJECTED",
   });
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "research.reject",
+    entityType: "research_fact",
+    entityId: factId,
+    metadata: { to_status: "REJECTED" },
+  });
 
   if (fact.research_run_id) {
     await syncRunStatusFromFacts(supabase, {
@@ -226,6 +260,7 @@ export async function editResearchFact(formData: FormData): Promise<void> {
 
   const { supabase, organizationId, userId, fact } = await loadFactForReview(factId);
   if (!userId) throw new Error("Actor required to edit research facts.");
+  await requirePermission(supabase, userId, organizationId, "research.verify");
 
   const { error } = await supabase
     .from("research_facts")
@@ -251,6 +286,14 @@ export async function editResearchFact(formData: FormData): Promise<void> {
     toStatus: "NEEDS_REVIEW",
     note: "Operator edited claim; returned to NEEDS_REVIEW for re-verification.",
   });
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "research.edit",
+    entityType: "research_fact",
+    entityId: factId,
+    metadata: { to_status: "NEEDS_REVIEW" },
+  });
 
   revalidateFactPaths(fact.research_run_id);
 }
@@ -262,6 +305,7 @@ export async function markConflictResearchFact(formData: FormData): Promise<void
 
   const { supabase, organizationId, userId, fact } = await loadFactForReview(factId);
   if (!userId) throw new Error("Actor required to mark research fact conflict.");
+  await requirePermission(supabase, userId, organizationId, "research.verify");
 
   const { error } = await supabase
     .from("research_facts")
@@ -283,6 +327,14 @@ export async function markConflictResearchFact(formData: FormData): Promise<void
     fromStatus: fact.verification_status as FactVerificationStatus,
     toStatus: "CONFLICT",
     note,
+  });
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "research.conflict",
+    entityType: "research_fact",
+    entityId: factId,
+    metadata: { to_status: "CONFLICT" },
   });
 
   revalidateFactPaths(fact.research_run_id);

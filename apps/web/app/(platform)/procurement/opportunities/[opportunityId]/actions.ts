@@ -5,11 +5,8 @@ import { revalidatePath } from "next/cache";
 import { computePlannedRate, parseNum } from "@/lib/opportunity/pricing-math";
 import type { GoNoGo, OpportunityStage } from "@/lib/opportunity/types";
 import type { ProcurementRail, SolicitationKind } from "@/lib/opportunity/proposal-packet";
-import {
-  APPROVAL_LAYER_ROLES,
-  PRICING_APPROVE_ROLES,
-  requireOrgRole,
-} from "@/lib/org/roles";
+import { writeAuditLog } from "@/lib/auth/audit";
+import { requirePermission } from "@/lib/auth/permissions";
 
 function workspacePath(opportunityId: string) {
   return `/procurement/opportunities/${opportunityId}`;
@@ -75,7 +72,8 @@ export async function updateOpportunityMetadata(opportunityId: string, formData:
 }
 
 export async function saveCostModel(opportunityId: string, formData: FormData) {
-  const { supabase, organizationId } = await requireUserOrg();
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "pricing.edit");
   const labor_category = String(formData.get("labor_category") ?? "").trim();
   if (!labor_category) throw new Error("Labor category required.");
 
@@ -146,11 +144,21 @@ export async function saveCostModel(opportunityId: string, formData: FormData) {
       .eq("labor_category", labor_category);
   }
 
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "pricing.edit",
+    entityType: "pricing_cost_model",
+    entityId: opportunityId,
+    metadata: { labor_category },
+  });
+
   revalidatePath(`${workspacePath(opportunityId)}/pricing`);
 }
 
 export async function saveComparableJudgment(opportunityId: string, formData: FormData) {
-  const { supabase, organizationId } = await requireUserOrg();
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "pricing.edit");
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -173,6 +181,14 @@ export async function saveComparableJudgment(opportunityId: string, formData: Fo
     { onConflict: "organization_id,opportunity_id,source_pricing_line_id" },
   );
   if (error) throw new Error(error.message);
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "pricing.edit",
+    entityType: "pricing_comparable_judgment",
+    entityId: source_pricing_line_id,
+    metadata: { opportunity_id: opportunityId, included },
+  });
   revalidatePath(`${workspacePath(opportunityId)}/pricing`);
 }
 
@@ -181,7 +197,9 @@ export async function savePricingDecision(opportunityId: string, formData: FormD
 
   const approve = String(formData.get("approve") ?? "") === "1";
   if (approve) {
-    await requireOrgRole(supabase, userId, organizationId, PRICING_APPROVE_ROLES);
+    await requirePermission(supabase, userId, organizationId, "pricing.approve");
+  } else {
+    await requirePermission(supabase, userId, organizationId, "pricing.edit");
   }
 
   const final_bid_rate = parseOptionalNum(String(formData.get("final_bid_rate") ?? ""));
@@ -228,6 +246,18 @@ export async function savePricingDecision(opportunityId: string, formData: FormD
 
   const { error } = await supabase.from("pricing_decisions").insert(row);
   if (error) throw new Error(error.message);
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: approve ? "pricing.approve" : "pricing.edit",
+    entityType: "pricing_decision",
+    entityId: opportunityId,
+    metadata: {
+      status: approve ? "HUMAN_APPROVED" : "DRAFT",
+      final_bid_rate,
+      final_bid_amount,
+    },
+  });
   revalidatePath(`${workspacePath(opportunityId)}/pricing`);
 }
 
@@ -338,7 +368,7 @@ export async function updateRequirementMatrixRow(opportunityId: string, formData
 }
 
 export async function saveRequirementResponse(opportunityId: string, formData: FormData) {
-  const { supabase, organizationId } = await requireUserOrg();
+  const { supabase, organizationId, userId } = await requireUserOrg();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -346,6 +376,9 @@ export async function saveRequirementResponse(opportunityId: string, formData: F
   if (!requirement_id) throw new Error("Requirement required.");
   const draft_html = String(formData.get("draft_html") ?? "");
   const approve = String(formData.get("approve") ?? "") === "1";
+  if (approve) {
+    await requirePermission(supabase, userId, organizationId, "proposal.approve");
+  }
   const evidence_state = (String(formData.get("evidence_state") ?? "L_AND_P_INPUT_REQUIRED").trim() ||
     "L_AND_P_INPUT_REQUIRED") as "VERIFIED_DRAFT_AVAILABLE" | "REVIEW_REQUIRED" | "L_AND_P_INPUT_REQUIRED";
   const hasContent = draft_html.replace(/<[^>]+>/g, "").trim().length > 0;
@@ -381,6 +414,17 @@ export async function saveRequirementResponse(opportunityId: string, formData: F
             : "OPEN",
     })
     .eq("id", requirement_id);
+
+  if (approve) {
+    await writeAuditLog(supabase, {
+      organizationId,
+      actorUserId: userId,
+      action: "proposal.approve",
+      entityType: "requirement_response",
+      entityId: requirement_id,
+      metadata: { opportunity_id: opportunityId },
+    });
+  }
 
   revalidatePath(`${workspacePath(opportunityId)}/response`);
   revalidatePath(`${workspacePath(opportunityId)}/requirements`);
@@ -521,7 +565,7 @@ export async function generateRequirementDraft(
 
 export async function upsertApprovalLayer(opportunityId: string, formData: FormData) {
   const { supabase, organizationId, userId } = await requireUserOrg();
-  await requireOrgRole(supabase, userId, organizationId, APPROVAL_LAYER_ROLES);
+  await requirePermission(supabase, userId, organizationId, "proposal.approve");
   const layer_key = String(formData.get("layer_key") ?? "").trim() as
     | "content"
     | "operations"
@@ -553,6 +597,14 @@ export async function upsertApprovalLayer(opportunityId: string, formData: FormD
     { onConflict: "organization_id,opportunity_id,layer_key" },
   );
   if (error) throw new Error(error.message);
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "proposal.approve",
+    entityType: "pursuit_approval_layer",
+    entityId: opportunityId,
+    metadata: { layer_key, status, enabled },
+  });
   revalidatePath(`${workspacePath(opportunityId)}/response`);
   revalidatePath(`${workspacePath(opportunityId)}/submission`);
 }
@@ -604,6 +656,7 @@ export async function saveSubmissionPacket(opportunityId: string, formData: Form
  */
 export async function markSubmissionSubmitted(opportunityId: string, formData: FormData) {
   const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "pursuit.submit");
   const { computeSubmissionReadiness, evaluateMarkSubmittedGate } = await import(
     "@/lib/opportunity/submission-readiness"
   );
@@ -668,6 +721,15 @@ export async function markSubmissionSubmitted(opportunityId: string, formData: F
       .eq("organization_id", organizationId);
   }
 
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "pursuit.submit",
+    entityType: "submission_packet",
+    entityId: opportunityId,
+    metadata: { submitted_at: submittedAt },
+  });
+
   revalidatePath(`${workspacePath(opportunityId)}/submission`);
   revalidatePath(workspacePath(opportunityId));
   revalidatePath("/procurement/opportunities/submitted");
@@ -730,7 +792,8 @@ export async function toggleChecklistItem(opportunityId: string, formData: FormD
 }
 
 export async function savePursuitResult(opportunityId: string, formData: FormData) {
-  const { supabase, organizationId } = await requireUserOrg();
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "result.write");
   const outcome = String(formData.get("outcome") ?? "PENDING").trim() as
     | "PENDING"
     | "WON"
@@ -767,6 +830,15 @@ export async function savePursuitResult(opportunityId: string, formData: FormDat
       .eq("id", opportunityId);
   }
 
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "result.write",
+    entityType: "win_loss_review",
+    entityId: opportunityId,
+    metadata: { outcome },
+  });
+
   revalidatePath(`${workspacePath(opportunityId)}/result`);
   revalidatePath("/intelligence/win-loss");
   revalidatePath("/intelligence/clients");
@@ -783,7 +855,8 @@ export async function savePursuitResult(opportunityId: string, formData: FormDat
  * Result panel and this action explain the block in the same words.
  */
 export async function createContractFromWin(opportunityId: string, formData: FormData) {
-  const { supabase, organizationId } = await requireUserOrg();
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  await requirePermission(supabase, userId, organizationId, "contract.create");
   const { evaluateContractHandoffGate, isAwardishFact } = await import(
     "@/lib/opportunity/submission-readiness"
   );
@@ -876,6 +949,15 @@ export async function createContractFromWin(opportunityId: string, formData: For
       notice: noticeSource ? String(noticeSource).slice(0, 300) : null,
     });
   }
+
+  await writeAuditLog(supabase, {
+    organizationId,
+    actorUserId: userId,
+    action: "contract.create",
+    entityType: "contract",
+    entityId: data.id,
+    metadata: { opportunity_id: opportunityId, source_fact_id: verifiedFact.id },
+  });
 
   revalidatePath(`${workspacePath(opportunityId)}/result`);
   revalidatePath(`/contracts/${data.id}`);

@@ -513,7 +513,10 @@ check("the workbench exposes exactly one authorization control and one mark subm
     1,
     "exactly one Mark SUBMITTED submit",
   );
-  assert.match(sources.workbench, /disabled=\{pending \|\| !gate\.allowed\}/);
+  assert.match(
+    sources.workbench,
+    /disabled=\{pending \|\| !gate\.allowed(?: \|\| !canPursuitSubmit)?\}/,
+  );
   assert.match(sources.workbench, /markSubmissionSubmitted/);
   assert.match(sources.workbench, /NO_AUTO_SUBMIT_NOTICE/);
   assert.match(sources.workbench, /No auto-submit/);

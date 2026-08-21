@@ -90,6 +90,7 @@ export function SubmissionWorkbench({
   googleDocsConfigured,
   hasApprovedContent,
   latestArtifact,
+  canPursuitSubmit = true,
 }: {
   opportunityId: string;
   packet: Packet;
@@ -107,6 +108,7 @@ export function SubmissionWorkbench({
   submittedByLabel: string | null;
   googleDocsConfigured: boolean;
   hasApprovedContent: boolean;
+  canPursuitSubmit?: boolean;
   latestArtifact: {
     id: string;
     version: number;
@@ -382,11 +384,22 @@ export function SubmissionWorkbench({
               type="submit"
               size="sm"
               data-testid="mark-submitted"
-              disabled={pending || !gate.allowed}
-              title={gate.allowed ? undefined : gate.message}
+              disabled={pending || !gate.allowed || !canPursuitSubmit}
+              title={
+                !canPursuitSubmit
+                  ? "Requires admin, bidder, or executive (pursuit.submit)."
+                  : gate.allowed
+                    ? undefined
+                    : gate.message
+              }
             >
               Mark SUBMITTED
             </Button>
+            {!canPursuitSubmit ? (
+              <p className="text-xs text-muted-foreground">
+                Your role cannot record submission.
+              </p>
+            ) : null}
           </form>
         )}
       </section>

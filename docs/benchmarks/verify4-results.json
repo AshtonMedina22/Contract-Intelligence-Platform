@@ -1,5 +1,5 @@
 {
-  "stamp": "mt2yrika",
+  "stamp": "mt3a3zy9",
   "passed": 30,
   "failed": 1,
   "total": 31,
@@ -43,7 +43,7 @@
       "domain": "corpus",
       "name": "five real instruments registered with vault SHA paths",
       "ok": true,
-      "detail": "orig=f3d8f219 amend=0691d5f6 po=ce484283",
+      "detail": "orig=dd84c375 amend=a636b4b6 po=c18ff738",
       "source": "SRC-15/16/04"
     },
     {
@@ -57,77 +57,77 @@
       "domain": "promote",
       "name": "original contract end/start/number promote",
       "ok": true,
-      "detail": "{\"end\":{\"ok\":true,\"action\":\"contract_end\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\",\"verified_end_on\":\"2025-08-31\"},\"start\":{\"ok\":true,\"action\":\"contract_start\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"},\"num\":{\"ok\":true,\"action\":\"contract_number\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"}}",
+      "detail": "{\"end\":{\"ok\":true,\"action\":\"contract_end\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\",\"verified_end_on\":\"2025-08-31\"},\"start\":{\"ok\":true,\"action\":\"contract_start\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"},\"num\":{\"ok\":true,\"action\":\"contract_number\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"}}",
       "source": "SRC-15"
     },
     {
       "domain": "truth",
       "name": "original terms seeded on contract",
       "ok": true,
-      "detail": "{\"id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\",\"verified_end_on\":\"2025-08-31\",\"start_on\":\"2024-09-01\",\"contract_number\":\"24-001-000\",\"opportunity_id\":\"162bc6a3-80c8-4017-88a9-1c0bd29fb3f6\",\"source_fact_id\":\"27ef64da-cd07-4347-bdeb-eec3bb66ebb7\",\"source_document_id\":\"f3d8f219-0064-4da0-9b7b-dee68129bd3b\"}",
+      "detail": "{\"id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\",\"verified_end_on\":\"2025-08-31\",\"start_on\":\"2024-09-01\",\"contract_number\":\"24-001-000\",\"opportunity_id\":\"3208e221-a91b-4146-b9d5-7bd463b97f00\",\"source_fact_id\":\"60c2229c-3b82-4bef-8fd7-0a96e6af9734\",\"source_document_id\":\"dd84c375-1798-48ca-b353-e91716ad0c61\"}",
       "source": "SRC-15"
     },
     {
       "domain": "changes",
       "name": "amendment promote appends note row",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"amendment\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"}",
+      "detail": "{\"ok\":true,\"action\":\"amendment\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"}",
       "source": "SRC-16"
     },
     {
       "domain": "promote",
       "name": "promote writes amendment_number (Amend 4 grain)",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"amendment\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\",\"amendment_number\":\"4\"}",
+      "detail": "{\"ok\":true,\"action\":\"amendment\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\",\"amendment_number\":\"4\"}",
       "source": "SRC-16"
     },
     {
       "domain": "promote",
       "name": "promote writes purchase_order from verified PO fact",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"purchase_order\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\",\"purchase_order_id\":\"15ff45f1-3af7-44db-9c7c-afe0b6dfa9d2\"}",
+      "detail": "{\"ok\":true,\"action\":\"purchase_order\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\",\"purchase_order_id\":\"140a5219-314f-4e7e-b5d1-1cfe3c19c537\"}",
       "source": "SRC-04"
     },
     {
       "domain": "promote",
       "name": "promote writes payment_terms onto PO",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"payment_terms\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\",\"purchase_order_id\":\"15ff45f1-3af7-44db-9c7c-afe0b6dfa9d2\"}",
+      "detail": "{\"ok\":true,\"action\":\"payment_terms\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\",\"purchase_order_id\":\"140a5219-314f-4e7e-b5d1-1cfe3c19c537\"}",
       "source": "SRC-04"
     },
     {
       "domain": "promote",
       "name": "promote writes federal/TXMAS identifier",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"federal_identifier\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"}",
+      "detail": "{\"ok\":true,\"action\":\"federal_identifier\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"}",
       "source": "SRC-04"
     },
     {
       "domain": "promote",
       "name": "promote writes contract_service_plans from site fact",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"service_plan\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"}",
+      "detail": "{\"ok\":true,\"action\":\"service_plan\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"}",
       "source": "SRC-02"
     },
     {
       "domain": "promote",
       "name": "promote writes guard_classification service-plan row",
       "ok": true,
-      "detail": "{\"ok\":true,\"action\":\"service_plan\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"}",
+      "detail": "{\"ok\":true,\"action\":\"service_plan\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"}",
       "source": "SRC-15"
     },
     {
       "domain": "truth",
       "name": "latest change drives current verified_end_on",
       "ok": true,
-      "detail": "{\"promote\":{\"ok\":true,\"action\":\"contract_end\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\",\"verified_end_on\":\"2026-11-24\"},\"contract\":{\"verified_end_on\":\"2026-11-24\",\"start_on\":\"2024-09-01\",\"contract_number\":\"24-001-000\",\"source_fact_id\":\"45ec5656-e58d-4fa8-a046-d55998f794e0\",\"source_document_id\":\"0691d5f6-6fef-4639-909e-6454f475b718\"}}",
+      "detail": "{\"promote\":{\"ok\":true,\"action\":\"contract_end\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\",\"verified_end_on\":\"2026-11-24\"},\"contract\":{\"verified_end_on\":\"2026-11-24\",\"start_on\":\"2024-09-01\",\"contract_number\":\"24-001-000\",\"source_fact_id\":\"b6d9bffa-9b98-4a71-930f-93ad34dddd36\",\"source_document_id\":\"a636b4b6-0bc2-4cd6-8897-932d4dbe16ae\"}}",
       "source": "SRC-16"
     },
     {
       "domain": "truth",
       "name": "original terms remain preserved (start + number + amd0 after later end)",
       "ok": true,
-      "detail": "{\"start\":\"2024-09-01\",\"number\":\"24-001-000\",\"amd0\":\"d04c886d-9d23-41d3-9b20-a82b619801ec\"}",
+      "detail": "{\"start\":\"2024-09-01\",\"number\":\"24-001-000\",\"amd0\":\"2d101fbc-4ba7-485c-8068-e9f796beef12\"}",
       "source": "SRC-15→SRC-16"
     },
     {
@@ -141,14 +141,14 @@
       "domain": "commercial",
       "name": "PO retains source evidence (document + fact)",
       "ok": true,
-      "detail": "{\"id\":\"4a7da16a-575f-43ee-b206-91b721af0e6f\",\"source_document_id\":\"ce484283-f15e-4b78-aa6c-64c7a65ce317\",\"source_fact_id\":\"c582ff58-0a82-43dd-b5ae-78c24a615185\",\"po_number\":\"0000016167\"}",
+      "detail": "{\"id\":\"2d56e5ea-93e9-4048-a43a-068c12b0b8f0\",\"source_document_id\":\"c18ff738-b385-4848-b602-283acc4a5694\",\"source_fact_id\":\"e23d5973-fb84-4ba3-a79e-8e0b2bff0d3e\",\"po_number\":\"0000016167\"}",
       "source": "SRC-04 PKG-04"
     },
     {
       "domain": "commercial",
       "name": "PO lines match TxDMV pilot grain (72×$33.25 + Extended Hours)",
       "ok": true,
-      "detail": "[{\"id\":\"ec2bc966-3e2e-4ece-886f-9ac71c5d34be\",\"line_label\":\"Security hours\",\"unit_rate\":33.25,\"quantity\":72},{\"id\":\"8e1c8c2f-d904-4108-a609-63f3ef1515a0\",\"line_label\":\"Extended Hours\",\"unit_rate\":445.55,\"quantity\":1}]",
+      "detail": "[{\"id\":\"938e7839-d561-4025-8f1d-7db59a780f07\",\"line_label\":\"Security hours\",\"unit_rate\":33.25,\"quantity\":72},{\"id\":\"b68280f4-4aa2-4ee9-b6d0-addcc7b018d7\",\"line_label\":\"Extended Hours\",\"unit_rate\":445.55,\"quantity\":1}]",
       "source": "SRC-04"
     },
     {
@@ -176,14 +176,14 @@
       "domain": "renewal",
       "name": "option exercise works (promote + row)",
       "ok": true,
-      "detail": "{\"promote\":{\"ok\":true,\"action\":\"option\",\"contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"},\"options\":[{\"id\":\"c0daf96f-71c4-4693-9b0e-40331f0c760b\",\"label\":\"option_year_1\",\"exercise_by\":\"2026-10-20\",\"source_fact_id\":\"c731b9e7-259a-455d-9000-d6168d92e8cc\"}]}",
+      "detail": "{\"promote\":{\"ok\":true,\"action\":\"option\",\"contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"},\"options\":[{\"id\":\"7d1057dd-e065-4e28-9016-51bd7338a337\",\"label\":\"option_year_1\",\"exercise_by\":\"2026-10-20\",\"source_fact_id\":\"0ac9d4f0-3eb4-4819-907b-d599e410e9bf\"}]}",
       "source": "SRC-14"
     },
     {
       "domain": "renewal",
       "name": "renewal state works (notice + CPI-W + option year)",
       "ok": true,
-      "detail": "[{\"id\":\"d61745e7-e9e3-4bfd-8e48-69482598e670\",\"notice\":\"Harris 26-0534 / Job 220401 CPI-W renewal notice\",\"escalation_index\":\"CPI-W\",\"option_year\":1,\"notice_due_on\":\"2026-10-05\",\"source_fact_id\":\"5dfd0b07-e1d7-45ea-b626-a61d3749a905\"}]",
+      "detail": "[{\"id\":\"73ac2ba1-5c0d-4459-a90e-9817b5eac182\",\"notice\":\"Harris 26-0534 / Job 220401 CPI-W renewal notice\",\"escalation_index\":\"CPI-W\",\"option_year\":1,\"notice_due_on\":\"2026-10-05\",\"source_fact_id\":\"4b05ca44-a309-4ce7-9317-644483f78c48\"}]",
       "source": "SRC-14 PKG-11"
     },
     {
@@ -204,7 +204,7 @@
       "domain": "renewal",
       "name": "rebid pursuit linkable from contract",
       "ok": true,
-      "detail": "{\"id\":\"b7956e81-fc6f-4952-88e3-c6eb0e443fea\",\"rebid_from_contract_id\":\"56a81bae-9a60-4ebd-9080-f59eef56f2dd\"}",
+      "detail": "{\"id\":\"247fd1d0-cd69-4031-85c7-5aff95acc443\",\"rebid_from_contract_id\":\"e2e9693d-fd44-4172-860e-7281bc4dda7a\"}",
       "source": "opportunities.rebid_from_contract_id"
     },
     {

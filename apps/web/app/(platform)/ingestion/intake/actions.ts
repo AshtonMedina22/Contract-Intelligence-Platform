@@ -4,7 +4,7 @@ import { DriveNotConfiguredError } from "@lp/shared";
 import { createClient } from "@/lib/supabase/server";
 import { ingestSourceBytes, type IngestResult } from "@/lib/intake/ingest";
 import { getDriveImportPort } from "@/lib/intake/drive";
-import { INTAKE_ROLES, requireOrgRole } from "@/lib/org/roles";
+import { requirePermission } from "@/lib/auth/permissions";
 import { revalidatePath } from "next/cache";
 
 export type IntakeActionResult = {
@@ -29,7 +29,7 @@ async function requireIntakeMembership(organizationId: string) {
     throw new Error("You must be signed in.");
   }
 
-  await requireOrgRole(supabase, user.id, organizationId, INTAKE_ROLES);
+  await requirePermission(supabase, user.id, organizationId, "intake.write");
   return supabase;
 }
 

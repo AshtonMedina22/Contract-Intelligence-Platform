@@ -10,6 +10,7 @@ import { loadPricingComparables, loadPricingDecisions } from "@/lib/opportunity/
 import { computeFulfillmentEconomics } from "@/lib/opportunity/proposal-packet";
 import { PricingWorkbench } from "@/components/opportunity-workspace/pricing-workbench";
 import { PRICING_STRUCTURE_HINTS, type PricingDecisionRow } from "@/lib/opportunity/types";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 export default function OpportunityPricingPage({
   params,
@@ -29,12 +30,13 @@ async function OpportunityPricingContent({
   params: Promise<{ opportunityId: string }>;
 }) {
   const { opportunityId } = await params;
-  const [pricingLines, costModels, comparables, staffing, decisionsRaw] = await Promise.all([
+  const [pricingLines, costModels, comparables, staffing, decisionsRaw, caps] = await Promise.all([
     loadPricingLines(opportunityId),
     loadCostModels(opportunityId),
     loadPricingComparables(opportunityId),
     loadStaffingRequirements(opportunityId),
     loadPricingDecisions(opportunityId),
+    loadCurrentOrgCapabilities(),
   ]);
 
   const factIds = [
@@ -55,6 +57,8 @@ async function OpportunityPricingContent({
       factDocumentMap={factDocumentMap}
       economics={economics}
       structureHints={PRICING_STRUCTURE_HINTS}
+      canPricingEdit={caps?.canPricingEdit ?? false}
+      canPricingApprove={caps?.canPricingApprove ?? false}
     />
   );
 }

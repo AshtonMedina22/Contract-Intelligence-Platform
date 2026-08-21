@@ -12,11 +12,21 @@ export function ResearchFactReviewActions({
   factId,
   claim,
   excerpt,
+  canVerify = true,
 }: {
   factId: string;
   claim: string;
   excerpt: string;
+  /** When false, verify/reject/edit controls are hidden (research.verify). */
+  canVerify?: boolean;
 }) {
+  if (!canVerify) {
+    return (
+      <p className="text-xs text-muted-foreground">
+        Research verify/reject/edit requires admin or verifier role.
+      </p>
+    );
+  }
   return (
     <div className="flex flex-wrap items-center gap-2">
       <form action={verifyResearchFact}>

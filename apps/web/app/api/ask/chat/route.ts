@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { streamAskChat } from "@/lib/ask/agent";
 import { purposeFromParam, type RetrievalPurpose } from "@/lib/retrieval/purpose";
 import type { UIMessage } from "ai";
+import { ASK_CHAT_RATE, checkRateLimit } from "@/lib/auth/rate-limit";
+import { requirePermission } from "@/lib/auth/permissions";
 
 export const maxDuration = 120;
 
@@ -12,6 +14,40 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("organization_id, role")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
+  if (!membership?.organization_id) {
+    return Response.json({ error: "No organization." }, { status: 403 });
+  }
+
+  try {
+    await requirePermission(supabase, user.id, membership.organization_id, "ask.use");
+  } catch (e) {
+    return Response.json(
+      { error: e instanceof Error ? e.message : "Not permitted to use Ask." },
+      { status: 403 },
+    );
+  }
+
+  const limited = checkRateLimit(`ask:${user.id}`, ASK_CHAT_RATE);
+  if (!limited.ok) {
+    return Response.json(
+      {
+        error: "Too many Ask requests. Try again shortly.",
+        retry_after_sec: limited.retryAfterSec,
+        note: "In-memory per-instance throttle; not shared across multi-instance deployments.",
+      },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limited.retryAfterSec) },
+      },
+    );
   }
 
   const body = (await req.json()) as {

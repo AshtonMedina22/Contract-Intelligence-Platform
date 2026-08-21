@@ -10,6 +10,7 @@ import { IntelligenceHonestyStrip } from "@/components/intelligence/honesty-stri
 import { generateResearchBrief } from "@/lib/ask/research/synthesize-brief";
 import { refreshResearchRun } from "../actions";
 import { ResearchFactReviewActions } from "../fact-review-actions";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 const HONESTY =
   "Sources and facts below are public observations. Verify each fact before treating it as durable intelligence. Ask live public search remains cite-only.";
@@ -21,6 +22,8 @@ async function RunDetail({ params }: { params: Promise<{ runId: string }> }) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return <p className="text-sm">Sign in required.</p>;
+  const caps = await loadCurrentOrgCapabilities();
+  const canResearchVerify = caps?.canResearchVerify ?? false;
 
   const { data: run, error } = await supabase
     .from("research_runs")
@@ -182,6 +185,7 @@ async function RunDetail({ params }: { params: Promise<{ runId: string }> }) {
                   factId={f.id}
                   claim={f.claim || f.title || ""}
                   excerpt={f.excerpt || ""}
+                  canVerify={canResearchVerify}
                 />
               </li>
             ))}

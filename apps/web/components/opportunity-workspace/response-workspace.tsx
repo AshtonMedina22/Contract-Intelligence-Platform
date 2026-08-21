@@ -70,6 +70,7 @@ export function ResponseWorkspace({
   factDocumentMap,
   knowledgeHits,
   initialRequirementId,
+  canProposalApprove = true,
 }: {
   opportunityId: string;
   requirements: RequirementMatrixRow[];
@@ -79,6 +80,7 @@ export function ResponseWorkspace({
   factDocumentMap: Map<string, string>;
   knowledgeHits: WorkspaceSource[];
   initialRequirementId?: string | null;
+  canProposalApprove?: boolean;
 }) {
   const firstId = initialRequirementId ?? requirements[0]?.id ?? "";
   const [selectedId, setSelectedId] = useState(firstId);
@@ -440,8 +442,14 @@ export function ResponseWorkspace({
                       size="sm"
                       variant="outline"
                       data-testid="approve-response"
-                      disabled={pending || !draftHasText}
-                      title={draftHasText ? undefined : "Nothing to approve yet."}
+                      disabled={pending || !draftHasText || !canProposalApprove}
+                      title={
+                        !canProposalApprove
+                          ? "Requires admin, bidder, or executive (proposal.approve)."
+                          : draftHasText
+                            ? undefined
+                            : "Nothing to approve yet."
+                      }
                       onClick={() => persist("APPROVE", draftHtml)}
                     >
                       Human approve response

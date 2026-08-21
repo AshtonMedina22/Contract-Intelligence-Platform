@@ -299,7 +299,7 @@ async function main() {
         /approve/.test(finalBid) &&
         /AI and automation never approve/.test(finalBid) &&
         /savePricingDecision/.test(actions) &&
-        /decided_by: approve \? user\.id/.test(actions),
+        /decided_by: approve \? userId/.test(actions),
       "FinalBidPanel + savePricingDecision",
       "final-bid-panel + actions",
     );

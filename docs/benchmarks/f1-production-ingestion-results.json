@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T14:25:40.304Z",
+  "generated_at": "2026-08-21T18:16:41.374Z",
   "verdict": "PASS",
   "passed": 37,
   "failed": 0,
@@ -143,7 +143,7 @@
       "domain": "integrity",
       "name": "distinct bytes create distinct documents and versions",
       "ok": true,
-      "detail": "doc1=429a52bb doc2=0fb7e9aa"
+      "detail": "doc1=77bf1d14 doc2=aafae53a"
     },
     {
       "domain": "integrity",
@@ -161,7 +161,7 @@
       "domain": "integrity",
       "name": "dedupe returns the original document instead of orphaning the upload",
       "ok": true,
-      "detail": "returned=429a52bb original=429a52bb"
+      "detail": "returned=77bf1d14 original=77bf1d14"
     },
     {
       "domain": "integrity",

@@ -6,6 +6,10 @@
 
 ---
 
+## Addendum — 2026-08-21, after F10 RBAC + operational acceptance
+
+F10 shipped server-side permission gates, `audit_log`, `/api/health`, env-check classification, and in-memory Ask/research rate limits (`test:f10-production` **28/28**). **Still NOT production-ready** for L&P operators: Historical Pilot human verification remains thin; VERIFY 5/6/7 remain FAIL on stale fixtures vs trust triggers; Stripe / commercialization **not started**. See [FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md](functionality/FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md).
+
 ## Addendum — 2026-08-21, after productization P1–P10
 
 **The verdict below is no longer current. The platform is NOT production-ready.**

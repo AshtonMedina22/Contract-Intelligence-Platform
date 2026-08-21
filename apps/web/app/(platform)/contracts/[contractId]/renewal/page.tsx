@@ -26,6 +26,7 @@ import {
   AutomationAuditStrip,
   RenewalBucketStrip,
 } from "@/components/contract-workspace/portfolio-strips";
+import { loadCurrentOrgCapabilities } from "@/lib/auth/load-capabilities";
 
 function dash(v: string | number | null | undefined): string {
   if (v === null || v === undefined || v === "") return "—";
@@ -39,6 +40,8 @@ export default async function ContractRenewalPage({
 }) {
   const { contractId } = await params;
   const supabase = await createClient();
+  const caps = await loadCurrentOrgCapabilities();
+  const canRebidClone = caps?.canRebidClone ?? false;
   const { data: contract } = await supabase
     .from("contracts")
     .select("id, title, verified_end_on, opportunity_id, client_id, source_document_id, source_fact_id")
@@ -283,7 +286,7 @@ export default async function ContractRenewalPage({
         </div>
 
         <div className="pt-1">
-          <RebidButton contractId={contractId} />
+          <RebidButton contractId={contractId} canRebidClone={canRebidClone} />
         </div>
         <p className="text-xs text-muted-foreground">{REBID_CTA_NOTE}</p>
         <p className="text-xs text-muted-foreground">
