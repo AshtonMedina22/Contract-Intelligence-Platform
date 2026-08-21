@@ -18,22 +18,27 @@ import { searchVerifiedKnowledge } from "@/lib/retrieval/search";
 
 export default function OpportunityResponsePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ opportunityId: string }>;
+  searchParams: Promise<{ req?: string }>;
 }) {
   return (
     <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>
-      <OpportunityResponseContent params={params} />
+      <OpportunityResponseContent params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
 
 async function OpportunityResponseContent({
   params,
+  searchParams,
 }: {
   params: Promise<{ opportunityId: string }>;
+  searchParams: Promise<{ req?: string }>;
 }) {
   const { opportunityId } = await params;
+  const requestedReq = (await searchParams).req ?? null;
   const [opportunity, summary, staffing, requirements, responses, approvals, context] =
     await Promise.all([
       loadOpportunityHeader(opportunityId),
@@ -68,9 +73,12 @@ async function OpportunityResponseContent({
     hasWinLoss: summary.hasWinLoss,
   });
 
-  const sampleQuery = requirements[0]?.statement ?? opportunity.title;
+  // Deep link from the requirements matrix (?req=) decides which requirement opens, so the first
+  // retrieval on the page is for the requirement the operator actually asked for.
+  const initialRequirement =
+    requirements.find((r) => r.id === requestedReq) ?? requirements[0] ?? null;
   const { hits } = await searchVerifiedKnowledge({
-    query: sampleQuery,
+    query: initialRequirement?.statement ?? opportunity.title,
     purpose: "PROPOSAL_DRAFTING",
     opportunityId,
     limit: 8,
@@ -92,9 +100,10 @@ async function OpportunityResponseContent({
         approvals={approvals}
         context={context}
         factDocumentMap={factDocumentMap}
+        initialRequirementId={initialRequirement?.id ?? null}
         knowledgeHits={hits.map((h) => ({
           chunk_id: h.chunk_id,
-          reuse_status: h.reuse_status,
+          reuse_status: h.reuse_status as string,
           content: h.content,
           document_id: h.document_id,
           source_page: h.source_page,

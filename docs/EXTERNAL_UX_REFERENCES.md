@@ -464,8 +464,8 @@ Local spec already: Resizable + PDF.js + TanStack + badges + keyboard.
 | **Mechanic registry** | [EXTERNAL_REFERENCE_REPOS.md](EXTERNAL_REFERENCE_REPOS.md) §15 |
 | **Reference category** | Tiptap response-editor UX |
 | **Usage mode** | ADAPT UI COMPONENT/PATTERN |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE. We already use Tiptap. |
+| **Analysis status** | **ADOPTED PATTERN (P6, 2026-08-21)** — see [reference-ux/novel.md](reference-ux/novel.md) |
+| **License / copy caution** | **Apache-2.0** verified 2026-08-21. No source copied; bubble menu and slash stub written against our own `@tiptap/react` v3. |
 
 **Consult when:** Slash commands, bubble menus, toolbars, AI rewrite/expand, streaming insert, keyboard — **before** inventing them.
 

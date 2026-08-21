@@ -46,6 +46,7 @@
     "test:phase11-hybrid-rag": "node --env-file=apps/web/.env.local scripts/phase11-hybrid-rag-acceptance.mjs",
     "test:p4-discovery": "node scripts/p4-public-discovery-acceptance.mjs",
     "test:p4-discovery-rls": "node --env-file=apps/web/.env.local scripts/p4-public-sources-rls.mjs",
-    "test:p5-pursuit-strategy": "node scripts/p5-pursuit-strategy-acceptance.mjs"
+    "test:p5-pursuit-strategy": "node scripts/p5-pursuit-strategy-acceptance.mjs",
+    "test:p6-response-workspace": "node scripts/p6-response-workspace-acceptance.mjs"
   }
 }

@@ -1,9 +1,17 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { FactRef } from "./shared";
 import type { RequirementMatrixRow } from "@/lib/opportunity/response";
 import { updateRequirementMatrixRow } from "@/app/(platform)/procurement/opportunities/[opportunityId]/actions";
@@ -18,6 +26,8 @@ export function RequirementsMatrix({
   factDocumentMap: Map<string, string>;
 }) {
   const [pending, startTransition] = useTransition();
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const detail = rows.find((r) => r.id === detailId) ?? null;
 
   if (rows.length === 0) {
     return (
@@ -52,7 +62,14 @@ export function RequirementsMatrix({
             {rows.map((row) => (
               <tr key={row.id} className="border-b align-top">
                 <td className="p-2 max-w-[220px]">
-                  <p className="line-clamp-4">{row.statement}</p>
+                  <button
+                    type="button"
+                    data-testid="requirement-detail-trigger"
+                    className="text-left underline-offset-2 hover:underline"
+                    onClick={() => setDetailId(row.id)}
+                  >
+                    <span className="line-clamp-4">{row.statement}</span>
+                  </button>
                   {row.verification_note ? (
                     <p className="mt-1 text-muted-foreground">Verify: {row.verification_note}</p>
                   ) : null}
@@ -180,6 +197,63 @@ export function RequirementsMatrix({
           </tbody>
         </table>
       </div>
+
+      <Sheet open={Boolean(detail)} onOpenChange={(open) => setDetailId(open ? detailId : null)}>
+        <SheetContent side="right" className="w-full gap-0 sm:max-w-md">
+          <SheetHeader className="border-b">
+            <SheetTitle className="text-sm">Requirement detail</SheetTitle>
+            <SheetDescription className="text-xs">
+              Read-only view. Edit inline in the matrix; draft the response on the Response tab.
+            </SheetDescription>
+          </SheetHeader>
+          {detail ? (
+            <div className="flex-1 space-y-3 overflow-auto p-4 text-xs">
+              <p className="whitespace-pre-wrap">{detail.statement}</p>
+              <dl className="grid grid-cols-2 gap-x-3 gap-y-1">
+                <DetailField label="Section" value={detail.section_ref ?? "Not recorded"} />
+                <DetailField label="Page" value={detail.source_page?.toString() ?? "Not recorded"} />
+                <DetailField label="Mandatory" value={detail.mandatory ? "Yes" : "No"} />
+                <DetailField
+                  label="Scored"
+                  value={detail.scored ? `Yes · ${detail.weight_pct ?? "weight not recorded"}` : "No"}
+                />
+                <DetailField label="Response required" value={detail.response_required ? "Yes" : "No"} />
+                <DetailField
+                  label="Attachment"
+                  value={detail.attachment_required ? detail.form_name ?? "Required" : "Not required"}
+                />
+                <DetailField label="Owner" value={detail.owner_name ?? "Unassigned"} />
+                <DetailField label="Matrix status" value={detail.matrix_status} />
+              </dl>
+              <p className="text-muted-foreground">
+                Verification: {detail.verification_note ?? "No note recorded"}
+              </p>
+              <p>
+                Source fact:{" "}
+                <FactRef
+                  factId={detail.source_fact_id}
+                  documentId={factDocumentMap.get(detail.source_fact_id ?? "")}
+                />
+              </p>
+              <Link
+                className="inline-block underline"
+                href={`/procurement/opportunities/${opportunityId}/response?req=${detail.id}`}
+              >
+                Open in Response workspace →
+              </Link>
+            </div>
+          ) : null}
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+function DetailField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd>{value}</dd>
     </div>
   );
 }

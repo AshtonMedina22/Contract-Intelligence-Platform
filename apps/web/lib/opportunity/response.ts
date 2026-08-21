@@ -173,10 +173,39 @@ export type GroundedDraftResult = {
   evidence_state: EvidenceState;
 };
 
+/** Reuse statuses that may never reach PROPOSAL_DRAFTING, at retrieval or at assembly. */
+export const BLOCKED_REUSE_STATUSES = ["DO_NOT_USE", "SUPERSEDED"] as const;
+
+export function isDraftingAllowedSource(reuseStatus: string): boolean {
+  return !(BLOCKED_REUSE_STATUSES as readonly string[]).includes(reuseStatus);
+}
+
+export type SourceUsed = { chunk_id: string; reuse_status: string; excerpt: string };
+
+/** `requirement_responses.sources_used` is jsonb; read it defensively and drop blocked rows. */
+export function parseSourcesUsed(value: unknown): SourceUsed[] {
+  if (!Array.isArray(value)) return [];
+  const parsed: SourceUsed[] = [];
+  for (const entry of value) {
+    if (!entry || typeof entry !== "object") continue;
+    const row = entry as Record<string, unknown>;
+    const chunk_id = typeof row.chunk_id === "string" ? row.chunk_id : "";
+    if (!chunk_id) continue;
+    const reuse_status = typeof row.reuse_status === "string" ? row.reuse_status : "UNKNOWN";
+    if (!isDraftingAllowedSource(reuse_status)) continue;
+    parsed.push({
+      chunk_id,
+      reuse_status,
+      excerpt: typeof row.excerpt === "string" ? row.excerpt : "",
+    });
+  }
+  return parsed;
+}
+
 export function classifyEvidenceFromHits(
   hits: { reuse_status: string; content: string }[],
 ): EvidenceState {
-  const usable = hits.filter((h) => h.reuse_status !== "DO_NOT_USE" && h.reuse_status !== "SUPERSEDED");
+  const usable = hits.filter((h) => isDraftingAllowedSource(h.reuse_status));
   if (usable.length === 0) return "L_AND_P_INPUT_REQUIRED";
   if (usable.some((h) => h.reuse_status === "APPROVED")) return "VERIFIED_DRAFT_AVAILABLE";
   return "REVIEW_REQUIRED";
@@ -188,9 +217,7 @@ export function buildGroundedDraftFromHits(opts: {
   llmText?: string | null;
 }): GroundedDraftResult {
   const evidence_state = classifyEvidenceFromHits(opts.hits);
-  const allowed = opts.hits.filter(
-    (h) => h.reuse_status !== "DO_NOT_USE" && h.reuse_status !== "SUPERSEDED",
-  );
+  const allowed = opts.hits.filter((h) => isDraftingAllowedSource(h.reuse_status));
   const sources_used = allowed.slice(0, 8).map((h) => ({
     chunk_id: h.chunk_id,
     reuse_status: h.reuse_status,

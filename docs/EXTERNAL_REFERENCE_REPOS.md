@@ -133,8 +133,8 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/run-llama/auto_rfp |
 | **Reference category** | Pursuit / requirements / evidence / response workflow |
 | **Usage mode** | ADAPT CODE/PATTERN |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. Pattern adaptation only until recorded. |
+| **Analysis status** | **ADOPTED PATTERN (P6, 2026-08-21)** — see [reference-repos/auto-rfp.md](reference-repos/auto-rfp.md) |
+| **License / copy caution** | **MIT** per upstream README, verified 2026-08-21. No source copied; question-scoped workflow shape only. LlamaCloud / Prisma explicitly declined. |
 
 **Why it matters:** Public implementation of project-scoped RFP Q&A: question extraction, evidence retrieval, citations, and human answer editing.
 
