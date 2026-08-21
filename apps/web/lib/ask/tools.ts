@@ -1,5 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
+import { runStructuredAnalytics } from "@/lib/analytics/execute";
+import { listMetricIds } from "@/lib/analytics/semantic-model";
 import {
   SOURCE_AUTHORITY,
   makeEvidenceId,
@@ -634,6 +636,83 @@ export function createAskTools(ctx: AskToolContext) {
           recipient_match,
           honesty:
             "Recipient observations from USAspending. Exact name/UEI match only — ambiguous → candidates, never invent clients/competitors.",
+        };
+      },
+    }),
+
+    ask_structured_analytics: tool({
+      description: `INTERNAL rail: governed structured analytics (counts, rates, medians, contract expirations, competitor frequency). Parameterized metric registry only — NEVER free SQL, NEVER market_share, NEVER invent win rates below the P9 sample gate (n>=20 decided). Route count/rate/median/expiration/competitor-frequency questions here. Registered metrics: ${listMetricIds().join(", ")}. Ambiguous questions are refused with a clarification message.`,
+      inputSchema: z.object({
+        question: z.string().min(1),
+        metricId: z.string().optional(),
+        dimensions: z.array(z.string()).optional(),
+        filters: z
+          .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(z.string())]))
+          .optional(),
+        limit: z.number().int().min(1).max(500).optional(),
+        /** If ever supplied, validateSql rejects — free SQL is never executed. */
+        rawSql: z.string().optional(),
+      }),
+      execute: async ({ question, metricId, dimensions, filters, limit, rawSql }) => {
+        const supabase = await createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        let organizationId: string | null = null;
+        if (user) {
+          const { data: membership } = await supabase
+            .from("memberships")
+            .select("organization_id")
+            .eq("user_id", user.id)
+            .limit(1)
+            .maybeSingle();
+          organizationId = membership?.organization_id ?? null;
+        }
+
+        const result = await runStructuredAnalytics({
+          supabase,
+          question,
+          metricId: metricId ?? null,
+          dimensions,
+          filters,
+          limit,
+          rawSql: rawSql ?? null,
+          organizationId,
+          userId: user?.id ?? null,
+          persist: Boolean(organizationId),
+        });
+
+        const evidence: NormalizedEvidence[] = result.ok
+          ? [
+              {
+                id: makeEvidenceId("analytics", result.planFingerprint ?? result.metricId ?? "run"),
+                rail: "internal",
+                evidence_class: "INTERNAL_VERIFIED",
+                source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+                title: result.metricId
+                  ? `Structured analytics: ${result.metricId}`
+                  : "Structured analytics (refused)",
+                url: null,
+                internal_ref: "/intelligence/ask",
+                document_id: null,
+                chunk_id: null,
+                page: null,
+                excerpt: result.metricInterpretation,
+                published_date: null,
+                retrieved_at: result.dataCutoff,
+                verification_status: "STRUCTURED_RECORD",
+                entity: result.metricId,
+                topic: "structured_analytics",
+              },
+            ]
+          : [];
+        if (evidence.length) pushEvidence(ctx, evidence);
+
+        return {
+          ...result,
+          evidence,
+          honesty:
+            "Governed metric registry only. Not market share. Win rates withheld below n=20 decided. No free SQL to DB.",
         };
       },
     }),

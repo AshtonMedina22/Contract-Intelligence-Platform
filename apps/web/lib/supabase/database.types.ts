@@ -2444,6 +2444,63 @@ export type Database = {
         };
         Relationships: [];
       };
+      analytical_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          created_by: string | null;
+          created_at: string;
+          question: string | null;
+          metric_id: string;
+          plan: Record<string, unknown>;
+          plan_fingerprint: string | null;
+          explain: unknown;
+          status: string;
+          columns: unknown;
+          rows: unknown;
+          interpretation: string | null;
+          limitations: unknown;
+          scope: string | null;
+          data_cutoff: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          created_by?: string | null;
+          created_at?: string;
+          question?: string | null;
+          metric_id: string;
+          plan?: Record<string, unknown>;
+          plan_fingerprint?: string | null;
+          explain?: unknown;
+          status: string;
+          columns?: unknown;
+          rows?: unknown;
+          interpretation?: string | null;
+          limitations?: unknown;
+          scope?: string | null;
+          data_cutoff?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          created_by?: string | null;
+          created_at?: string;
+          question?: string | null;
+          metric_id?: string;
+          plan?: Record<string, unknown>;
+          plan_fingerprint?: string | null;
+          explain?: unknown;
+          status?: string;
+          columns?: unknown;
+          rows?: unknown;
+          interpretation?: string | null;
+          limitations?: unknown;
+          scope?: string | null;
+          data_cutoff?: string;
+        };
+        Relationships: [];
+      };
       research_runs: {
         Row: {
           id: string;

@@ -16,7 +16,7 @@ Purpose: distinguish what exists in code from what has been proven as a product.
 | **3 — Historical Ingestion & Migration** | **PASS** — Prompt 3 + **VERIFY 3 PASS 26/26** ([VERIFY3_ACCEPTANCE.md](pilot/VERIFY3_ACCEPTANCE.md)) + **F1 37/37** ([F1_PRODUCTION_INGESTION_ACCEPTANCE.md](functionality/F1_PRODUCTION_INGESTION_ACCEPTANCE.md)). DOCX wired; OCR live only with `MISTRAL_API_KEY` and never yet run on real evidence. |
 | **4 — Contracts / Compliance** | Prompt 4 exit proven in app + acceptance, plus **P10 portfolio / renewal-rebid command center**; still thin vs a real awarded corpus — 12 contracts, **3** with a verified end date, **0** with an NTE or PO |
 | **5 — Buyer / Competitor / Market / Win-Loss** | **Prompt 5 exit proven** — still corpus-thin; no fabricated market share |
-| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** (durable HUMAN_VERIFIED `research_facts` vs live cite-only public; no auto-verify) |
+| **6 — Search / Ask / Reports / Automation** | EARLY/PARTIAL — dual-rail Ask + **F3 USAspending** + **F4 research runs** + **F6 governed structured analytics** (`ask_structured_analytics`; metric registry; no free SQL; no market_share) |
 | **7 — Pricing Intelligence** | Prompt 7 exit + **P7 workbench polish**; **VERIFY 7's committed 29/29 is stale** (19/22 at clean `HEAD` — outdated fixtures/grep, not a behaviour regression) |
 | **8 — Response Builder / Submission / Result** | **PASS** (Prompt 8 + VERIFY 8 **23/23, re-earned 2026-08-21** after its unsourced-contract fixture was replaced) + **P8 submission / outcome / handoff polish** |
 
@@ -76,6 +76,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 2. Route a real reviewer through the verification workbench — `NEEDS_REVIEW` is currently **0**, so nothing is queued for a human.  
 3. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed. OCR has never run on real scanned evidence.  
 4. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+
+**F6 functional build (2026-08-21):** Governed Structured Analytics — parameterized metric registry + PostgREST query builder (WrenAI pattern, no Wren stack). Ask tool `ask_structured_analytics` only; no free LLM SQL; no `market_share`; win rates gated at P9 n≥20; `submitted_value` / `active_contract_value` withheld. Migration `analytical_runs` + RLS. `test:f6-structured-analytics`. See [F6_STRUCTURED_ANALYTICS_ACCEPTANCE.md](functionality/F6_STRUCTURED_ANALYTICS_ACCEPTANCE.md).
 
 **F3 functional build (2026-08-21):** Federal Award / Buyer / Competitor Data Engine — **Ask research plane only** (`lib/ask/research/usaspending.ts` + `normalize-party.ts`), **not** a `PublicProcurementProvider`. Tools: `search_federal_awards` / `get_federal_award` / `lookup_federal_recipient` (OFFICIAL_PUBLIC / PUBLIC_UNVERIFIED). Optional persist helper builds `research_facts` as `AI_EXTRACTED` + `provider=usa_spending` only; fixtures `FIXTURE-USA-*` refused. No market share, no invented CRM buyers, no canonical `awards` from USAspending, no mix into four-truth `pricing_lines`. Intelligence Market/Buyers/Competitors honesty note + Ask chips. `test:f3-federal-awards`. See [F3_FEDERAL_AWARD_INTELLIGENCE_ACCEPTANCE.md](functionality/F3_FEDERAL_AWARD_INTELLIGENCE_ACCEPTANCE.md).
 

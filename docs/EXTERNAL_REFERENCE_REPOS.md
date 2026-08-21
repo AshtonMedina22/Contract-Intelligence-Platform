@@ -542,7 +542,7 @@ PublicProcurementProvider
 | **URL** | https://github.com/Canner/WrenAI |
 | **Reference category** | Governed natural-language structured analytics / NL→SQL |
 | **Usage mode** | ARCHITECTURE / PATTERN REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
+| **Analysis status** | INSPECTED (F6 Structured Analytics, 2026-08-21) — pattern only; see [reference-repos/wrenai.md](reference-repos/wrenai.md) |
 | **License / copy caution** | Inspect current LICENSE before copying. Often restrictive/AGPL-class — treat as REFERENCE ONLY until verified and approved. |
 
 **Why it matters:** Structured-analytics questions are **not** ordinary RAG. WrenAI is a pattern for a semantic business model → validated read-only SQL → real Postgres result → optional LLM explanation.
