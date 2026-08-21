@@ -45,3 +45,33 @@ None this session (research only).
 # Status
 
 INSPECTED FOR TASK
+
+---
+
+# Addendum — P5 Pursuit Overview + Bid Strategy (2026-08-21)
+
+**No new upstream inspection.** This records where the pattern already captured above was reused, and
+one place it did not fit.
+
+**Reused.** "Human annotation as ground truth; AI builds on annotations rather than replacing them" is
+now the rule the Overview's Bid Strategy runs on. Narrative bullets come from
+`searchVerifiedKnowledge({ purpose: "BID_STRATEGY" })`, which only returns approved chunks, and each
+one is quoted verbatim with its `reuse_status` and `source_page` shown. Nothing on the Overview
+promotes an `AI_EXTRACTED` fact: staged facts appear only as a count in Risks with a link to
+Verification, labelled *"staged, not canonical."*
+
+**Reused.** Source↔fact navigation is the Overview's citation target. Solicitation records, award
+records, evaluation scores, competitor amounts, and quoted passages all cite
+`/ingestion/verification/<documentId>` — the same View Source destination as the verification
+workbench, so a claim on the Overview lands on the page where a human accepted or rejected it.
+
+**Did not fit.** PAWLs-style page/token coordinates are not carried into the Overview. A bullet cites
+a document (and a page where the chunk recorded one), not a bounding box. Span-precise highlighting
+stays in the verification workbench; adding it to a summary screen would imply a precision the rollup
+counts do not have.
+
+# Local files affected (P5)
+
+`apps/web/lib/opportunity/load-overview-bundle.ts`,
+`apps/web/lib/opportunity/overview-model.ts`,
+`apps/web/components/opportunity-workspace/overview-sections.tsx`.

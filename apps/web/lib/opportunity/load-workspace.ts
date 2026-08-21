@@ -10,6 +10,7 @@ export type OpportunityHeader = {
   response_due_on: string | null;
   service_type: string | null;
   notes: string | null;
+  client_id: string | null;
   client_name: string | null;
   procurement_rail: ProcurementRail | null;
   solicitation_kind: SolicitationKind | null;
@@ -17,6 +18,10 @@ export type OpportunityHeader = {
   submission_method: string | null;
   coverage_start_on: string | null;
   vehicle_ref: string | null;
+  external_provider: string | null;
+  external_source_id: string | null;
+  source_url: string | null;
+  public_source_id: string | null;
 };
 
 export type WorkspaceSummary = {
@@ -49,7 +54,7 @@ export async function loadOpportunityHeader(opportunityId: string): Promise<Oppo
   const { data } = await supabase
     .from("opportunities")
     .select(
-      "id, title, stage, go_no_go, response_due_on, service_type, notes, procurement_rail, solicitation_kind, site_location, submission_method, coverage_start_on, vehicle_ref, clients(name)",
+      "id, title, stage, go_no_go, response_due_on, service_type, notes, client_id, procurement_rail, solicitation_kind, site_location, submission_method, coverage_start_on, vehicle_ref, external_provider, external_source_id, source_url, public_source_id, clients(name)",
     )
     .eq("id", opportunityId)
     .maybeSingle();
@@ -63,6 +68,7 @@ export async function loadOpportunityHeader(opportunityId: string): Promise<Oppo
     response_due_on: data.response_due_on,
     service_type: data.service_type,
     notes: data.notes,
+    client_id: data.client_id ?? null,
     client_name: client?.name ?? null,
     procurement_rail: (data.procurement_rail as ProcurementRail | null) ?? null,
     solicitation_kind: (data.solicitation_kind as SolicitationKind | null) ?? null,
@@ -70,6 +76,10 @@ export async function loadOpportunityHeader(opportunityId: string): Promise<Oppo
     submission_method: data.submission_method ?? null,
     coverage_start_on: data.coverage_start_on ?? null,
     vehicle_ref: data.vehicle_ref ?? null,
+    external_provider: data.external_provider ?? null,
+    external_source_id: data.external_source_id ?? null,
+    source_url: data.source_url ?? null,
+    public_source_id: data.public_source_id ?? null,
   };
 }
 

@@ -109,8 +109,8 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/valinorintelligence/rfpilot |
 | **Reference category** | Pre-award RFP / proposal-response workflow |
 | **Usage mode** | ADAPT CODE/PATTERN |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. Treat as pattern reference until license is recorded in a lazy note. |
+| **Analysis status** | INSPECTED (P5 Pursuit Overview, 2026-08-21) — see [reference-repos/rfpilot.md](reference-repos/rfpilot.md). Section taxonomy adopted; its generation method **rejected**. |
+| **License / copy caution** | **MIT** per GitHub license metadata (verified 2026-08-21). Copy-eligible with attribution, but no upstream code has been copied. Its AI schema emits ungrounded scores and win themes — read it as a counter-example, not a template. |
 
 **Why it matters:** Closest public analog to our **pre-award** workflow (intake → requirements → response → submission outputs).
 
@@ -157,7 +157,7 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/Open-Source-Legal/OpenContracts |
 | **Reference category** | Human verification, source evidence, document ground-truth |
 | **Usage mode** | ADAPT CODE/PATTERN |
-| **Analysis status** | INSPECTED (P2 Data Ops, 2026-08-20) — see [reference-repos/opencontracts.md](reference-repos/opencontracts.md) |
+| **Analysis status** | INSPECTED (P2 Data Ops, 2026-08-20; pattern reused P5 Pursuit Overview, 2026-08-21) — see [reference-repos/opencontracts.md](reference-repos/opencontracts.md) |
 | **License / copy caution** | **MIT** on `main` LICENSE (verified 2026-08-20). Older AGPL forks exist — do not copy those. Prefer conceptual PAWLs/verify UX adaptation over wholesale paste. |
 
 **Why it matters:** Strongest public analog for PDF coordinates → selected evidence → annotated ground truth → human review. Compare directly against our verification workbench.
@@ -514,8 +514,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/langchain-ai/open_deep_research |
 | **Reference category** | Multi-step public buyer / competitor / market research orchestration |
 | **Usage mode** | ARCHITECTURE / ORCHESTRATION REFERENCE |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. Borrow orchestration concepts first. **Do not install LangGraph** merely because this repo uses it. |
+| **Analysis status** | INSPECTED (P5 Pursuit Overview, 2026-08-21) — see [reference-repos/open-deep-research.md](reference-repos/open-deep-research.md). Citation discipline adopted; orchestration **declined** for the Overview. |
+| **License / copy caution** | **MIT** per GitHub license metadata (verified 2026-08-21). Copy-eligible with attribution; no upstream code copied. **LangGraph was not installed** and the architecture lock still forbids it here. |
 
 **Why it matters:** Query planning, parallel/iterative search, source dedupe, compression, and sourced synthesis for “research this buyer/competitor.”
 

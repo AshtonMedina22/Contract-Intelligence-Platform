@@ -151,13 +151,23 @@ async function main() {
       /reuse_status/.test(contentSrc) && /REVIEW_REQUIRED|formatReuseStatus/.test(contentSrc),
     );
 
+    // P5 moved the pursuit intelligence summary from a standalone panel into the Overview bundle,
+    // so the check follows the composition: page renders the sections, bundle loads the intel.
     const overviewSrc = read(
       "apps/web/app/(platform)/procurement/opportunities/[opportunityId]/page.tsx",
+    );
+    const overviewBundleSrc = read("apps/web/lib/opportunity/load-overview-bundle.ts");
+    const overviewSectionsSrc = read(
+      "apps/web/components/opportunity-workspace/overview-sections.tsx",
     );
     record(
       "ui",
       "Pursuit Overview surfaces intelligence summary",
-      /PursuitIntelligenceSummary/.test(overviewSrc) && /loadPursuitIntelSummary/.test(overviewSrc),
+      /OverviewSections/.test(overviewSrc) &&
+        /loadOverviewBundle/.test(overviewSrc) &&
+        /loadPursuitIntelSummary/.test(overviewBundleSrc) &&
+        /Competitive intelligence/.test(overviewSectionsSrc) &&
+        /Buyer intelligence/.test(overviewSectionsSrc),
     );
 
     const typesSrc = read("apps/web/lib/supabase/database.types.ts");
