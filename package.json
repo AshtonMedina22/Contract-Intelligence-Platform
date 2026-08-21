@@ -21,6 +21,7 @@
     "test:f4-research-pipeline": "node --env-file=apps/web/.env.local scripts/f4-research-pipeline-acceptance.mjs",
     "test:f5-recompete-radar": "node scripts/f5-recompete-radar-acceptance.mjs",
     "test:f6-structured-analytics": "node scripts/f6-structured-analytics-acceptance.mjs",
+    "test:f7-proposal-content": "node scripts/f7-proposal-content-intelligence-acceptance.mjs",
     "test:processor": "python -m pytest -q --rootdir=services/processor services/processor/tests",
     "test:verify2a": "node scripts/verify2a-corpus-audit.mjs",
     "test:verify2b": "node scripts/verify2b-pilot-acceptance.mjs",

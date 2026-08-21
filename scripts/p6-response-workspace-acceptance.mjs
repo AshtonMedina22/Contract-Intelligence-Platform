@@ -574,7 +574,9 @@ check("the requirements matrix deep-links a row into the Response workspace", ()
 });
 
 check("the server action still strips DO_NOT_USE before assembling any draft", () => {
-  assert.match(sources.actions, /hits\.filter\(\(h\) => h\.reuse_status !== "DO_NOT_USE"\)/);
+  // F7: defense-in-depth via isDraftingAllowedSource (DO_NOT_USE + SUPERSEDED).
+  assert.match(sources.actions, /isDraftingAllowedSource/);
+  assert.match(sources.actions, /matchRequirementToProposalContent|buildGroundedDraftFromHits/);
   assert.match(sources.actions, /buildGroundedDraftFromHits/);
 });
 

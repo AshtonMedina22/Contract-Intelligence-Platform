@@ -109,7 +109,7 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/valinorintelligence/rfpilot |
 | **Reference category** | Pre-award RFP / proposal-response workflow |
 | **Usage mode** | ADAPT CODE/PATTERN |
-| **Analysis status** | INSPECTED (P5 Pursuit Overview, 2026-08-21) — see [reference-repos/rfpilot.md](reference-repos/rfpilot.md). Section taxonomy adopted; its generation method **rejected**. |
+| **Analysis status** | INSPECTED (P5 Pursuit Overview, 2026-08-21; F7 content taxonomy, 2026-08-21) — see [reference-repos/rfpilot.md](reference-repos/rfpilot.md). Section taxonomy adopted; its generation method **rejected**. |
 | **License / copy caution** | **MIT** per GitHub license metadata (verified 2026-08-21). Copy-eligible with attribution, but no upstream code has been copied. Its AI schema emits ungrounded scores and win themes — read it as a counter-example, not a template. |
 
 **Why it matters:** Closest public analog to our **pre-award** workflow (intake → requirements → response → submission outputs).

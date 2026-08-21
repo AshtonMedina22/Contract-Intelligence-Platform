@@ -400,16 +400,15 @@ export async function loadRequirementEvidence(opportunityId: string, requirement
     .maybeSingle();
   if (!req) throw new Error("Requirement not found.");
 
-  const { searchVerifiedKnowledge } = await import("@/lib/retrieval/search");
+  const { matchRequirementToProposalContent } = await import("@/lib/content/match-requirement");
   const { isDraftingAllowedSource } = await import("@/lib/opportunity/response");
-  const { hits } = await searchVerifiedKnowledge({
-    query: req.statement,
-    purpose: "PROPOSAL_DRAFTING",
+  const matched = await matchRequirementToProposalContent({
+    requirementStatement: req.statement,
     opportunityId,
     limit: 8,
   });
 
-  return hits
+  return matched.hits
     .filter((h) => isDraftingAllowedSource(h.reuse_status))
     .map((h) => ({
       chunk_id: h.chunk_id,
@@ -437,21 +436,21 @@ export async function generateRequirementDraft(
     .maybeSingle();
   if (!req) throw new Error("Requirement not found.");
 
-  const { searchVerifiedKnowledge } = await import("@/lib/retrieval/search");
   const { embedQuery, synthesizeGroundedAnswer } = await import("@/lib/ask/synthesize");
-  const { buildGroundedDraftFromHits } = await import("@/lib/opportunity/response");
+  const { matchRequirementToProposalContent } = await import("@/lib/content/match-requirement");
+  const { isDraftingAllowedSource } = await import("@/lib/opportunity/response");
 
   const embedding = await embedQuery(req.statement);
-  const { hits } = await searchVerifiedKnowledge({
-    query: req.statement,
-    purpose: "PROPOSAL_DRAFTING",
+  // F7: purpose-gated match (PROPOSAL_DRAFTING, limit ≤12) — never dumps full proposals.
+  const matched = await matchRequirementToProposalContent({
+    requirementStatement: req.statement,
     opportunityId,
     limit: 12,
     queryEmbedding: embedding,
   });
 
-  // Strip DO_NOT_USE before any draft assembly (defense in depth).
-  const allowedHits = hits.filter((h) => h.reuse_status !== "DO_NOT_USE");
+  // Strip DO_NOT_USE / SUPERSEDED before any draft assembly (defense in depth).
+  const allowedHits = matched.hits.filter((h) => isDraftingAllowedSource(h.reuse_status));
 
   // An operator instruction may shape tone or emphasis. It is appended after the never-invent
   // rules and can neither widen the evidence set nor lift a gate.
@@ -472,6 +471,7 @@ export async function generateRequirementDraft(
     if (!synth.insufficient) llmText = `<p>${synth.answer.replace(/\n/g, "</p><p>")}</p>`;
   }
 
+  const { buildGroundedDraftFromHits } = await import("@/lib/opportunity/response");
   const grounded = buildGroundedDraftFromHits({
     requirementStatement: req.statement,
     hits: allowedHits.map((h) => ({

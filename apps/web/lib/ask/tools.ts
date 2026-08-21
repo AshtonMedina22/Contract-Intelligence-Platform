@@ -67,7 +67,7 @@ export function createAskTools(ctx: AskToolContext) {
   return {
     search_verified_passages: tool({
       description:
-        "INTERNAL rail: search HUMAN_VERIFIED L&P corpus (hybrid FTS/vector) under org RLS and purpose drafting gates. Returns up to 50 candidates.",
+        "INTERNAL rail: search HUMAN_VERIFIED L&P corpus (hybrid FTS/vector) under org RLS and purpose drafting gates. Covers historical proposal content reuse — DO_NOT_USE/SUPERSEDED excluded for PROPOSAL_DRAFTING; LOSS_ANALYSIS may include DO_NOT_USE. Returns cited passages only (never full prior proposals). Returns up to 50 candidates.",
       inputSchema: z.object({
         query: z.string().min(1),
         limit: z.number().int().min(1).max(50).optional(),

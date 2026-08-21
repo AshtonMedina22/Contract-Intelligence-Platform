@@ -9,6 +9,12 @@ export type OpportunityStage =
   | "CLOSED";
 export type GoNoGo = "PENDING" | "GO" | "NO_GO";
 export type ReuseStatus = "APPROVED" | "REVIEW_REQUIRED" | "DO_NOT_USE" | "SUPERSEDED";
+export type ProposalContentRunStatus =
+  | "QUEUED"
+  | "EXTRACTING"
+  | "REVIEW_READY"
+  | "FAILED"
+  | "DONE";
 export type RetrievalPurpose =
   | "GENERAL_QA"
   | "LOCATE"
@@ -2284,6 +2290,15 @@ export type Database = {
           title: string;
           source_page: number | null;
           excerpt: string | null;
+          body_text: string | null;
+          verification_status: FactVerificationStatus;
+          reuse_status: ReuseStatus | null;
+          superseded_by_id: string | null;
+          content_run_id: string | null;
+          outcome_snapshot: string | null;
+          buyer_name: string | null;
+          page_start: number | null;
+          page_end: number | null;
           created_at: string;
         };
         Insert: {
@@ -2296,6 +2311,15 @@ export type Database = {
           title: string;
           source_page?: number | null;
           excerpt?: string | null;
+          body_text?: string | null;
+          verification_status?: FactVerificationStatus;
+          reuse_status?: ReuseStatus | null;
+          superseded_by_id?: string | null;
+          content_run_id?: string | null;
+          outcome_snapshot?: string | null;
+          buyer_name?: string | null;
+          page_start?: number | null;
+          page_end?: number | null;
           created_at?: string;
         };
         Update: {
@@ -2308,7 +2332,61 @@ export type Database = {
           title?: string;
           source_page?: number | null;
           excerpt?: string | null;
+          body_text?: string | null;
+          verification_status?: FactVerificationStatus;
+          reuse_status?: ReuseStatus | null;
+          superseded_by_id?: string | null;
+          content_run_id?: string | null;
+          outcome_snapshot?: string | null;
+          buyer_name?: string | null;
+          page_start?: number | null;
+          page_end?: number | null;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      proposal_content_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          document_id: string;
+          opportunity_id: string | null;
+          status: ProposalContentRunStatus;
+          plan: Record<string, unknown>;
+          result_summary: Record<string, unknown>;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+          completed_at: string | null;
+          last_error: string | null;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          document_id: string;
+          opportunity_id?: string | null;
+          status?: ProposalContentRunStatus;
+          plan?: Record<string, unknown>;
+          result_summary?: Record<string, unknown>;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          completed_at?: string | null;
+          last_error?: string | null;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          document_id?: string;
+          opportunity_id?: string | null;
+          status?: ProposalContentRunStatus;
+          plan?: Record<string, unknown>;
+          result_summary?: Record<string, unknown>;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          completed_at?: string | null;
+          last_error?: string | null;
         };
         Relationships: [];
       };
@@ -2752,6 +2830,18 @@ export type Database = {
     Functions: {
       promote_knowledge_chunk_from_fact: {
         Args: { p_fact_id: string };
+        Returns: Record<string, unknown>;
+      };
+      supersede_proposal_section: {
+        Args: { p_old_id: string; p_new_id: string };
+        Returns: Record<string, unknown>;
+      };
+      set_proposal_section_reuse: {
+        Args: {
+          p_section_id: string;
+          p_reuse_status: ReuseStatus;
+          p_actor_note?: string | null;
+        };
         Returns: Record<string, unknown>;
       };
       search_verified_knowledge: {

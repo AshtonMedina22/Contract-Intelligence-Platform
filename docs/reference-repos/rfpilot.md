@@ -94,3 +94,13 @@ No clone. Re-confirmed **MIT** via `LICENSE` + GitHub SPDX.
 # Status
 
 INSPECTED FOR TASK — taxonomy adopted, generation method REJECTED; P8 completion workflow shape noted (MIT)
+
+# F7 addendum — proposal content / section reuse (2026-08-21)
+
+No clone. Pattern only: RFPilot’s useful **section taxonomy** (staffing, management, transition, training, past performance, …) informs `apps/web/lib/content/taxonomy.ts`.
+
+**Adopted:** canonical section keys + heading aliases for heuristic extraction into existing `proposal_sections` (not a new `content_blocks` store).
+
+**Rejected:** ungrounded LLM scores, invented win tips, auto-promoting AI prose to reusable library, dumping full proposals into the model. Local reuse stays purpose-aware (`APPROVED` / `REVIEW_REQUIRED` / `DO_NOT_USE` / `SUPERSEDED`) with human verification gates — Won ≠ APPROVED, Lost ≠ DO_NOT_USE.
+
+Also pattern-noted (no copy): AutoRFP requirement↔evidence matching shape; OpenContracts provenance/verify discipline (already in local notes).
