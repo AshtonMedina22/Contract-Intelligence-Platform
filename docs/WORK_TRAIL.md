@@ -4,9 +4,9 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (section fix-pass PASS; corpus **17** packages) |
-| **Git HEAD on origin/main** | `259fd9f` + local corpus/fill/fix work — commit when asked |
-| **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **17**; A/B harness-complete **16**; exit ~20–30 still unmet. Section Terrell audit: **PASS WITH DEFERRED** ([SECTION_TERRELL_AUDIT_FIX.md](pilot/SECTION_TERRELL_AUDIT_FIX.md)). |
+| **Last updated** | 2026-08-20 (pushed `1b9961e`; Vercel Production **success**) |
+| **Git HEAD on origin/main** | `1b9961e` (fix-up to `38f364b` corpus/PO fix) |
+| **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **17**; A/B harness-complete **16**; exit ~20–30 still unmet. Section Terrell audit: **PASS WITH DEFERRED** ([SECTION_TERRELL_AUDIT_FIX.md](pilot/SECTION_TERRELL_AUDIT_FIX.md)). Prod Renewals verified after deploy. |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
 Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
