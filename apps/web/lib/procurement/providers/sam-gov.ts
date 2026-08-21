@@ -171,6 +171,7 @@ async function searchLive(
       return {
         provider: "sam_gov",
         mode: "live",
+        capability: "AUTOMATED",
         notice: LIVE_NOTICE,
         results: [],
         error: `SAM.gov returned ${res.status}. No results retrieved.`,
@@ -187,6 +188,7 @@ async function searchLive(
     return {
       provider: "sam_gov",
       mode: "live",
+      capability: "AUTOMATED",
       notice: LIVE_NOTICE,
       results: applyLocalFilters(results, {
         dueWithinDays: query.dueWithinDays,
@@ -203,6 +205,7 @@ async function searchLive(
     return {
       provider: "sam_gov",
       mode: "live",
+      capability: "AUTOMATED",
       notice: LIVE_NOTICE,
       results: [],
       error: err instanceof Error ? `SAM.gov request failed: ${err.message}` : "SAM.gov request failed.",
@@ -236,18 +239,24 @@ async function liveHealthCheck(key: string): Promise<PublicProviderHealth> {
       return {
         ok: false,
         mode: "live",
+        capability: "AUTOMATED",
+        httpStatus: res.status,
         message: `SAM.gov health ping returned HTTP ${res.status}. Key is present but the endpoint did not respond successfully.`,
       };
     }
     return {
       ok: true,
       mode: "live",
+      capability: "AUTOMATED",
+      httpStatus: res.status,
       message: "SAM.gov API key present; lightweight search ping succeeded.",
     };
   } catch (err) {
     return {
       ok: false,
       mode: "live",
+      capability: "AUTOMATED",
+      httpStatus: null,
       message:
         err instanceof Error
           ? `SAM.gov health ping failed: ${err.message}`
@@ -272,6 +281,7 @@ export function createSamGovProvider(): PublicProcurementProvider {
       id: "sam_gov",
       label: "SAM.gov",
       mode: "live",
+      capability: "AUTOMATED",
       notice: LIVE_NOTICE,
       search: (query) => searchLive(key, query),
       getOpportunity,
@@ -288,12 +298,14 @@ export function createSamGovProvider(): PublicProcurementProvider {
     id: "fixture",
     label: "SAM.gov (sample fixtures)",
     mode: "fixture",
+    capability: "AUTOMATED",
     notice: FIXTURE_NOTICE,
     async search(query) {
       const limit = Math.min(Math.max(query.limit ?? 25, 1), 100);
       return {
         provider: "fixture",
         mode: "fixture",
+        capability: "AUTOMATED",
         notice: FIXTURE_NOTICE,
         results: applyLocalFilters(loadSamFixtures(), query).slice(0, limit),
         error: null,
@@ -307,6 +319,7 @@ export function createSamGovProvider(): PublicProcurementProvider {
       return {
         ok: true,
         mode: "fixture",
+        capability: "AUTOMATED",
         message:
           "Fixture adapter healthy. SAM_GOV_API_KEY is not set — serving labeled sample data only.",
       };

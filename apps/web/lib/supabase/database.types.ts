@@ -107,9 +107,16 @@ export type PublicSourceProvider =
   | "usa_spending"
   | "state"
   | "local"
+  | "texas_esbd"
+  | "socrata"
+  | "rss"
+  | "json_feed"
+  | "html_listing"
   | "tavily"
   | "brave"
   | "web";
+
+export type ProviderCapability = "AUTOMATED" | "MANUAL_IMPORT" | "LINK_ONLY";
 
 export type ResearchType =
   | "BUYER"
@@ -357,6 +364,11 @@ export type Database = {
           dismissed_at: string | null;
           status: PublicSourceStatus;
           content_hash: string | null;
+          capability: ProviderCapability | null;
+          content_changed_at: string | null;
+          addendum_refresh_needed: boolean;
+          duplicate_of_id: string | null;
+          source_health: Record<string, unknown> | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
@@ -384,6 +396,11 @@ export type Database = {
           dismissed_at?: string | null;
           status?: PublicSourceStatus;
           content_hash?: string | null;
+          capability?: ProviderCapability | null;
+          content_changed_at?: string | null;
+          addendum_refresh_needed?: boolean;
+          duplicate_of_id?: string | null;
+          source_health?: Record<string, unknown> | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -411,6 +428,11 @@ export type Database = {
           dismissed_at?: string | null;
           status?: PublicSourceStatus;
           content_hash?: string | null;
+          capability?: ProviderCapability | null;
+          content_changed_at?: string | null;
+          addendum_refresh_needed?: boolean;
+          duplicate_of_id?: string | null;
+          source_health?: Record<string, unknown> | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -481,6 +503,7 @@ export type Database = {
           schedule_cron: string | null;
           last_run_at: string | null;
           last_error: string | null;
+          source_health: Record<string, unknown> | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
@@ -494,6 +517,7 @@ export type Database = {
           schedule_cron?: string | null;
           last_run_at?: string | null;
           last_error?: string | null;
+          source_health?: Record<string, unknown> | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -507,6 +531,7 @@ export type Database = {
           schedule_cron?: string | null;
           last_run_at?: string | null;
           last_error?: string | null;
+          source_health?: Record<string, unknown> | null;
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;

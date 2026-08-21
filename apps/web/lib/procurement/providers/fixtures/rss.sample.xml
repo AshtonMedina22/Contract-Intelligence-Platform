@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>SAMPLE FIXTURE — Procurement RSS</title>
+    <link>https://fixture.invalid/rss</link>
+    <description>Sample data only. Not a live agency feed.</description>
+    <item>
+      <title>SAMPLE FIXTURE — ISD Security Services RFP</title>
+      <link>https://fixture.invalid/rss/FIXTURE-RSS-001</link>
+      <guid>FIXTURE-RSS-001</guid>
+      <pubDate>Mon, 04 Aug 2026 12:00:00 GMT</pubDate>
+      <description>Buyer: SAMPLE ISD (FIXTURE). Solicitation: FIXTURE-ISD-24-009. Due: 2026-09-20. Place: Collin County, TX.</description>
+    </item>
+    <item>
+      <title>SAMPLE FIXTURE — Municipal Patrol RFQ</title>
+      <link>https://fixture.invalid/rss/FIXTURE-RSS-002</link>
+      <guid>FIXTURE-RSS-002</guid>
+      <pubDate>Wed, 13 Aug 2026 15:30:00 GMT</pubDate>
+      <description>Buyer: SAMPLE CITY (FIXTURE). Solicitation: FIXTURE-CITY-RFQ-88. Due: 2026-09-10.</description>
+    </item>
+  </channel>
+</rss>

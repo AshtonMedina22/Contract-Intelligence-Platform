@@ -40,7 +40,7 @@ async function WatchlistContent({
   const query = supabase
     .from("public_sources")
     .select(
-      "id, provider, external_id, title, source_url, buyer_name, solicitation_number, procurement_type, naics, psc, set_aside, geography, posted_on, due_on, estimated_value, watchlisted_at, dismissed_at, status",
+      "id, provider, external_id, title, source_url, buyer_name, solicitation_number, procurement_type, naics, psc, set_aside, geography, posted_on, due_on, estimated_value, watchlisted_at, dismissed_at, status, addendum_refresh_needed, content_changed_at, duplicate_of_id, capability",
     )
     .order("due_on", { ascending: true, nullsFirst: false })
     .limit(200);
@@ -137,12 +137,39 @@ async function WatchlistContent({
                           {row.solicitation_number ?? row.external_id}
                           {row.procurement_type ? ` · ${row.procurement_type}` : ""}
                         </p>
+                        {row.addendum_refresh_needed ? (
+                          <p className="mt-1 text-xs font-medium text-amber-800">
+                            Listing changed — ingest addendum in Data Ops (F11). Does not auto-apply.
+                            {row.content_changed_at
+                              ? ` Detected ${row.content_changed_at.slice(0, 10)}.`
+                              : ""}
+                          </p>
+                        ) : null}
+                        {row.duplicate_of_id ? (
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Soft duplicate of another source row (same solicitation # + buyer).
+                          </p>
+                        ) : null}
                       </td>
                       <td className="px-2 py-1.5 text-muted-foreground">{row.buyer_name ?? "—"}</td>
                       <td className="px-2 py-1.5 text-xs">
                         <Badge variant={row.provider === "fixture" ? "outline" : "secondary"}>
                           {row.provider === "fixture" ? "sample" : row.provider}
                         </Badge>
+                        {row.capability ? (
+                          <Badge className="ml-1 font-normal" variant="outline">
+                            {row.capability === "AUTOMATED"
+                              ? "Automated"
+                              : row.capability === "MANUAL_IMPORT"
+                                ? "Manual"
+                                : "Link only"}
+                          </Badge>
+                        ) : null}
+                        {row.addendum_refresh_needed ? (
+                          <Badge className="ml-1 font-normal" variant="outline">
+                            Addendum cue
+                          </Badge>
+                        ) : null}
                       </td>
                       <td className="px-2 py-1.5">
                         <PublicSourceStatusBadge

@@ -1,0 +1,29 @@
+{
+  "_disclaimer": "SAMPLE DATA ONLY. FIXTURE-JSON-* ids are not live feed rows. Set PROCUREMENT_JSON_FEED_URL for live mode.",
+  "items": [
+    {
+      "id": "FIXTURE-JSON-001",
+      "title": "SAMPLE FIXTURE — State Agency Unarmed Guard Solicitation",
+      "url": "https://fixture.invalid/json/FIXTURE-JSON-001",
+      "buyer": "SAMPLE STATE AGENCY (FIXTURE)",
+      "solicitationNumber": "FIXTURE-STATE-24-551",
+      "type": "Solicitation",
+      "postedOn": "2026-08-05",
+      "dueOn": "2026-09-22",
+      "naics": "561612",
+      "geography": "Austin, TX"
+    },
+    {
+      "id": "FIXTURE-JSON-002",
+      "title": "SAMPLE FIXTURE — Local Transit Security Support",
+      "url": "https://fixture.invalid/json/FIXTURE-JSON-002",
+      "buyer": "SAMPLE TRANSIT (FIXTURE)",
+      "solicitationNumber": "FIXTURE-TRANSIT-24-012",
+      "type": "RFP",
+      "postedOn": "2026-08-12",
+      "dueOn": "2026-09-30",
+      "naics": "561612",
+      "geography": "Houston, TX"
+    }
+  ]
+}

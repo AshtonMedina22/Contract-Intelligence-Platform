@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/shell";
 import { PursuitsNav } from "@/components/section-tabs";
 import { DiscoverTable, type DiscoverRowState } from "@/components/procurement/discover-table";
 import { ManualPublicEntryForm } from "@/components/procurement/manual-public-entry-form";
+import { TexasEsbdEntryForm } from "@/components/procurement/texas-esbd-entry-form";
 import { ProviderModeBanner } from "@/components/procurement/provider-mode-banner";
 import { SearchProfilesPanel } from "@/components/procurement/search-profiles-panel";
 import { searchPublicOpportunities } from "@/lib/procurement/providers";
@@ -148,6 +149,7 @@ async function DiscoverContent({ searchParams }: { searchParams: Promise<SearchP
         />
         <FilterBar params={params} />
         <ProviderModeBanner searches={searches} />
+        <TexasEsbdEntryForm />
         <ManualPublicEntryForm />
         {user ? <SearchProfilesPanel profiles={profiles} /> : null}
         <DiscoverTable notices={visible} states={states} />

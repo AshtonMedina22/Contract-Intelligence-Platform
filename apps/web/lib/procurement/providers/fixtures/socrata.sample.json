@@ -1,0 +1,29 @@
+{
+  "_disclaimer": "SAMPLE DATA ONLY. FIXTURE-SOCRATA-* ids are not live SODA rows. Set SOCRATA_DOMAIN + SOCRATA_DATASET_ID for live mode.",
+  "rows": [
+    {
+      "id": "FIXTURE-SOCRATA-001",
+      "title": "SAMPLE FIXTURE — City Guard Services RFP",
+      "solicitation_number": "FIXTURE-CITY-24-101",
+      "agency": "SAMPLE CITY (FIXTURE) Purchasing",
+      "type": "RFP",
+      "posted_date": "2026-08-01",
+      "due_date": "2026-09-15",
+      "naics": "561612",
+      "geography": "Dallas, TX",
+      "url": "https://fixture.invalid/socrata/FIXTURE-SOCRATA-001"
+    },
+    {
+      "id": "FIXTURE-SOCRATA-002",
+      "title": "SAMPLE FIXTURE — County Armed Security IFB",
+      "solicitation_number": "FIXTURE-COUNTY-24-044",
+      "agency": "SAMPLE COUNTY (FIXTURE)",
+      "type": "IFB",
+      "posted_date": "2026-08-10",
+      "due_date": "2026-09-01",
+      "naics": "561612",
+      "geography": "Tarrant County, TX",
+      "url": "https://fixture.invalid/socrata/FIXTURE-SOCRATA-002"
+    }
+  ]
+}

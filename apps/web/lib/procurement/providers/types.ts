@@ -52,10 +52,25 @@ export type PublicOpportunityQuery = {
 
 export type PublicProviderMode = "live" | "fixture";
 
+/**
+ * How an adapter may legally retrieve notices.
+ * - AUTOMATED: public API / allowlisted feed; eligible for cron sync when mode=live
+ * - MANUAL_IMPORT: operator paste / file / URL normalize only — never scraped by sync
+ * - LINK_ONLY: portal bookmark + metadata; operator opens the portal themselves
+ */
+export type ProviderCapability = "AUTOMATED" | "MANUAL_IMPORT" | "LINK_ONLY";
+
+export const PROVIDER_CAPABILITIES: readonly ProviderCapability[] = [
+  "AUTOMATED",
+  "MANUAL_IMPORT",
+  "LINK_ONLY",
+] as const;
+
 export type PublicProviderSearchResult = {
   provider: PublicSourceProvider;
   /** `fixture` means sample data — the results are not live public notices. */
   mode: PublicProviderMode;
+  capability: ProviderCapability;
   /** Operator-facing explanation of what this adapter is currently doing. */
   notice: string;
   results: NormalizedPublicOpportunity[];
@@ -67,14 +82,19 @@ export type PublicProviderSearchResult = {
 export type PublicProviderHealth = {
   ok: boolean;
   mode: PublicProviderMode;
+  capability: ProviderCapability;
   /** Honest operator-facing status — never claims live health without a key/ping. */
   message: string;
+  /** Optional HTTP status from the last ping when a live endpoint was contacted. */
+  httpStatus?: number | null;
 };
 
 export type PublicProcurementProvider = {
   id: PublicSourceProvider;
   label: string;
   mode: PublicProviderMode;
+  /** Honest retrieval capability — sync only persists AUTOMATED + live. */
+  capability: ProviderCapability;
   /** Operator-facing honesty banner for this adapter's current mode. */
   notice: string;
   search(query: PublicOpportunityQuery): Promise<PublicProviderSearchResult>;
@@ -224,6 +244,21 @@ export function publicSourceDedupeKey(
   externalId: string,
 ): string {
   return `${provider}:${externalId}`;
+}
+
+/**
+ * Soft cross-source match key when solicitation # + buyer are both present and
+ * confident. Returns null when either field is missing — never invents merges.
+ * Used only as a UI / duplicate_of_id hint; hard uniqueness remains (provider, external_id).
+ */
+export function softCrossSourceKey(notice: {
+  solicitation_number: string | null;
+  buyer_name: string | null;
+}): string | null {
+  const sol = (notice.solicitation_number ?? "").trim().toLowerCase().replace(/\s+/g, "");
+  const buyer = (notice.buyer_name ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+  if (!sol || !buyer) return null;
+  return `${sol}::${buyer}`;
 }
 
 /**

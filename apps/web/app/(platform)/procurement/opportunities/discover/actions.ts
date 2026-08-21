@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   contentHashForNotice,
   normalizeManualEntry,
+  normalizeTexasEsbdEntry,
   statusForOperatorAction,
   type NormalizedPublicOpportunity,
   type PublicSourceStatus,
@@ -38,6 +39,11 @@ const PROVIDERS: PublicSourceProvider[] = [
   "usa_spending",
   "state",
   "local",
+  "texas_esbd",
+  "socrata",
+  "rss",
+  "json_feed",
+  "html_listing",
 ];
 
 /**
@@ -135,6 +141,19 @@ async function upsertPublicSource(
         retrieved_at: new Date().toISOString(),
         content_hash: contentHashForNotice(notice),
         status: patch.status,
+        capability:
+          notice.provider === "texas_esbd" || notice.provider === "html_listing"
+            ? "MANUAL_IMPORT"
+            : notice.provider === "manual" ||
+                notice.provider === "state" ||
+                notice.provider === "local"
+              ? "MANUAL_IMPORT"
+              : notice.provider === "socrata" ||
+                  notice.provider === "rss" ||
+                  notice.provider === "json_feed" ||
+                  notice.provider === "sam_gov"
+                ? "AUTOMATED"
+                : null,
         created_by: userId,
         updated_at: new Date().toISOString(),
         watchlisted_at: patch.watchlisted_at,
@@ -368,6 +387,9 @@ export async function startPursuitAndOpen(formData: FormData) {
 export async function submitManualPublicEntry(formData: FormData) {
   const { supabase, organizationId, userId } = await requireUserOrg();
   const intent = String(formData.get("intent") ?? "watch").trim();
+  const kindRaw = String(formData.get("kind") ?? "manual").trim();
+  const kind =
+    kindRaw === "local" || kindRaw === "state" || kindRaw === "manual" ? kindRaw : "manual";
   const notice = normalizeManualEntry({
     title: String(formData.get("title") ?? ""),
     source_url: String(formData.get("source_url") ?? "") || null,
@@ -376,6 +398,7 @@ export async function submitManualPublicEntry(formData: FormData) {
     due_on: String(formData.get("due_on") ?? "") || null,
     geography: String(formData.get("geography") ?? "") || null,
     naics: String(formData.get("naics") ?? "") || null,
+    kind,
   });
   if (!notice) throw new Error("Title is required for a manual public notice.");
 
@@ -388,6 +411,55 @@ export async function submitManualPublicEntry(formData: FormData) {
     payload.set("buyer_name", notice.buyer_name ?? "");
     payload.set("solicitation_number", notice.solicitation_number ?? "");
     payload.set("procurement_type", "");
+    payload.set("posted_on", "");
+    payload.set("due_on", notice.due_on ?? "");
+    payload.set("naics", notice.naics ?? "");
+    payload.set("psc", "");
+    payload.set("set_aside", "");
+    payload.set("geography", notice.geography ?? "");
+    payload.set("estimated_value", "");
+    payload.set("raw_payload", JSON.stringify(notice.raw_payload));
+    const opportunityId = await startPursuitFromPublicSource(payload);
+    redirect(`/procurement/opportunities/${opportunityId}`);
+  }
+
+  await upsertPublicSource(supabase, organizationId, userId, notice, {
+    watchlisted_at: new Date().toISOString(),
+    dismissed_at: null,
+    status: statusForOperatorAction("watch"),
+  });
+  revalidatePath(DISCOVER_PATH);
+  revalidatePath(WATCHLIST_PATH);
+  redirect(WATCHLIST_PATH);
+}
+
+/**
+ * Texas ESBD MANUAL_IMPORT paste. LINK_ONLY portal is separate — this persists only what
+ * the operator pasted. Never scrapes ESBD; never auto-ingests solicitation docs.
+ */
+export async function submitTexasEsbdEntry(formData: FormData) {
+  const { supabase, organizationId, userId } = await requireUserOrg();
+  const intent = String(formData.get("intent") ?? "watch").trim();
+  const notice = normalizeTexasEsbdEntry({
+    title: String(formData.get("title") ?? ""),
+    source_url: String(formData.get("source_url") ?? "") || null,
+    buyer_name: String(formData.get("buyer_name") ?? "") || null,
+    solicitation_number: String(formData.get("solicitation_number") ?? "") || null,
+    due_on: String(formData.get("due_on") ?? "") || null,
+    geography: String(formData.get("geography") ?? "") || null,
+    naics: String(formData.get("naics") ?? "") || null,
+  });
+  if (!notice) throw new Error("Title is required for a Texas ESBD notice.");
+
+  if (intent === "start") {
+    const payload = new FormData();
+    payload.set("provider", notice.provider);
+    payload.set("external_id", notice.external_id);
+    payload.set("title", notice.title);
+    payload.set("source_url", notice.source_url ?? "");
+    payload.set("buyer_name", notice.buyer_name ?? "");
+    payload.set("solicitation_number", notice.solicitation_number ?? "");
+    payload.set("procurement_type", notice.procurement_type ?? "");
     payload.set("posted_on", "");
     payload.set("due_on", notice.due_on ?? "");
     payload.set("naics", notice.naics ?? "");

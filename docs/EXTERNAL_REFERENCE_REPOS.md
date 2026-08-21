@@ -252,9 +252,25 @@ PublicProcurementProvider
 └── FutureProvider
 ```
 
-**Local landing zones (built in P4, 2026-08-21):** `apps/web/lib/procurement/providers/` — `types.ts` (`PublicProcurementProvider`, `NormalizedPublicOpportunity`), `sam-gov.ts`, `manual.ts`, `index.ts`; `public_sources` table; Pursuits → Discover / Watchlist. `apps/web/lib/ask/research/provider.ts` remains the separate Ask/Tavily/Brave research rail. Do not make TenderRadar’s DB our canonical DB.
+**Local landing zones (built in P4, 2026-08-21; extended F2 2026-08-21; extended F16 2026-08-21):** `apps/web/lib/procurement/providers/` — `types.ts` (`PublicProcurementProvider`, `ProviderCapability`, `NormalizedPublicOpportunity`), `sam-gov.ts`, `manual.ts`, `texas-esbd.ts`, `socrata.ts`, `rss.ts`, `json-feed.ts`, `html-listing.ts`, `index.ts`; `public_sources` table; Pursuits → Discover / Watchlist. Provider registry: [reference-repos/F16_PROVIDER_REGISTRY.md](reference-repos/F16_PROVIDER_REGISTRY.md). `apps/web/lib/ask/research/provider.ts` remains the separate Ask/Tavily/Brave research rail. Do not make TenderRadar’s DB our canonical DB.
 
 **Do not:** adopt TenderRadar’s database as our canonical database.
+
+---
+
+### 6b. openrfps (GPL — refuse copy)
+
+| Field | Value |
+| --- | --- |
+| **URL** | https://github.com/openprocurement/openrfps |
+| **Reference category** | State/local RFP scrape patterns (TX-oriented forks exist) |
+| **Usage mode** | REFERENCE ONLY |
+| **Analysis status** | INSPECTED (F16, 2026-08-21) — license gate only; see [reference-repos/openrfps.md](reference-repos/openrfps.md) |
+| **License / copy caution** | **GPL** — **do not copy source**. ESBD stays LINK_ONLY / MANUAL_IMPORT in our adapters. |
+
+**Why it matters:** Confirms that “someone scrapes ESBD” is not a license to do so here.
+
+**Do not:** copy scrapers, HTML parsers, or agency crawl code. Our `texas-esbd.ts` is original LINK_ONLY + paste normalize.
 
 ---
 
