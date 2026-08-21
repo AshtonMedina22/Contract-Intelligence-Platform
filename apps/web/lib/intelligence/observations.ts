@@ -21,6 +21,10 @@ export const NO_MARKET_SHARE_NOTE = "Counts are observations in this corpus, not
 export const FEDERAL_AWARD_RESEARCH_NOTE =
   "Federal award observations may appear from the USAspending.gov public API or research_facts with provider=usa_spending (AI_EXTRACTED until a human verifies). They are not market share and are never mixed into L&P proposed / buyer awarded / current pricing_lines.";
 
+/** F4 public research pipeline — durable facts only after human verify. */
+export const PUBLIC_RESEARCH_PIPELINE_NOTE =
+  "Public research runs store AI_EXTRACTED facts for review. Live Ask public search is cite-only; only HUMAN_VERIFIED research_facts are durable. Public ≠ L&P truth until verified.";
+
 export const OBSERVED_LABEL = "Observed";
 export const INFERENCE_LABEL = "Inference";
 

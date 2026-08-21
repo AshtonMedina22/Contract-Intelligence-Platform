@@ -18,6 +18,7 @@
     "test:f1-ingestion": "node --env-file=apps/web/.env.local scripts/f1-production-ingestion-acceptance.mjs",
     "test:f2-opportunity-engine": "node --env-file=apps/web/.env.local scripts/f2-opportunity-engine-acceptance.mjs",
     "test:f3-federal-awards": "node --env-file=apps/web/.env.local scripts/f3-federal-awards-acceptance.mjs",
+    "test:f4-research-pipeline": "node --env-file=apps/web/.env.local scripts/f4-research-pipeline-acceptance.mjs",
     "test:processor": "python -m pytest -q --rootdir=services/processor services/processor/tests",
     "test:verify2a": "node scripts/verify2a-corpus-audit.mjs",
     "test:verify2b": "node scripts/verify2b-pilot-acceptance.mjs",

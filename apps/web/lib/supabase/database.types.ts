@@ -42,7 +42,26 @@ export type PublicSourceProvider =
   | "manual"
   | "usa_spending"
   | "state"
-  | "local";
+  | "local"
+  | "tavily"
+  | "brave"
+  | "web";
+
+export type ResearchType =
+  | "BUYER"
+  | "COMPETITOR"
+  | "MARKET"
+  | "PURSUIT"
+  | "RECOMPETE"
+  | "PRICING_CONTEXT";
+
+export type ResearchRunStatus =
+  | "QUEUED"
+  | "RESEARCHING"
+  | "REVIEW_READY"
+  | "VERIFIED"
+  | "REJECTED"
+  | "FAILED";
 
 export type PublicSourceStatus =
   | "NEW"
@@ -1000,6 +1019,7 @@ export type Database = {
           id: string;
           organization_id: string;
           extracted_fact_id: string | null;
+          research_fact_id: string | null;
           actor_id: string | null;
           action: string;
           from_status: FactVerificationStatus | null;
@@ -1010,6 +1030,7 @@ export type Database = {
           id?: string;
           organization_id: string;
           extracted_fact_id?: string | null;
+          research_fact_id?: string | null;
           actor_id?: string | null;
           action: string;
           from_status?: FactVerificationStatus | null;
@@ -1021,6 +1042,7 @@ export type Database = {
           id?: string;
           organization_id?: string;
           extracted_fact_id?: string | null;
+          research_fact_id?: string | null;
           actor_id?: string | null;
           action?: string;
           from_status?: FactVerificationStatus | null;
@@ -2361,6 +2383,117 @@ export type Database = {
         };
         Relationships: [];
       };
+      research_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          research_type: ResearchType;
+          status: ResearchRunStatus;
+          query: string;
+          purpose: string | null;
+          plan: Record<string, unknown>;
+          client_id: string | null;
+          competitor_id: string | null;
+          opportunity_id: string | null;
+          contract_id: string | null;
+          created_by: string | null;
+          created_at: string;
+          completed_at: string | null;
+          last_error: string | null;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          research_type: ResearchType;
+          status?: ResearchRunStatus;
+          query: string;
+          purpose?: string | null;
+          plan?: Record<string, unknown>;
+          client_id?: string | null;
+          competitor_id?: string | null;
+          opportunity_id?: string | null;
+          contract_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          completed_at?: string | null;
+          last_error?: string | null;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          research_type?: ResearchType;
+          status?: ResearchRunStatus;
+          query?: string;
+          purpose?: string | null;
+          plan?: Record<string, unknown>;
+          client_id?: string | null;
+          competitor_id?: string | null;
+          opportunity_id?: string | null;
+          contract_id?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          completed_at?: string | null;
+          last_error?: string | null;
+        };
+        Relationships: [];
+      };
+      research_sources: {
+        Row: {
+          id: string;
+          organization_id: string;
+          research_run_id: string;
+          url: string;
+          url_hash: string;
+          title: string | null;
+          publisher: string | null;
+          domain: string | null;
+          retrieved_at: string;
+          published_on: string | null;
+          source_type: string;
+          excerpt: string | null;
+          content_hash: string | null;
+          provider: string;
+          external_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          organization_id: string;
+          research_run_id: string;
+          url: string;
+          url_hash: string;
+          title?: string | null;
+          publisher?: string | null;
+          domain?: string | null;
+          retrieved_at?: string;
+          published_on?: string | null;
+          source_type?: string;
+          excerpt?: string | null;
+          content_hash?: string | null;
+          provider: string;
+          external_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string;
+          research_run_id?: string;
+          url?: string;
+          url_hash?: string;
+          title?: string | null;
+          publisher?: string | null;
+          domain?: string | null;
+          retrieved_at?: string;
+          published_on?: string | null;
+          source_type?: string;
+          excerpt?: string | null;
+          content_hash?: string | null;
+          provider?: string;
+          external_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       research_facts: {
         Row: {
           id: string;
@@ -2369,9 +2502,13 @@ export type Database = {
           competitor_id: string | null;
           opportunity_id: string | null;
           source_document_id: string | null;
+          research_run_id: string | null;
+          research_source_id: string | null;
           source_url: string;
           title: string | null;
+          claim: string | null;
           excerpt: string | null;
+          confidence: number | null;
           published_on: string | null;
           retrieved_at: string;
           verification_status: FactVerificationStatus;
@@ -2388,9 +2525,13 @@ export type Database = {
           competitor_id?: string | null;
           opportunity_id?: string | null;
           source_document_id?: string | null;
+          research_run_id?: string | null;
+          research_source_id?: string | null;
           source_url: string;
           title?: string | null;
+          claim?: string | null;
           excerpt?: string | null;
+          confidence?: number | null;
           published_on?: string | null;
           retrieved_at?: string;
           verification_status?: FactVerificationStatus;
@@ -2407,9 +2548,13 @@ export type Database = {
           competitor_id?: string | null;
           opportunity_id?: string | null;
           source_document_id?: string | null;
+          research_run_id?: string | null;
+          research_source_id?: string | null;
           source_url?: string;
           title?: string | null;
+          claim?: string | null;
           excerpt?: string | null;
+          confidence?: number | null;
           published_on?: string | null;
           retrieved_at?: string;
           verification_status?: FactVerificationStatus;
@@ -2681,6 +2826,8 @@ export type Database = {
       compliance_kind: ComplianceKind;
       opportunity_outcome: OpportunityOutcome;
       reuse_status: ReuseStatus;
+      research_type: ResearchType;
+      research_run_status: ResearchRunStatus;
     };
     CompositeTypes: Record<string, never>;
   };

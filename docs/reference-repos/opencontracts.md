@@ -28,6 +28,12 @@ Data Ops → Verification: `source_evidence`, `extracted_facts`, `verification_e
 
 **Conceptual patterns only:** token/page coords → selected evidence → fact → human verify/reject; never auto-promote AI extraction.
 
+## F4 follow-up (2026-08-21)
+
+Same human-verify ground-truth rule applied to public `research_facts`: F4 acquisition writes
+`AI_EXTRACTED` only; Verify/Reject require an actor and write `verification_events.research_fact_id`.
+Never auto-promote public research to `HUMAN_VERIFIED`.
+
 # What we are explicitly NOT adopting
 
 - Whole OpenContracts product (corpuses, MCP, forum, agents stack).

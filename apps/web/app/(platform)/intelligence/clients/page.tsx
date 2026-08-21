@@ -135,6 +135,10 @@ async function ClientsContent({ searchParams }: { searchParams: Promise<BuyerSea
             <Link className="underline" href="/procurement/clients">
               Buyer registry
             </Link>
+            {" · "}
+            <Link className="underline" href="/intelligence/research">
+              Research runs
+            </Link>
           </>
         }
       />

@@ -290,7 +290,7 @@ export function createAskTools(ctx: AskToolContext) {
 
     search_public_research: tool({
       description:
-        "PUBLIC rail (Morphic-style): web/procurement search. Results are OFFICIAL_PUBLIC or EXTERNAL_RESEARCH — never HUMAN_VERIFIED and never written to the verified corpus. Requires TAVILY_API_KEY or BRAVE_SEARCH_API_KEY.",
+        "PUBLIC rail (cite-only): live web/procurement search. Results are OFFICIAL_PUBLIC or EXTERNAL_RESEARCH — never HUMAN_VERIFIED and never written to the verified corpus. Prefer search_verified_research_facts when durable HUMAN_VERIFIED research_facts exist. Requires TAVILY_API_KEY or BRAVE_SEARCH_API_KEY.",
       inputSchema: z.object({
         query: z.string().min(1),
         limit: z.number().int().min(1).max(10).optional(),
@@ -313,6 +313,60 @@ export function createAskTools(ctx: AskToolContext) {
         const evidence = hits.map((h) => toPublicEvidence(h, query));
         pushEvidence(ctx, evidence);
         return { ok: true, configured: true, provider: provider.id, count: evidence.length, evidence };
+      },
+    }),
+
+    search_verified_research_facts: tool({
+      description:
+        "DURABLE research rail: search org research_facts with verification_status=HUMAN_VERIFIED only. Prefer this over live search_public_research when verified research exists. Never returns AI_EXTRACTED as verified. Public ≠ L&P truth until verified.",
+      inputSchema: z.object({
+        query: z.string().min(1),
+        limit: z.number().int().min(1).max(30).optional(),
+      }),
+      execute: async ({ query, limit }) => {
+        const supabase = await createClient();
+        const q = query.trim();
+        const { data, error } = await supabase
+          .from("research_facts")
+          .select(
+            "id, title, claim, excerpt, source_url, verification_status, published_on, retrieved_at, provider",
+          )
+          .eq("verification_status", "HUMAN_VERIFIED")
+          .or(
+            `title.ilike.%${q}%,claim.ilike.%${q}%,excerpt.ilike.%${q}%,source_url.ilike.%${q}%`,
+          )
+          .order("retrieved_at", { ascending: false })
+          .limit(limit ?? 20);
+
+        if (error) {
+          return { ok: false, error: error.message, count: 0, evidence: [] as NormalizedEvidence[] };
+        }
+
+        const evidence: NormalizedEvidence[] = (data ?? []).map((row) => ({
+          id: makeEvidenceId("research_fact", row.id),
+          rail: "internal" as const,
+          evidence_class: "INTERNAL_VERIFIED" as const,
+          source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+          title: row.claim || row.title || row.source_url,
+          url: row.source_url,
+          internal_ref: `/intelligence/research`,
+          document_id: null,
+          chunk_id: null,
+          page: null,
+          excerpt: row.excerpt || row.claim || row.title || "",
+          published_date: row.published_on,
+          retrieved_at: row.retrieved_at,
+          verification_status: "HUMAN_VERIFIED",
+          entity: null,
+          topic: row.provider ?? "research_fact",
+        }));
+        pushEvidence(ctx, evidence);
+        return {
+          ok: true,
+          count: evidence.length,
+          note: "HUMAN_VERIFIED research_facts only — AI_EXTRACTED excluded by design.",
+          evidence,
+        };
       },
     }),
 

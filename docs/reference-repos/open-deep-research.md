@@ -53,6 +53,13 @@ platform's own voice.
 **Never invent a missing detail**, which we implement structurally rather than as a prompt
 instruction: absent rows produce a `withheld` entry naming what is unknown.
 
+## F4 follow-up (2026-08-21)
+
+F4 Research Pipeline re-used the same citation / non-invention posture for public research briefs
+(`generateResearchBrief` separates HUMAN_VERIFIED vs AI_EXTRACTED and discloses unverified).
+**LangGraph and the agent loop remain declined** — plan templates are deterministic; execute is a
+bounded for-loop over subquestions; no supervisor graph.
+
 # What we are explicitly NOT adopting
 
 - **LangGraph, and the agent loop itself.** Confirmed against the architecture lock — no LangGraph

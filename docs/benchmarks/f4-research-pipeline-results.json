@@ -1,0 +1,96 @@
+{
+  "verdict": "PASS",
+  "passed": 22,
+  "total": 22,
+  "results": [
+    {
+      "name": "isResearchType recognizes F4 types",
+      "ok": true
+    },
+    {
+      "name": "buildResearchPlan emits deterministic subquestions for BUYER",
+      "ok": true
+    },
+    {
+      "name": "buildResearchPlan requires query",
+      "ok": true
+    },
+    {
+      "name": "buildAiExtractedFactRow forces AI_EXTRACTED and maps claim↔title",
+      "ok": true
+    },
+    {
+      "name": "assertUnverifiedResearchFact refuses HUMAN_VERIFIED",
+      "ok": true
+    },
+    {
+      "name": "refuseFixtureProvider blocks FIXTURE-* and fixture provider",
+      "ok": true
+    },
+    {
+      "name": "buildAiExtractedFactRow refuses fixture providers",
+      "ok": true
+    },
+    {
+      "name": "deriveRunStatusFromFacts transitions sensibly",
+      "ok": true
+    },
+    {
+      "name": "hashUrl is stable",
+      "ok": true
+    },
+    {
+      "name": "recordSources dedupes by run+url and retains history on refresh",
+      "ok": true
+    },
+    {
+      "name": "insertAiExtractedFacts only AI_EXTRACTED",
+      "ok": true
+    },
+    {
+      "name": "createResearchRun QUEUED→RESEARCHING then complete REVIEW_READY",
+      "ok": true
+    },
+    {
+      "name": "ambiguous entity match leaves null (no invent)",
+      "ok": true
+    },
+    {
+      "name": "executeResearchRun soft-links exact only; ambiguous stays null",
+      "ok": true
+    },
+    {
+      "name": "executeResearchRun exact entity link when unambiguous",
+      "ok": true
+    },
+    {
+      "name": "generateResearchBrief separates verified vs unverified and discloses",
+      "ok": true
+    },
+    {
+      "name": "migration preserves research_facts_verified_requires_actor",
+      "ok": true
+    },
+    {
+      "name": "no LangGraph import / no second chatbot in F4 research lib",
+      "ok": true
+    },
+    {
+      "name": "Ask prefers verified research_facts tool; live public remains cite-only",
+      "ok": true
+    },
+    {
+      "name": "reports still gate research_facts on HUMAN_VERIFIED",
+      "ok": true
+    },
+    {
+      "name": "verify actions require actor fields",
+      "ok": true
+    },
+    {
+      "name": "Intelligence Research tab wired",
+      "ok": true
+    }
+  ],
+  "at": "2026-08-21T15:42:01.347Z"
+}

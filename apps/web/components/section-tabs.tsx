@@ -63,6 +63,7 @@ export const INTELLIGENCE_TABS: SectionTab[] = [
   { href: "/intelligence/clients", label: "Buyers" },
   { href: "/intelligence/competitors", label: "Competitors" },
   { href: "/intelligence/market", label: "Market" },
+  { href: "/intelligence/research", label: "Research" },
   { href: "/intelligence/pricing", label: "Pricing" },
   { href: "/intelligence/win-loss", label: "Win/Loss" },
   { href: "/intelligence/content", label: "Content" },

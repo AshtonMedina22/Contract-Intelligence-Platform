@@ -70,3 +70,11 @@ patterns only, so no NOTICE obligation was incurred.
 
 INSPECTED FOR TASK — handoff + scope-disclosure pattern adopted; second surface and provider
 abstraction REJECTED.
+
+## F4 follow-up (2026-08-21)
+
+F4 Public Research Pipeline reaffirmed Morphic's single Ask surface: live `search_public_research`
+remains the **cite-only** public rail. Durable observations live in `research_facts` and are
+reachable from Ask only via `search_verified_research_facts` (**HUMAN_VERIFIED** filter). No second
+chatbot and no Morphic-style provider abstraction were added; Research UI is a review workbench, not
+a chat.
