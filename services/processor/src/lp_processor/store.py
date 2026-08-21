@@ -117,6 +117,16 @@ class Store:
     ) -> int:
         if not drafts:
             return 0
+
+        existing_verified = (
+            self.client.table("extracted_facts")
+            .select("idempotency_key")
+            .eq("extraction_run_id", extraction_run_id)
+            .eq("verification_status", "HUMAN_VERIFIED")
+            .execute()
+        )
+        verified_keys = {row["idempotency_key"] for row in existing_verified.data or []}
+
         rows = [
             {
                 "organization_id": organization_id,
@@ -136,7 +146,12 @@ class Store:
                 "verification_status": "AI_EXTRACTED",
             }
             for draft in drafts
+            if draft.idempotency_key not in verified_keys
         ]
+
+        if not rows:
+            return 0
+
         self.client.table("extracted_facts").upsert(
             rows,
             on_conflict="extraction_run_id,idempotency_key",

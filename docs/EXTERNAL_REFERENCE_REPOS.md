@@ -157,8 +157,8 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/Open-Source-Legal/OpenContracts |
 | **Reference category** | Human verification, source evidence, document ground-truth |
 | **Usage mode** | ADAPT CODE/PATTERN |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | **HIGH PRIORITY REFERENCE.** Inspect current LICENSE before copying. If AGPL/restrictive, stay REFERENCE ONLY unless approved. |
+| **Analysis status** | INSPECTED (P2 Data Ops, 2026-08-20) — see [reference-repos/opencontracts.md](reference-repos/opencontracts.md) |
+| **License / copy caution** | **MIT** on `main` LICENSE (verified 2026-08-20). Older AGPL forks exist — do not copy those. Prefer conceptual PAWLs/verify UX adaptation over wholesale paste. |
 
 **Why it matters:** Strongest public analog for PDF coordinates → selected evidence → annotated ground truth → human review. Compare directly against our verification workbench.
 
@@ -181,8 +181,8 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/docling-project/docling |
 | **Reference category** | Primary parser / normalized document representation |
 | **Usage mode** | USE LIBRARY + ADAPT EXAMPLES |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying examples. Prefer library use behind our `DocumentParser` abstraction. |
+| **Analysis status** | INSPECTED (P2 Data Ops, 2026-08-20) — see [reference-repos/docling.md](reference-repos/docling.md) |
+| **License / copy caution** | **MIT** codebase (verified 2026-08-20). Model packages have separate licenses — clear before install. Prefer library use behind our `DocumentParser` abstraction; **not wired**. |
 
 **Why it matters:** Candidate primary parser for PDF/DOCX layout, tables, reading order, coordinates, OCR fallback, and a normalized document object model. Our architecture must remain **provider-abstracted**.
 
@@ -205,8 +205,8 @@ Local maps below are **where the borrowed pattern would land**, not a claim that
 | **URL** | https://github.com/Unstructured-IO/unstructured |
 | **Reference category** | Alternate document ingestion / partitioning / preprocessing |
 | **Usage mode** | BENCHMARK ONLY + SELECTIVE ADAPTATION |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | Inspect current LICENSE before copying. Benchmark first; do not install as default parser. |
+| **Analysis status** | INSPECTED (P2 Data Ops, 2026-08-20) — see [reference-repos/unstructured.md](reference-repos/unstructured.md) |
+| **License / copy caution** | **Apache-2.0** (verified 2026-08-20). Benchmark first; do not install as default parser. |
 
 **Why it matters:** Alternate partition/chunk/metadata pipeline for parser benchmarking against Docling and our native adapters.
 

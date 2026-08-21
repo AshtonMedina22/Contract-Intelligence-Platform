@@ -1,12 +1,26 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { ingestDriveFile, ingestUploadedFiles, type IntakeActionResult } from "./actions";
 import type { NamedOption, OpportunityOption, OrgOption } from "@/lib/org/intake-context";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const ALLOWED_EXTENSIONS = [".pdf", ".xlsx", ".xls", ".docx"];
+
+type FileStatus = "pending" | "uploading" | "ok" | "duplicate" | "error";
+type FileEntry = {
+  file: File;
+  status: FileStatus;
+  error?: string;
+  documentId?: string;
+};
 
 type Props = {
   organizations: OrgOption[];
@@ -16,26 +30,88 @@ type Props = {
   defaultOpportunityId?: string;
 };
 
-function ResultList({ result }: { result: IntakeActionResult }) {
+function validateFile(file: File): { valid: boolean; error?: string } {
+  if (!file.size) {
+    return { valid: false, error: "Empty file" };
+  }
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return { valid: false, error: `Exceeds ${MAX_FILE_SIZE_MB} MB limit` };
+  }
+  const ext = file.name.toLowerCase().slice(file.name.lastIndexOf("."));
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    return { valid: false, error: `Unsupported extension: ${ext}` };
+  }
+  return { valid: true };
+}
+
+function StatusBadge({ status }: { status: FileStatus }) {
+  const variants: Record<FileStatus, { label: string; className: string }> = {
+    pending: { label: "Pending", className: "bg-muted text-muted-foreground" },
+    uploading: { label: "Uploading", className: "bg-blue-100 text-blue-700" },
+    ok: { label: "OK", className: "bg-green-100 text-green-700" },
+    duplicate: { label: "Duplicate", className: "bg-yellow-100 text-yellow-700" },
+    error: { label: "Error", className: "bg-red-100 text-red-700" },
+  };
+  const v = variants[status];
+  return <Badge variant="outline" className={v.className}>{v.label}</Badge>;
+}
+
+function ResultList({ result, fileEntries }: { result: IntakeActionResult; fileEntries: FileEntry[] }) {
   if (result.error) {
     return <p className="text-sm text-red-600">{result.error}</p>;
   }
-  if (!result.results?.length) return null;
+  if (!result.results?.length && fileEntries.length === 0) return null;
+  
+  const successResults = result.results?.filter(r => !r.duplicate) ?? [];
+  const hasSuccess = successResults.length > 0;
+
   return (
-    <ul className="space-y-1 text-sm">
-      {result.results.map((item) => (
-        <li key={`${item.documentVersionId}-${item.filename}`}>
-          <span className="font-medium">{item.filename}</span>
-          {item.duplicate
-            ? " — identical bytes already in the vault; not reprocessed."
-            : " — registered."}
-          <div className="break-all text-xs text-muted-foreground">
-            sha256 {item.sha256} · {item.storagePath}
-            {item.workflow ? ` · run ${item.workflow.runId}` : ""}
-          </div>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-3">
+      {fileEntries.length > 0 && (
+        <div className="rounded-md border text-sm">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b bg-muted/40">
+                <th className="p-2 text-left font-medium">Filename</th>
+                <th className="p-2 text-left font-medium">Status</th>
+                <th className="p-2 text-left font-medium">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fileEntries.map((entry, idx) => (
+                <tr key={idx} className="border-b last:border-0">
+                  <td className="p-2 font-mono text-xs">{entry.file.name}</td>
+                  <td className="p-2"><StatusBadge status={entry.status} /></td>
+                  <td className="p-2 text-xs text-muted-foreground">
+                    {entry.error ?? (entry.status === "duplicate" ? "Identical bytes in vault" : "")}
+                    {entry.documentId && entry.status === "ok" && (
+                      <Link href={`/ingestion/verification/${entry.documentId}`} className="ml-2 underline">
+                        Verify →
+                      </Link>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {hasSuccess && (
+        <div className="flex flex-wrap gap-2 text-sm">
+          <span className="text-muted-foreground">Quick links:</span>
+          <Link href="/ingestion/processing" className="underline">Processing queue</Link>
+          {successResults.length === 1 && successResults[0].documentId && (
+            <>
+              <span className="text-muted-foreground">·</span>
+              <Link href={`/ingestion/verification/${successResults[0].documentId}`} className="underline">
+                Verification workbench
+              </Link>
+            </>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -50,7 +126,8 @@ export function IntakeForm({
   const [pending, startTransition] = useTransition();
   const [dragActive, setDragActive] = useState(false);
   const [result, setResult] = useState<IntakeActionResult | null>(null);
-  const [fileCount, setFileCount] = useState(0);
+  const [fileEntries, setFileEntries] = useState<FileEntry[]>([]);
+  const [preflightErrors, setPreflightErrors] = useState<string[]>([]);
   const [organizationId, setOrganizationId] = useState(organizations[0]?.id ?? "");
   const [batchLabel, setBatchLabel] = useState("");
   const [packageKey, setPackageKey] = useState("");
@@ -65,6 +142,67 @@ export function IntakeForm({
     formData.set("package_title", packageTitle);
     formData.set("client_id", clientId);
     formData.set("opportunity_id", opportunityId);
+  }
+
+  function handleFilesSelected(files: FileList | null) {
+    if (!files || files.length === 0) {
+      setFileEntries([]);
+      setPreflightErrors([]);
+      return;
+    }
+    const entries: FileEntry[] = [];
+    const errors: string[] = [];
+    for (const file of Array.from(files)) {
+      const validation = validateFile(file);
+      if (validation.valid) {
+        entries.push({ file, status: "pending" });
+      } else {
+        errors.push(`${file.name}: ${validation.error}`);
+      }
+    }
+    setFileEntries(entries);
+    setPreflightErrors(errors);
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (fileEntries.length === 0) {
+      setResult({ error: "Choose at least one valid file." });
+      return;
+    }
+
+    setFileEntries((prev) => prev.map((e) => ({ ...e, status: "uploading" as FileStatus })));
+
+    const formData = new FormData();
+    for (const entry of fileEntries) {
+      formData.append("files", entry.file);
+    }
+    appendSharedFields(formData);
+
+    startTransition(async () => {
+      const res = await ingestUploadedFiles(formData);
+      setResult(res);
+
+      if (res.results) {
+        setFileEntries((prev) =>
+          prev.map((entry) => {
+            const match = res.results?.find((r) => r.filename === entry.file.name);
+            if (match) {
+              return {
+                ...entry,
+                status: match.duplicate ? "duplicate" : "ok",
+                documentId: match.documentId,
+              };
+            }
+            return { ...entry, status: "error", error: "Not processed" };
+          })
+        );
+      } else if (res.error) {
+        setFileEntries((prev) =>
+          prev.map((e) => ({ ...e, status: "error", error: res.error }))
+        );
+      }
+    });
   }
 
   return (
@@ -156,17 +294,7 @@ export function IntakeForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              className="space-y-4"
-              onSubmit={(event) => {
-                event.preventDefault();
-                const formData = new FormData(event.currentTarget);
-                appendSharedFields(formData);
-                startTransition(async () => {
-                  setResult(await ingestUploadedFiles(formData));
-                });
-              }}
-            >
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div
                 className={`rounded-md border border-dashed p-6 text-sm ${
                   dragActive ? "border-primary bg-muted/40" : "border-input"
@@ -182,7 +310,7 @@ export function IntakeForm({
                   const input = fileInputRef.current;
                   if (!input) return;
                   input.files = event.dataTransfer.files;
-                  setFileCount(event.dataTransfer.files.length);
+                  handleFilesSelected(event.dataTransfer.files);
                 }}
               >
                 <Label htmlFor="files">Drop PDF/XLSX files here or browse</Label>
@@ -194,17 +322,28 @@ export function IntakeForm({
                   multiple
                   accept=".pdf,.xlsx,.xls,.docx,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                   className="mt-2"
-                  onChange={(event) => setFileCount(event.currentTarget.files?.length ?? 0)}
+                  onChange={(event) => handleFilesSelected(event.currentTarget.files)}
                 />
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {fileCount > 0
-                    ? `${fileCount} file(s) selected.`
-                    : "Max 50 MB per file. Originals are never overwritten."}
+                  {fileEntries.length > 0
+                    ? `${fileEntries.length} valid file(s) selected.`
+                    : `Max ${MAX_FILE_SIZE_MB} MB per file. PDF, XLSX, XLS, DOCX only.`}
                 </p>
               </div>
 
-              <Button type="submit" disabled={pending || organizations.length === 0}>
-                {pending ? "Ingesting…" : "Ingest files"}
+              {preflightErrors.length > 0 && (
+                <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  <p className="font-medium">Preflight errors (files skipped):</p>
+                  <ul className="mt-1 list-inside list-disc">
+                    {preflightErrors.map((err, idx) => (
+                      <li key={idx}>{err}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <Button type="submit" disabled={pending || organizations.length === 0 || fileEntries.length === 0}>
+                {pending ? "Ingesting…" : `Ingest ${fileEntries.length || ""} file${fileEntries.length !== 1 ? "s" : ""}`}
               </Button>
             </form>
           </CardContent>
@@ -249,7 +388,7 @@ export function IntakeForm({
         </Card>
       </div>
 
-      {result ? <ResultList result={result} /> : null}
+      {result ? <ResultList result={result} fileEntries={fileEntries} /> : null}
     </div>
   );
 }

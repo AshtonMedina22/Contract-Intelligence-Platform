@@ -46,22 +46,22 @@ Independent Data Ops acceptance against **real pilot PDFs** from [PILOT_CORPUS_M
 | corpus | real pilot PDF available (SRC-08 Jefferson tab) | **PASS** | 31322 bytes |
 | corpus | real pilot scan available (SRC-19) | **PASS** | 1984573 bytes |
 | docx | DOCX not required by pilot corpus (coverage N/A) | **PASS** | PILOT_CORPUS_MANIFEST: zero DOCX files; adapter wired for production but not pilot-required |
-| xlsx | XLSX parses via openpyxl without OCR | **PASS** | parser=xlsx-openpyxl sheets=1 21ms (pilot has 0 XLSX; fixture proves path) |
-| pdf | digital PDF parses (SRC-02) | **PASS** | pages=13 204ms |
+| xlsx | XLSX parses via openpyxl without OCR | **PASS** | parser=xlsx-openpyxl sheets=1 8ms (pilot has 0 XLSX; fixture proves path) |
+| pdf | digital PDF parses (SRC-02) | **PASS** | pages=13 179ms |
 | scans | scanned PDF routes to OCR path (SRC-19) | **PASS** | parser=ocr-mistral escalate=true wired=false ok=false err=Checked-in policy: mean extractable chars/page=0.0 (threshold 40). Escalate to OCR; do not accept empty native parse. pa |
 | scans | OCR credential dependency documented | **PASS** | MISTRAL_API_KEY absent — escalate (no fake text) is correct |
-| docx | DOCX adapter functional (production wire; not pilot-required) | **PASS** | 8ms pages=1 |
-| pdf | real pilot PDF registers in evidence vault (SRC-02) | **PASS** | 1460ms sha=44497b51d423… |
-| package | package grouping links multiple pilot docs | **PASS** | package=1d9b03cd docs=2 |
+| docx | DOCX adapter functional (production wire; not pilot-required) | **PASS** | 7ms pages=1 |
+| pdf | real pilot PDF registers in evidence vault (SRC-02) | **PASS** | 1242ms sha=44497b51d423… |
+| package | package grouping links multiple pilot docs | **PASS** | package=1d081a23 docs=2 |
 | dedupe | identical SHA-256 does not create new version rows (count stays 1) | **PASS** | versions_with_sha=1 upload_attempt_err=n/a |
-| versions | different pilot PDF creates separate version/document | **PASS** | doc1=3e835598 doc2=f872c2f3 |
+| versions | different pilot PDF creates separate version/document | **PASS** | doc1=009c41ed doc2=d3cdf7b3 |
 | intake | SRC-03 Allen packet within 50 MB intake limit | **PASS** | 31.1 MB / 50 MB |
-| pdf | large pilot PDF registers (SRC-03) | **PASS** | 50899ms 31.1MB |
+| pdf | large pilot PDF registers (SRC-03) | **PASS** | 47839ms 31.1MB |
 | retry | parser failures are retriable (FAILED → QUEUED) | **PASS** | QUEUED |
 | trust | unverified fact cannot silently promote | **PASS** | {"ok":false,"action":"skipped","message":"Only HUMAN_VERIFIED facts promote."} |
-| provenance | HUMAN_VERIFIED promote succeeds with source_page provenance | **PASS** | {"ok":true,"rate":32.28,"truth":"awarded","action":"rate","rate_type":"standard","labor_category":"Armed officer","pricing_line_id":"d0f279bc-2764-4e30-b4e2-a93593507a9d"} |
-| provenance | provenance survives to canonical pricing_lines | **PASS** | source_fact=51630405 page=3 |
-| trust | unresolved rate conflict cannot silently promote overwrite | **PASS** | {"ok":false,"truth":"awarded","action":"conflict","existing":32.28,"incoming":40,"pricing_line_id":"d0f279bc-2764-4e30-b4e2-a93593507a9d"} |
+| provenance | HUMAN_VERIFIED promote succeeds with source_page provenance | **PASS** | {"ok":true,"rate":32.28,"truth":"awarded","action":"rate","rate_type":"standard","labor_category":"Armed officer","pricing_line_id":"92d95397-f661-44a7-a01f-25dfef97d6b1"} |
+| provenance | provenance survives to canonical pricing_lines | **PASS** | source_fact=0a45622a page=3 |
+| trust | unresolved rate conflict cannot silently promote overwrite | **PASS** | {"ok":false,"truth":"awarded","action":"conflict","existing":32.28,"incoming":40,"pricing_line_id":"92d95397-f661-44a7-a01f-25dfef97d6b1"} |
 | trust | canonical awarded_rate unchanged after conflict | **PASS** | awarded_rate=32.28 |
 | audit | verification audit survives (VERIFY + VIEW_SOURCE) | **PASS** | VERIFY,VIEW_SOURCE |
 | bulk | create_migration_batch | **PASS** |  |
@@ -75,14 +75,14 @@ Independent Data Ops acceptance against **real pilot PDFs** from [PILOT_CORPUS_M
 
 | Step | ms |
 | --- | --- |
-| parse:xlsx-fixture | 21 |
-| parse:SRC-02 | 204 |
-| register:Allen_ISD_LP_security_agreement_excerpt.pdf | 1460 |
-| register:12.pdf | 500 |
-| register:1770_43.35658_Services_Contract_with_proposal_Final.pdf | 6731 |
-| register:5-21_AllenISD.pdf | 50880 |
+| parse:xlsx-fixture | 8 |
+| parse:SRC-02 | 179 |
+| register:Allen_ISD_LP_security_agreement_excerpt.pdf | 1242 |
+| register:12.pdf | 529 |
+| register:1770_43.35658_Services_Contract_with_proposal_Final.pdf | 6913 |
+| register:5-21_AllenISD.pdf | 47820 |
 | register:bulk-12.pdf | 519 |
-| processor:health | 69 |
+| processor:health | 91 |
 
 ---
 

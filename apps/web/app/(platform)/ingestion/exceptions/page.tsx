@@ -19,6 +19,30 @@ async function ExceptionsContent() {
     .limit(200);
   if (error) return <p className="text-sm text-red-600">{error.message}</p>;
 
+  const docIds = [...new Set((data ?? []).map((r) => r.document_id).filter(Boolean))] as string[];
+  const { data: docs } = docIds.length > 0
+    ? await supabase
+        .from("documents")
+        .select("id, original_filename, processing_status")
+        .in("id", docIds)
+    : { data: [] };
+
+  const docMap = new Map((docs ?? []).map((d) => [d.id, d]));
+
+  const rows = (data ?? []).map((row) => {
+    const doc = row.document_id ? docMap.get(row.document_id) : null;
+    return {
+      id: row.id,
+      code: row.code,
+      message: row.message,
+      document_id: row.document_id,
+      document_filename: doc?.original_filename ?? null,
+      processing_status: doc?.processing_status ?? null,
+      resolved: row.resolved,
+      created_at: row.created_at,
+    };
+  });
+
   const entry = registryEntry("validation_exceptions");
 
   return (
@@ -32,7 +56,7 @@ async function ExceptionsContent() {
         </p>
       </div>
       {entry ? <DataRegistryCallout entry={entry} /> : null}
-      <ExceptionsTable rows={data ?? []} />
+      <ExceptionsTable rows={rows} />
     </div>
   );
 }

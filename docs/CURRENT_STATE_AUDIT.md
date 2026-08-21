@@ -1,6 +1,6 @@
 # Current state audit — canonical product maturity snapshot
 
-**Date context:** August 2026. Prompt 0A docs + Prompt 0B shell IA + VERIFY 0 + Prompt 1 Foundation gate.  
+**Date context:** August 2026. Prompt 0A docs + Prompt 0B shell IA + VERIFY 0 + Prompt 1 Foundation gate + **P2 Data Ops productization** (2026-08-21).  
 Living trail: [WORK_TRAIL.md](WORK_TRAIL.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
 
 Purpose: distinguish what exists in code from what has been proven as a product. A route, table, migration, placeholder screen, or successful build does **not** equal phase completion.
@@ -70,9 +70,11 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 
 ## Current correct next work
 
-1. Grow verified historical corpus (~20–30 packages) — live org now **15 packages / 14 A/B harness-complete**; still short of exit band. See [RELEASE_READINESS_REPORT.md](RELEASE_READINESS_REPORT.md).  
+1. Grow verified historical corpus (~20–30 packages) — live org now **22 packages / 15 A/B harness-complete**; lower bound met.  
 2. Confirm Vercel prod processor + set `ASK_MODEL` / `MISTRAL_API_KEY` as needed.  
 3. Keep [WORK_TRAIL.md](WORK_TRAIL.md) honest.  
+
+**P2 productization (2026-08-21):** Data Ops hardening complete. Intake UX preflight validation, processing queue lifecycle_error badges/filters, OCR_REQUIRED semantics, re-extract guard for HUMAN_VERIFIED facts, verification workbench keyboard/optimistic/auto-advance, exceptions disposition notes, corpus funnel report script. See [P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md](productization/P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md).
 
 **Prompt 9 / VERIFY 9 (2026-08-20):** Fix pass → **READY WITH NONBLOCKING LIMITATIONS**. Deferred: corpus acquisition ~20–30, Vercel login + prod processor, `ASK_MODEL`. See [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md).
 

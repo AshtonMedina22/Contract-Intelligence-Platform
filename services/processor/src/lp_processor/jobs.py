@@ -1,5 +1,6 @@
 from lp_processor.extractors.heuristic import HeuristicExtractor
 from lp_processor.models import ProcessorJobRequest
+from lp_processor.parsers.base import ParserNotWiredError
 from lp_processor.parsers.routing import select_parser
 from lp_processor.store import Store
 
@@ -11,7 +12,20 @@ def run_parse(req: ProcessorJobRequest, store: Store | None = None) -> dict:
     document = ctx["document"]
     store.set_status(req.document_id, req.organization_id, "PARSING")
     payload = store.download_evidence(version["storage_bucket"], version["storage_path"])
-    parser = select_parser(document.get("mime_type"), document.get("original_filename"), payload)
+    try:
+        parser = select_parser(document.get("mime_type"), document.get("original_filename"), payload)
+    except ParserNotWiredError as exc:
+        error_msg = str(exc)
+        if "ocr" in error_msg.lower() or "mistral" in error_msg.lower():
+            store.set_status(
+                req.document_id,
+                req.organization_id,
+                "FAILED",
+                f"OCR_REQUIRED: {error_msg[:480]}",
+            )
+        else:
+            store.set_status(req.document_id, req.organization_id, "FAILED", error_msg[:500])
+        raise
     filename_hint = " ".join(
         part for part in (document.get("original_filename"), document.get("document_type")) if part
     )

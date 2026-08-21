@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { createColumnHelper, tableFeatures, useTable } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
@@ -78,7 +78,7 @@ export function WorkbenchClient({
   mimeType,
   pdfUrl,
   sheets,
-  facts,
+  facts: initialFacts,
   processingStatus,
   openExceptionIds = [],
 }: Props) {
@@ -87,8 +87,12 @@ export function WorkbenchClient({
   const [fieldFilter, setFieldFilter] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
-  const [selectedId, setSelectedId] = useState(facts[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState(initialFacts[0]?.id ?? null);
   const [sourceFocus, setSourceFocus] = useState(0);
+  const [localFacts, setLocalFacts] = useState<WorkbenchFact[]>(initialFacts);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const facts = localFacts;
 
   const filtered = useMemo(() => {
     return facts.filter((fact) => {
@@ -103,6 +107,19 @@ export function WorkbenchClient({
 
   const selected = filtered.find((fact) => fact.id === selectedId) ?? filtered[0] ?? null;
 
+  const advanceToNextOpen = useCallback(() => {
+    const currentIndex = filtered.findIndex((f) => f.id === selectedId);
+    const nextOpen = filtered.slice(currentIndex + 1).find((f) => OPEN.includes(f.verification_status));
+    if (nextOpen) {
+      setSelectedId(nextOpen.id);
+    } else {
+      const prevOpen = filtered.slice(0, currentIndex).find((f) => OPEN.includes(f.verification_status));
+      if (prevOpen) {
+        setSelectedId(prevOpen.id);
+      }
+    }
+  }, [filtered, selectedId]);
+
   useEffect(() => {
     const fact = facts.find((item) => item.id === selectedId) ?? facts[0];
     if (fact) {
@@ -113,16 +130,45 @@ export function WorkbenchClient({
   const run = useCallback(
     (action: "VERIFY" | "EDIT" | "REJECT" | "FLAG_CONFLICT") => {
       if (!selected) return;
+      const factId = selected.id;
+      const effectiveAction = action === "VERIFY" && draft !== (selected.normalized_value ?? selected.raw_value) ? "EDIT" : action;
+
+      const optimisticStatus: FactVerificationStatus =
+        effectiveAction === "VERIFY" || effectiveAction === "EDIT"
+          ? "HUMAN_VERIFIED"
+          : effectiveAction === "REJECT"
+            ? "REJECTED"
+            : "CONFLICT";
+
+      setLocalFacts((prev) =>
+        prev.map((f) =>
+          f.id === factId
+            ? { ...f, verification_status: optimisticStatus, verified_value: draft }
+            : f
+        )
+      );
+
+      if (effectiveAction === "VERIFY" || effectiveAction === "EDIT" || effectiveAction === "REJECT") {
+        advanceToNextOpen();
+      }
+
       startTransition(async () => {
         const result = await applyFactDecision({
-          factId: selected.id,
-          action: action === "VERIFY" && draft !== (selected.normalized_value ?? selected.raw_value) ? "EDIT" : action,
+          factId,
+          action: effectiveAction,
           value: draft,
         });
+        if (result.error) {
+          setLocalFacts((prev) =>
+            prev.map((f) =>
+              f.id === factId ? { ...f, verification_status: selected.verification_status } : f
+            )
+          );
+        }
         setMessage(result.error ?? `${action} saved.`);
       });
     },
-    [selected, draft],
+    [selected, draft, advanceToNextOpen],
   );
 
   const runGroup = useCallback(() => {
@@ -176,7 +222,12 @@ export function WorkbenchClient({
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
       const tag = (event.target as HTMLElement | null)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+        if (event.key === "Escape") {
+          (event.target as HTMLElement)?.blur();
+        }
+        return;
+      }
       if (!selected) return;
       const index = filtered.findIndex((fact) => fact.id === selected.id);
       if (event.key === "j" || event.key === "ArrowDown") {
@@ -206,6 +257,11 @@ export function WorkbenchClient({
       if (event.key === "s") {
         event.preventDefault();
         viewSource();
+      }
+      if (event.key === "e") {
+        event.preventDefault();
+        inputRef.current?.focus();
+        inputRef.current?.select();
       }
     }
     window.addEventListener("keydown", onKey);
@@ -249,7 +305,7 @@ export function WorkbenchClient({
           <h1 className="text-lg font-semibold tracking-tight">{filename}</h1>
           <p className="text-sm text-muted-foreground">
             Status {processingStatus}. Keys: j/k move, v verify, r reject, c conflict, g verify group, s view
-            source. Unverified facts never become canonical.
+            source, e edit. Unverified facts never become canonical.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -359,7 +415,12 @@ export function WorkbenchClient({
           {selected ? (
             <div className="space-y-2">
               <Label htmlFor="value">Verified value</Label>
-              <Input id="value" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />
+              <Input
+                ref={inputRef}
+                id="value"
+                value={draft}
+                onChange={(event) => setDraft(event.currentTarget.value)}
+              />
               <p className="text-xs text-muted-foreground">
                 {selected.source_section ?? `page ${selected.source_page ?? "?"}`}
                 {selected.confidence != null ? ` · confidence ${selected.confidence}` : ""}

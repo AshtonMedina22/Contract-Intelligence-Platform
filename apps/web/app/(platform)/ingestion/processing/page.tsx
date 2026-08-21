@@ -16,7 +16,7 @@ async function ProcessingQueueContent() {
   const { data, error } = await supabase
     .from("documents")
     .select(
-      "id, original_filename, processing_status, workflow_run_id, created_at, document_batches(label), document_versions(sha256, storage_path, is_current)",
+      "id, original_filename, processing_status, lifecycle_error, workflow_run_id, created_at, document_batches(label), document_versions(sha256, storage_path, is_current)",
     )
     .order("created_at", { ascending: false })
     .limit(200);
@@ -33,6 +33,7 @@ async function ProcessingQueueContent() {
       id: doc.id,
       original_filename: doc.original_filename,
       processing_status: doc.processing_status,
+      lifecycle_error: doc.lifecycle_error,
       batch_label: batch?.label ?? null,
       sha256: current?.sha256 ?? null,
       storage_path: current?.storage_path ?? null,
