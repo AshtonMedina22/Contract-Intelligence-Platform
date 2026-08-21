@@ -5,7 +5,7 @@
 | Field | Value |
 | --- | --- |
 | **Last updated** | 2026-08-21 (F5 Recompete Radar + Contract Expiration Opportunity Engine — committed) |
-| **Git HEAD on origin/main** | `d1af208040ecbce968e2fae31e6854677a46e6ea` |
+| **Git HEAD on origin/main** | `564d8a01ad1948b876ddfe41dc2bd6976c51e736` |
 | **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit, and **not** production-ready. Live packages **22**; **15** A/B packages fully VERIFIED against an exit of ~20–30, so the Historical Pilot has **not** exited. **F1 (2026-08-21) tightened this further: 195 of 204 `HUMAN_VERIFIED` facts are harness stamps, 0 are workbench-attributed, and `NEEDS_REVIEW` is 0 — so the 15 A/B packages are automation-complete, not human-verified.** OCR has never run on real scanned evidence. VERIFY 5 / 6 / 7 currently return **verdict FAIL** on stale fixtures versus the Phase 9 trust triggers — see [PRODUCTIZATION_P1_P10_FINAL_AUDIT.md](productization/PRODUCTIZATION_P1_P10_FINAL_AUDIT.md). VERIFY2B **8/8**, VERIFY8 **23/23**. Local Ask synthesis: **Ollama** (free) + Google Gemini fallback; Gateway needs card; OpenAI key quota-blocked. Secrets stay in `.env.local` only. **Commercialization (Stripe / MCP / agents) is not started and is not a core product phase.** |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
