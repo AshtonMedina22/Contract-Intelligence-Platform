@@ -1,0 +1,122 @@
+{
+  "version": "F21-1",
+  "cases": [
+    {
+      "id": "exact_lexical",
+      "query": "armed guard staffing schedule",
+      "content": "The armed guard staffing schedule requires two officers on the night shift.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true
+    },
+    {
+      "id": "paraphrase",
+      "query": "personnel who protect a courthouse overnight",
+      "content": "Night-shift security officers maintain protective coverage at the judicial facility.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true,
+      "semantic": true
+    },
+    {
+      "id": "synonym",
+      "query": "purchasing authority",
+      "content": "The buyer agency procurement office issued the solicitation.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true,
+      "semantic": true
+    },
+    {
+      "id": "buyer",
+      "query": "Eastside school district purchasing history",
+      "content": "Eastside school district purchasing history includes a campus security services award.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true
+    },
+    {
+      "id": "pricing",
+      "query": "hourly bill rate overtime",
+      "content": "Verified pricing evidence records an hourly bill rate and a separate overtime multiplier.",
+      "purpose": "PRICING_ANALYSIS",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true
+    },
+    {
+      "id": "drafting",
+      "query": "write mobilization transition plan",
+      "content": "The approved text can write a mobilization transition plan covering staffing handoff and kickoff controls.",
+      "purpose": "PROPOSAL_DRAFTING",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true
+    },
+    {
+      "id": "loss_analysis",
+      "query": "why proposal failed evaluator comments",
+      "content": "Evaluator comments documented that the failed proposal omitted the required transition chart.",
+      "purpose": "LOSS_ANALYSIS",
+      "reuseStatus": "DO_NOT_USE",
+      "current": true,
+      "embedding": false
+    },
+    {
+      "id": "do_not_use",
+      "query": "failed proposal omitted transition chart",
+      "content": "The obsolete draft said the failed proposal omitted the transition chart.",
+      "purpose": "PROPOSAL_DRAFTING",
+      "reuseStatus": "DO_NOT_USE",
+      "current": true,
+      "embedding": false,
+      "expectExcluded": true
+    },
+    {
+      "id": "superseded",
+      "query": "legacy patrol protocol",
+      "content": "Legacy patrol protocol for the old contract version.",
+      "purpose": "PROPOSAL_DRAFTING",
+      "reuseStatus": "SUPERSEDED",
+      "current": false,
+      "embedding": false,
+      "expectExcluded": true
+    },
+    {
+      "id": "missing_embedding",
+      "query": "badge credential verification",
+      "content": "Badge credential verification is required before post assignment.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": false,
+      "expectMatchKind": "fts"
+    },
+    {
+      "id": "model_mismatch",
+      "query": "incompatible model sentinel",
+      "content": "Incompatible model sentinel remains lexically searchable.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true,
+      "wrongModel": true,
+      "expectMatchKind": "fts"
+    },
+    {
+      "id": "wrong_tenant",
+      "query": "foreign tenant sentinel",
+      "content": "Foreign tenant sentinel must never cross organization boundaries.",
+      "purpose": "GENERAL_QA",
+      "reuseStatus": "APPROVED",
+      "current": true,
+      "embedding": true,
+      "tenant": "B",
+      "expectExcluded": true
+    }
+  ]
+}

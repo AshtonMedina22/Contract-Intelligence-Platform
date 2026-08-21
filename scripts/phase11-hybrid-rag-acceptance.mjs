@@ -149,6 +149,14 @@ async function main() {
     });
     const chunked = await asA.rpc("promote_knowledge_chunk_from_fact", { p_fact_id: verified.factId });
     record("promote", "HUMAN_VERIFIED fact becomes a chunk", chunked.data?.ok === true, JSON.stringify(chunked.data));
+    const classified = await asA.rpc("set_document_data_classification", {
+      p_document_id: verified.documentId,
+      p_data_classification: "verified_internal",
+      p_reason: "Ephemeral Phase 11 verified retrieval acceptance fixture.",
+    });
+    if (classified.error || !classified.data?.ok) {
+      throw new Error(classified.error?.message ?? JSON.stringify(classified.data));
+    }
 
     const { data: chunk } = await asA
       .from("document_chunks")

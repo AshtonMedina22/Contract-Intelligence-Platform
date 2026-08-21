@@ -2,6 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { RetrievalPurpose } from "@/lib/retrieval/purpose";
 import { purposeRequiresDraftingGates } from "@/lib/retrieval/purpose";
 import type { DataClassification, ReuseStatus } from "@/lib/supabase/database.types";
+import {
+  EMBEDDING_DIM,
+  embedQuery,
+  getEmbeddingProvider,
+} from "@/lib/retrieval/embed";
 
 export type KnowledgeHit = {
   chunk_id: string;
@@ -33,14 +38,19 @@ export async function searchVerifiedKnowledge(opts: {
   queryEmbedding?: number[] | null;
 }): Promise<{ hits: KnowledgeHit[]; error: string | null }> {
   const supabase = await createClient();
+  const queryEmbedding =
+    opts.queryEmbedding === undefined ? await embedQuery(opts.query) : opts.queryEmbedding;
+  const provider = getEmbeddingProvider();
   const vectorLiteral =
-    opts.queryEmbedding && opts.queryEmbedding.length === 1536
-      ? `[${opts.queryEmbedding.join(",")}]`
+    queryEmbedding && queryEmbedding.length === EMBEDDING_DIM
+      ? `[${queryEmbedding.join(",")}]`
       : null;
 
   const { data, error } = await supabase.rpc("search_verified_knowledge", {
     p_query: opts.query,
     p_query_embedding: vectorLiteral,
+    p_embedding_model: vectorLiteral ? provider.compatibilityId : null,
+    p_embedding_dim: vectorLiteral ? EMBEDDING_DIM : null,
     p_for_drafting: purposeRequiresDraftingGates(opts.purpose),
     p_limit: opts.limit ?? 20,
     p_opportunity_id: opts.opportunityId || null,

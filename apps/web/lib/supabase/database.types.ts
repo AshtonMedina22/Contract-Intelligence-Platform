@@ -4050,6 +4050,10 @@ export type Database = {
           reuse_status: ReuseStatus;
           is_current_version: boolean;
           embedding: string | null;
+          embedding_model: string | null;
+          embedding_dim: number | null;
+          embedding_content_hash: string | null;
+          embedding_generated_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -4071,6 +4075,10 @@ export type Database = {
           reuse_status?: ReuseStatus;
           is_current_version?: boolean;
           embedding?: string | null;
+          embedding_model?: string | null;
+          embedding_dim?: number | null;
+          embedding_content_hash?: string | null;
+          embedding_generated_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -4092,6 +4100,10 @@ export type Database = {
           reuse_status?: ReuseStatus;
           is_current_version?: boolean;
           embedding?: string | null;
+          embedding_model?: string | null;
+          embedding_dim?: number | null;
+          embedding_content_hash?: string | null;
+          embedding_generated_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -4124,6 +4136,8 @@ export type Database = {
           p_limit?: number;
           p_opportunity_id?: string | null;
           p_purpose?: RetrievalPurpose | null;
+          p_embedding_model?: string | null;
+          p_embedding_dim?: number | null;
         };
         Returns: {
           chunk_id: string;

@@ -14,6 +14,7 @@ import {
 import { askChip } from "@/lib/intelligence/ask-launch";
 import { observationTile } from "@/lib/intelligence/observations";
 import { purposeRequiresDraftingGates } from "@/lib/retrieval/purpose";
+import { searchVerifiedKnowledge } from "@/lib/retrieval/search";
 import { PROPOSAL_SECTION_KEYS, isProposalSectionKey } from "@/lib/content/taxonomy";
 import { loadExperienceLibrary } from "@/lib/experience/retrieve";
 import { EXPERIENCE_HARD_CAVEAT } from "@/lib/experience/types";
@@ -75,14 +76,13 @@ async function ContentLibrary({ searchParams }: { searchParams: Promise<ContentS
   }[] = [];
 
   if (query) {
-    const { data, error } = await supabase.rpc("search_verified_knowledge", {
-      p_query: query,
-      p_for_drafting: forDrafting,
-      p_limit: 25,
-      p_purpose: forDrafting ? "PROPOSAL_DRAFTING" : "LOSS_ANALYSIS",
+    const { hits, error } = await searchVerifiedKnowledge({
+      query,
+      purpose: forDrafting ? "PROPOSAL_DRAFTING" : "LOSS_ANALYSIS",
+      limit: 25,
     });
-    if (error) errorMessage = error.message;
-    rows = (data ?? []).map((hit) => ({
+    if (error) errorMessage = error;
+    rows = hits.map((hit) => ({
       chunk_id: hit.chunk_id,
       document_id: hit.document_id,
       source_fact_id: hit.source_fact_id,

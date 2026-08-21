@@ -2,9 +2,13 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createGroq } from "@ai-sdk/groq";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { embed, type EmbeddingModel, type LanguageModel } from "ai";
-
-const EMBEDDING_DIM = 1536;
+import { type LanguageModel } from "ai";
+export {
+  EMBEDDING_DIM,
+  embedQuery,
+  embedTexts,
+  getEmbeddingProvider,
+} from "@/lib/retrieval/embed";
 
 /**
  * Swappable AI provider layer (no Grok).
@@ -102,25 +106,3 @@ export function resolveChatModel(chatModel: string): LanguageModel | string {
 
   return id;
 }
-
-function resolveEmbeddingModel(modelId: string): EmbeddingModel | string {
-  if (process.env.AI_GATEWAY_API_KEY?.trim()) return modelId;
-  if (process.env.OPENAI_API_KEY?.trim()) {
-    const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY.trim() });
-    return openai.embedding(stripProviderPrefix(modelId) || "text-embedding-3-small");
-  }
-  return modelId;
-}
-
-export async function embedQuery(query: string): Promise<number[] | null> {
-  const modelId = process.env.EMBEDDING_MODEL?.trim() || "openai/text-embedding-3-small";
-  try {
-    const { embedding } = await embed({ model: resolveEmbeddingModel(modelId), value: query });
-    if (!Array.isArray(embedding) || embedding.length !== EMBEDDING_DIM) return null;
-    return embedding;
-  } catch {
-    return null;
-  }
-}
-
-export { EMBEDDING_DIM };
