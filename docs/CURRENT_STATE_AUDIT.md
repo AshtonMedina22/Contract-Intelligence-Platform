@@ -76,6 +76,8 @@ Intake, checksum/versioning, parsing/extraction, staging, verification, and bulk
 
 **P2 productization (2026-08-21):** Data Ops hardening complete. Intake UX preflight validation, processing queue lifecycle_error badges/filters, OCR_REQUIRED semantics, re-extract guard for HUMAN_VERIFIED facts, verification workbench keyboard/optimistic/auto-advance, exceptions disposition notes, corpus funnel report script. See [P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md](productization/P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md).
 
+**P3 productization (2026-08-21):** Executive Home + Action Center complete. Replaced `/overview` with owner command center: KPI strip (10 real metrics), Needs Attention queue, Pipeline table, Win/Loss snapshot, Contract alerts by bucket, Market intelligence. All RLS-scoped queries; no fake metrics; honest empty states. See [P3_EXECUTIVE_HOME_ACCEPTANCE.md](productization/P3_EXECUTIVE_HOME_ACCEPTANCE.md).
+
 **Prompt 9 / VERIFY 9 (2026-08-20):** Fix pass → **READY WITH NONBLOCKING LIMITATIONS**. Deferred: corpus acquisition ~20–30, Vercel login + prod processor, `ASK_MODEL`. See [VERIFY9_ACCEPTANCE.md](pilot/VERIFY9_ACCEPTANCE.md).
 
 ---

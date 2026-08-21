@@ -4,7 +4,7 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-21 (P2 Real Corpus Data Ops productization) |
+| **Last updated** | 2026-08-21 (P3 Executive Home + Action Center) |
 | **Git HEAD on origin/main** | _(pushing this commit)_ |
 | **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **~22**; A/B harness-complete **~23**; exit ~20–30 **lower bound met**, still short of ~30. VERIFY2B **8/8**. Local Ask synthesis: **Ollama** (free) + Google Gemini fallback; Gateway needs card; OpenAI key quota-blocked. Secrets stay in `.env.local` only. |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
@@ -73,6 +73,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-21 | **P3 Executive Home + Action Center** | Replaced `/overview` with owner command center: KPI strip (10 real metrics), Needs Attention queue, Pipeline table, Win/Loss snapshot, Contract alerts, Market snapshot. All RLS-scoped queries; no fake metrics; honest empty states; click-throughs verified. lint/tsc/build PASS; IronBee browser verified. [P3_EXECUTIVE_HOME_ACCEPTANCE.md](productization/P3_EXECUTIVE_HOME_ACCEPTANCE.md) | Parent to verify & commit |
 | 2026-08-21 | **P2 Real Corpus Data Ops productization** | Hardened intake UX (preflight validation, per-file status, success links), processing queue (lifecycle_error, operator badges, filter chips, filename links), OCR_REQUIRED semantics, re-extract guard (skip HUMAN_VERIFIED), workbench speed (keyboard e, optimistic updates, auto-advance), exceptions accuracy (doc join, filters, disposition notes), corpus funnel report script, registry path fix. Lint/tsc/build/pytest PASS. [P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md](productization/P2_REAL_CORPUS_DATA_OPS_ACCEPTANCE.md) | Parent to verify & commit |
 | 2026-08-20 | **P1 independent verification** | Code + IronBee browser: IA gates **PASS**. Found mobile nav dead (trigger inside closed Sheet); fixed header `SidebarTrigger` `md:hidden` + trigger `aria-label`. lint/tsc re-PASS; build previously PASS 68 routes. Acceptance updated. [P1_UX_FOUNDATION_ACCEPTANCE.md](productization/P1_UX_FOUNDATION_ACCEPTANCE.md) | Optional: reduce `useIsMobile` hydration warnings; commit when requested |
 | 2026-08-20 | **P1 UX Foundation** | Sidebar IA fix (Intelligence/Data Ops → single links); shell primitives (`PageHeader`, `WorkspaceHeader`, `EmptyState`, `CollectionPage`); workspace shells condensed; CONTRACTS_TABS demoted Renewals/Compliance (pages still work with breadcrumb back); collection pages wired. lint/typecheck/build **PASS**. [P1_UX_FOUNDATION_ACCEPTANCE.md](productization/P1_UX_FOUNDATION_ACCEPTANCE.md) | Parent to verify & commit |
