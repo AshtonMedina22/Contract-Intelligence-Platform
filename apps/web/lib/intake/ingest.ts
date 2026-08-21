@@ -9,6 +9,7 @@ import {
 import type { Database } from "@/lib/supabase/database.types";
 import { getJobPort } from "@/lib/jobs/get-job-port";
 import { assertAllowedIntakeFile, inferMimeType, MAX_INTAKE_BYTES } from "@/lib/intake/allowed-files";
+import type { DataClassification } from "@/lib/classification/types";
 
 type Client = SupabaseClient<Database>;
 
@@ -64,6 +65,8 @@ export async function ingestSourceBytes(
     packageKey?: string | null;
     packageTitle?: string | null;
     corpusClass?: "A_LP_ORIGINATED" | "B_LP_TIED" | "C_COMPETITOR_TEST" | null;
+    /** Independent from corpusClass. Demo packages must opt in explicitly. */
+    dataClassification?: DataClassification;
   },
 ): Promise<IngestResult> {
   if (input.bytes.byteLength === 0) {
@@ -128,7 +131,7 @@ export async function ingestSourceBytes(
   }
 
   const { data: registered, error: registerError } = await supabase.rpc(
-    "register_ingested_document",
+    "register_ingested_document_classified",
     {
       p_organization_id: input.organizationId,
       p_document_id: documentId,
@@ -143,6 +146,7 @@ export async function ingestSourceBytes(
       p_storage_path: storagePath,
       p_byte_size: input.bytes.byteLength,
       p_source_drive_file_id: input.sourceDriveFileId ?? null,
+      p_data_classification: input.dataClassification ?? "internal_unverified",
     },
   );
 

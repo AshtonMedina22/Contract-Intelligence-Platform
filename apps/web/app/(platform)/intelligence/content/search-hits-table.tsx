@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/table";
 import type { ReuseStatus } from "@/lib/supabase/database.types";
 import { formatReuseStatus } from "@/lib/intelligence/reuse-status";
+import type { DataClassification } from "@/lib/classification/types";
+import { CLASSIFICATION_LABELS } from "@/lib/classification/types";
 
 export type SearchHitRow = {
   chunk_id: string;
@@ -23,6 +25,7 @@ export type SearchHitRow = {
   field: string | null;
   content: string;
   reuse_status: ReuseStatus;
+  data_classification: DataClassification;
   rank: number;
   match_kind: string;
 };
@@ -41,6 +44,10 @@ const columns = helper.columns([
   helper.accessor("reuse_status", {
     header: "Reuse",
     cell: (ctx) => <Badge variant="outline">{formatReuseStatus(ctx.getValue())}</Badge>,
+  }),
+  helper.accessor("data_classification", {
+    header: "Classification",
+    cell: (ctx) => <Badge variant="outline">{CLASSIFICATION_LABELS[ctx.getValue()]}</Badge>,
   }),
   helper.accessor("chunk_id", {
     header: "document_chunks.id",

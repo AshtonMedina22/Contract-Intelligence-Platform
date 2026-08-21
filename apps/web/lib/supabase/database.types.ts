@@ -24,7 +24,14 @@ export type RetrievalPurpose =
   | "BID_STRATEGY"
   | "PROPOSAL_DRAFTING"
   | "COMPLIANCE_REVIEW"
-  | "REPORT_GENERATION";
+  | "REPORT_GENERATION"
+  | "DEMO_TEST";
+
+export type DataClassification =
+  | "verified_public"
+  | "verified_internal"
+  | "internal_unverified"
+  | "illustrative_demo";
 
 export type ContractAlertBucket = "180" | "120" | "90" | "60" | "30" | "EXPIRED";
 export type ComplianceKind =
@@ -941,6 +948,7 @@ export type Database = {
           mime_type: string | null;
           document_type: string | null;
           commercial_truth: CommercialTruth | null;
+          data_classification: DataClassification;
           processing_status: DocumentProcessingStatus;
           workflow_run_id: string | null;
           lifecycle_error: string | null;
@@ -960,6 +968,7 @@ export type Database = {
           mime_type?: string | null;
           document_type?: string | null;
           commercial_truth?: CommercialTruth | null;
+          data_classification?: DataClassification;
           processing_status?: DocumentProcessingStatus;
           workflow_run_id?: string | null;
           lifecycle_error?: string | null;
@@ -979,6 +988,7 @@ export type Database = {
           mime_type?: string | null;
           document_type?: string | null;
           commercial_truth?: CommercialTruth | null;
+          data_classification?: DataClassification;
           processing_status?: DocumentProcessingStatus;
           workflow_run_id?: string | null;
           lifecycle_error?: string | null;
@@ -1083,6 +1093,7 @@ export type Database = {
           source_section: string | null;
           source_excerpt: string | null;
           confidence: number | null;
+          data_classification: DataClassification;
           verification_status: FactVerificationStatus;
           verified_value: string | null;
           verified_by: string | null;
@@ -1105,6 +1116,7 @@ export type Database = {
           source_section?: string | null;
           source_excerpt?: string | null;
           confidence?: number | null;
+          data_classification?: DataClassification;
           verification_status?: FactVerificationStatus;
           verified_value?: string | null;
           verified_by?: string | null;
@@ -1127,6 +1139,7 @@ export type Database = {
           source_section?: string | null;
           source_excerpt?: string | null;
           confidence?: number | null;
+          data_classification?: DataClassification;
           verification_status?: FactVerificationStatus;
           verified_value?: string | null;
           verified_by?: string | null;
@@ -3684,6 +3697,7 @@ export type Database = {
           source_section: string | null;
           storage_bucket: string;
           storage_path: string;
+          data_classification: DataClassification;
           verification_status: FactVerificationStatus;
           reuse_status: ReuseStatus;
           is_current_version: boolean;
@@ -3704,6 +3718,7 @@ export type Database = {
           source_section?: string | null;
           storage_bucket?: string;
           storage_path: string;
+          data_classification?: DataClassification;
           verification_status: FactVerificationStatus;
           reuse_status?: ReuseStatus;
           is_current_version?: boolean;
@@ -3724,6 +3739,7 @@ export type Database = {
           source_section?: string | null;
           storage_bucket?: string;
           storage_path?: string;
+          data_classification?: DataClassification;
           verification_status?: FactVerificationStatus;
           reuse_status?: ReuseStatus;
           is_current_version?: boolean;
@@ -3772,6 +3788,7 @@ export type Database = {
           field: string | null;
           content: string;
           reuse_status: ReuseStatus;
+          data_classification: DataClassification;
           rank: number;
           match_kind: string;
         }[];
@@ -3913,6 +3930,40 @@ export type Database = {
           batch_id: string | null;
         };
       };
+      register_ingested_document_classified: {
+        Args: {
+          p_organization_id: string;
+          p_document_id: string;
+          p_version_id: string;
+          p_batch_id: string | null;
+          p_batch_label: string | null;
+          p_client_id: string | null;
+          p_opportunity_id: string | null;
+          p_original_filename: string;
+          p_mime_type: string | null;
+          p_sha256: string;
+          p_storage_path: string;
+          p_byte_size: number | null;
+          p_source_drive_file_id: string | null;
+          p_data_classification?: DataClassification;
+        };
+        Returns: Record<string, unknown>;
+      };
+      set_document_data_classification: {
+        Args: {
+          p_document_id: string;
+          p_data_classification: DataClassification;
+          p_reason?: string | null;
+        };
+        Returns: Record<string, unknown>;
+      };
+      classification_allowed_for_purpose: {
+        Args: {
+          p_data_classification: DataClassification;
+          p_purpose: string;
+        };
+        Returns: boolean;
+      };
       append_document_version: {
         Args: {
           p_organization_id: string;
@@ -4003,6 +4054,7 @@ export type Database = {
       membership_role: MembershipRole;
       document_processing_status: DocumentProcessingStatus;
       fact_verification_status: FactVerificationStatus;
+      data_classification: DataClassification;
       commercial_truth: CommercialTruth;
       corpus_class: CorpusClass;
       pricing_rate_type: PricingRateType;

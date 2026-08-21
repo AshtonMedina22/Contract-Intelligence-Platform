@@ -91,6 +91,7 @@ async function ContentLibrary({ searchParams }: { searchParams: Promise<ContentS
       field: hit.field,
       content: hit.content,
       reuse_status: hit.reuse_status,
+      data_classification: hit.data_classification,
       rank: hit.rank,
       match_kind: hit.match_kind,
     }));
@@ -154,7 +155,7 @@ async function ContentLibrary({ searchParams }: { searchParams: Promise<ContentS
       <IntelligenceNav />
       <PageHeader
         title="Content intelligence"
-        description="Historical proposal sections (taxonomy + verification + reuse) plus typed experience library (F14). Outcome is display-only — Won ≠ auto-approve; Lost ≠ auto-reject. Drafting retrieval excludes DO_NOT_USE, SUPERSEDED, and non-current versions. Embeddings only from HUMAN_VERIFIED eligible text."
+        description="Historical proposal sections (taxonomy + verification + classification + reuse) plus typed experience library (F14). Outcome is display-only — Won ≠ auto-approve; Lost ≠ auto-reject. Drafting retrieval requires verified_internal and excludes DO_NOT_USE, SUPERSEDED, and non-current versions."
       />
       <IntelligenceHonestyStrip
         extra={`${EXPERIENCE_HARD_CAVEAT} PROPOSAL_DRAFTING always applies the drafting gates (${

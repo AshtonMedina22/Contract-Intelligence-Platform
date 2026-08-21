@@ -2,6 +2,7 @@
  * Dual-rail evidence model for Ask / Intelligence.
  * Public research must never be written into HUMAN_VERIFIED document_chunks.
  */
+import type { DataClassification } from "@/lib/classification/types";
 
 export type EvidenceClass =
   | "INTERNAL_VERIFIED"
@@ -38,6 +39,8 @@ export type NormalizedEvidence = {
   verification_status: string;
   entity: string | null;
   topic: string | null;
+  /** Trust authority axis; independent from verification_status. */
+  data_classification?: DataClassification | null;
 };
 
 export function makeEvidenceId(prefix: string, key: string): string {
@@ -52,12 +55,16 @@ export function normalizeInternalHit(hit: {
   source_page: number | null;
   storage_path?: string | null;
   field?: string | null;
+  data_classification: DataClassification;
 }): NormalizedEvidence {
+  const isPublic = hit.data_classification === "verified_public";
   return {
     id: makeEvidenceId("chunk", hit.chunk_id),
     rail: "internal",
-    evidence_class: "INTERNAL_VERIFIED",
-    source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+    evidence_class: isPublic ? "OFFICIAL_PUBLIC" : "INTERNAL_VERIFIED",
+    source_authority: isPublic
+      ? SOURCE_AUTHORITY.OFFICIAL_PUBLIC
+      : SOURCE_AUTHORITY.INTERNAL_VERIFIED,
     title: hit.storage_path || hit.field || "Verified passage",
     url: null,
     internal_ref: `/ingestion/verification/${hit.document_id}`,
@@ -70,6 +77,7 @@ export function normalizeInternalHit(hit: {
     verification_status: "HUMAN_VERIFIED",
     entity: null,
     topic: hit.field ?? null,
+    data_classification: hit.data_classification,
   };
 }
 
@@ -85,12 +93,20 @@ export function normalizeStructuredRow(opts: {
   topic?: string | null;
   published_date?: string | null;
   verification_status?: string;
+  data_classification?: DataClassification | null;
 }): NormalizedEvidence {
+  const classification = opts.data_classification ?? null;
+  const evidenceClass: EvidenceClass =
+    classification === "verified_public"
+      ? "OFFICIAL_PUBLIC"
+      : classification === "verified_internal"
+        ? "INTERNAL_VERIFIED"
+        : "UNVERIFIED";
   return {
     id: makeEvidenceId(opts.prefix, opts.key),
     rail: "internal",
-    evidence_class: "INTERNAL_VERIFIED",
-    source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+    evidence_class: evidenceClass,
+    source_authority: SOURCE_AUTHORITY[evidenceClass],
     title: opts.title,
     url: null,
     internal_ref: opts.internal_ref ?? null,
@@ -103,6 +119,7 @@ export function normalizeStructuredRow(opts: {
     verification_status: opts.verification_status ?? "STRUCTURED_RECORD",
     entity: opts.entity ?? null,
     topic: opts.topic ?? null,
+    data_classification: classification,
   };
 }
 
@@ -182,7 +199,7 @@ export function formatEvidenceForPrompt(evidence: NormalizedEvidence[], max = 16
     .slice(0, max)
     .map(
       (e, i) =>
-        `[${i + 1}] class=${e.evidence_class} rail=${e.rail} auth=${e.source_authority} title=${e.title}\n` +
+        `[${i + 1}] class=${e.evidence_class} data_classification=${e.data_classification ?? "not_applicable"} rail=${e.rail} auth=${e.source_authority} title=${e.title}\n` +
         `ref=${e.internal_ref ?? e.url ?? "—"}\n${e.excerpt.slice(0, 900)}`,
     )
     .join("\n\n");

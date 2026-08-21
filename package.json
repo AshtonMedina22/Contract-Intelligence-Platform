@@ -33,6 +33,7 @@
     "test:f14-experience": "node scripts/f14-past-performance-integrity-acceptance.mjs",
     "test:f15-obligations": "node scripts/f15-contract-obligations-acceptance.mjs",
     "test:f16-texas-local": "node --env-file=apps/web/.env.local scripts/f16-texas-local-procurement-acceptance.mjs",
+    "test:f18-classification": "node --env-file=apps/web/.env.local scripts/f18-data-classification-acceptance.mjs",
     "test:processor": "python -m pytest -q --rootdir=services/processor services/processor/tests",
     "test:verify2a": "node scripts/verify2a-corpus-audit.mjs",
     "test:verify2b": "node scripts/verify2b-pilot-acceptance.mjs",

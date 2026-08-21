@@ -1,6 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { searchVerifiedKnowledge, type KnowledgeHit } from "@/lib/retrieval/search";
 import type { RetrievalPurpose } from "@/lib/retrieval/purpose";
+import {
+  collectSourceFactIds,
+  filterRowsBySourceClassification,
+  loadDocumentClassifications,
+  loadSourceFactClassifications,
+} from "@/lib/classification/source-filter";
+import { eligibilityLimitation, isClassificationEligible } from "@/lib/classification/eligibility";
 
 export type ReportKind =
   | "bid_strategy"
@@ -92,37 +99,132 @@ export async function generateIntelligenceReport(
   const sections: { heading: string; bullets: string[] }[] = [];
 
   const [
-    awards,
-    reviews,
-    bids,
-    pricing,
-    alerts,
-    research,
-    scores,
+    awardsRaw,
+    reviewsRaw,
+    bidsRaw,
+    pricingRaw,
+    alertsRaw,
+    researchRaw,
+    scoresRaw,
     automation,
   ] = await Promise.all([
-    supabase.from("awards").select("id, opportunity_id, amount_nte, notice").limit(50),
+    supabase.from("awards").select("id, opportunity_id, amount_nte, notice, source_fact_id").limit(50),
     supabase
       .from("win_loss_reviews")
-      .select("id, outcome, documented_reason, internal_analysis, lp_price, winning_price, winner_name, opportunity_id")
+      .select("id, outcome, documented_reason, internal_analysis, lp_price, winning_price, winner_name, opportunity_id, source_fact_id")
       .limit(50),
     supabase
       .from("competitor_bids")
-      .select("id, quoted_amount, rank, source_url, competitor_id, opportunity_id")
+      .select("id, quoted_amount, rank, source_url, competitor_id, opportunity_id, source_fact_id")
       .limit(50),
     supabase
       .from("pricing_lines")
-      .select("id, labor_category, proposed_rate, awarded_rate, current_rate, opportunity_id")
+      .select("id, labor_category, proposed_rate, awarded_rate, current_rate, opportunity_id, requested_source_fact_id, proposed_source_fact_id, awarded_source_fact_id, current_source_fact_id")
       .limit(50),
-    supabase.from("contract_alerts").select("id, bucket, days_until, verified_end_on").limit(50),
-    supabase.from("research_facts").select("id, title, source_url, verification_status").eq("verification_status", "HUMAN_VERIFIED").limit(50),
-    supabase.from("evaluation_scores").select("id, respondent_name, points, max_points, rank, notes").limit(50),
+    supabase.from("contract_alerts").select("id, bucket, days_until, verified_end_on, source_fact_id").limit(50),
+    supabase.from("research_facts").select("id, title, source_url, source_document_id, verification_status").eq("verification_status", "HUMAN_VERIFIED").limit(50),
+    supabase.from("evaluation_scores").select("id, respondent_name, points, max_points, rank, notes, source_fact_id").limit(50),
     supabase
       .from("automation_events")
       .select("id, kind, title, severity, due_on")
       .is("acknowledged_at", null)
       .limit(50),
   ]);
+
+  const singleSourceFields = ["source_fact_id"] as const;
+  const pricingSourceFields = [
+    "requested_source_fact_id",
+    "proposed_source_fact_id",
+    "awarded_source_fact_id",
+    "current_source_fact_id",
+  ] as const;
+  const allFactRows = [
+    ...(awardsRaw.data ?? []),
+    ...(reviewsRaw.data ?? []),
+    ...(bidsRaw.data ?? []),
+    ...(pricingRaw.data ?? []),
+    ...(alertsRaw.data ?? []),
+    ...(scoresRaw.data ?? []),
+  ] as unknown as Record<string, unknown>[];
+  const factIds = collectSourceFactIds(allFactRows, [
+    ...singleSourceFields,
+    ...pricingSourceFields,
+  ]);
+  const classifications = await loadSourceFactClassifications(supabase, factIds);
+  const filter = <T extends Record<string, unknown>>(
+    rows: readonly T[],
+    fields: readonly string[],
+  ): T[] =>
+    filterRowsBySourceClassification(rows, {
+      fields,
+      classifications,
+      purpose: meta.purpose,
+    });
+
+  const researchDocumentIds = [
+    ...new Set(
+      (researchRaw.data ?? [])
+        .map((row) => row.source_document_id)
+        .filter((id): id is string => typeof id === "string"),
+    ),
+  ];
+  const documentClassifications = await loadDocumentClassifications(
+    supabase,
+    researchDocumentIds,
+  );
+  const awards = {
+    ...awardsRaw,
+    data: filter(
+      (awardsRaw.data ?? []) as unknown as Record<string, unknown>[],
+      singleSourceFields,
+    ) as unknown as typeof awardsRaw.data,
+  };
+  const reviews = {
+    ...reviewsRaw,
+    data: filter(
+      (reviewsRaw.data ?? []) as unknown as Record<string, unknown>[],
+      singleSourceFields,
+    ) as unknown as typeof reviewsRaw.data,
+  };
+  const bids = {
+    ...bidsRaw,
+    data: filter(
+      (bidsRaw.data ?? []) as unknown as Record<string, unknown>[],
+      singleSourceFields,
+    ) as unknown as typeof bidsRaw.data,
+  };
+  const pricing = {
+    ...pricingRaw,
+    data: filter(
+      (pricingRaw.data ?? []) as unknown as Record<string, unknown>[],
+      pricingSourceFields,
+    ) as unknown as typeof pricingRaw.data,
+  };
+  const alerts = {
+    ...alertsRaw,
+    data: filter(
+      (alertsRaw.data ?? []) as unknown as Record<string, unknown>[],
+      singleSourceFields,
+    ) as unknown as typeof alertsRaw.data,
+  };
+  const scores = {
+    ...scoresRaw,
+    data: filter(
+      (scoresRaw.data ?? []) as unknown as Record<string, unknown>[],
+      singleSourceFields,
+    ) as unknown as typeof scoresRaw.data,
+  };
+  const research = {
+    ...researchRaw,
+    data: (researchRaw.data ?? []).filter((row) => {
+      const classification = row.source_document_id
+        ? documentClassifications.get(row.source_document_id)
+        : null;
+      return classification
+        ? isClassificationEligible(classification, meta.purpose)
+        : false;
+    }),
+  };
 
   const competitorIds = [
     ...new Set(
@@ -281,8 +383,8 @@ export async function generateIntelligenceReport(
       ? `Tenant-scoped; pursuit ${opts.opportunityId}; purpose ${meta.purpose}`
       : `Tenant-scoped cross-corpus; purpose ${meta.purpose}`,
     limitations: insufficient
-      ? "No verified awards, win/loss, bids, pricing lines, research, or chunks available."
-      : "Observed records only. Not market share. Final pricing and submission remain human decisions. DO_NOT_USE excluded unless retrospective purpose.",
+      ? `No verified awards, win/loss, bids, pricing lines, research, or chunks available. ${eligibilityLimitation(meta.purpose)}`
+      : `Observed records only. Not market share. Final pricing and submission remain human decisions. DO_NOT_USE excluded unless retrospective purpose. ${eligibilityLimitation(meta.purpose)}`,
     insufficient,
     evidenceHits: hits,
   };

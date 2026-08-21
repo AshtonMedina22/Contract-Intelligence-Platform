@@ -9,6 +9,9 @@
 
 import { MIN_WIN_RATE_SAMPLE } from "@/lib/intelligence/observations";
 
+export const DEFAULT_ANALYTICS_CLASSIFICATION_POLICY =
+  "illustrative_demo is excluded from every metric by default; only an explicit DEMO_TEST purpose may include it. data_classification is independent from corpus_class and verification_status.";
+
 export type EntityId =
   | "pursuit"
   | "buyer"
@@ -40,6 +43,7 @@ export type MetricDefinition = {
   withholdReason: string | null;
   dimensions: readonly string[];
   minSample?: number;
+  classificationPolicy?: string;
 };
 
 /** Canonical entity → primary table mapping. */

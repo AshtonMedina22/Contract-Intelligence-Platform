@@ -272,6 +272,15 @@ async function main() {
       field: "staffing_approach",
       value: "Staffing depth at all posts with named relief pool",
     });
+    const { error: classificationError } = await asA.rpc(
+      "set_document_data_classification",
+      {
+        p_document_id: fact.documentId,
+        p_data_classification: "verified_internal",
+        p_reason: "Phase 6 retrieval fixture represents approved internal proposal evidence.",
+      },
+    );
+    if (classificationError) throw new Error(classificationError.message);
     await asA.rpc("promote_knowledge_chunk_from_fact", { p_fact_id: fact.factId });
 
     const { data: draftingHits } = await asA.rpc("search_verified_knowledge", {

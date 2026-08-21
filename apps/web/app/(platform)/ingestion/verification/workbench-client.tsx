@@ -21,6 +21,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { FactVerificationStatus } from "@/lib/supabase/database.types";
+import type { DataClassification } from "@/lib/classification/types";
+import { CLASSIFICATION_LABELS } from "@/lib/classification/types";
 import {
   applyFactDecision,
   completeDocumentVerification,
@@ -64,6 +66,7 @@ type Props = {
   sheets: WorkbenchSheet[];
   facts: WorkbenchFact[];
   processingStatus: string;
+  dataClassification: DataClassification;
   openExceptionIds?: string[];
 };
 
@@ -80,6 +83,7 @@ export function WorkbenchClient({
   sheets,
   facts: initialFacts,
   processingStatus,
+  dataClassification,
   openExceptionIds = [],
 }: Props) {
   const [pending, startTransition] = useTransition();
@@ -302,10 +306,14 @@ export function WorkbenchClient({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight">{filename}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-lg font-semibold tracking-tight">{filename}</h1>
+            <Badge variant="outline">{CLASSIFICATION_LABELS[dataClassification]}</Badge>
+          </div>
           <p className="text-sm text-muted-foreground">
-            Status {processingStatus}. Keys: j/k move, v verify, r reject, c conflict, g verify group, s view
-            source, e edit. Unverified facts never become canonical.
+            Status {processingStatus}. Classification and verification are independent. Keys: j/k move, v
+            verify, r reject, c conflict, g verify group, s view source, e edit. Unverified facts never become
+            canonical.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

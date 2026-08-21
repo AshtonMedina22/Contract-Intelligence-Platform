@@ -21,6 +21,13 @@ import { purposeRequiresDraftingGates, type RetrievalPurpose } from "@/lib/retri
 import { locateRecords, searchVerifiedKnowledge, type KnowledgeHit } from "@/lib/retrieval/search";
 import { generateIntelligenceReport, type ReportKind } from "@/lib/reports/generate";
 import { createClient } from "@/lib/supabase/server";
+import {
+  collectSourceFactIds,
+  filterRowsBySourceClassification,
+  loadDocumentClassifications,
+  loadSourceFactClassifications,
+} from "@/lib/classification/source-filter";
+import { isClassificationEligible } from "@/lib/classification/eligibility";
 
 export type AskToolContext = {
   purpose: RetrievalPurpose;
@@ -30,11 +37,14 @@ export type AskToolContext = {
 };
 
 function fromKnowledgeHit(hit: KnowledgeHit): NormalizedEvidence {
+  const isPublic = hit.data_classification === "verified_public";
   return {
     id: makeEvidenceId("chunk", hit.chunk_id),
     rail: "internal",
-    evidence_class: "INTERNAL_VERIFIED",
-    source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+    evidence_class: isPublic ? "OFFICIAL_PUBLIC" : "INTERNAL_VERIFIED",
+    source_authority: isPublic
+      ? SOURCE_AUTHORITY.OFFICIAL_PUBLIC
+      : SOURCE_AUTHORITY.INTERNAL_VERIFIED,
     title: hit.storage_path || hit.field || "Verified passage",
     url: null,
     internal_ref: `/ingestion/verification/${hit.document_id}`,
@@ -47,6 +57,7 @@ function fromKnowledgeHit(hit: KnowledgeHit): NormalizedEvidence {
     verification_status: "HUMAN_VERIFIED",
     entity: null,
     topic: hit.field,
+    data_classification: hit.data_classification,
   };
 }
 
@@ -67,7 +78,7 @@ export function createAskTools(ctx: AskToolContext) {
   return {
     search_verified_passages: tool({
       description:
-        "INTERNAL rail: search HUMAN_VERIFIED L&P corpus (hybrid FTS/vector) under org RLS and purpose drafting gates. Covers historical proposal content reuse — DO_NOT_USE/SUPERSEDED excluded for PROPOSAL_DRAFTING; LOSS_ANALYSIS may include DO_NOT_USE. Returns cited passages only (never full prior proposals). Returns up to 50 candidates.",
+        "CLASSIFIED corpus rail: search HUMAN_VERIFIED passages under org RLS, classification eligibility, and purpose drafting gates. verified_public stays public intelligence and is never stamped as L&P internal history. illustrative_demo is default-denied. Returns cited passages only (never full prior proposals).",
       inputSchema: z.object({
         query: z.string().min(1),
         limit: z.number().int().min(1).max(50).optional(),
@@ -138,7 +149,7 @@ export function createAskTools(ctx: AskToolContext) {
 
     lookup_pricing_truth: tool({
       description:
-        "INTERNAL rail: read pricing_lines with four-truth columns separate (proposed/awarded/current). Never invent or average rates.",
+        "CLASSIFIED rail: read pricing_lines with four-truth columns separate (proposed/awarded/current). Every populated source must be purpose-eligible; never invent or average rates.",
       inputSchema: z.object({
         limit: z.number().int().min(1).max(40).optional(),
         query: z.string().optional(),
@@ -148,17 +159,42 @@ export function createAskTools(ctx: AskToolContext) {
         let q = supabase
           .from("pricing_lines")
           .select(
-            "id, labor_category, rate_type, site_or_post, proposed_rate, awarded_rate, current_rate, requested_rate, unit, opportunity_id, created_at",
+            "id, labor_category, rate_type, site_or_post, proposed_rate, awarded_rate, current_rate, requested_rate, unit, opportunity_id, created_at, requested_source_fact_id, proposed_source_fact_id, awarded_source_fact_id, current_source_fact_id",
           )
           .order("created_at", { ascending: false })
           .limit(limit ?? 20);
         if (query?.trim()) q = q.ilike("labor_category", `%${query.trim().replace(/[%_]/g, "")}%`);
         const { data, error } = await q;
-        const evidence: NormalizedEvidence[] = (data ?? []).map((row) => ({
+        const sourceFields = [
+          "requested_source_fact_id",
+          "proposed_source_fact_id",
+          "awarded_source_fact_id",
+          "current_source_fact_id",
+        ] as const;
+        const factIds = collectSourceFactIds(
+          (data ?? []) as unknown as Record<string, unknown>[],
+          sourceFields,
+        );
+        const classifications = await loadSourceFactClassifications(supabase, factIds);
+        const eligibleRows = filterRowsBySourceClassification(
+          (data ?? []) as unknown as Record<string, unknown>[],
+          { fields: sourceFields, classifications, purpose: ctx.purpose },
+        ) as unknown as NonNullable<typeof data>;
+        const evidence: NormalizedEvidence[] = eligibleRows.map((row) => {
+          const classification = sourceFields
+            .map((field) => row[field])
+            .filter((id): id is string => typeof id === "string")
+            .map((id) => classifications.get(id))
+            .find((value) => value && isClassificationEligible(value, ctx.purpose));
+          return {
           id: makeEvidenceId("price", row.id),
           rail: "internal",
-          evidence_class: "INTERNAL_VERIFIED",
-          source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+          evidence_class:
+            classification === "verified_public" ? "OFFICIAL_PUBLIC" : "INTERNAL_VERIFIED",
+          source_authority:
+            classification === "verified_public"
+              ? SOURCE_AUTHORITY.OFFICIAL_PUBLIC
+              : SOURCE_AUTHORITY.INTERNAL_VERIFIED,
           title: row.labor_category || "Pricing line",
           url: null,
           internal_ref: row.opportunity_id
@@ -173,14 +209,17 @@ export function createAskTools(ctx: AskToolContext) {
           verification_status: "HUMAN_VERIFIED",
           entity: null,
           topic: "pricing",
-        }));
+          data_classification: classification ?? null,
+        };
+        });
         pushEvidence(ctx, evidence);
         return { ok: !error, error: error?.message ?? null, count: evidence.length, evidence };
       },
     }),
 
     lookup_contracts: tool({
-      description: "INTERNAL rail: list contracts (title/number) under org RLS.",
+      description:
+        "CLASSIFIED rail: list purpose-eligible contracts (title/number) under org RLS. Public authority remains public and is never relabeled as L&P internal history.",
       inputSchema: z.object({
         query: z.string().optional(),
         limit: z.number().int().min(1).max(40).optional(),
@@ -189,7 +228,7 @@ export function createAskTools(ctx: AskToolContext) {
         const supabase = await createClient();
         let q = supabase
           .from("contracts")
-          .select("id, title, contract_number, start_on, verified_end_on, source_document_id, client_id")
+          .select("id, title, contract_number, start_on, verified_end_on, source_document_id, source_fact_id, client_id")
           .order("updated_at", { ascending: false })
           .limit(limit ?? 20);
         if (query?.trim()) {
@@ -197,11 +236,28 @@ export function createAskTools(ctx: AskToolContext) {
           q = q.or(`title.ilike.${p},contract_number.ilike.${p}`);
         }
         const { data, error } = await q;
-        const evidence: NormalizedEvidence[] = (data ?? []).map((row) => ({
+        const factIds = collectSourceFactIds(
+          (data ?? []) as unknown as Record<string, unknown>[],
+          ["source_fact_id"],
+        );
+        const classifications = await loadSourceFactClassifications(supabase, factIds);
+        const eligibleRows = filterRowsBySourceClassification(
+          (data ?? []) as unknown as Record<string, unknown>[],
+          { fields: ["source_fact_id"], classifications, purpose: ctx.purpose },
+        ) as unknown as NonNullable<typeof data>;
+        const evidence: NormalizedEvidence[] = eligibleRows.map((row) => {
+          const classification = row.source_fact_id
+            ? classifications.get(row.source_fact_id)
+            : null;
+          return {
           id: makeEvidenceId("contract", row.id),
           rail: "internal",
-          evidence_class: "INTERNAL_VERIFIED",
-          source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+          evidence_class:
+            classification === "verified_public" ? "OFFICIAL_PUBLIC" : "INTERNAL_VERIFIED",
+          source_authority:
+            classification === "verified_public"
+              ? SOURCE_AUTHORITY.OFFICIAL_PUBLIC
+              : SOURCE_AUTHORITY.INTERNAL_VERIFIED,
           title: row.title || row.contract_number || row.id,
           url: null,
           internal_ref: `/contracts`,
@@ -214,7 +270,9 @@ export function createAskTools(ctx: AskToolContext) {
           verification_status: "STRUCTURED_RECORD",
           entity: null,
           topic: "contract",
-        }));
+          data_classification: classification,
+        };
+        });
         pushEvidence(ctx, evidence);
         return { ok: !error, error: error?.message ?? null, count: evidence.length, evidence };
       },
@@ -227,14 +285,31 @@ export function createAskTools(ctx: AskToolContext) {
         const supabase = await createClient();
         const { data, error } = await supabase
           .from("awards")
-          .select("id, notice, winner_name, amount_nte, awarded_on, rank, source_document_id, opportunity_id")
+          .select("id, notice, winner_name, amount_nte, awarded_on, rank, source_document_id, source_fact_id, opportunity_id")
           .order("awarded_on", { ascending: false })
           .limit(limit ?? 20);
-        const evidence: NormalizedEvidence[] = (data ?? []).map((row) => ({
+        const factIds = collectSourceFactIds(
+          (data ?? []) as unknown as Record<string, unknown>[],
+          ["source_fact_id"],
+        );
+        const classifications = await loadSourceFactClassifications(supabase, factIds);
+        const eligibleRows = filterRowsBySourceClassification(
+          (data ?? []) as unknown as Record<string, unknown>[],
+          { fields: ["source_fact_id"], classifications, purpose: ctx.purpose },
+        ) as unknown as NonNullable<typeof data>;
+        const evidence: NormalizedEvidence[] = eligibleRows.map((row) => {
+          const classification = row.source_fact_id
+            ? classifications.get(row.source_fact_id)
+            : null;
+          return {
           id: makeEvidenceId("award", row.id),
           rail: "internal",
-          evidence_class: "INTERNAL_VERIFIED",
-          source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+          evidence_class:
+            classification === "verified_public" ? "OFFICIAL_PUBLIC" : "INTERNAL_VERIFIED",
+          source_authority:
+            classification === "verified_public"
+              ? SOURCE_AUTHORITY.OFFICIAL_PUBLIC
+              : SOURCE_AUTHORITY.INTERNAL_VERIFIED,
           title: row.notice || row.winner_name || "Award",
           url: null,
           internal_ref: row.source_document_id
@@ -251,7 +326,9 @@ export function createAskTools(ctx: AskToolContext) {
           verification_status: "STRUCTURED_RECORD",
           entity: row.winner_name,
           topic: "win_loss",
-        }));
+          data_classification: classification,
+        };
+        });
         pushEvidence(ctx, evidence);
         return { ok: !error, error: error?.message ?? null, count: evidence.length, evidence };
       },
@@ -331,7 +408,7 @@ export function createAskTools(ctx: AskToolContext) {
         const { data, error } = await supabase
           .from("research_facts")
           .select(
-            "id, title, claim, excerpt, source_url, verification_status, published_on, retrieved_at, provider",
+            "id, title, claim, excerpt, source_url, source_document_id, verification_status, published_on, retrieved_at, provider",
           )
           .eq("verification_status", "HUMAN_VERIFIED")
           .or(
@@ -344,11 +421,37 @@ export function createAskTools(ctx: AskToolContext) {
           return { ok: false, error: error.message, count: 0, evidence: [] as NormalizedEvidence[] };
         }
 
-        const evidence: NormalizedEvidence[] = (data ?? []).map((row) => ({
+        const documentIds = [
+          ...new Set(
+            (data ?? [])
+              .map((row) => row.source_document_id)
+              .filter((id): id is string => typeof id === "string"),
+          ),
+        ];
+        const documentClassifications = await loadDocumentClassifications(supabase, documentIds);
+        const eligibleRows = (data ?? []).filter((row) => {
+          const classification = row.source_document_id
+            ? documentClassifications.get(row.source_document_id)
+            : null;
+          return classification
+            ? isClassificationEligible(classification, ctx.purpose)
+            : false;
+        });
+        const evidence: NormalizedEvidence[] = eligibleRows.map((row) => {
+          const classification = row.source_document_id
+            ? documentClassifications.get(row.source_document_id)
+            : null;
+          return {
           id: makeEvidenceId("research_fact", row.id),
           rail: "internal" as const,
-          evidence_class: "INTERNAL_VERIFIED" as const,
-          source_authority: SOURCE_AUTHORITY.INTERNAL_VERIFIED,
+          evidence_class:
+            classification === "verified_public"
+              ? ("OFFICIAL_PUBLIC" as const)
+              : ("INTERNAL_VERIFIED" as const),
+          source_authority:
+            classification === "verified_public"
+              ? SOURCE_AUTHORITY.OFFICIAL_PUBLIC
+              : SOURCE_AUTHORITY.INTERNAL_VERIFIED,
           title: row.claim || row.title || row.source_url,
           url: row.source_url,
           internal_ref: `/intelligence/research`,
@@ -361,12 +464,15 @@ export function createAskTools(ctx: AskToolContext) {
           verification_status: "HUMAN_VERIFIED",
           entity: null,
           topic: row.provider ?? "research_fact",
-        }));
+          data_classification: classification,
+        };
+        });
         pushEvidence(ctx, evidence);
         return {
           ok: true,
           count: evidence.length,
-          note: "HUMAN_VERIFIED research_facts only — AI_EXTRACTED excluded by design.",
+          note:
+            "HUMAN_VERIFIED research_facts with purpose-eligible document classification only — AI_EXTRACTED, internal_unverified, and illustrative_demo excluded.",
           evidence,
         };
       },

@@ -7,6 +7,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { mapRoleToCorpusClass } from "./classify-role";
 import type { AcquisitionCorpusRole, IngestCandidateResult } from "./types";
 import { sha256Hex } from "./fetch-candidate";
+import type { DataClassification } from "@/lib/classification/types";
 
 type MinimalClient = {
   storage: {
@@ -55,6 +56,8 @@ export type IngestCandidateInput = {
   batchLabel?: string | null;
   /** When false, skip procurement_packages link (REFERENCE_DATA). Default true when class maps. */
   createPackage?: boolean;
+  /** Independent from corpusRole/corpus_class. Defaults internal_unverified. */
+  dataClassification?: Extract<DataClassification, "internal_unverified" | "illustrative_demo">;
 };
 
 function evidenceExt(filename: string, mime: string): string {
@@ -91,7 +94,7 @@ function inferMime(filename: string, mimeType: string): string {
 }
 
 /**
- * Register bytes into the evidence vault via register_ingested_document.
+ * Register bytes into the evidence vault via the classified intake wrapper.
  * verification remains AI_EXTRACTED at the fact layer (processor / staging) —
  * this path never stamps HUMAN_VERIFIED.
  */
@@ -177,7 +180,7 @@ export async function ingestCandidateBytes(
     };
   }
 
-  const { data: registered, error: registerError } = await client.rpc("register_ingested_document", {
+  const { data: registered, error: registerError } = await client.rpc("register_ingested_document_classified", {
     p_organization_id: input.organizationId,
     p_document_id: documentId,
     p_version_id: versionId,
@@ -191,6 +194,7 @@ export async function ingestCandidateBytes(
     p_storage_path: storagePath,
     p_byte_size: input.bytes.byteLength,
     p_source_drive_file_id: null,
+    p_data_classification: input.dataClassification ?? "internal_unverified",
   });
 
   if (registerError) {

@@ -20,6 +20,12 @@ import {
 import { parseAnalyticsQueryPlan, type AnalyticsQueryPlan } from "@/lib/analytics/query-plan";
 import { resolveAnalyticsQuestion } from "@/lib/analytics/resolve-question";
 import { validateSql } from "@/lib/analytics/validate-sql";
+import {
+  collectSourceFactIds,
+  loadSourceFactClassifications,
+} from "@/lib/classification/source-filter";
+import type { DataClassification } from "@/lib/classification/types";
+import { DEFAULT_ANALYTICS_CLASSIFICATION_POLICY } from "@/lib/analytics/semantic-model";
 
 export type AnalyticsResultContract = {
   ok: boolean;
@@ -142,6 +148,8 @@ export async function runStructuredAnalytics(opts: {
   organizationId?: string | null;
   userId?: string | null;
   persist?: boolean;
+  /** Explicit test-only override. Product/Ask callers omit this. */
+  classificationPurpose?: "DEFAULT" | "DEMO_TEST";
 }): Promise<AnalyticsResultContract> {
   const question = opts.question?.trim() || null;
 
@@ -243,6 +251,78 @@ export async function runStructuredAnalytics(opts: {
     fetched[spec.table] = rows;
   }
 
+  if (opts.classificationPurpose !== "DEMO_TEST") {
+    const sourceIds = [
+      ...new Set(
+        built.fetches.flatMap((spec) =>
+          collectSourceFactIds(
+            fetched[spec.table] ?? [],
+            spec.classificationSourceFields ?? [],
+          ),
+        ),
+      ),
+    ];
+    const factClassifications = await loadSourceFactClassifications(
+      opts.supabase as Parameters<typeof loadSourceFactClassifications>[0],
+      sourceIds,
+    );
+
+    const opportunityIds = [
+      ...new Set(
+        built.fetches.flatMap((spec) => {
+          if (!spec.classificationOpportunityField) return [];
+          return (fetched[spec.table] ?? [])
+            .map((row) => row[spec.classificationOpportunityField!])
+            .filter((id): id is string => typeof id === "string" && id.length > 0);
+        }),
+      ),
+    ];
+    const classificationsByOpportunity = new Map<string, DataClassification[]>();
+    if (opportunityIds.length) {
+      const { data: documentRows } = await opts.supabase
+        .from("documents")
+        .select("opportunity_id, data_classification")
+        .in("opportunity_id", opportunityIds);
+      for (const row of (documentRows ?? []) as Array<{
+        opportunity_id?: string | null;
+        data_classification?: DataClassification;
+      }>) {
+        if (!row.opportunity_id || !row.data_classification) continue;
+        const classes = classificationsByOpportunity.get(row.opportunity_id) ?? [];
+        classes.push(row.data_classification);
+        classificationsByOpportunity.set(row.opportunity_id, classes);
+      }
+    }
+    const demoOnlyOpportunityIds = new Set(
+      [...classificationsByOpportunity.entries()]
+        .filter(([, classes]) => classes.length > 0 && classes.every((c) => c === "illustrative_demo"))
+        .map(([id]) => id),
+    );
+
+    for (const spec of built.fetches) {
+      const fields = spec.classificationSourceFields ?? [];
+      fetched[spec.table] = (fetched[spec.table] ?? []).filter((row) => {
+        if (spec.classificationOpportunityField) {
+          const opportunityId = row[spec.classificationOpportunityField];
+          if (
+            typeof opportunityId === "string" &&
+            demoOnlyOpportunityIds.has(opportunityId)
+          ) {
+            return false;
+          }
+        }
+        const rowSourceIds = fields
+          .map((field) => row[field])
+          .filter((id): id is string => typeof id === "string" && id.length > 0);
+        if (!rowSourceIds.length) return true;
+        const known = rowSourceIds
+          .map((id) => factClassifications.get(id))
+          .filter((value): value is DataClassification => Boolean(value));
+        return known.length === 0 || known.some((value) => value !== "illustrative_demo");
+      });
+    }
+  }
+
   let computed: ComputeResult;
   switch (plan.metricId) {
     case "pursuit_count":
@@ -319,6 +399,15 @@ export async function runStructuredAnalytics(opts: {
     default:
       computed = withheldMetricResult(plan.metricId, "No compute handler.");
   }
+  computed = {
+    ...computed,
+    limitations: [
+      ...computed.limitations,
+      opts.classificationPurpose === "DEMO_TEST"
+        ? "DEMO_TEST purpose explicitly included illustrative_demo rows."
+        : DEFAULT_ANALYTICS_CLASSIFICATION_POLICY,
+    ],
+  };
 
   const cutoff = dataCutoffIso();
   let runId: string | null = null;

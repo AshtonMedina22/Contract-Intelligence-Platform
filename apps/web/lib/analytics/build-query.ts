@@ -13,6 +13,10 @@ export type PostgrestFetchSpec = {
   filters: Array<{ op: "eq" | "in" | "gte" | "lte" | "not_null" | "or"; column: string; value?: unknown }>;
   order?: { column: string; ascending: boolean };
   limit: number;
+  /** F18: fields whose source facts determine metric classification. */
+  classificationSourceFields?: readonly string[];
+  /** F18: row field that identifies an opportunity whose demo-only documents exclude it. */
+  classificationOpportunityField?: string;
 };
 
 export type BuiltQuery = {
@@ -101,6 +105,7 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
           select: "id, stage, service_type, client_id, created_at, clients(name)",
           filters,
           limit,
+          classificationOpportunityField: "id",
         },
       ];
       break;
@@ -112,12 +117,14 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
           select: "id, stage, service_type, client_id, created_at, clients(name)",
           filters: [{ op: "eq", column: "stage", value: "SUBMITTED" }],
           limit,
+          classificationOpportunityField: "id",
         },
         {
           table: "submission_packets",
           select: "id, opportunity_id, submitted_at",
           filters: [{ op: "not_null", column: "submitted_at" }],
           limit,
+          classificationOpportunityField: "opportunity_id",
         },
       ];
       pushFilter(fetches[0]!.filters, plan, {
@@ -138,9 +145,11 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
         {
           table: "win_loss_reviews",
           select:
-            "id, opportunity_id, outcome, updated_at, opportunities(client_id, service_type, clients(name))",
+            "id, opportunity_id, outcome, updated_at, source_fact_id, opportunities(client_id, service_type, clients(name))",
           filters,
           limit: Math.max(limit, 500),
+          classificationSourceFields: ["source_fact_id"],
+          classificationOpportunityField: "opportunity_id",
         },
       ];
       break;
@@ -159,6 +168,7 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
             },
           ],
           limit: Math.max(limit, 500),
+          classificationOpportunityField: "id",
         },
       ];
       break;
@@ -169,9 +179,11 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
       fetches = [
         {
           table: "awards",
-          select: "id, amount_nte, awarded_on, opportunity_id, opportunities(client_id, clients(name))",
+          select: "id, amount_nte, awarded_on, opportunity_id, source_fact_id, opportunities(client_id, clients(name))",
           filters,
           limit: Math.max(limit, 500),
+          classificationSourceFields: ["source_fact_id"],
+          classificationOpportunityField: "opportunity_id",
         },
       ];
       break;
@@ -189,9 +201,11 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
         {
           table: "pricing_lines",
           select:
-            "id, awarded_rate, unit, labor_category, opportunity_id, opportunities(client_id, clients(name))",
+            "id, awarded_rate, unit, labor_category, opportunity_id, awarded_source_fact_id, opportunities(client_id, clients(name))",
           filters,
           limit: Math.max(limit, 1000),
+          classificationSourceFields: ["awarded_source_fact_id"],
+          classificationOpportunityField: "opportunity_id",
         },
       ];
       break;
@@ -210,18 +224,21 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
         fetches = [
           {
             table: "contract_alerts",
-            select: "id, bucket, contract_id, contracts(id, client_id, verified_end_on, title, clients(name))",
+            select: "id, bucket, contract_id, source_fact_id, contracts(id, client_id, opportunity_id, verified_end_on, title, clients(name))",
             filters: [{ op: "eq", column: "bucket", value: String(plan.filters.bucket) }],
             limit,
+            classificationSourceFields: ["source_fact_id"],
           },
         ];
       } else {
         fetches = [
           {
             table: "contracts",
-            select: "id, title, client_id, verified_end_on, clients(name)",
+            select: "id, title, client_id, opportunity_id, source_fact_id, verified_end_on, clients(name)",
             filters,
             limit: Math.max(limit, 500),
+            classificationSourceFields: ["source_fact_id"],
+            classificationOpportunityField: "opportunity_id",
           },
         ];
       }
@@ -231,9 +248,11 @@ export function buildAnalyticsQuery(plan: AnalyticsQueryPlan): BuiltQuery | { er
       fetches = [
         {
           table: "competitor_bids",
-          select: "id, competitor_id, opportunity_id, created_at, competitors(name)",
+          select: "id, competitor_id, opportunity_id, source_fact_id, created_at, competitors(name)",
           filters: [],
           limit: Math.max(limit, 1000),
+          classificationSourceFields: ["source_fact_id"],
+          classificationOpportunityField: "opportunity_id",
         },
       ];
       pushFilter(fetches[0]!.filters, plan, {

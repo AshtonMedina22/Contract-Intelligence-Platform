@@ -80,6 +80,37 @@ Every material extracted fact should be capable of retaining: extraction run; do
 
 `verified_public` · `verified_internal` · `internal_unverified` · `illustrative_demo`
 
+Classification is an independent trust-authority axis. It does not replace
+`verification_status`, `corpus_class`, commercial truth, or source provenance:
+
+- `verified_public` = verified public-market intelligence; it does **not** become
+  L&P internal history merely because it is verified.
+- `verified_internal` = verified L&P-internal evidence eligible for internal-history
+  and drafting purposes.
+- `internal_unverified` = retained internal evidence that may be located for review
+  but cannot support trusted factual output.
+- `illustrative_demo` = explicit demo/test evidence. It is excluded from factual Ask,
+  reports, analytics, KPIs, comparisons, drafting, and market/buyer/competitor
+  statistics unless the caller explicitly uses `DEMO_TEST`.
+
+`documents` is authoritative; `extracted_facts` and `document_chunks` carry the
+classification denormalized from their document and may never elevate it. AI cannot
+change classification. A human with `verify.promote` or `admin` authority must use
+the audited `set_document_data_classification` RPC.
+
+Purpose eligibility:
+
+| Purpose | Eligible classifications |
+| --- | --- |
+| `GENERAL_QA`, `COMPETITOR_ANALYSIS`, `PRICING_ANALYSIS`, `BID_STRATEGY`, `REPORT_GENERATION` | `verified_public`, `verified_internal` |
+| `LOCATE` | `verified_public`, `verified_internal`, `internal_unverified` |
+| `LOSS_ANALYSIS`, `PROPOSAL_DRAFTING`, `COMPLIANCE_REVIEW` | `verified_internal` |
+| `DEMO_TEST` | all four classifications |
+
+Verification and classification must both pass their own gates. A
+`HUMAN_VERIFIED` fact can still be ineligible because its classification is
+`internal_unverified` or `illustrative_demo`.
+
 ## Four commercial truths
 
 1. **BUYER REQUESTED** — solicitation/addenda/Q&A/requested pricing  
@@ -162,7 +193,7 @@ Never conflate: L&P corporate past performance; management prior experience; key
 Hybrid retrieval = structured Postgres queries + PostgreSQL FTS + pgvector.  
 No separate vector database unless measured scale/performance proves Postgres insufficient.
 
-Retrieval must be: tenant-aware · permission-aware · verification-aware · version-aware · source-precedence-aware · outcome-aware · reuse-aware · purpose-aware.
+Retrieval must be: tenant-aware · permission-aware · verification-aware · classification-aware · version-aware · source-precedence-aware · outcome-aware · reuse-aware · purpose-aware.
 
 Purpose matters. Example: `DO_NOT_USE` losing proposal content may support loss analysis, but not proposal drafting.
 

@@ -13,7 +13,7 @@ async function WorkbenchContent({ documentId }: { documentId: string }) {
 
   const { data: document, error } = await supabase
     .from("documents")
-    .select("id, original_filename, mime_type, processing_status")
+    .select("id, original_filename, mime_type, processing_status, data_classification")
     .eq("id", documentId)
     .maybeSingle();
   if (error || !document) {
@@ -73,6 +73,7 @@ async function WorkbenchContent({ documentId }: { documentId: string }) {
       sheets={sheets}
       facts={(facts ?? []) as WorkbenchFact[]}
       processingStatus={document.processing_status}
+      dataClassification={document.data_classification}
       openExceptionIds={(exceptions ?? []).map((row) => row.id)}
     />
   );

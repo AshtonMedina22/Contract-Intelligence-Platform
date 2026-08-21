@@ -21,6 +21,66 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
   // Refresh contract alerts before querying (same as renewals page)
   await supabase.rpc("refresh_contract_alerts");
 
+  // F18: opportunity aggregates exclude only-demo packages. Classification is
+  // independent from verification and procurement_packages.corpus_class.
+  const { data: classifiedDocuments } = await supabase
+    .from("documents")
+    .select("opportunity_id, data_classification")
+    .not("opportunity_id", "is", null);
+  const opportunityClasses = new Map<string, Set<string>>();
+  for (const row of classifiedDocuments ?? []) {
+    if (!row.opportunity_id) continue;
+    const classes = opportunityClasses.get(row.opportunity_id) ?? new Set<string>();
+    classes.add(row.data_classification);
+    opportunityClasses.set(row.opportunity_id, classes);
+  }
+  const demoOnlyOpportunityIds = [...opportunityClasses.entries()]
+    .filter(([, classes]) => classes.size === 1 && classes.has("illustrative_demo"))
+    .map(([id]) => id);
+  const demoFilter =
+    demoOnlyOpportunityIds.length > 0 ? `(${demoOnlyOpportunityIds.join(",")})` : null;
+
+  let activePursuitsQuery = supabase
+    .from("opportunities")
+    .select("*", { count: "exact", head: true })
+    .not("stage", "in", "(CLOSED,AWARDED)");
+  let pursuitsDueSoonQuery = supabase
+    .from("opportunities")
+    .select("*", { count: "exact", head: true })
+    .not("stage", "in", "(CLOSED,AWARDED)")
+    .not("response_due_on", "is", null)
+    .lte("response_due_on", new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10))
+    .gte("response_due_on", new Date().toISOString().slice(0, 10));
+  let pipelineQuery = supabase
+    .from("opportunities")
+    .select("id, title, stage, response_due_on, clients(name)")
+    .not("stage", "in", "(CLOSED,AWARDED)")
+    .order("response_due_on", { ascending: true, nullsFirst: false })
+    .limit(20);
+  let winLossCountsQuery = supabase.from("win_loss_reviews").select("outcome, opportunity_id");
+  let recentOutcomesQuery = supabase
+    .from("win_loss_reviews")
+    .select("id, opportunity_id, outcome, winner_name, opportunities(title)")
+    .order("created_at", { ascending: false })
+    .limit(5);
+  let duePursuitsQuery = supabase
+    .from("opportunities")
+    .select("id, title, response_due_on")
+    .not("stage", "in", "(CLOSED,AWARDED)")
+    .not("response_due_on", "is", null)
+    .lte("response_due_on", new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10))
+    .gte("response_due_on", new Date().toISOString().slice(0, 10))
+    .order("response_due_on", { ascending: true })
+    .limit(10);
+  if (demoFilter) {
+    activePursuitsQuery = activePursuitsQuery.not("id", "in", demoFilter);
+    pursuitsDueSoonQuery = pursuitsDueSoonQuery.not("id", "in", demoFilter);
+    pipelineQuery = pipelineQuery.not("id", "in", demoFilter);
+    winLossCountsQuery = winLossCountsQuery.not("opportunity_id", "in", demoFilter);
+    recentOutcomesQuery = recentOutcomesQuery.not("opportunity_id", "in", demoFilter);
+    duePursuitsQuery = duePursuitsQuery.not("id", "in", demoFilter);
+  }
+
   // Parallel queries for all metrics
   const [
     // KPI metrics
@@ -51,37 +111,31 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
     notificationsRes,
   ] = await Promise.all([
     // Active pursuits: stage NOT IN ('CLOSED', 'AWARDED')
-    supabase
-      .from("opportunities")
-      .select("*", { count: "exact", head: true })
-      .not("stage", "in", "(CLOSED,AWARDED)"),
+    activePursuitsQuery,
 
     // Pursuits due within 14 days
-    supabase
-      .from("opportunities")
-      .select("*", { count: "exact", head: true })
-      .not("stage", "in", "(CLOSED,AWARDED)")
-      .not("response_due_on", "is", null)
-      .lte("response_due_on", new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10))
-      .gte("response_due_on", new Date().toISOString().slice(0, 10)),
+    pursuitsDueSoonQuery,
 
     // Verification backlog: facts with AI_EXTRACTED, NEEDS_REVIEW, or CONFLICT
     supabase
       .from("extracted_facts")
       .select("*", { count: "exact", head: true })
-      .in("verification_status", ["AI_EXTRACTED", "NEEDS_REVIEW", "CONFLICT"]),
+      .in("verification_status", ["AI_EXTRACTED", "NEEDS_REVIEW", "CONFLICT"])
+      .neq("data_classification", "illustrative_demo"),
 
     // Processing failures: documents with FAILED status
     supabase
       .from("documents")
       .select("*", { count: "exact", head: true })
-      .eq("processing_status", "FAILED"),
+      .eq("processing_status", "FAILED")
+      .neq("data_classification", "illustrative_demo"),
 
     // Lifecycle errors: documents with lifecycle_error NOT NULL
     supabase
       .from("documents")
       .select("*", { count: "exact", head: true })
-      .not("lifecycle_error", "is", null),
+      .not("lifecycle_error", "is", null)
+      .neq("data_classification", "illustrative_demo"),
 
     // Open exceptions: validation_exceptions not resolved
     supabase
@@ -118,22 +172,13 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
       .not("verified_end_on", "is", null),
 
     // Pipeline: active opportunities with stage, client, due date
-    supabase
-      .from("opportunities")
-      .select("id, title, stage, response_due_on, clients(name)")
-      .not("stage", "in", "(CLOSED,AWARDED)")
-      .order("response_due_on", { ascending: true, nullsFirst: false })
-      .limit(20),
+    pipelineQuery,
 
     // Win/loss counts by outcome
-    supabase.from("win_loss_reviews").select("outcome"),
+    winLossCountsQuery,
 
     // Recent outcomes for list
-    supabase
-      .from("win_loss_reviews")
-      .select("id, opportunity_id, outcome, winner_name, opportunities(title)")
-      .order("created_at", { ascending: false })
-      .limit(5),
+    recentOutcomesQuery,
 
     // Contract alerts grouped by bucket
     supabase.from("contract_alerts").select("bucket"),
@@ -145,15 +190,7 @@ export async function loadActionCenter(): Promise<ActionCenterData> {
     supabase.from("competitors").select("*", { count: "exact", head: true }),
 
     // Due pursuits for attention queue (due within 14 days)
-    supabase
-      .from("opportunities")
-      .select("id, title, response_due_on")
-      .not("stage", "in", "(CLOSED,AWARDED)")
-      .not("response_due_on", "is", null)
-      .lte("response_due_on", new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10))
-      .gte("response_due_on", new Date().toISOString().slice(0, 10))
-      .order("response_due_on", { ascending: true })
-      .limit(10),
+    duePursuitsQuery,
 
     // Open notifications (org broadcast + own user)
     supabase

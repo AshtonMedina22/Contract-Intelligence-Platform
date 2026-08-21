@@ -7,7 +7,8 @@ export type RetrievalPurpose =
   | "BID_STRATEGY"
   | "PROPOSAL_DRAFTING"
   | "COMPLIANCE_REVIEW"
-  | "REPORT_GENERATION";
+  | "REPORT_GENERATION"
+  | "DEMO_TEST";
 
 export type AskMode = "locate" | "ask" | "report";
 
@@ -21,11 +22,17 @@ export const RETRIEVAL_PURPOSES: RetrievalPurpose[] = [
   "PROPOSAL_DRAFTING",
   "COMPLIANCE_REVIEW",
   "REPORT_GENERATION",
+  "DEMO_TEST",
 ];
 
 /** DO_NOT_USE may support retrospective analysis; never proposal drafting. */
 export function purposeAllowsDoNotUse(purpose: RetrievalPurpose): boolean {
-  return purpose === "LOSS_ANALYSIS" || purpose === "COMPETITOR_ANALYSIS" || purpose === "LOCATE";
+  return (
+    purpose === "LOSS_ANALYSIS" ||
+    purpose === "COMPETITOR_ANALYSIS" ||
+    purpose === "LOCATE" ||
+    purpose === "DEMO_TEST"
+  );
 }
 
 export function purposeRequiresDraftingGates(purpose: RetrievalPurpose): boolean {

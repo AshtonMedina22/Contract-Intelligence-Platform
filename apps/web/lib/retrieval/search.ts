@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { RetrievalPurpose } from "@/lib/retrieval/purpose";
 import { purposeRequiresDraftingGates } from "@/lib/retrieval/purpose";
-import type { ReuseStatus } from "@/lib/supabase/database.types";
+import type { DataClassification, ReuseStatus } from "@/lib/supabase/database.types";
 
 export type KnowledgeHit = {
   chunk_id: string;
@@ -12,6 +12,7 @@ export type KnowledgeHit = {
   field: string | null;
   content: string;
   reuse_status: ReuseStatus;
+  data_classification: DataClassification;
   rank: number;
   match_kind: string;
 };
@@ -57,6 +58,7 @@ export async function searchVerifiedKnowledge(opts: {
       field: hit.field,
       content: hit.content,
       reuse_status: hit.reuse_status,
+      data_classification: hit.data_classification,
       rank: hit.rank,
       match_kind: hit.match_kind,
     })),
