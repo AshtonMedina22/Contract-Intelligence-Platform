@@ -1,7 +1,14 @@
 # Canonical UX / UI architecture
 
 Source: approved Canonical Product Pack (Prompt 0A).  
-Business authority: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md).
+Business authority: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md).  
+Visual/shell references (routing only): [EXTERNAL_UX_REFERENCES.md](EXTERNAL_UX_REFERENCES.md).
+
+## Visual language (lock)
+
+Enterprise, information-dense, audit-oriented, desktop-first, table/grid-centric, source/evidence-aware.
+
+**Avoid:** marketing-site layouts, giant heroes, decorative graphics, excessive gradients, fake AI effects, unnecessary animation, excessive whitespace, fake dashboards, charts without verified trend data.
 
 ## Canonical IA (lock)
 

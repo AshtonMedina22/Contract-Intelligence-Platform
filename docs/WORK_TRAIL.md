@@ -4,12 +4,12 @@
 
 | Field | Value |
 | --- | --- |
-| **Last updated** | 2026-08-20 (Ask GPT: Ollama/Google/Gateway multi-provider; corpus SRC-24…30 trail) |
+| **Last updated** | 2026-08-20 (Ask GPT dual-rail AI SDK agent + Custom GPT Actions; no Grok) |
 | **Git HEAD on origin/main** | _(pushing this commit)_ |
 | **Product truth gate** | VERIFY9 = READY WITH NONBLOCKING LIMITATIONS — **not** full Phase 2–8 exit. Live packages **~22**; A/B harness-complete **~23**; exit ~20–30 **lower bound met**, still short of ~30. VERIFY2B **8/8**. Local Ask synthesis: **Ollama** (free) + Google Gemini fallback; Gateway needs card; OpenAI key quota-blocked. Secrets stay in `.env.local` only. |
 | **Rollback** | `cursor-phase2-foundation` @ `8d2d031` |
 
-Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
+Companion: [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Long-form domains/tables: [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md). External OSS routing: [EXTERNAL_REFERENCE_REPOS.md](EXTERNAL_REFERENCE_REPOS.md). UX/shell routing: [EXTERNAL_UX_REFERENCES.md](EXTERNAL_UX_REFERENCES.md).
 
 ---
 
@@ -36,7 +36,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 | **Phase 3 Historical Ingestion** | **PASS** — Data Ops productionized ([PHASE3_ACCEPTANCE.md](PHASE3_ACCEPTANCE.md)); DOCX wired; OCR key-gated; package grouping; resizable verify | Set `MISTRAL_API_KEY` for live scans; grow corpus |
 | **Phase 4 Contracts / Compliance** | **Prompt 4 exit** — Portfolio/Renewals/Compliance nav; workspace tabs wired to verified tables; alert buckets; [PHASE4_ACCEPTANCE.md](PHASE4_ACCEPTANCE.md) | Validate on more real awarded instruments; grow corpus |
 | **Phase 5 Intelligence** | **Prompt 5 + VERIFY 5 PASS** — Buyers/Competitors/Market/Pricing/Win-Loss/Content/Reports; [PHASE5_INTELLIGENCE_ACCEPTANCE.md](PHASE5_INTELLIGENCE_ACCEPTANCE.md) | Corpus-thin |
-| **Phase 6 Ask / Reports / Automation** | **Prompt 6 + VERIFY 6 PASS** — LOCATE/ASK/REPORT; purpose-aware retrieval; 8 reports; automation incl. approval reminders; [PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md](PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md) | Corpus-thin; local Ask synthesis via **Ollama** / Google / Gateway (prod Gateway still unset) |
+| **Phase 6 Ask / Reports / Automation** | **Prompt 6 + VERIFY 6 PASS** + **dual-rail Ask agent** — LOCATE (no LLM) / ASK streaming tools / REPORT SQL; INTERNAL_VERIFIED + PUBLIC research rails; ChatGPT Custom GPT Actions OpenAPI; providers = Gateway/Groq/Ollama/Google/optional OpenAI (**no Grok**); [PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md](PHASE6_ASK_REPORTS_AUTOMATION_ACCEPTANCE.md) | Corpus-thin; set `ASK_MODEL` + provider key; optional `TAVILY_*`/`BRAVE_*`; `GPT_ACTIONS_SECRET` + org-scoped Actions auth still ops |
 | **Phase 7 Pricing Intelligence** | Prompt 7 + **VERIFY 7 PASS** — blank comparable reason blocked; Glide source_fact URI columns. [VERIFY7_ACCEPTANCE.md](pilot/VERIFY7_ACCEPTANCE.md) | Grow verified pricing corpus |
 | **Phase 8 Response / Submission / Result** | Prompt 8 + **VERIFY 8 PASS** — end-to-end pre-award flow. [VERIFY8_ACCEPTANCE.md](pilot/VERIFY8_ACCEPTANCE.md) | Grow verified corpus |
 | **Docs** | Pack + full master context reconciled | Same |
@@ -59,7 +59,7 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 5–8. ~~DONE~~  
 
 **P2 — Operator capability (when needed)**  
-9. Ask synthesis: local **Ollama** wired (`ASK_MODEL=ollama/…`); Google Gemini works as fallback; Vercel Gateway key saved locally but needs card on file for free credits; OpenAI API quota blocked. **Prod Vercel still needs** `ASK_MODEL` + provider auth for hosted Ask.  
+9. Ask dual-rail agent: in-app `POST /api/ask/chat` + `AskChatClient`; Custom GPT Actions at `/api/ask/actions/*` + OpenAPI. Local **Ollama** / Groq / Google / Gateway / optional OpenAI (**no Grok**). Public rail needs `TAVILY_API_KEY` or `BRAVE_SEARCH_API_KEY`. Gateway needs card; OpenAI quota often blocked. **Prod** still needs `ASK_MODEL` + provider + optional `GPT_ACTIONS_SECRET` / `NEXT_PUBLIC_APP_URL`.  
 10. Hosted/reachable processor (`PROCESSOR_URL` + secret) beyond local.  
 11. OCR / Drive tokens only when those paths are in use (`MISTRAL_API_KEY` for SRC-19).  
 
@@ -73,6 +73,9 @@ Full business domains / validation / pricing / contracts / RAG / table maps live
 
 | When | What happened | Outcome | Follow-up |
 | --- | --- | --- | --- |
+| 2026-08-20 | External UX/shell registry (no product code) | [EXTERNAL_UX_REFERENCES.md](EXTERNAL_UX_REFERENCES.md) + `docs/reference-ux/README.md` + `.cursor/rules/external-ux-references.mdc`. 12 UX refs REGISTERED ONLY (Plane/Twenty AGPL visual; Studio Admin + shadcn for code). IA lock restated; skeleton listed not built. No shadcn install, no page redesign, nothing committed. | Explicit shell/skeleton task later if requested; do not load all UX refs per task |
+| 2026-08-20 | External reference registry (no product code) | [EXTERNAL_REFERENCE_REPOS.md](EXTERNAL_REFERENCE_REPOS.md) + lazy `docs/reference-repos/README.md` + `.cursor/rules/external-reference-repos.mdc`. 18 repos REGISTERED ONLY; max-3 subsystem inspect. No clones, no schema/app changes, nothing committed. | Inspect a listed repo only when a subsystem gap needs it; write a lazy note then |
+| 2026-08-20 | Ask dual-rail AI SDK upgrade | Shipped evidence model, Gateway/Groq/Ollama/Google/OpenAI (no Grok), internal+public tools, `streamAskChat`, `POST /api/ask/chat`, AskChatClient on mode=ask, Custom GPT Actions OpenAPI + routes, `.env.example` + phase6 asserts. Public never writes to `document_chunks`. LOCATE still no LLM. | Set provider keys / Gateway card / Tavily; harden Actions auth to operator org under bearer; grow corpus |
 | 2026-08-20 | Ask providers + push | Multi-provider Ask (`synthesize.ts`): Ollama local free path verified; Google Gemini OK; Gateway needs card; OpenAI quota fail. Corpus harness SRC-24…30 + BoardBook extractor fix. Secrets not committed. | Grow to ~30; prod Ask env; hosted processor |
 | 2026-08-20 | Verified P0 vs end-state; cross ~20 | Acquired/ingested SRC-27/28 public TxSmartBuy ESBD awards (HHSC). Live **21** pkgs / **21** A/B complete. VERIFY2B **8/8**. Lower bound of ~20–30 **met**. | Continue toward ~30 (prefer Grade A instruments); ASK_MODEL; MISTRAL; hosted processor |
 | 2026-08-20 | Verified P0 vs end-state; grow corpus | Acquired/ingested SRC-24 Terrell 2023 ESR, SRC-25 TxSmartBuy TXMAS list, SRC-26 Allen minutes excerpt. Live **19** pkgs. Extractor glued-BoardBook fix + reextract SRC-24 NTE `$300000` + LP award. VERIFY2B **8/8**. Browser Contracts shows SRC-24/25. Rejected false TxDMV FTP hits. | ≥1 more package to cross ~20; Grade A instruments preferred; ASK_MODEL; MISTRAL; hosted processor |

@@ -1,0 +1,22 @@
+---
+description: Route UX/shell work to locked IA + targeted visual/code references; max 3; no new starter
+alwaysApply: true
+---
+
+# External UX / shell references
+
+Before inventing significant shell, navigation, table, or workbench UX, read:
+
+- [docs/UX_UI.md](docs/UX_UI.md)
+- [docs/EXTERNAL_UX_REFERENCES.md](docs/EXTERNAL_UX_REFERENCES.md)
+- existing local shell: `apps/web/app/(platform)/layout.tsx`, `app-sidebar.tsx`, `app-shell-header.tsx`
+
+Select UX references **by chrome** (shell vs list vs workspace vs verification vs editor vs Ask). Inspect **no more than 3** by default. Never load every registered UX source on every task.
+
+Do **not** replace this app with a new Vercel/dashboard starter. Do **not** install `dashboard-01` wholesale. Mine shadcn via `--dry-run`. Prefer existing `components/ui/*` primitives.
+
+Canonical IA wins: sidebar = Home | Pursuits | Intelligence | Contracts | Data Ops; Settings footer; header = Breadcrumbs | Find or Ask GPT | + New | User; workflow lives in **workspace tabs**, not extra sidebar apps.
+
+Visual language: enterprise, information-dense, audit-oriented, desktop-first, table/grid-centric, source-aware. No marketing heroes, fake analytics, or charts without verified data.
+
+Plane / Twenty / Documenso app are **AGPL UX references** unless copy is explicitly approved. Prefer Studio Admin (MIT) + official shadcn for code. Record material UX inspections lazily under `docs/reference-ux/`.

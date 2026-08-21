@@ -13,6 +13,10 @@ Secrets are **not** in git. Read `docs/DEVICE_SETUP.md`. Never commit `.env.loca
 
 **Authoritative blueprint:** [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). **Long-form domains/tables/Python:** [MASTER_PRODUCT_CONTEXT.md](MASTER_PRODUCT_CONTEXT.md). **Phase naming:** [PHASE_RECONCILIATION.md](PHASE_RECONCILIATION.md). Phases: [BUILD_PLAN.md](BUILD_PLAN.md). UX: [UX_UI.md](UX_UI.md). Stack: [TECH_STACK.md](TECH_STACK.md).
 
+Before implementing substantial new subsystem mechanics, consult [EXTERNAL_REFERENCE_REPOS.md](EXTERNAL_REFERENCE_REPOS.md) and the `external-reference-repos` Cursor rule. External repos are inspected lazily by subsystem, not loaded globally.
+
+Before inventing significant shell/navigation/table/workbench UX, consult [UX_UI.md](UX_UI.md), [EXTERNAL_UX_REFERENCES.md](EXTERNAL_UX_REFERENCES.md), and the `external-ux-references` Cursor rule. UX references are inspected lazily by chrome (shell vs list vs workspace vs verification vs editor vs Ask), not loaded globally. Do not install a new dashboard starter.
+
 **Foundation rollback branch:** `cursor-phase2-foundation` @ `8d2d031` (pre–Prompt 2C–9 expansion).
 
 ---

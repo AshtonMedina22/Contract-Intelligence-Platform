@@ -101,10 +101,19 @@ async function main() {
       "apps/web/lib/retrieval/purpose.ts",
       "apps/web/lib/retrieval/search.ts",
       "apps/web/lib/ask/synthesize.ts",
+      "apps/web/lib/ask/evidence.ts",
+      "apps/web/lib/ask/model.ts",
+      "apps/web/lib/ask/tools.ts",
+      "apps/web/lib/ask/agent.ts",
+      "apps/web/lib/ask/research/provider.ts",
+      "apps/web/lib/ask/gpt-actions-openapi.ts",
       "apps/web/lib/reports/generate.ts",
       "apps/web/components/ask/answer-panel.tsx",
+      "apps/web/components/ask/ask-chat.tsx",
       "apps/web/app/(platform)/intelligence/ask/page.tsx",
       "apps/web/app/(platform)/intelligence/reports/page.tsx",
+      "apps/web/app/api/ask/chat/route.ts",
+      "apps/web/app/api/ask/actions/openapi/route.ts",
       "apps/web/app/api/cron/intelligence-digest/route.ts",
       "supabase/migrations/20260820800000_phase6_ask_reports_automation.sql",
     ];
@@ -118,6 +127,89 @@ async function main() {
     const ask = read("apps/web/app/(platform)/intelligence/ask/page.tsx");
     record("modes", "Ask page has LOCATE / ASK / REPORT modes", /LOCATE/.test(ask) && /ASK \/ ANALYZE/.test(ask) && /REPORT/.test(ask));
     record("modes", "Ask answer panel contract fields", /AskAnswerPanel/.test(ask) || /Data Scope|Limitations/.test(ask));
+    record(
+      "modes",
+      "mode=ask mounts AskChatClient dual-rail stream",
+      /AskChatClient/.test(ask) && /mode === "ask"/.test(ask) && /from "@\/components\/ask\/ask-chat"/.test(ask),
+    );
+    record(
+      "modes",
+      "LOCATE path stays no-LLM (No LLM used)",
+      /No LLM used/.test(ask) && /mode === "locate"/.test(ask),
+    );
+    record(
+      "modes",
+      "REPORT path uses generateIntelligenceReport SQL",
+      /generateIntelligenceReport/.test(ask) && /mode === "report"/.test(ask),
+    );
+
+    const chatRoute = read("apps/web/app/api/ask/chat/route.ts");
+    record(
+      "ask-agent",
+      "POST /api/ask/chat rejects locate/report modes",
+      /mode === "locate"/.test(chatRoute) && /mode === "report"/.test(chatRoute) && /streamAskChat/.test(chatRoute),
+    );
+
+    const evidence = read("apps/web/lib/ask/evidence.ts");
+    record(
+      "ask-agent",
+      "Evidence classes include INTERNAL_VERIFIED and PUBLIC rails",
+      /INTERNAL_VERIFIED/.test(evidence) &&
+        /OFFICIAL_PUBLIC/.test(evidence) &&
+        /EXTERNAL_RESEARCH/.test(evidence) &&
+        /validateCitations/.test(evidence),
+    );
+    // Dual-rail citation contract (static unit-style): drafting must refuse public/unverified as L&P truth.
+    record(
+      "ask-agent",
+      "Citation validation flags drafting misuse of public classes",
+      /draftingPurpose/.test(evidence) &&
+        /EXTERNAL_RESEARCH/.test(evidence) &&
+        /PROPOSAL_DRAFTING cannot treat public/.test(evidence),
+    );
+
+    const tools = read("apps/web/lib/ask/tools.ts");
+    record(
+      "ask-agent",
+      "Tools expose internal search (limit 50) + public research",
+      /search_verified_passages/.test(tools) &&
+        /limit: limit \?\? 50/.test(tools) &&
+        /search_public_research/.test(tools) &&
+        /fetch_public_source/.test(tools),
+    );
+    record(
+      "ask-agent",
+      "Public research never labeled HUMAN_VERIFIED in tools",
+      !/evidence_class:\s*"HUMAN_VERIFIED"/.test(tools) && /PUBLIC rail/.test(tools),
+    );
+
+    const chatUi = read("apps/web/components/ask/ask-chat.tsx");
+    record(
+      "ask-agent",
+      "AskChatClient groups source cards by evidence_class",
+      /evidence_class/.test(chatUi) && /SourceCards/.test(chatUi) && /useChat/.test(chatUi),
+    );
+    record(
+      "modes",
+      "LOCATE path has no LLM synthesis import",
+      /mode === "locate"/.test(ask) &&
+        /No LLM used/.test(ask) &&
+        !/synthesizeGroundedAnswer/.test(ask),
+    );
+    record(
+      "ask-agent",
+      "Actions OpenAPI route exists for ChatGPT Custom GPT",
+      existsSync(join(ROOT, "apps/web/app/api/ask/actions/openapi/route.ts")) &&
+        /GPT_ACTIONS_OPENAPI/.test(read("apps/web/app/api/ask/actions/openapi/route.ts")),
+    );
+    const modelSrc = read("apps/web/lib/ask/model.ts");
+    record(
+      "ask-agent",
+      "Ask providers exclude Grok (Gateway/Groq/Ollama/Google/OpenAI)",
+      /createGroq/.test(modelSrc) &&
+        /ollamaEnabled/.test(modelSrc) &&
+        !/@ai-sdk\/xai|createXai|grok-/i.test(modelSrc),
+    );
 
     const purpose = read("apps/web/lib/retrieval/purpose.ts");
     record(

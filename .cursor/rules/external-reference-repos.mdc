@@ -1,0 +1,21 @@
+---
+description: Route external OSS references by subsystem; lazy inspect max 3; local architecture wins
+alwaysApply: true
+---
+
+# External reference repositories
+
+Before inventing significant new subsystem mechanics, read:
+
+- [docs/MASTER_BLUEPRINT.md](docs/MASTER_BLUEPRINT.md)
+- [docs/PRODUCT_SPEC.md](docs/PRODUCT_SPEC.md)
+- [docs/CURRENT_STATE_AUDIT.md](docs/CURRENT_STATE_AUDIT.md)
+- [docs/EXTERNAL_REFERENCE_REPOS.md](docs/EXTERNAL_REFERENCE_REPOS.md)
+
+Select references **by subsystem** from that registry. Inspect **no more than 3** external repositories by default. Never analyze every registered repo on every task.
+
+Prefer proven implementations/patterns over unnecessary greenfield reinvention. Reuse existing local code before importing external patterns. A listed repo does **not** mean we must adopt it.
+
+This repository remains authoritative. Local canonical docs override external examples. Never wholesale-merge an external application. Never replace our Supabase/RLS model, four commercial truths, verification/provenance, human-final pricing, `L&P INPUT REQUIRED`, purpose-aware retrieval, or canonical UX/IA.
+
+Never copy source without checking the repository’s **current** LICENSE. AGPL / non-permissive / unlicensed / unclear projects are **reference-only** unless explicitly approved. Record material upstream research lazily under `docs/reference-repos/` (see that folder’s README). Do not clone external repos into this project.

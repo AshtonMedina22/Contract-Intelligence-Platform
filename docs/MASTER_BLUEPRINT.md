@@ -14,6 +14,7 @@ It defines the finished product, lifecycle, trust model, UX, capability boundari
 | Detailed phase plan | [FULL_PHASE_BUILD_PLAN.md](FULL_PHASE_BUILD_PLAN.md) |
 | What exists today | [CURRENT_STATE_AUDIT.md](CURRENT_STATE_AUDIT.md) |
 | UX / IA | [UX_UI.md](UX_UI.md) |
+| UX visual / shell references | [EXTERNAL_UX_REFERENCES.md](EXTERNAL_UX_REFERENCES.md) |
 | Living session trail | [WORK_TRAIL.md](WORK_TRAIL.md) |
 | Historical pilot | [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md) |
 

@@ -15,7 +15,7 @@ No independent `VERIFY6_*` report existed on disk. Fix pass audited Prompt 6 exi
 - **Header Ask** — `[Find or Ask GPT...]` routes to `/intelligence/ask` (not a sidebar app)
 - **Modes:** LOCATE | ASK/ANALYZE | REPORT
 - **LOCATE** — structured SQL + FTS + direct record/document lookup; no LLM
-- **ASK/ANALYZE** — purpose-aware hybrid retrieval (structured + FTS + pgvector) + Vercel AI SDK / Gateway grounded synthesis when configured; falls back to evidence-only without inventing
+- **ASK/ANALYZE** — dual-rail streaming agent (`AskChatClient` → `POST /api/ask/chat` → `streamText` + tools): INTERNAL_VERIFIED corpus/structured reads + optional PUBLIC research (Tavily/Brave); authority-labeled source cards; ChatGPT Custom GPT Actions share the same tools. Single-shot `synthesizeGroundedAnswer` remains for drafts/legacy. Public results are cite-only and never written to `document_chunks` / HUMAN_VERIFIED.
 - **REPORT** — eight generators: Bid Strategy, Buyer Intelligence Brief, Market Intelligence, Competitor Intelligence, Pricing Intelligence, Win/Loss Analysis, Proposal Improvement / Evaluator Analysis, Executive Intelligence Brief
 - **Retrieval purposes** — `GENERAL_QA`, `LOCATE`, `LOSS_ANALYSIS`, `COMPETITOR_ANALYSIS`, `PRICING_ANALYSIS`, `BID_STRATEGY`, `PROPOSAL_DRAFTING`, `COMPLIANCE_REVIEW`, `REPORT_GENERATION`
 - **DO_NOT_USE** — allowed for retrospective analysis purposes; **blocked** for `PROPOSAL_DRAFTING`

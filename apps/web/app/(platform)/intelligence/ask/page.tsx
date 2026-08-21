@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AskAnswerPanel } from "@/components/ask/answer-panel";
+import { AskChatClient } from "@/components/ask/ask-chat";
 import { SearchHitsTable, type SearchHitRow } from "../content/search-hits-table";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -14,7 +15,7 @@ import {
   RETRIEVAL_PURPOSES,
 } from "@/lib/retrieval/purpose";
 import { locateRecords, searchVerifiedKnowledge } from "@/lib/retrieval/search";
-import { embedQuery, synthesizeGroundedAnswer, INSUFFICIENT } from "@/lib/ask/synthesize";
+import { INSUFFICIENT } from "@/lib/ask/synthesize";
 import { generateIntelligenceReport, REPORT_CATALOG, type ReportKind } from "@/lib/reports/generate";
 
 const EXAMPLE_QUERIES = [
@@ -65,13 +66,36 @@ async function AskIntelligence({
 
   const dataScope = [
     "organization (RLS)",
-    "HUMAN_VERIFIED only",
+    mode === "ask" ? "INTERNAL_VERIFIED + optional PUBLIC research" : "HUMAN_VERIFIED only",
     `purpose=${purpose}`,
     purpose === "PROPOSAL_DRAFTING" ? "excludes DO_NOT_USE/SUPERSEDED/non-current" : null,
     opportunityId ? `pursuit=${opportunityId}` : "cross-corpus",
   ]
     .filter(Boolean)
     .join(" · ");
+
+  // mode=ask uses the dual-rail streaming agent (AskChatClient). LOCATE / REPORT stay GET.
+  if (mode === "ask") {
+    return (
+      <div className="space-y-4">
+        <AskPageHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle} />
+        <AskModeForm
+          mode={mode}
+          purpose={purpose}
+          opportunityId={opportunityId}
+          reportKind={reportKind}
+          query={query}
+          showQuery={false}
+        />
+        <AskChatClient
+          purpose={purpose}
+          opportunityId={opportunityId || null}
+          dataScope={dataScope}
+          initialQuery={query || undefined}
+        />
+      </div>
+    );
+  }
 
   const locate = query && mode === "locate" ? await locateRecords(query) : [];
   let hits: SearchHitRow[] = [];
@@ -81,36 +105,23 @@ async function AskIntelligence({
   let limitations = "";
   let modelUsed: string | null = null;
 
-  if (query && mode !== "report") {
-    const embedding = mode === "ask" ? await embedQuery(query) : null;
+  if (query && mode === "locate") {
     const { hits: knowledgeHits, error } = await searchVerifiedKnowledge({
       query,
       purpose,
       opportunityId,
-      queryEmbedding: embedding,
+      queryEmbedding: null,
       limit: 25,
     });
     if (error) errorMessage = error;
     hits = knowledgeHits;
-    if (mode === "locate") {
-      answer =
-        locate.length + hits.length === 0
-          ? INSUFFICIENT
-          : `Located ${locate.length} structured record(s) and ${hits.length} verified passage(s). No LLM used.`;
-      insufficient = locate.length + hits.length === 0;
-      limitations = "LOCATE uses structured SQL + FTS only. Open View Source / record links to inspect evidence.";
-    } else {
-      const grounded = await synthesizeGroundedAnswer({
-        query,
-        purpose,
-        hits: knowledgeHits,
-        dataScope,
-      });
-      answer = grounded.answer;
-      insufficient = grounded.insufficient;
-      limitations = grounded.limitations;
-      modelUsed = grounded.modelUsed;
-    }
+    answer =
+      locate.length + hits.length === 0
+        ? INSUFFICIENT
+        : `Located ${locate.length} structured record(s) and ${hits.length} verified passage(s). No LLM used.`;
+    insufficient = locate.length + hits.length === 0;
+    limitations =
+      "LOCATE uses structured SQL + FTS only. Open View Source / record links to inspect evidence.";
   }
 
   let report = null;
@@ -127,76 +138,15 @@ async function AskIntelligence({
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Find or Ask GPT</h1>
-        <p className="text-sm text-muted-foreground">
-          Global header capability — not a sidebar app. Modes: LOCATE (no LLM) · ASK/ANALYZE (grounded synthesis) ·
-          REPORT (evidence-backed briefs).
-        </p>
-      </div>
-
-      {opportunityId && opportunityTitle ? (
-        <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
-          Scoped to pursuit:{" "}
-          <Link className="underline" href={`/procurement/opportunities/${opportunityId}`}>
-            {opportunityTitle}
-          </Link>
-        </p>
-      ) : null}
-
-      <form className="flex max-w-3xl flex-wrap items-end gap-3" method="get">
-        {opportunityId ? <input type="hidden" name="opportunity" value={opportunityId} /> : null}
-        <div className="space-y-1">
-          <Label htmlFor="mode">Mode</Label>
-          <select
-            id="mode"
-            name="mode"
-            defaultValue={mode}
-            className="flex h-9 rounded-md border bg-background px-2 text-sm"
-          >
-            <option value="locate">LOCATE</option>
-            <option value="ask">ASK / ANALYZE</option>
-            <option value="report">REPORT</option>
-          </select>
-        </div>
-        <div className="space-y-1">
-          <Label htmlFor="purpose">Purpose</Label>
-          <select
-            id="purpose"
-            name="purpose"
-            defaultValue={purpose}
-            className="flex h-9 rounded-md border bg-background px-2 text-sm"
-          >
-            {RETRIEVAL_PURPOSES.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
-        {mode === "report" ? (
-          <div className="space-y-1">
-            <Label htmlFor="report">Report</Label>
-            <select
-              id="report"
-              name="report"
-              defaultValue={reportKind}
-              className="flex h-9 rounded-md border bg-background px-2 text-sm"
-            >
-              {REPORT_CATALOG.map((r) => (
-                <option key={r.kind} value={r.kind}>
-                  {r.title}
-                </option>
-              ))}
-            </select>
-          </div>
-        ) : null}
-        <div className="min-w-72 flex-1 space-y-1">
-          <Label htmlFor="q">Query</Label>
-          <Input id="q" name="q" defaultValue={query} placeholder="Find or Ask GPT..." />
-        </div>
-        <Button type="submit">{mode === "report" ? "Generate" : "Run"}</Button>
-      </form>
+      <AskPageHeader opportunityId={opportunityId} opportunityTitle={opportunityTitle} />
+      <AskModeForm
+        mode={mode}
+        purpose={purpose}
+        opportunityId={opportunityId}
+        reportKind={reportKind}
+        query={query}
+        showQuery
+      />
 
       {!query && mode !== "report" ? (
         <ul className="flex flex-wrap gap-2 text-sm">
@@ -268,6 +218,98 @@ async function AskIntelligence({
         </section>
       ) : null}
     </div>
+  );
+}
+
+function AskPageHeader(props: {
+  opportunityId: string;
+  opportunityTitle: string | null;
+}) {
+  return (
+    <>
+      <div>
+        <h1 className="text-lg font-semibold tracking-tight">Find or Ask GPT</h1>
+        <p className="text-sm text-muted-foreground">
+          Global header capability — not a sidebar app. Modes: LOCATE (no LLM) · ASK/ANALYZE (dual-rail
+          agent) · REPORT (SQL evidence briefs).
+        </p>
+      </div>
+      {props.opportunityId && props.opportunityTitle ? (
+        <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+          Scoped to pursuit:{" "}
+          <Link className="underline" href={`/procurement/opportunities/${props.opportunityId}`}>
+            {props.opportunityTitle}
+          </Link>
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+function AskModeForm(props: {
+  mode: AskMode;
+  purpose: RetrievalPurpose;
+  opportunityId: string;
+  reportKind: ReportKind;
+  query: string;
+  showQuery: boolean;
+}) {
+  return (
+    <form className="flex max-w-3xl flex-wrap items-end gap-3" method="get">
+      {props.opportunityId ? <input type="hidden" name="opportunity" value={props.opportunityId} /> : null}
+      <div className="space-y-1">
+        <Label htmlFor="mode">Mode</Label>
+        <select
+          id="mode"
+          name="mode"
+          defaultValue={props.mode}
+          className="flex h-9 rounded-md border bg-background px-2 text-sm"
+        >
+          <option value="locate">LOCATE</option>
+          <option value="ask">ASK / ANALYZE</option>
+          <option value="report">REPORT</option>
+        </select>
+      </div>
+      <div className="space-y-1">
+        <Label htmlFor="purpose">Purpose</Label>
+        <select
+          id="purpose"
+          name="purpose"
+          defaultValue={props.purpose}
+          className="flex h-9 rounded-md border bg-background px-2 text-sm"
+        >
+          {RETRIEVAL_PURPOSES.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+      </div>
+      {props.mode === "report" ? (
+        <div className="space-y-1">
+          <Label htmlFor="report">Report</Label>
+          <select
+            id="report"
+            name="report"
+            defaultValue={props.reportKind}
+            className="flex h-9 rounded-md border bg-background px-2 text-sm"
+          >
+            {REPORT_CATALOG.map((r) => (
+              <option key={r.kind} value={r.kind}>
+                {r.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
+      {props.showQuery ? (
+        <div className="min-w-72 flex-1 space-y-1">
+          <Label htmlFor="q">Query</Label>
+          <Input id="q" name="q" defaultValue={props.query} placeholder="Find or Ask GPT..." />
+        </div>
+      ) : null}
+      <Button type="submit">{props.mode === "report" ? "Generate" : props.mode === "ask" ? "Apply" : "Run"}</Button>
+    </form>
   );
 }
 
