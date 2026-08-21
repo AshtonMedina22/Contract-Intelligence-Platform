@@ -25,7 +25,7 @@ export async function loadPricingComparables(
     supabase
       .from("pricing_lines")
       .select(
-        "id, opportunity_id, labor_category, requested_rate, proposed_rate, awarded_rate, current_rate, proposed_source_fact_id, opportunities(title, service_type, client_id, clients(name))",
+        "id, opportunity_id, labor_category, rate_type, unit, site_or_post, updated_at, requested_rate, proposed_rate, awarded_rate, current_rate, requested_source_fact_id, proposed_source_fact_id, awarded_source_fact_id, current_source_fact_id, opportunities(title, service_type, client_id, clients(name))",
       )
       .neq("opportunity_id", opportunityId)
       .order("updated_at", { ascending: false })
@@ -84,14 +84,21 @@ export async function loadPricingComparables(
       client_name: client?.name ?? null,
       service_type: opp.service_type ?? null,
       labor_category: line.labor_category,
+      rate_type: line.rate_type ?? null,
+      unit: line.unit ?? null,
+      site_or_post: line.site_or_post ?? null,
       requested_rate: line.requested_rate,
       proposed_rate: line.proposed_rate,
       awarded_rate: line.awarded_rate,
       current_rate: line.current_rate,
+      requested_source_fact_id: line.requested_source_fact_id ?? null,
       proposed_source_fact_id: line.proposed_source_fact_id,
+      awarded_source_fact_id: line.awarded_source_fact_id ?? null,
+      current_source_fact_id: line.current_source_fact_id ?? null,
       included,
       reason,
       match_basis: matchParts.join(", "),
+      updated_at: line.updated_at ?? null,
     });
   }
 

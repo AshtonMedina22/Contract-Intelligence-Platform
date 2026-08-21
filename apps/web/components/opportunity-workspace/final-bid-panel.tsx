@@ -1,12 +1,14 @@
 "use client";
 
-import { useTransition } from "react";
+import { useCallback, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import type { PricingDecisionRow } from "@/lib/opportunity/types";
 import type { PricingDecisionSupport } from "@/lib/opportunity/pricing-math";
 import { formatMoney } from "@/lib/opportunity/pricing-math";
+import { parseRateInput, sampleCountLabel } from "@/lib/opportunity/pricing-grid-model";
 import { savePricingDecision } from "@/app/(platform)/procurement/opportunities/[opportunityId]/actions";
 
 export function FinalBidPanel({
@@ -19,21 +21,40 @@ export function FinalBidPanel({
   decisions: PricingDecisionRow[];
 }) {
   const [pending, startTransition] = useTransition();
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const latest = decisions[0] ?? null;
+
+  const validate = useCallback((name: string, raw: string) => {
+    const result = parseRateInput(raw);
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (result.ok) delete next[name];
+      else next[name] = result.error;
+      return next;
+    });
+  }, []);
+
+  const invalid = Object.keys(errors).length > 0;
 
   return (
     <div className="space-y-3 rounded-md border border-amber-600/40 bg-amber-50/40 p-4 dark:bg-amber-950/20">
-      <div>
-        <h2 className="text-sm font-medium">Final bid price — human decision required</h2>
-        <p className="text-xs text-muted-foreground">
-          AI and automation never approve a bid. Save draft or human-approve with an explicit rate/amount.
-        </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <h2 className="text-sm font-semibold tracking-wide">FINAL PRICE — HUMAN DECISION REQUIRED</h2>
+        <Badge variant="outline" className="font-normal">
+          No AI approval path
+        </Badge>
       </div>
+      <p className="text-xs text-muted-foreground">
+        AI and automation never approve a bid. Nothing on this page, no scheduled job, and no Ask answer can
+        set HUMAN_APPROVED — the database rejects it without a named human and a numeric bid. Save a draft or
+        human-approve with an explicit rate/amount.
+      </p>
 
       <dl className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <dt className="text-muted-foreground">Observed range</dt>
           <dd>{support.observed?.label ?? "—"}</dd>
+          <dd className="text-xs text-muted-foreground">{sampleCountLabel(support.observed)}</dd>
         </div>
         <div>
           <dt className="text-muted-foreground">Cost floor</dt>
@@ -67,6 +88,7 @@ export function FinalBidPanel({
       <form
         className="grid max-w-3xl gap-3 sm:grid-cols-2"
         action={(formData) => {
+          if (invalid) return;
           startTransition(async () => {
             await savePricingDecision(opportunityId, formData);
           });
@@ -93,23 +115,44 @@ export function FinalBidPanel({
 
         <div className="space-y-1">
           <Label htmlFor="final_bid_rate">Final bid rate</Label>
-          <Input id="final_bid_rate" name="final_bid_rate" type="number" step="0.01" />
+          <Input
+            id="final_bid_rate"
+            name="final_bid_rate"
+            inputMode="decimal"
+            aria-invalid={errors.final_bid_rate ? true : undefined}
+            onChange={(event) => validate("final_bid_rate", event.target.value)}
+          />
+          {errors.final_bid_rate ? (
+            <p className="text-xs text-destructive">{errors.final_bid_rate}</p>
+          ) : null}
         </div>
         <div className="space-y-1">
           <Label htmlFor="final_bid_amount">Final bid amount (optional)</Label>
-          <Input id="final_bid_amount" name="final_bid_amount" type="number" step="0.01" />
+          <Input
+            id="final_bid_amount"
+            name="final_bid_amount"
+            inputMode="decimal"
+            aria-invalid={errors.final_bid_amount ? true : undefined}
+            onChange={(event) => validate("final_bid_amount", event.target.value)}
+          />
+          {errors.final_bid_amount ? (
+            <p className="text-xs text-destructive">{errors.final_bid_amount}</p>
+          ) : null}
         </div>
         <div className="space-y-1 sm:col-span-2">
           <Label htmlFor="rationale">Rationale</Label>
           <Input id="rationale" name="rationale" placeholder="Why this price vs cost floor / comps" />
         </div>
-        <div className="flex flex-wrap gap-2 sm:col-span-2">
-          <Button type="submit" name="approve" value="" variant="outline" disabled={pending}>
+        <div className="flex flex-wrap items-center gap-2 sm:col-span-2">
+          <Button type="submit" name="approve" value="" variant="outline" disabled={pending || invalid}>
             Save draft
           </Button>
-          <Button type="submit" name="approve" value="1" disabled={pending}>
+          <Button type="submit" name="approve" value="1" disabled={pending || invalid}>
             Human-approve final bid
           </Button>
+          {invalid ? (
+            <span className="text-xs text-destructive">Fix the highlighted amounts to continue.</span>
+          ) : null}
         </div>
       </form>
     </div>

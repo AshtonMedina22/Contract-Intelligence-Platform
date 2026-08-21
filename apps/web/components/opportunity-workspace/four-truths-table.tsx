@@ -1,7 +1,18 @@
 import type { PricingLineRow } from "@/lib/opportunity/types";
-import { formatMoney } from "@/lib/opportunity/pricing-math";
+import {
+  formatCurrency,
+  PRICING_TRUTH_COLUMNS,
+  PRICING_TRUTH_LEGEND_CLASS,
+  truthFactId,
+  truthRate,
+} from "@/lib/opportunity/pricing-grid-model";
 import { FactRef } from "./shared";
 
+/**
+ * Compact read-only mirror of the pricing workbench matrix. Column set and labels come from
+ * `PRICING_TRUTH_COLUMNS`, so this snapshot shows the same five truths the workbench does —
+ * including L&P internal cost, which is planning rather than promoted buyer evidence.
+ */
 export function FourTruthsTable({
   lines,
   factDocumentMap,
@@ -23,31 +34,35 @@ export function FourTruthsTable({
         <thead>
           <tr className="border-b bg-muted/40 text-left">
             <th className="p-2 font-medium">Labor category</th>
-            <th className="p-2 font-mono text-xs">requested</th>
-            <th className="p-2 font-mono text-xs">proposed</th>
-            <th className="p-2 font-mono text-xs">awarded</th>
-            <th className="p-2 font-mono text-xs">current</th>
+            {PRICING_TRUTH_COLUMNS.map((truth) => (
+              <th key={truth.id} className="p-2 text-xs font-medium">
+                <span className="flex items-center gap-1.5">
+                  <span
+                    aria-hidden
+                    className={`inline-block size-2 rounded-sm ${PRICING_TRUTH_LEGEND_CLASS[truth.id]}`}
+                  />
+                  {truth.label}
+                </span>
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {lines.map((line) => (
             <tr key={line.id} className="border-b align-top">
               <td className="p-2">{line.labor_category}</td>
-              {(
-                [
-                  ["requested_rate", "requested_source_fact_id"],
-                  ["proposed_rate", "proposed_source_fact_id"],
-                  ["awarded_rate", "awarded_source_fact_id"],
-                  ["current_rate", "current_source_fact_id"],
-                ] as const
-              ).map(([rateKey, factKey]) => (
-                <td key={rateKey} className="p-2">
-                  {formatMoney(line[rateKey] as number | null)}
+              {PRICING_TRUTH_COLUMNS.map((truth) => (
+                <td key={truth.id} className="p-2 tabular-nums">
+                  {formatCurrency(truthRate(line, truth.id))}
                   <div className="text-muted-foreground">
-                    <FactRef
-                      factId={line[factKey]}
-                      documentId={factDocumentMap.get(line[factKey] ?? "")}
-                    />
+                    {truth.factKey ? (
+                      <FactRef
+                        factId={truthFactId(line, truth.id)}
+                        documentId={factDocumentMap.get(truthFactId(line, truth.id) ?? "")}
+                      />
+                    ) : (
+                      <span className="text-xs">planning</span>
+                    )}
                   </div>
                 </td>
               ))}

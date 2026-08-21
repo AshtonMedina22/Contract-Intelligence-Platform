@@ -84,14 +84,22 @@ export type PricingComparableRow = {
   client_name: string | null;
   service_type: string | null;
   labor_category: string;
+  rate_type: string | null;
+  unit: string | null;
+  site_or_post: string | null;
   requested_rate: number | null;
   proposed_rate: number | null;
   awarded_rate: number | null;
   current_rate: number | null;
+  requested_source_fact_id: string | null;
   proposed_source_fact_id: string | null;
+  awarded_source_fact_id: string | null;
+  current_source_fact_id: string | null;
   included: boolean;
   reason: string;
   match_basis: string;
+  /** Last change to the source pricing line — recency for weighing a comparable. */
+  updated_at: string | null;
 };
 
 export type PricingDecisionRow = {

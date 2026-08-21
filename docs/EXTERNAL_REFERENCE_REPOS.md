@@ -442,8 +442,8 @@ PublicProcurementProvider
 | **URL** | https://github.com/glideapps/glide-data-grid |
 | **Reference category** | Pricing spreadsheet mechanics |
 | **Usage mode** | USE LIBRARY + ADAPT OFFICIAL EXAMPLES |
-| **Analysis status** | REGISTERED ONLY |
-| **License / copy caution** | We already depend on `@glideapps/glide-data-grid`. Still inspect LICENSE before copying example source. |
+| **Analysis status** | **ADOPTED PATTERN** (P7, 2026-08-21) — [glide-data-grid.md](reference-repos/glide-data-grid.md) |
+| **License / copy caution** | We already depend on `@glideapps/glide-data-grid` (installed **6.0.3**, `"license": "MIT"` in the npm package; no separate LICENSE file ships in the tarball). No upstream source has been copied — only the public API is used. |
 
 **Why it matters:** **We already use Glide.** Do not manually reimplement a grid interaction Glide already supplies.
 
@@ -454,6 +454,8 @@ PublicProcurementProvider
 **Maps to our platform:** Pursuit → Pricing.
 
 **Local landing zones:** `apps/web/components/opportunity-workspace/pricing-glide-grid.tsx`; `pricing-workbench.tsx`. Five commercial truths stay visually distinct; human final bid remains required.
+
+**Adopted in P7:** `freezeColumns`, `GridColumn.group` + per-column `themeOverride` banding, `GridCellKind.Uri` + `onClickUri` → verification, `GridCellKind.Number` with our own currency `displayData`, `rowMarkers`/`rowSelect`/`rangeSelect`, `getCellsForSelection` + `copyHeaders`, `getRowThemeOverride`, and a `Theme` resolved from shadcn tokens (canvas cannot resolve `hsl(var(--x))`). **Its editing surface is deliberately declined** — no `onCellEdited`, `onPaste={false}` — because a grid edit would create a rate with no `source_fact_id`. Grid cells route to the human write path instead.
 
 ---
 
