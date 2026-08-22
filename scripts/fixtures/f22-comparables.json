@@ -1,0 +1,31 @@
+{
+  "asOf": "2026-08-21T00:00:00.000Z",
+  "target": {
+    "id": "target",
+    "organizationId": "org-a",
+    "title": "Texas unarmed guard services",
+    "clientId": "buyer-a",
+    "clientName": "Buyer A",
+    "serviceType": "unarmed guard services",
+    "siteLocation": "Austin Texas",
+    "procurementRail": "IFB",
+    "solicitationKind": "IFB",
+    "responseDueOn": "2026-09-01",
+    "createdAt": "2026-08-01",
+    "weeklyHours": 1000,
+    "pricingLineCount": 5,
+    "proposalSectionCount": 8,
+    "outcome": null
+  },
+  "candidates": [
+    { "id": "same-buyer", "clientId": "buyer-a", "clientName": "Buyer A", "serviceType": "armed patrol", "siteLocation": "Dallas Texas", "weeklyHours": 900, "createdAt": "2025-01-01", "responseDueOn": "2025-03-01", "pricingLineCount": 4, "proposalSectionCount": 4, "outcome": "LOST" },
+    { "id": "same-service", "clientId": "buyer-b", "clientName": "Buyer B", "serviceType": "unarmed guard services", "siteLocation": "Austin Texas", "weeklyHours": 1100, "createdAt": "2025-05-01", "responseDueOn": "2025-07-01", "pricingLineCount": 6, "proposalSectionCount": 7, "outcome": "WON" },
+    { "id": "different-geo-service", "clientId": "buyer-c", "clientName": "Buyer C", "serviceType": "executive protection", "siteLocation": "Miami Florida", "weeklyHours": 300, "createdAt": "2025-01-01", "responseDueOn": "2025-02-01", "pricingLineCount": 3, "proposalSectionCount": 2, "outcome": "LOST" },
+    { "id": "stale", "clientId": "buyer-b", "clientName": "Buyer B", "serviceType": "unarmed guard services", "siteLocation": "Austin Texas", "weeklyHours": 1000, "createdAt": "2010-01-01", "responseDueOn": "2010-02-01", "pricingLineCount": 4, "proposalSectionCount": 4, "outcome": "WON" },
+    { "id": "missing", "clientId": null, "clientName": null, "serviceType": null, "siteLocation": null, "weeklyHours": null, "createdAt": "2026-01-01", "responseDueOn": null, "pricingLineCount": 0, "proposalSectionCount": 0, "outcome": null },
+    { "id": "non-lp", "clientId": "buyer-a", "clientName": "Buyer A", "serviceType": "unarmed guard services", "siteLocation": "Austin Texas", "weeklyHours": 1000, "createdAt": "2026-01-01", "responseDueOn": "2026-02-01", "pricingLineCount": 4, "proposalSectionCount": 4, "outcome": "WON", "corpusClass": "C_COMPETITOR_TEST" },
+    { "id": "demo", "clientId": "buyer-a", "clientName": "Buyer A", "serviceType": "unarmed guard services", "siteLocation": "Austin Texas", "weeklyHours": 1000, "createdAt": "2026-01-01", "responseDueOn": "2026-02-01", "pricingLineCount": 4, "proposalSectionCount": 4, "outcome": "WON", "classification": "illustrative_demo" },
+    { "id": "semantic-paraphrase", "clientId": "buyer-z", "clientName": "Buyer Z", "serviceType": "protective officer staffing", "siteLocation": "Austin Texas", "weeklyHours": 1000, "createdAt": "2026-01-01", "responseDueOn": "2026-02-01", "pricingLineCount": 2, "proposalSectionCount": 8, "outcome": "LOST", "semanticSimilarity": 0.97 },
+    { "id": "wrong-tenant", "organizationId": "org-b", "clientId": "buyer-a", "clientName": "Buyer A", "serviceType": "unarmed guard services", "siteLocation": "Austin Texas", "weeklyHours": 1000, "createdAt": "2026-01-01", "responseDueOn": "2026-02-01", "pricingLineCount": 5, "proposalSectionCount": 8, "outcome": "WON" }
+  ]
+}

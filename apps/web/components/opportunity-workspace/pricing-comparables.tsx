@@ -51,8 +51,9 @@ export function PricingComparablesPanel({
       <div>
         <h2 className="text-sm font-medium">Comparable evidence (include / exclude)</h2>
         <p className="text-xs text-muted-foreground">
-          Same buyer, similar service, L&P wins/losses, and other pursuits. Every include/exclude needs a reason.
-          Decision support only — never invents market rates. Ranges use included rows only.
+          F22 proposes peers with purpose-versioned structured weights; compatible F21 semantics can add at most
+          15 points. A human include/exclude judgment overrides the proposal and requires a reason. Similarity is
+          not a winning-price prediction. Ranges use currently included rows only.
         </p>
       </div>
 
@@ -77,6 +78,7 @@ export function PricingComparablesPanel({
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs">
                   <th className="p-2">Status</th>
+                  <th className="p-2 text-right">F22 score</th>
                   <th className="p-2">Source pursuit / buyer</th>
                   <th className="p-2">Why comparable</th>
                   <th className="p-2">Grain</th>
@@ -95,8 +97,20 @@ export function PricingComparablesPanel({
                     <tr key={row.id} className="border-b align-top">
                       <td className="p-2">
                         <Badge variant={row.included ? "default" : "secondary"} className="font-normal">
-                          {row.included ? "Included" : "Excluded"}
+                          {row.judgment_source === "HUMAN"
+                            ? row.included
+                              ? "Human included"
+                              : "Human excluded"
+                            : row.included
+                              ? "Proposed include"
+                              : "Proposed exclude"}
                         </Badge>
+                      </td>
+                      <td className="p-2 text-right text-xs tabular-nums">
+                        {row.engine_score.toFixed(1)}
+                        <div className="text-muted-foreground">
+                          {row.structured_score.toFixed(1)} + {row.semantic_supplement.toFixed(1)}
+                        </div>
                       </td>
                       <td className="p-2">
                         <Link

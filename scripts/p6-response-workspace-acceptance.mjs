@@ -547,7 +547,10 @@ check("autosave goes through the AUTOSAVE intent and approval stays a separate a
 });
 
 check("retrieval is re-run for the selected requirement, not only the first one", () => {
-  assert.match(sources.workspace, /loadRequirementEvidence\(opportunityId, selectedId\)/);
+  assert.match(
+    sources.workspace,
+    /loadRequirementEvidence\(opportunityId, selectedId(?:, peerOpportunityId)?\)/,
+  );
   assert.match(sources.actions, /export async function loadRequirementEvidence/);
   assert.match(sources.actions, /purpose: "PROPOSAL_DRAFTING"/);
 });

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { PricingComparableRow } from "./types";
+import { loadRankedComparablePursuits } from "@/lib/comparables";
 
 export type { PricingComparableRow };
 
@@ -12,14 +13,13 @@ export async function loadPricingComparables(
 ): Promise<PricingComparableRow[]> {
   const supabase = await createClient();
 
-  const { data: current } = await supabase
-    .from("opportunities")
-    .select("client_id, service_type")
-    .eq("id", opportunityId)
-    .maybeSingle();
-
-  const clientId = options?.clientId ?? current?.client_id ?? null;
-  const serviceType = options?.serviceType ?? current?.service_type ?? null;
+  const ranked = await loadRankedComparablePursuits({
+    targetOpportunityId: opportunityId,
+    purpose: "PRICING_COMPARABLE",
+    limit: 40,
+  });
+  const scoreByOpportunity = new Map(ranked.map((score) => [score.candidate.id, score]));
+  if (scoreByOpportunity.size === 0) return [];
 
   const [{ data, error }, { data: judgments }] = await Promise.all([
     supabase
@@ -27,7 +27,7 @@ export async function loadPricingComparables(
       .select(
         "id, opportunity_id, labor_category, rate_type, unit, site_or_post, updated_at, requested_rate, proposed_rate, awarded_rate, current_rate, requested_source_fact_id, proposed_source_fact_id, awarded_source_fact_id, current_source_fact_id, opportunities(title, service_type, client_id, clients(name))",
       )
-      .neq("opportunity_id", opportunityId)
+      .in("opportunity_id", [...scoreByOpportunity.keys()])
       .order("updated_at", { ascending: false })
       .limit(80),
     supabase
@@ -47,15 +47,8 @@ export async function loadPricingComparables(
     const opp = Array.isArray(line.opportunities) ? line.opportunities[0] : line.opportunities;
     if (!opp) continue;
 
-    const sameBuyer = Boolean(clientId && opp.client_id === clientId);
-    const sameService = Boolean(serviceType && opp.service_type && opp.service_type === serviceType);
-    const matchParts: string[] = [];
-    if (sameBuyer) matchParts.push("same buyer");
-    if (sameService) matchParts.push("similar service");
-    if (matchParts.length === 0) matchParts.push("other pursuit (soft match)");
-
-    // Soft filter: prefer same buyer/service when known, but still surface others for judgment.
-    if (clientId && !sameBuyer && serviceType && !sameService) continue;
+    const engine = scoreByOpportunity.get(line.opportunity_id);
+    if (!engine) continue;
     if (options?.laborCategory && !line.labor_category.toLowerCase().includes(options.laborCategory.toLowerCase())) {
       continue;
     }
@@ -69,13 +62,11 @@ export async function loadPricingComparables(
     if (!hasRate) continue;
 
     const judgment = judgmentByLine.get(line.id);
-    const autoInclude = sameBuyer || sameService || !clientId;
-    const included = judgment ? judgment.included : autoInclude;
+    const proposedInclude = engine.totalScore >= 30;
+    const included = judgment ? judgment.included : proposedInclude;
     const reason =
       judgment?.reason ??
-      (autoInclude
-        ? `Auto-included: ${matchParts.join(", ")}`
-        : `Auto-excluded: weak match (${matchParts.join(", ")})`);
+      `Engine proposal (${engine.algorithmVersion}): ${proposedInclude ? "include" : "exclude"} at ${engine.totalScore.toFixed(1)}/100. Human judgment may override.`;
 
     rows.push({
       id: line.id,
@@ -97,12 +88,17 @@ export async function loadPricingComparables(
       current_source_fact_id: line.current_source_fact_id ?? null,
       included,
       reason,
-      match_basis: matchParts.join(", "),
+      match_basis: engine.rationale.slice(0, 2).join(" "),
       updated_at: line.updated_at ?? null,
+      engine_score: engine.totalScore,
+      structured_score: engine.structuredScore,
+      semantic_supplement: engine.semanticSupplement,
+      algorithm_version: engine.algorithmVersion,
+      judgment_source: judgment ? "HUMAN" : "ENGINE_PROPOSAL",
     });
   }
 
-  return rows.slice(0, 40);
+  return rows.sort((a, b) => b.engine_score - a.engine_score).slice(0, 40);
 }
 
 export async function loadPricingDecisions(opportunityId: string) {

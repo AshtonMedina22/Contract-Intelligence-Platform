@@ -100,6 +100,11 @@ export type PricingComparableRow = {
   match_basis: string;
   /** Last change to the source pricing line — recency for weighing a comparable. */
   updated_at: string | null;
+  engine_score: number;
+  structured_score: number;
+  semantic_supplement: number;
+  algorithm_version: string;
+  judgment_source: "HUMAN" | "ENGINE_PROPOSAL";
 };
 
 export type PricingDecisionRow = {

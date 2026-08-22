@@ -38,6 +38,7 @@
     "test:f19-drive": "node --env-file=apps/web/.env.local scripts/f19-google-workspace-ingestion-acceptance.mjs",
     "test:f20-ai-audit": "node --env-file=apps/web/.env.local scripts/f20-ai-report-provenance-acceptance.mjs",
     "test:f21-hybrid": "node --env-file=apps/web/.env.local scripts/f21-embedding-hybrid-retrieval-acceptance.mjs",
+    "test:f22-comparables": "node scripts/f22-similar-pursuit-acceptance.mjs",
     "test:processor": "python -m pytest -q --rootdir=services/processor services/processor/tests",
     "test:verify2a": "node scripts/verify2a-corpus-audit.mjs",
     "test:verify2b": "node scripts/verify2b-pilot-acceptance.mjs",

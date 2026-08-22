@@ -6,6 +6,7 @@ import { OPPORTUNITY_STAGES, GO_NO_GO_OPTIONS } from "@/lib/opportunity/types";
 import { PROCUREMENT_RAILS, SOLICITATION_KINDS } from "@/lib/opportunity/proposal-packet";
 import { REQUIREMENT_STATUS_LABELS, REQUIREMENT_MATRIX_STATUSES } from "@/lib/opportunity/overview-model";
 import type { OverviewBundle } from "@/lib/opportunity/load-overview-bundle";
+import { SimilarPursuits } from "@/components/comparables/similar-pursuits";
 
 const UNKNOWN = "Not recorded";
 
@@ -79,6 +80,7 @@ export function OverviewSections({ bundle }: { bundle: OverviewBundle }) {
         <PriorExperienceSection bundle={bundle} />
         <ComplianceReadinessSection bundle={bundle} />
       </div>
+      <SimilarPursuits scores={bundle.similarPursuits} />
       <RisksSection bundle={bundle} />
       <BidStrategySection bundle={bundle} />
       <NextActionsSection bundle={bundle} />

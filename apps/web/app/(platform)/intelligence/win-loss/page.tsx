@@ -18,10 +18,12 @@ import {
   summarizeWinLoss,
 } from "@/lib/intelligence/observations";
 import { WinLossTable, type WinLossRow } from "./win-loss-table";
+import { loadRankedComparablePursuits } from "@/lib/comparables";
+import { SimilarPursuits } from "@/components/comparables/similar-pursuits";
 
 const OUTCOME_FILTERS = ["WON", "LOST", "NO_BID", "CANCELLED", "NO_AWARD", "PENDING"] as const;
 
-type WinLossSearchParams = { outcome?: string };
+type WinLossSearchParams = { outcome?: string; pursuit?: string };
 
 function formatScore(points: number, max: number | null): string {
   return max != null ? `${points}/${max}` : String(points);
@@ -47,6 +49,16 @@ async function WinLossContent({ searchParams }: { searchParams: Promise<WinLossS
   if (error) return <p className="text-sm text-red-600">{error.message}</p>;
 
   const all = data ?? [];
+  const selectedPursuitId = all.some((row) => row.opportunity_id === params.pursuit)
+    ? params.pursuit ?? null
+    : null;
+  const peerScores = selectedPursuitId
+    ? await loadRankedComparablePursuits({
+        targetOpportunityId: selectedPursuitId,
+        purpose: "WIN_LOSS_ANALYSIS",
+        limit: 6,
+      })
+    : [];
   // The rate is computed over the whole corpus, never over the filtered view — a filter must not be
   // able to manufacture a flattering denominator.
   const summary = summarizeWinLoss(all.map((r) => r.outcome));
@@ -183,6 +195,27 @@ async function WinLossContent({ searchParams }: { searchParams: Promise<WinLossS
 
       <form className="flex flex-wrap items-end gap-2 border p-2" method="get">
         <div className="space-y-1">
+          <Label className="text-xs" htmlFor="pursuit">
+            Peer ranking for pursuit
+          </Label>
+          <select
+            id="pursuit"
+            name="pursuit"
+            defaultValue={selectedPursuitId ?? ""}
+            className="flex h-8 min-w-56 rounded-md border bg-background px-2 text-sm"
+          >
+            <option value="">Select a pursuit</option>
+            {all.map((row) => {
+              const opportunity = Array.isArray(row.opportunities) ? row.opportunities[0] : row.opportunities;
+              return (
+                <option key={row.opportunity_id} value={row.opportunity_id}>
+                  {opportunity?.title ?? row.opportunity_id.slice(0, 8)}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="space-y-1">
           <Label className="text-xs" htmlFor="outcome">
             Outcome
           </Label>
@@ -212,6 +245,13 @@ async function WinLossContent({ searchParams }: { searchParams: Promise<WinLossS
           Filtering changes the table only. The rate above is always computed over every recorded review.
         </p>
       </form>
+      {selectedPursuitId ? (
+        <SimilarPursuits
+          scores={peerScores}
+          title="Win/loss peers for selected pursuit"
+          linkSuffix="/result"
+        />
+      ) : null}
 
       <p className="text-xs text-muted-foreground">
         Showing {rows.length} of {summary.total} review(s)

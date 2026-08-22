@@ -34,6 +34,7 @@ import {
 } from "./proposal-packet";
 import { loadPursuitIntelSummary, type PursuitIntelSummary } from "@/lib/intelligence/load-corpus";
 import { searchVerifiedKnowledge } from "@/lib/retrieval/search";
+import { loadRankedComparablePursuits, type ComparableScore } from "@/lib/comparables";
 import type { PricingLineRow, PricingCostModelRow } from "./types";
 import {
   rollupRequirements,
@@ -168,6 +169,7 @@ export type OverviewBundle = {
   linkedContractId: string | null;
   submissionSubmittedAt: string | null;
   narrativeError: string | null;
+  similarPursuits: ComparableScore[];
 };
 
 export async function loadOverviewBundle(opportunityId: string): Promise<OverviewBundle | null> {
@@ -198,6 +200,7 @@ export async function loadOverviewBundle(opportunityId: string): Promise<Overvie
     research,
     sameServicePursuits,
     narrative,
+    similarPursuits,
   ] = await Promise.all([
     loadWorkspaceSummary(opportunityId),
     loadPricingLines(opportunityId),
@@ -276,6 +279,11 @@ export async function loadOverviewBundle(opportunityId: string): Promise<Overvie
       purpose: "BID_STRATEGY",
       opportunityId,
       limit: 6,
+    }),
+    loadRankedComparablePursuits({
+      targetOpportunityId: opportunityId,
+      purpose: "BID_STRATEGY",
+      limit: 5,
     }),
   ]);
 
@@ -393,6 +401,7 @@ export async function loadOverviewBundle(opportunityId: string): Promise<Overvie
     linkedContractId,
     submissionSubmittedAt,
     narrativeError: narrative.error,
+    similarPursuits,
   };
 }
 

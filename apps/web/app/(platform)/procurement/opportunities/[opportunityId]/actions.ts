@@ -435,7 +435,25 @@ export async function saveRequirementResponse(opportunityId: string, formData: F
  * workspace. Retrieval runs under PROPOSAL_DRAFTING, so DO_NOT_USE is already excluded by
  * `search_verified_knowledge`; nothing is written and no draft is produced.
  */
-export async function loadRequirementEvidence(opportunityId: string, requirementId: string) {
+async function comparableContentScope(opportunityId: string, peerOpportunityId?: string | null) {
+  if (!peerOpportunityId) return opportunityId;
+  const { loadRankedComparablePursuits } = await import("@/lib/comparables");
+  const peers = await loadRankedComparablePursuits({
+    targetOpportunityId: opportunityId,
+    purpose: "PROPOSAL_CONTENT",
+    limit: 50,
+  });
+  if (!peers.some((peer) => peer.candidate.id === peerOpportunityId)) {
+    throw new Error("Selected peer is not authority-eligible for proposal content.");
+  }
+  return peerOpportunityId;
+}
+
+export async function loadRequirementEvidence(
+  opportunityId: string,
+  requirementId: string,
+  peerOpportunityId?: string | null,
+) {
   const { supabase } = await requireUserOrg();
   const { data: req } = await supabase
     .from("requirements")
@@ -446,9 +464,10 @@ export async function loadRequirementEvidence(opportunityId: string, requirement
 
   const { matchRequirementToProposalContent } = await import("@/lib/content/match-requirement");
   const { isDraftingAllowedSource } = await import("@/lib/opportunity/response");
+  const sourceOpportunityId = await comparableContentScope(opportunityId, peerOpportunityId);
   const matched = await matchRequirementToProposalContent({
     requirementStatement: req.statement,
-    opportunityId,
+    opportunityId: sourceOpportunityId,
     limit: 8,
   });
 
@@ -467,6 +486,7 @@ export async function generateRequirementDraft(
   opportunityId: string,
   requirementId: string,
   instruction?: string,
+  peerOpportunityId?: string | null,
 ) {
   const { supabase, organizationId } = await requireUserOrg();
   const {
@@ -485,10 +505,11 @@ export async function generateRequirementDraft(
   const { isDraftingAllowedSource } = await import("@/lib/opportunity/response");
 
   const embedding = await embedQuery(req.statement);
+  const sourceOpportunityId = await comparableContentScope(opportunityId, peerOpportunityId);
   // F7: purpose-gated match (PROPOSAL_DRAFTING, limit ≤12) — never dumps full proposals.
   const matched = await matchRequirementToProposalContent({
     requirementStatement: req.statement,
-    opportunityId,
+    opportunityId: sourceOpportunityId,
     limit: 12,
     queryEmbedding: embedding,
   });
@@ -510,7 +531,7 @@ export async function generateRequirementDraft(
       }`,
       purpose: "PROPOSAL_DRAFTING",
       hits: allowedHits,
-      dataScope: `opportunity=${opportunityId}`,
+      dataScope: `opportunity=${opportunityId}; content_peer=${sourceOpportunityId}`,
     });
     if (!synth.insufficient) llmText = `<p>${synth.answer.replace(/\n/g, "</p><p>")}</p>`;
   }

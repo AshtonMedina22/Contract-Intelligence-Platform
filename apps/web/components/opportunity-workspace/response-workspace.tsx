@@ -71,6 +71,7 @@ export function ResponseWorkspace({
   knowledgeHits,
   initialRequirementId,
   canProposalApprove = true,
+  peerOpportunityId = null,
 }: {
   opportunityId: string;
   requirements: RequirementMatrixRow[];
@@ -81,6 +82,7 @@ export function ResponseWorkspace({
   knowledgeHits: WorkspaceSource[];
   initialRequirementId?: string | null;
   canProposalApprove?: boolean;
+  peerOpportunityId?: string | null;
 }) {
   const firstId = initialRequirementId ?? requirements[0]?.id ?? "";
   const [selectedId, setSelectedId] = useState(firstId);
@@ -136,7 +138,7 @@ export function ResponseWorkspace({
     if (!selectedId || evidenceByReq[selectedId]) return;
     const requestId = ++evidenceRequest.current;
     setEvidenceLoading(true);
-    loadRequirementEvidence(opportunityId, selectedId)
+    loadRequirementEvidence(opportunityId, selectedId, peerOpportunityId)
       .then((hits) => {
         if (requestId !== evidenceRequest.current) return;
         setEvidenceByReq((prev) => ({ ...prev, [selectedId]: hits }));
@@ -148,7 +150,7 @@ export function ResponseWorkspace({
       .finally(() => {
         if (requestId === evidenceRequest.current) setEvidenceLoading(false);
       });
-  }, [opportunityId, selectedId, evidenceByReq]);
+  }, [opportunityId, selectedId, evidenceByReq, peerOpportunityId]);
 
   const selectReq = (id: string) => {
     setSelectedId(id);
@@ -191,7 +193,7 @@ export function ResponseWorkspace({
     if (!selected || !gate.allowed) return;
     const before = draftHtml;
     startTransition(async () => {
-      const result = await generateRequirementDraft(opportunityId, selected.id, instruction);
+      const result = await generateRequirementDraft(opportunityId, selected.id, instruction, peerOpportunityId);
       setPriorHtml(before);
       setDraftHtml(result.draft_response);
       setDirty(false);
