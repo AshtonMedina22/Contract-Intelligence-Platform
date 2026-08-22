@@ -1,0 +1,34 @@
+---
+description: Permanent scope — internal L&P operators only; buyers/competitors are data entities; no customer portal or Stripe
+alwaysApply: true
+---
+
+# Product scope — INTERNAL L&P only
+
+Full text: [docs/PRODUCT_SCOPE_GUARDRAIL.md](../../docs/PRODUCT_SCOPE_GUARDRAIL.md).
+
+## Users
+
+Authorized **L&P Global Security staff** only. This is an internal operating platform for pursue → price → propose → submit externally → contract → recompete.
+
+## Data entities (not users)
+
+- **Buyer / agency / procurement customer** = intelligence record only (ISD, county, city, state, federal, commercial buyer).
+- **Competitor** = intelligence record only.
+- Neither becomes a platform user, tenant, or portal account because L&P bids to or contracts with them.
+
+## Forbidden unless a future task explicitly instructs
+
+Customer/client/buyer/agency portal or login; external customer accounts; customer approval/collaboration/messaging/self-service; buyer-facing dashboards or proposal/contract review; Stripe; subscription/seat/usage billing; commercial SaaS onboarding; contractor marketplace; commercialization features.
+
+## Outputs leave the app
+
+Generate PDF/DOCX/Google Doc/workbook/copy-paste for L&P to submit **outside** this product via the buyer’s channel. Do not build in-app buyer submission portals.
+
+## Architecture
+
+Keep org/memberships/RLS for L&P authorization isolation. Do **not** expand into commercial multi-tenant SaaS or buyer tenants without an explicit future task. Do not rebuild core architecture merely to remove extensibility.
+
+## Docs
+
+Prefer [PRODUCT_SCOPE_GUARDRAIL.md](../../docs/PRODUCT_SCOPE_GUARDRAIL.md) over ambiguous “optional commercialization” wording elsewhere. Leave `docs/OG DOCS/**` historical files unchanged.

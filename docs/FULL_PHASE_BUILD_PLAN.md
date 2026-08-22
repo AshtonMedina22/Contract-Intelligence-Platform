@@ -122,6 +122,6 @@ Submission and Result as defined in [UX_UI.md](UX_UI.md) / [MASTER_BLUEPRINT.md]
 
 ## Optional future commercialization — not part of core product build
 
-Only if L&P later chooses to sell the platform to other contracting companies: tenant administration; plans/seats; Stripe; commercial onboarding; optional MCP/agent integrations. Preserve the same procurement model and trust rules.
+**Superseded for implementation by [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).** Do not implement Stripe, buyer portals, or commercial SaaS onboarding unless a future task explicitly instructs. Org/RLS remains for L&P authorization isolation only.
 
 **Core operational platform is complete after Phase 8.** Commercialization is optional and separate.

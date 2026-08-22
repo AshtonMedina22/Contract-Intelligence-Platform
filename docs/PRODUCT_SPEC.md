@@ -5,7 +5,9 @@ Source: approved Canonical Product Pack (Prompt 0A).
 
 ## Product
 
-**Proposal-centered** Proposal, Contract & Procurement Intelligence Platform for L&P Global Security. Tenant-isolated architecture from day one. Optional commercialization does **not** define the core build.
+**Proposal-centered** Proposal, Contract & Procurement Intelligence Platform for **internal L&P Global Security staff**. Org-isolated authorization from day one.
+
+**Product-scope (permanent):** Buyers/agencies/competitors are **data/intelligence entities only** — not platform users. No customer/buyer portal, Stripe, or commercial SaaS onboarding unless a future task explicitly instructs. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
 
 ## Primary business outcome
 
@@ -147,8 +149,8 @@ Target ~20–30 materially different packages/doc sets to prove extraction, sche
 7. Pricing Intelligence  
 8. Response Builder / Submission / Result  
 
-**Core operational platform complete after Phase 8.** Optional commercialization is not a core product phase.
+**Core operational platform complete after Phase 8.** Commercialization / Stripe / buyer portals are **out of scope** for current implementation ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
 
 ## Not this product
 
-CRM · client/customer portal · lead nurture/contact cadence · generic document repository · generic chatbot · autonomous pricer · blind proposal generator · fake analytics dashboard · AI that promotes unverified extraction to truth.
+CRM · client/customer portal · buyer/agency login · external customer accounts · lead nurture/contact cadence · Stripe / seat/usage billing · commercial SaaS onboarding · generic document repository · generic chatbot · autonomous pricer · blind proposal generator · fake analytics dashboard · AI that promotes unverified extraction to truth.

@@ -23,9 +23,9 @@ Before inventing significant shell/navigation/table/workbench UX, consult [UX_UI
 
 ## What this product is
 
-**Proposal-centered** Proposal, Contract & Procurement Intelligence for **L&P Global Security**, with **multi-tenant-ready architecture from day one**. Optional commercialization is **not** a core product phase.
+**Proposal-centered** Proposal, Contract & Procurement Intelligence for **internal L&P Global Security staff**. Org/RLS isolation remains for authorization — **not** a commercial SaaS product. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
 
-Not a CRM, chatbot, client portal, or generic RFP tracker.
+Not a CRM, chatbot, client/buyer portal, Stripe product, or generic RFP tracker. Buyers and competitors are **data/intelligence entities only**.
 
 Historical files → staging → human verification → canonical Postgres. Four commercial truths: requested / proposed / awarded / current.
 
@@ -75,11 +75,13 @@ Canonical IA: Home | Pursuits | Intelligence | Contracts | Data Ops | Settings.
 ## Do not
 
 - Treat RLS tests or VERIFY scripts as Historical Pilot completion  
-- Build CRM, client portal, or fake analytics  
+- Build CRM, client/buyer/agency portal, Stripe, or commercial SaaS onboarding  
+- Treat buyers or competitors as platform users or tenants  
 - Auto-promote AI extraction to canonical  
 - Collapse four commercial truths into one rate field  
 - Invent L&P prices, staffing, or performance metrics  
 - Delete useful early UI; freeze expansion until corpus validates  
+- Ignore [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)
 
 ---
 

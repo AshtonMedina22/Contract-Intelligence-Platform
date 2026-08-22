@@ -34,7 +34,7 @@ Living trail: [WORK_TRAIL.md](WORK_TRAIL.md).
 | 8 | Response Builder / Submission / Result | End-to-end proposal production without fabricated data |
 
 **Core operational platform complete after Phase 8.**  
-Optional commercialization (Stripe / selling to other tenants) is **not** a core product phase.
+Optional commercialization (Stripe / selling to other tenants / buyer portals) is **out of current product scope** ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)). Do not implement unless a future task explicitly instructs.
 
 ---
 

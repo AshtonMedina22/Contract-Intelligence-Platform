@@ -18,7 +18,7 @@
 
 - **Evidence vault** = Supabase Storage (immutable-by-policy). Google Drive = import/source/human workspace only — **not** the permanent canonical vault.
 - **Lifecycle** = Vercel Workflow (`intake → parse → extract → validate → wait for human → promote`). Vercel Queues = fan-out only behind JobPort.
-- **Product phases** = **1–8** (Historical Pilot = Phase 2). Core platform complete after Phase 8. Optional commercialization is not a core phase.
+- **Product phases** = **1–8** (Historical Pilot = Phase 2). Core platform complete after Phase 8. Commercialization / Stripe / buyer portals are **out of current scope** ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
 - **Global IA** = Home | Pursuits | Intelligence | Contracts | Data Ops | Settings. Ask GPT in header.
 
 If any older paragraph below says Drive is the permanent vault, Queues are the lifecycle coordinator, Document AI is hard-required, LangGraph is required, Ingestion/Proposals are peer global nav, or phases are 1–14 with pilot as Phase 6 — **those lines are superseded**. Business capability detail remains.
@@ -41,7 +41,7 @@ Then: inspect the repo; identify foundation that exists; update canonical docs; 
 
 A long-term **Proposal, Contract & Procurement Intelligence Platform**, initially for L&P Global Security.
 
-Architecture is **multi-tenant-ready from day one**. Optional future commercialization (selling to other contracting companies) does **not** define the core build.
+Architecture is **org-isolated from day one** for L&P authorization. That is **not** permission to build commercial multi-tenant SaaS or buyer portals. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
 
 Complete lifecycle:
 
@@ -160,7 +160,7 @@ Response Builder / Ask GPT / Reports / Analytics
 | Search | Postgres FTS + pgvector + hybrid retrieval |
 | Cron (dates) | Supabase Cron / pg_cron |
 | Cron (app) | Vercel Cron optional |
-| Billing | Stripe **optional later** — not a core phase |
+| Billing | **Out of scope** unless explicitly tasked — no Stripe |
 | LangGraph / MCP | Only when a proven workflow requires it — not assumed |
 
 Repo:
@@ -455,7 +455,7 @@ AI never receives unrestricted authority to mutate canonical truth.
 
 From day one: `organizations`; `memberships`; `organization_id`; RLS; tenant-aware storage/retrieval/AI/reports.
 
-L&P is the first tenant. Procurement buyers are **data entities**, not platform tenants. Stripe/billing is optional later.
+L&P is the operating company / first organization. Procurement buyers are **data entities**, not platform users or tenants. Competitors are intelligence entities only. Stripe/billing/customer portals are **out of current scope** unless explicitly tasked ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
 
 ---
 

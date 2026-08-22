@@ -8,7 +8,7 @@
 
 ## Addendum — 2026-08-21, after F10 RBAC + operational acceptance
 
-F10 shipped server-side permission gates, `audit_log`, `/api/health`, env-check classification, and in-memory Ask/research rate limits (`test:f10-production` **28/28**). **Still NOT production-ready** for L&P operators: Historical Pilot human verification remains thin; VERIFY 5/6/7 remain FAIL on stale fixtures vs trust triggers; Stripe / commercialization **not started**. See [FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md](functionality/FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md).
+F10 shipped server-side permission gates, `audit_log`, `/api/health`, env-check classification, and in-memory Ask/research rate limits (`test:f10-production` **28/28**). **Still NOT production-ready** for L&P operators: Historical Pilot human verification remains thin; VERIFY 5/6/7 remain FAIL on stale fixtures vs trust triggers. **Product scope:** internal L&P only — no Stripe / customer portal ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)). See [FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md](functionality/FUNCTIONAL_BUILD_F1_F10_FINAL_AUDIT.md).
 
 ## Addendum — 2026-08-21, after productization P1–P10
 
@@ -47,7 +47,7 @@ Two further corrections to the tables below:
 **Revised verdict: NOT PRODUCTION-READY.** Blockers, in order: repair the fixtures and re-earn
 VERIFY 5 / 6 / 7 through verified promotion (never by weakening a trust trigger); fix the promoter
 grain mapping; grow the Historical Pilot; prove the production runtime; wire `ASK_MODEL`.
-**Commercialization (Stripe / MCP / agents) is not started and is not a core product phase.**
+**Product scope:** Internal L&P operating platform only. Buyers/competitors are data entities. Customer portals / Stripe / commercial SaaS onboarding are **out of scope** unless explicitly tasked ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
 
 ---
 
@@ -203,7 +203,7 @@ Legend: **PASS** · **PASS WITH KNOWN LIMITATION** · **FAIL / BLOCKER**
 | 7 Pricing | PASS | VERIFY7 + phase7 | **PASS** (corpus thin for comps, not a gate fail) |
 | 8 Response/Submission/Result | PASS | VERIFY8 + phase8 | **PASS** |
 
-Optional commercialization (Stripe / multi-tenant selling) is **out of scope** and **not** a core phase ([BUILD_PLAN.md](BUILD_PLAN.md)).
+Optional commercialization (Stripe / multi-tenant selling / buyer portals) is **out of current product scope** ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
 
 ---
 

@@ -14,7 +14,7 @@ Read with: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [BUILD_PLAN.md](BUILD_PLA
 | “Phase 1 done, Phase 2 done, ready for Phase 3” | Phase 1 mostly done; **Phase 2 Historical Pilot NOT STARTED (0 packages through complete pipeline)** |
 | “RLS 48/48 = Historical Pilot complete” | RLS proves Foundation only |
 | “Canonical phases 1–9” / “Phase 9 = Proposal builder” | Core product phases are **1–8**; Response/Submission/Result is **Phase 8**. Commercialization is **optional**, not a numbered core phase |
-| “Later Commercial PaaS is a product phase” | Optional future commercialization — **not** part of core product build |
+| “Later Commercial PaaS is a product phase” | **Out of current scope** — do not implement Stripe/buyer portals/SaaS selling unless explicitly tasked ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)) |
 
 ---
 
@@ -33,7 +33,7 @@ Read with: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md), [BUILD_PLAN.md](BUILD_PLA
 
 **Core operational platform is complete after Phase 8.**
 
-Optional commercialization (Stripe / selling to other contracting companies) is **not** a core phase. Architecture is **multi-tenant-ready from day one**; that is not the same as “build a PaaS product phase.”
+Optional commercialization (Stripe / selling to other contracting companies / buyer portals) is **out of current product scope**. Org/RLS isolation for L&P is not the same as “build a commercial PaaS.” See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
 
 ---
 

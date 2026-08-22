@@ -88,9 +88,11 @@ Legacy engineering IDs on migrations/`PHASE*_ACCEPTANCE.md` may remain. They do 
 
 **Honest status:** **PASS (2026-08-20 Prompt 8).** Pursuit Requirements matrix; Tiptap Response workspace (evidence states + reuse gates); configurable approvals; submission packet/checklist/exports; result capture + contract-on-win. [PHASE8_RESPONSE_ACCEPTANCE.md](PHASE8_RESPONSE_ACCEPTANCE.md). Still corpus-thin.
 
-### Optional future commercialization — not part of core product build
+### Commercialization — out of current product scope
 
-Only if L&P later chooses to sell the platform to other contracting companies: tenant admin · usage/seat controls · Stripe · commercial onboarding · optional MCP/agent integrations. Preserve the same procurement model and trust rules. **Not required to call the operational platform complete after Phase 8.**
+Do **not** implement tenant-selling, Stripe, seat/usage billing, buyer portals, or commercial SaaS onboarding unless a future task **explicitly** instructs. Org/RLS stays for L&P authorization isolation only. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
+
+**Not required to call the operational platform complete after Phase 8.**
 
 ---
 

@@ -15,7 +15,9 @@ One aligned source of truth for:
 • FULL\_PHASE\_BUILD\_PLAN.md
 
 PRODUCT NORTH STAR  
-Build a proposal-centered procurement intelligence platform for L\&P Global Security, architected from day one for tenant isolation, that helps L\&P create more accurate and competitive proposals from verified historical procurement data, buyer/competitor intelligence, pricing evidence, evaluator/win-loss learning, contract changes, expirations/renewals and source-backed AI.
+Build a proposal-centered procurement intelligence platform for **internal L&P Global Security staff**, with organization-scoped authorization, that helps L\&P create more accurate and competitive proposals from verified historical procurement data, buyer/competitor intelligence, pricing evidence, evaluator/win-loss learning, contract changes, expirations/renewals and source-backed AI.
+
+Buyers and competitors are data/intelligence entities only — not platform users. Commercialization / customer portals / Stripe are out of current scope unless explicitly tasked (see PRODUCT\_SCOPE\_GUARDRAIL.md).
 
 Proposal work is central.  
 Government/public procurement is a primary domain.  
@@ -366,11 +368,11 @@ Never conflate:
 • Subcontractor Experience.
 
 25\. MULTI-TENANT-READY ARCHITECTURE  
-L\&P is the first tenant.  
-From day one, tenant-owned records/files/retrieval/reports are isolated by organization/RLS.  
-Future tenants are contracting companies. Their procurement buyers are not platform tenant users merely because they appear in records.
+L\&P is the operating company and first (currently only intended) organization.  
+From day one, org-owned records/files/retrieval/reports are isolated by organization/RLS for authorization.  
+Procurement buyers and competitors are data/intelligence entities only — not platform users or tenants.
 
-Optional future commercialization may add plans/seats/usage/Stripe without changing the procurement model. This is separate from and does not define the core product build.
+Do not expand org/RLS into commercial multi-tenant SaaS, buyer portals, or Stripe unless a future task explicitly instructs (PRODUCT\_SCOPE\_GUARDRAIL.md). Preserve architectural extensibility without building commercialization.
 
 26\. HISTORICAL PILOT  
 Before declaring later features complete, validate approximately 20–30 materially different real procurement packages/doc sets.
@@ -747,10 +749,10 @@ docs
 PACKAGE MANAGEMENT  
 Use the repository’s current supported workspace approach consistently. Do not churn package managers merely for preference.
 
-OPTIONAL COMMERCIALIZATION / EXTENSIONS — NOT A CORE PRODUCT PHASE  
-• Stripe later for plans/seats/usage/billing  
-• MCP later for approved external interoperability  
-• advanced agent orchestration later only when a proven business workflow requires it
+COMMERCIALIZATION / EXTENSIONS — OUT OF CURRENT PRODUCT SCOPE  
+Do not implement Stripe, buyer/customer portals, or commercial SaaS onboarding unless a future task explicitly instructs (PRODUCT\_SCOPE\_GUARDRAIL.md). Org/RLS remains for L\&P authorization isolation only.  
+• MCP later only for approved L\&P interoperability when needed  
+• advanced agent orchestration later only when a proven L\&P workflow requires it
 
 DO NOT ADD INITIALLY WITHOUT EVIDENCE  
 • second relational DB  
@@ -2014,12 +2016,5 @@ Acceptance:
 • submission completeness is visible;  
 • outcome feeds the corpus so the next bid improves.
 
-OPTIONAL FUTURE COMMERCIALIZATION — NOT PART OF CORE PRODUCT BUILD  
-Only if L\&P later chooses to sell the platform to other contracting companies:  
-• tenant administration;  
-• plans/seats;  
-• usage controls;  
-• Stripe billing;  
-• commercial onboarding;  
-• optional MCP/agent interoperability;  
-• no redesign of the core procurement model.  
+COMMERCIALIZATION — OUT OF CURRENT PRODUCT SCOPE  
+Do not implement tenant-selling, Stripe, seat/usage billing, buyer/customer portals, or commercial SaaS onboarding unless a future task explicitly instructs (PRODUCT\_SCOPE\_GUARDRAIL.md). Org/RLS stays for L\&P authorization isolation only. MCP/agents only when a proven L\&P workflow requires them — still not commercialization.  

@@ -1,6 +1,8 @@
 # Current state audit — canonical product maturity snapshot
 
-**Date context:** August 2026. Prompt 0A docs + Prompt 0B shell IA + VERIFY 0 + Prompt 1 Foundation gate + **productization P1–P10 complete** (2026-08-21). Programme-level view: [PRODUCTIZATION_P1_P10_FINAL_AUDIT.md](productization/PRODUCTIZATION_P1_P10_FINAL_AUDIT.md). **P1–P10 is a UI/UX programme; finishing it does not complete a canonical product phase, and commercialization is not started.**  
+**Date context:** August 2026. Prompt 0A docs + Prompt 0B shell IA + VERIFY 0 + Prompt 1 Foundation gate + **productization P1–P10 complete** (2026-08-21). Programme-level view: [PRODUCTIZATION_P1_P10_FINAL_AUDIT.md](productization/PRODUCTIZATION_P1_P10_FINAL_AUDIT.md). **P1–P10 is a UI/UX programme; finishing it does not complete a canonical product phase.**  
+
+**Product scope (permanent):** Internal L&P operating platform only. Buyers/competitors are data entities — not users. No customer/buyer portal or Stripe unless explicitly tasked. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
 Living trail: [WORK_TRAIL.md](WORK_TRAIL.md). Blueprint: [MASTER_BLUEPRINT.md](MASTER_BLUEPRINT.md). Pack: [CANONICAL_PRODUCT_PACK.md](CANONICAL_PRODUCT_PACK.md).
 
 Purpose: distinguish what exists in code from what has been proven as a product. A route, table, migration, placeholder screen, or successful build does **not** equal phase completion.

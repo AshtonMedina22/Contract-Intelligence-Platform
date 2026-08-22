@@ -64,4 +64,4 @@ npx supabase db push --yes --db-url "$DIRECT_URL"
 
 **Not done as product:** Historical Pilot exit (~20–30 packages), rich verified corpus, confirmed Vercel tenant/env + hosted processor, `ASK_MODEL`. Later phase UIs exist — do not treat VERIFY PASS as operator-ready. Tracker: [WORK_TRAIL.md](WORK_TRAIL.md) + [FOUNDATION_AUDIT_2026-08-20.md](FOUNDATION_AUDIT_2026-08-20.md).
 
-**Do not:** clone Prisma/Drizzle, deploy processor on Vercel, put secrets in git, treat RLS as product Phase 2 complete, treat commercialization as a required product phase.
+**Do not:** clone Prisma/Drizzle, deploy processor on Vercel, put secrets in git, treat RLS as product Phase 2 complete, treat commercialization/Stripe/buyer portals as in-scope work ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).

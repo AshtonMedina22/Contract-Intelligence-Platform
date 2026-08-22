@@ -54,7 +54,7 @@ L&P is initial tenant. Future tenants are contracting companies. Procurement buy
 
 ## Buyer / agency entity
 
-Buyer/agency/procurement customer is **not CRM**. It connects solicitations, pursuits, proposals, awards, contracts, and public intelligence. No lead nurture/contact cadence/customer portal is implied.
+Buyer/agency/procurement customer is **not CRM** and **not a platform user**. It connects solicitations, pursuits, proposals, awards, contracts, and public intelligence as a **data entity only**. No lead nurture/contact cadence/customer portal/buyer login is implied. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
 
 Physical table may remain `clients` if migration cost is not justified; product language is **buyers/agencies**.
 

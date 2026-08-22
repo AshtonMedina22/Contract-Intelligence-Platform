@@ -130,11 +130,11 @@ docs
 
 Use the repository’s current supported workspace approach consistently. Do not churn package managers merely for preference.
 
-## Optional commercialization / extensions — not a core product phase
+## Commercialization / extensions — out of current product scope
 
-- Stripe later for plans/seats/usage/billing (only if L&P commercializes)  
-- MCP later for approved external interoperability  
-- advanced agent orchestration later only when a proven business workflow requires it  
+Do **not** add Stripe, plans/seats/usage billing, commercial SaaS onboarding, or buyer/customer portals unless a future task explicitly instructs ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
+
+Optional later interoperability (MCP) or advanced agents only when a proven L&P workflow requires them — still not commercialization.
 
 These do **not** define the Phase 1–8 core build.
 

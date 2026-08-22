@@ -348,9 +348,13 @@ Never conflate: L&P Corporate Past Performance · Management Prior Experience ·
 
 ## 25. Multi-tenant-ready architecture
 
-L&P is the first tenant. From day one, tenant-owned records/files/retrieval/reports are isolated by organization/RLS. Future tenants are contracting companies. Their procurement buyers are **not** platform tenant users merely because they appear in records.
+L&P is the operating company and first (and currently only intended) organization on the platform. From day one, tenant-owned records/files/retrieval/reports are isolated by organization/RLS for sound authorization.
 
-**Optional** future commercialization may add plans/seats/usage/Stripe without changing the procurement model. This is **separate from and does not define** the core product build.
+**Procurement buyers are not platform users or tenants** merely because they appear in records. Competitors are intelligence entities only.
+
+**Product-scope guardrail:** Do **not** expand org/RLS into commercial multi-tenant SaaS, buyer portals, Stripe, or selling to other contracting companies unless a future task **explicitly** instructs. Preserve extensibility in architecture without building commercialization. See [PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md).
+
+(Historical note: older wording about “optional future commercialization” is non-binding for implementation; this guardrail wins.)
 
 ---
 
@@ -378,7 +382,7 @@ Detail: [HISTORICAL_PILOT.md](HISTORICAL_PILOT.md) · [pilot/PUBLIC_PACKAGE_QUEU
 8. Response Builder / Submission / Result  
 
 **Core operational platform is complete after Phase 8.**  
-Optional future commercialization (Stripe / tenant admin / selling to other contracting companies) is **not** a core product phase.
+Commercialization (Stripe / tenant admin / selling to other contracting companies / buyer portals) is **not** part of current product scope and must not be implemented unless explicitly tasked ([PRODUCT_SCOPE_GUARDRAIL.md](PRODUCT_SCOPE_GUARDRAIL.md)).
 
 Legacy engineering migration IDs may remain on SQL/scripts; they do **not** redefine product phase completion.
 
